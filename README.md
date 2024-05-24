@@ -2,8 +2,8 @@
 
 ![Release](https://img.shields.io/github/v/release/nickkies/microservice-project)
 ![Build Status](https://github.com/nickkies/microservice-project/actions/workflows/prod.yml/badge.svg)
-![License](https://img.shields.io/badge/License-라이센스입력-green)
-![Issues](https://img.shields.io/github/issues/nickkies/elegance-globe)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Issues](https://img.shields.io/github/issues/mobi-projects/nail-case-server)
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
 
