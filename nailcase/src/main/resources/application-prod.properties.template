@@ -1,0 +1,15 @@
+# PostgreSQL 데이터베이스 설정
+spring.datasource.url=jdbc:postgresql://<database-host>:<port>/<database-name>
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.username=<database-username>
+spring.datasource.password=<database-password>
+
+# JPA 설정
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=validate
+
+# 로깅 레벨 설정
+logging.level.org.springframework=INFO
+logging.level.com.nailcase=INFO
+
+

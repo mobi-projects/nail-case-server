@@ -1,22 +1,14 @@
 spring.application.name=nailcase
 
-# H2 데이터베이스 설정
-spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.h2.console.enabled=true
-
-# JPA 설정
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.jpa.hibernate.ddl-auto=create
-spring.jpa.open-in-view=false
-
 # Devtools 설정
 spring.devtools.restart.enabled=false
 spring.devtools.livereload.enabled=true
 
 # Springdoc OpenAPI 설정
 springdoc.swagger-ui.path=/swagger
+
 # message
 spring.messages.basename=messages
+
+# 기본 프로파일 설정 (개발 환경)
+spring.profiles.active=dev
