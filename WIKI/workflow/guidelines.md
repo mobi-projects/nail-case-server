@@ -1,4 +1,39 @@
-# Project Contribution Guidelines
+# 📑 Project Contribution Guidelines
+
+## 🚀 GitHub Flow
+
+GitHub Flow는 단순하면서도 강력한 브랜칭 모델입니다:
+
+1. **main 브랜치는 항상 배포 가능한 상태로 유지**: main 브랜치는 언제든지 배포될 수 있어야 합니다.
+2. **기능 브랜치 생성**: 새로운 기능이나 버그 수정을 위해 main 브랜치로부터 기능 브랜치를 생성합니다.
+3. **주기적인 커밋**: 작은 단위로 자주 커밋하여 작업 내용을 기록합니다.
+4. **풀 리퀘스트 (PR)**: 작업이 완료되면 기능 브랜치에서 main 브랜치로 풀 리퀘스트를 생성하여 코드 리뷰를 요청합니다.
+5. **리뷰 및 승인**: 팀원들이 코드를 리뷰하고 승인하면, main 브랜치에 병합합니다.
+6. **배포**: main 브랜치에 병합된 코드는 자동화된 테스트를 거쳐 Gitbug Actions로 자동으로 배포합니다.
+
+## 📝 Issue Template
+
+- [Bug Report](../../.github/ISSUE_TEMPLATE/bug_report.md)
+- [Feature Request](../../.github/ISSUE_TEMPLATE/feature_request.md)
+
+## 📝 Branch Naming Rules
+
+- 브랜치 이름은 변경 사항의 목적을 명확히 하기 위해 일관된 형식을 유지합니다.
+- 예시: feat/, bug/, hotfix/ 등의 접두사를 사용하며, 관련된 이슈 번호를 포함합니다.
+
+```bash
+feat/123-add-login-api
+bug/456-fix-login-error
+hotfix/789-critical-bug-fix
+```
+
+## 🧩 Coding Convention
+
+프로젝트의 일관된 코딩 스타일을 유지하기 위해 코딩 표준을 준수합니다. 네이버의 자바 코딩 컨벤션을 따릅니다:
+
+- 네이버 자바 코딩 컨벤션: [네이버 자바 코딩 컨벤션](https://naver.github.io/hackday-conventions-java)
+- 코딩 스타일 가이드, 네이밍 규칙, 주석 작성법 등을 포함합니다.
+- 코딩 표준을 준수하여 코드의 가독성과 유지보수성을 높입니다.
 
 ## ✉️ Commit Message Style Guide
 
@@ -64,7 +99,22 @@ resolving: #2
 ref: #1
 ```
 
-## Code Review Conventions 🕵️
+## 🔀 Merge 전략
+
+프로젝트의 일관성을 유지하기 위해 기본적으로 `Create a merge commit` 전략을 사용합니다. 하지만 상황에 따라 아래의 다른 전략을 사용할 수도 있습니다:
+
+1. **Create a merge commit**: 모든 커밋 히스토리를 유지하면서 병합 커밋을 생성합니다.
+2. **Squash and merge**: 여러 커밋을 하나의 커밋으로 합쳐서 병합합니다. 이는 브랜치 히스토리를 단순화하는 데 유용합니다.
+3. **Rebase and merge**: 병합 대상 브랜치의 커밋을 리베이스하여 커밋 히스토리를 재정렬한 후 병합합니다. 이는 직선적인 커밋 히스토리를 유지하는 데 유용합니다.
+
+## 🔄 Pull Request
+
+- PR은 작은 단위로 자주 생성하여 변경 사항을 쉽게 리뷰할 수 있도록 합니다.
+- PR 제목과 설명은 변경 사항을 명확히 설명합니다.
+- PR 템플릿을 사용하여 일관된 형식으로 PR을 작성합니다.
+- [PR Template](../../.github/PULL_REQUEST_TEMPLATE.md)
+
+## 🕵️ Code Review Conventions 🕵️
 
 코드 리뷰는 개발 과정에서 중요한 부분으로, 고품질 코드를 보장하고 협력이 중요합니다. 효과적인 코드 리뷰를 위해 다음 규칙을 준수해주세요:
 
@@ -76,53 +126,4 @@ ref: #1
 - **일관성 확인하기**: 코드가 프로젝트의 코딩 표준과 규칙을 준수하는지 확인하세요. 일관성은 유지보수성과 가독성의 핵심입니다.
 - **로컬 테스트**: 가능하다면 변경 사항을 로컬에서 테스트하여 기대한 대로 작동하는지 확인하세요. 이를 통해 메인 브랜치에 병합되는 잠재적인 문제를 방지할 수 있습니다.
 - **좋은 작업 인정하기**: 긍정적인 피드백은 건설적인 피드백만큼 중요합니다. 코드 리뷰 과정에서 좋은 관행과 해결책을 인식하고 칭찬하세요.
-
-## GitHub Flow
-
-GitHub Flow는 단순하면서도 강력한 브랜칭 모델입니다:
-
-1. **main 브랜치는 항상 배포 가능한 상태로 유지**: main 브랜치는 언제든지 배포될 수 있어야 합니다.
-2. **기능 브랜치 생성**: 새로운 기능이나 버그 수정을 위해 main 브랜치로부터 기능 브랜치를 생성합니다.
-3. **주기적인 커밋**: 작은 단위로 자주 커밋하여 작업 내용을 기록합니다.
-4. **풀 리퀘스트 (PR)**: 작업이 완료되면 기능 브랜치에서 main 브랜치로 풀 리퀘스트를 생성하여 코드 리뷰를 요청합니다.
-5. **리뷰 및 승인**: 팀원들이 코드를 리뷰하고 승인하면, main 브랜치에 병합합니다.
-6. **배포**: main 브랜치에 병합된 코드는 자동화된 테스트를 거쳐 Gitbug Actions로 자동으로 배포합니다.
-
-## Branch Naming Rules
-
-- 브랜치 이름은 변경 사항의 목적을 명확히 하기 위해 일관된 형식을 유지합니다.
-- 예시: feat/, bug/, hotfix/ 등의 접두사를 사용하며, 관련된 이슈 번호를 포함합니다.
-
-```bash
-feat/123-add-login-api
-bug/456-fix-login-error
-hotfix/789-critical-bug-fix
-```
-
-## Issue Template
-
-- [Bug Report](../../.github/ISSUE_TEMPLATE/bug_report.md)
-- [Feature Request](../../.github/ISSUE_TEMPLATE/feature_request.md)
-
-## Merge 전략
-
-프로젝트의 일관성을 유지하기 위해 기본적으로 `Create a merge commit` 전략을 사용합니다. 하지만 상황에 따라 아래의 다른 전략을 사용할 수도 있습니다:
-
-1. **Create a merge commit**: 모든 커밋 히스토리를 유지하면서 병합 커밋을 생성합니다.
-2. **Squash and merge**: 여러 커밋을 하나의 커밋으로 합쳐서 병합합니다. 이는 브랜치 히스토리를 단순화하는 데 유용합니다.
-3. **Rebase and merge**: 병합 대상 브랜치의 커밋을 리베이스하여 커밋 히스토리를 재정렬한 후 병합합니다. 이는 직선적인 커밋 히스토리를 유지하는 데 유용합니다.
-
-## Convention
-
-프로젝트의 일관된 코딩 스타일을 유지하기 위해 코딩 표준을 준수합니다. 네이버의 자바 코딩 컨벤션을 따릅니다:
-
-- 네이버 자바 코딩 컨벤션: [네이버 자바 코딩 컨벤션](https://naver.github.io/hackday-conventions-java)
-- 코딩 스타일 가이드, 네이밍 규칙, 주석 작성법 등을 포함합니다.
-- 코딩 표준을 준수하여 코드의 가독성과 유지보수성을 높입니다.
-
-## Pull Request
-
-- PR은 작은 단위로 자주 생성하여 변경 사항을 쉽게 리뷰할 수 있도록 합니다.
-- PR 제목과 설명은 변경 사항을 명확히 설명합니다.
-- PR 템플릿을 사용하여 일관된 형식으로 PR을 작성합니다.
-- [PR Template](../../.github/PULL_REQUEST_TEMPLATE.md)
+- **모든 팀원의 리뷰 받기**: 모든 팀원의 리뷰를 받아야만 병합이 가능합니다.
