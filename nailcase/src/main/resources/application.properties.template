@@ -18,3 +18,5 @@ spring.devtools.livereload.enabled=true
 
 # Springdoc OpenAPI 설정
 springdoc.swagger-ui.path=/swagger
+# message
+spring.messages.basename=messages
