@@ -1,12 +1,17 @@
 # Pull Request
 
-[Contribution Guidelines](https://github.com/mobi-projects/nail-case-server/WIKI/workflow/guidelines)
+[Contribution Guidlines](https://github.com/mobi-projects/nail-case-server/WIKI/workflow/guidelines)
+
+## PR 제목
+
+:sparkles: feat: Add login API
 
 ## PR 설명
 
-- 새로운 기능 추가
+- 로그인 API 추가
+- 사용자가 이메일과 비밀번호로 로그인할 수 있도록 구현
 - 성공 및 실패 응답 처리
-- 테스트 코드 추가
+- JWT 토큰 발급 기능 포함
 
 ## 관련 이슈
 
