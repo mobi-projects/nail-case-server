@@ -24,7 +24,7 @@
 
 ## 📚 API Specification
 
-[api문서 github pages로 만들고 링크 입력](https://www.github.com)
+[api문서 github pages로 만들고 링크 입력](https://mobi-projects.github.io/nail-case-server/)
 
 ## 📖 WIKI
 
@@ -39,4 +39,4 @@
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE.md) file for details.
