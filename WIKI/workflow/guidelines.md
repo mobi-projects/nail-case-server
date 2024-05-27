@@ -11,20 +11,21 @@ GitHub Flow는 단순하면서도 강력한 브랜칭 모델입니다:
 5. **리뷰 및 승인**: 팀원들이 코드를 리뷰하고 승인하면, main 브랜치에 병합합니다.
 6. **배포**: main 브랜치에 병합된 코드는 자동화된 테스트를 거쳐 Gitbug Actions로 자동으로 배포합니다.
 
-## 📝 Issue Template
+## 📝 Jira Integration
 
-- [Bug Report](../../.github/ISSUE_TEMPLATE/bug_report.md)
-- [Feature Request](../../.github/ISSUE_TEMPLATE/feature_request.md)
+1. 이슈 트래킹: 모든 작업 항목은 Jira 티켓을 통해 관리됩니다.
+2. Jira 티켓 생성: 새로운 기능이나 버그 수정을 위해 작업을 시작하기 전에 Jira 티켓을 생성합니다.
+3. 커밋 메시지: 커밋 메시지에 Jira 티켓 번호를 포함하여 커밋과 Jira 티켓을 연동합니다.
 
 ## 📝 Branch Naming Rules
 
 - 브랜치 이름은 변경 사항의 목적을 명확히 하기 위해 일관된 형식을 유지합니다.
-- 예시: feat/, bug/, hotfix/ 등의 접두사를 사용하며, 관련된 이슈 번호를 포함합니다.
+- 예시: feat/, bug/, hotfix/ 등의 접두사와 지라 티켓 번호를 포함합니다.
 
 ```bash
-feat/123-add-login-api
-bug/456-fix-login-error
-hotfix/789-critical-bug-fix
+feat/NAILCASE-123-add-login-api
+bug/NAILCASE-456-fix-login-error
+hotfix/NAILCASE-789-critical-bug-fix
 ```
 
 ## 🧩 Coding Convention
@@ -42,7 +43,7 @@ hotfix/789-critical-bug-fix
 ### Format
 
 ```bash
-:emoji: type(scope): title (issue ID)
+:emoji: type(scope): title (JIRA-ID)
 \n
 body(option)
 \n
@@ -56,7 +57,7 @@ footer(option)
 - **scope** (optional): 변경 사항이 영향을 미치는 코드베이스의 부분을 지정하는 키워드
 - **title**: 변경 사항에 대한 간결한 설명. 대문자로 시작하고, 마침표 없이, 50자 이내로 요점을 담습니다.
 - **body** (optional): 변경 사항과 그 이유에 대한 상세 설명. 복잡한 변경 사항일수록 더 자세한 본문을 작성합니다.
-- **footer** (optional): 이슈 ID 또는 기타 관련 정보에 대한 참조.
+- **footer** (optional): 지라 티켓 번호 또는 기타 관련 정보에 대한 참조.
 
 ### Emojis & Types
 
@@ -88,15 +89,15 @@ footer(option)
 ### Example
 
 ```bash
-:sparkles: feat(login): Add login API (#2)
+:sparkles: feat(login): Add login API (NAILCASE-123)
 
 - 로그인 API 추가
 - 사용자가 이메일과 비밀번호로 로그인할 수 있도록 구현
 - 성공 및 실패 응답 처리
 - JWT 토큰 발급 기능 포함
 
-resolving: #2
-ref: #1
+resolves: [NAILCASE-456](https://nailcase.atlassian.net/browse/NAILCASE-456)
+ref: [NAILCASE-123](https://nailcase.atlassian.net/browse/NAILCASE-123)
 ```
 
 ## 🔀 Merge 전략
