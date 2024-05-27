@@ -1,4 +1,4 @@
-# Pull request
+# Pull Request
 
 [Contribution Guidlines](https://github.com/mobi-projects/nail-case-server/WIKI/workflow/guidelines)
 
@@ -15,14 +15,14 @@
 
 ## 관련 이슈
 
-- Resolves: #2
-- Ref: #1
+- Resolves: [NAILCASE-456](https://nailcase.atlassian.net/browse/NAILCASE-456)
+- Ref: [NAILCASE-123](https://nailcase.atlassian.net/browse/NAILCASE-123)
 
 ## 체크리스트
 
 - [ ] 코드가 올바르게 동작하는지 확인했습니다.
-- [ ] 관련 문서를 업데이트했습니다.
-- [ ] 관련 테스트를 추가했습니다.
+- [ ] 관련 문서를 업데이트했습니다. / 관련 문서가 없습니다.
+- [ ] 관련 테스트를 추가했습니다. / 테스트가 필요 없는 PR입니다.
 
 ## 스크린샷 (선택사항)
 
