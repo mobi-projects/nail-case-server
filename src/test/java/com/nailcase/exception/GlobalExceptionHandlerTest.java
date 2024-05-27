@@ -13,7 +13,7 @@ public class GlobalExceptionHandlerTest {
 	private final GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler();
 
 	@Test
-	public void handleMethodArgumentNotValid() {
+	public void handleBusinessException() {
 		BusinessException exception = new BusinessException(AuthErrorCode.ACCESS_DENIED);
 
 		ResponseEntity<String> response = exceptionHandler.handleBusinessException(exception);
