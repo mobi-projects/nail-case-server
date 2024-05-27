@@ -1,0 +1,15 @@
+# H2 데이터베이스 설정
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.h2.console.enabled=true
+
+# JPA 설정
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.open-in-view=false
+
+# 로깅 레벨 설정
+logging.level.org.springframework=DEBUG
+logging.level.com.nailcase=DEBUG
