@@ -1,4 +1,4 @@
-spring.application.name=nailcase
+spring.application.name=nail-case-sever
 
 # Devtools 설정
 spring.devtools.restart.enabled=false
@@ -6,6 +6,7 @@ spring.devtools.livereload.enabled=true
 
 # Springdoc OpenAPI 설정
 springdoc.swagger-ui.path=/swagger
+springdoc.api-docs.path=/v3/api-docs
 
 # message
 spring.messages.basename=messages
