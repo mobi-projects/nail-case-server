@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 /**
  * 객체의 필드와 메서드에 접근하는 유틸리티 메서드를 제공합니다.
  * 이 클래스는 주어진 객체의 특정 필드 값을 설정하거나 가져오고, 특정 메서드를 호출할 수 있는 기능을 제공합니다.
+ * 테스트 환경에서 private 필드와 메서드에 접근하여 테스트할 수 있도록 지원합니다.
  */public final class Reflection {
 
     /**
