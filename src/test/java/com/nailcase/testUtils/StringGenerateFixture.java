@@ -1,3 +1,5 @@
+package com.nailcase.testUtils;
+
 import java.util.Random;
 import java.util.stream.Collectors;
 
