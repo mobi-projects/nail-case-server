@@ -33,11 +33,11 @@ public final class StringGenerateFixture {
     /**
      * 주어진 길이의 이메일 주소를 생성합니다.
      *
-     * @param length 생성할 이메일 주소의 로컬 부분의 길이
+     * @param length 생성할 이메일 주소의 길이
      * @return 이메일 주소
      */
     public static String makeEmail(int length) {
-        return makeByNumbersAndLowerLetters(length) + EMAIL_DOMAIN;
+        return makeByNumbersAndLowerLetters(length - EMAIL_DOMAIN.length()) + EMAIL_DOMAIN;
     }
 
     /**
