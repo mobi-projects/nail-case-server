@@ -1,4 +1,5 @@
 spring.application.name=nail-case-sever
+server.servlet.context-path=/api/v1
 
 # Devtools 설정
 spring.devtools.restart.enabled=false
