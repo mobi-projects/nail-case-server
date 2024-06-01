@@ -5,13 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.nailcase.customer.domain.Customer;
-import com.nailcase.repository.CustomerRepository;
-import com.nailcase.response.ListResponse;
+import com.nailcase.customer.repository.CustomerRepository;
 import com.nailcase.response.ResponseService;
 import com.nailcase.response.SingleResponse;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 

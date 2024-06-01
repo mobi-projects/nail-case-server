@@ -2,7 +2,7 @@ package com.nailcase.customer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailcase.customer.domain.Customer;
-import com.nailcase.repository.CustomerRepository;
+import com.nailcase.customer.repository.CustomerRepository;
 import com.nailcase.response.ResponseService;
 import com.nailcase.response.SingleResponse;
 import org.junit.jupiter.api.Test;

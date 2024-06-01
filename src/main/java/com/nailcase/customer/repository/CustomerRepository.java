@@ -1,4 +1,4 @@
-package com.nailcase.repository;
+package com.nailcase.customer.repository;
 
 import org.springframework.stereotype.Repository;
 
