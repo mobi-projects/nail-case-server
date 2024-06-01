@@ -20,7 +20,7 @@ jobs:
         java-version: '21'
 
     - name: Build the project
-      run: ./gradlew build
+      run: ./gradlew build -x test # 테스트 생략(다른 빌드 파일에서 테스트 진행)
 
     - name: Start application
       run: |
