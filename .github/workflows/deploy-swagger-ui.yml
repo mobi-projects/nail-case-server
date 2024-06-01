@@ -20,7 +20,8 @@ jobs:
         java-version: '21'
 
     - name: Build the project
-      run: ./gradlew build -x test # 테스트 생략(다른 빌드 파일에서 테스트 진행)
+      run: ./gradlew build -x test -Dspring.profiles.active=dev # 테스트 생략(다른 빌드 파일에서 테스트 진행)
+      #run: ./gradlew build -x test -Dspring.profiles.active=prod # 실제 디비 반영 이후 주석 해제
 
     - name: Start application
       run: |
