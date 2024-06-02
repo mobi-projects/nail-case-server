@@ -39,15 +39,5 @@ out/
 ### VS Code ###
 .vscode/
 
-# Ignore application properties files
-application.properties
-application.yml
-
-application-prod.properties
-application-prod.yml
-
-
-application-dev.properties
-application-dev.yml
 # Ignore .DS_Store files
 .DS_Store
