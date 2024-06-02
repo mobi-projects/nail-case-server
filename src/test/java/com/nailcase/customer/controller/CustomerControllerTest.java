@@ -2,13 +2,13 @@ package com.nailcase.customer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailcase.customer.domain.Customer;
-import com.nailcase.customer.dto.request.CreateCustomerRequest;
-import com.nailcase.customer.dto.request.UpdateCustomerRequest;
-import com.nailcase.customer.dto.response.CreateCustomerResponse;
-import com.nailcase.customer.dto.response.UpdateCustomerResponse;
-import com.nailcase.customer.repository.CustomerRepository;
+import com.nailcase.customer.domain.dto.request.CreateCustomerRequest;
+import com.nailcase.customer.domain.dto.request.UpdateCustomerRequest;
+import com.nailcase.customer.domain.dto.response.CreateCustomerResponse;
+import com.nailcase.customer.domain.dto.response.UpdateCustomerResponse;
+import com.nailcase.customer.service.CustomerService;
 import com.nailcase.exception.BusinessException;
-import com.nailcase.response.CommonResponse;
+import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.response.ListResponse;
 import com.nailcase.response.ResponseService;
 import com.nailcase.response.SingleResponse;
@@ -24,12 +24,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,16 +41,15 @@ public class CustomerControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private CustomerRepository customerRepository;
+	private CustomerService customerService;
 
 	@MockBean
 	private ResponseService responseService;
 
 	@Autowired
 	private ObjectMapper objectMapper;
-	private Customer existingCustomer;
-	private List<Customer> customers;
 
+	private Customer existingCustomer;
 
 	@BeforeEach
 	public void setup() {
@@ -63,65 +61,7 @@ public class CustomerControllerTest {
 			.createdBy(1L)
 			.modifiedBy(1L)
 			.build();
-
-		Customer secondCustomer = Customer.builder()
-			.customerId(2L)
-			.name("woody")
-			.email("woody@example.com")
-			.phone("9876543210")
-			.createdBy(1L)
-			.modifiedBy(1L)
-			.build();
-
-		customers = Arrays.asList(existingCustomer, secondCustomer);
-
-		when(customerRepository.findById(1L)).thenReturn(java.util.Optional.of(existingCustomer));
-		when(customerRepository.findAll()).thenReturn(customers);
 	}
-
-
-
-	@DisplayName("customer 조회 테스트")
-	@Test
-	public void getCustomerTest() throws Exception {
-		SingleResponse<Customer> response = new SingleResponse<>();
-		response.setData(existingCustomer);
-		when(responseService.getSingleResponse(eq(existingCustomer))).thenReturn(response);
-
-		mockMvc.perform(get("/api/v1/customers/{id}", 1L)
-				.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.data.customerId").value(existingCustomer.getCustomerId()))
-			.andExpect(jsonPath("$.data.name").value(existingCustomer.getName()))
-			.andExpect(jsonPath("$.data.email").value(existingCustomer.getEmail()));
-	}
-
-
-	@DisplayName("모든 customers 조회 테스트")
-	@Test
-	public void getAllCustomersTest() throws Exception {
-		ListResponse<Customer> listResponse = new ListResponse<>();
-		listResponse.setDataList(customers);
-		listResponse.setSuccess(true);
-		listResponse.setCode(CommonResponse.SUCCESS_CODE);
-		listResponse.setMessage(CommonResponse.SUCCESS_MESSAGE);
-
-		when(responseService.getListResponse(customers)).thenReturn(listResponse);
-
-		mockMvc.perform(get("/api/v1/customers/all")
-				.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.dataList[0].customerId").value(customers.get(0).getCustomerId()))
-			.andExpect(jsonPath("$.dataList[0].name").value("jangdm"))
-			.andExpect(jsonPath("$.dataList[0].email").value("jangdm@example.com"))
-			.andExpect(jsonPath("$.dataList[1].customerId").value(customers.get(1).getCustomerId()))
-			.andExpect(jsonPath("$.dataList[1].name").value("woody"))
-			.andExpect(jsonPath("$.dataList[1].email").value("woody@example.com"));
-	}
-
-
 
 	@DisplayName("customer 생성 테스트")
 	@Test
@@ -161,7 +101,7 @@ public class CustomerControllerTest {
 		SingleResponse<CreateCustomerResponse> singleResponse = new SingleResponse<>();
 		singleResponse.setData(response);
 
-		when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+		when(customerService.createCustomer(any(CreateCustomerRequest.class))).thenReturn(response);
 		when(responseService.getSingleResponse(response)).thenReturn(singleResponse);
 
 		String requestBody = objectMapper.writeValueAsString(request);
@@ -178,7 +118,6 @@ public class CustomerControllerTest {
 			.andExpect(jsonPath("$.data.createdBy").value(1))
 			.andExpect(jsonPath("$.data.modifiedBy").value(1));
 	}
-
 
 	@DisplayName("customer 수정 테스트")
 	@Test
@@ -199,9 +138,6 @@ public class CustomerControllerTest {
 			.modifiedAt(LocalDateTime.now())
 			.build();
 
-		when(customerRepository.findById(existingCustomer.getCustomerId())).thenReturn(java.util.Optional.of(existingCustomer));
-		when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
-
 		UpdateCustomerResponse updateResponse = new UpdateCustomerResponse(
 			updatedCustomer.getCustomerId(),
 			updatedCustomer.getName(),
@@ -213,6 +149,8 @@ public class CustomerControllerTest {
 
 		SingleResponse<UpdateCustomerResponse> response = new SingleResponse<>();
 		response.setData(updateResponse);
+
+		when(customerService.updateCustomer(eq(existingCustomer.getCustomerId()), any(UpdateCustomerRequest.class))).thenReturn(updateResponse);
 		when(responseService.getSingleResponse(updateResponse)).thenReturn(response);
 
 		mockMvc.perform(put("/api/v1/customers/edit/" + existingCustomer.getCustomerId())
@@ -223,22 +161,55 @@ public class CustomerControllerTest {
 			.andExpect(jsonPath("$.data.modifiedBy").value(2L));
 	}
 
+	@DisplayName("모든 customers 조회 테스트")
+	@Test
+	public void getAllCustomersTest() throws Exception {
+		List<Customer> customers = List.of(
+			existingCustomer,
+			Customer.builder()
+				.customerId(2L)
+				.name("kimcy")
+				.email("kimcy@example.com")
+				.phone("0987654321")
+				.createdBy(1L)
+				.modifiedBy(1L)
+				.build()
+		);
 
+		ListResponse<Customer> listResponse = new ListResponse<>();
+		listResponse.setDataList(customers);
+		listResponse.setSuccess(true);
+
+		when(customerService.getAllCustomers()).thenReturn(customers);
+		when(responseService.getListResponse(customers)).thenReturn(listResponse);
+
+		mockMvc.perform(get("/api/v1/customers/all")
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.dataList[0].customerId").value(customers.get(0).getCustomerId()))
+			.andExpect(jsonPath("$.dataList[0].name").value("jangdm"))
+			.andExpect(jsonPath("$.dataList[0].email").value("jangdm@example.com"))
+			.andExpect(jsonPath("$.dataList[1].customerId").value(customers.get(1).getCustomerId()))
+			.andExpect(jsonPath("$.dataList[1].name").value("kimcy"))
+			.andExpect(jsonPath("$.dataList[1].email").value("kimcy@example.com"));
+	}
 
 	@DisplayName("회원탈퇴 로직")
 	@Test
 	public void deleteCustomerTest() throws Exception {
-		when(customerRepository.findById(1L)).thenReturn(Optional.of(existingCustomer));
+		when(customerService.getCustomerById(1L)).thenReturn(existingCustomer);
 
 		mockMvc.perform(delete("/api/v1/customers/delete/{id}", 1L))
 			.andExpect(status().isOk());
 
-		verify(customerRepository, times(1)).deleteById(1L);
+		verify(customerService, times(1)).deleteCustomer(1L);
 
-		when(customerRepository.findById(1L)).thenReturn(Optional.empty());
+		doThrow(new BusinessException(UserErrorCode.USER_NOT_FOUND)).when(customerService).getCustomerById(1L);
 
-		Optional<Customer> deletedCustomer = customerRepository.findById(1L);
-		assertTrue(deletedCustomer.isEmpty());
+		assertThrows(BusinessException.class, () -> {
+			customerService.getCustomerById(1L);
+		});
 	}
 
 }

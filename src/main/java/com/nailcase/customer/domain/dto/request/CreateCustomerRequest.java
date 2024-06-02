@@ -1,4 +1,4 @@
-package com.nailcase.customer.dto.request;
+package com.nailcase.customer.domain.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

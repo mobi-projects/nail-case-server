@@ -1,4 +1,4 @@
-package com.nailcase.customer.dto.response;
+package com.nailcase.customer.domain.dto.response;
 
 import java.time.LocalDateTime;
 
