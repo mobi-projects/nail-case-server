@@ -1,5 +1,5 @@
 ﻿#!/bin/bash
-SWAGGER_CODEGEN_CLI_VERSION="3.0.30"
+SWAGGER_CODEGEN_CLI_VERSION="3.0.57"
 SWAGGER_CODEGEN_JAR="swagger-codegen-cli-${SWAGGER_CODEGEN_CLI_VERSION}.jar"
 
 # Download Swagger Codegen CLI
