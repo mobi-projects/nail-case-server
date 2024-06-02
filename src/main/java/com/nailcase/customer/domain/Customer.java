@@ -51,7 +51,17 @@ public class Customer {
 	@Column(nullable = false)
 	private Long modifiedBy;
 
+	public void updatePhone(String phone) {
+		this.phone = phone;
+	}
 
+	public void updateModifiedBy(Long modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public void updateModifiedAt() {
+		this.modifiedAt = LocalDateTime.now();
+	}
 	//
 	// @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
 	// @JoinColumn(name = "appointment_id")
