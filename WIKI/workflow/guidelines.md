@@ -79,6 +79,7 @@ footer(option)
 - 💡 comment: 소스 코드에 주석을 추가하거나 업데이트합니다.
 - 🔖 release: 릴리스하거나 버전 태그를 추가합니다.
 - 🚀 deploy: 배포합니다 :)
+- 🗃️ schema: 엔티티나 데이터베이스 관련 파일을 추가하거나 업데이트합니다.
 
 ### Footer
 
@@ -96,7 +97,7 @@ footer(option)
 - 성공 및 실패 응답 처리
 - JWT 토큰 발급 기능 포함
 
-resolves: [NAILCASE-456](https://nailcase.atlassian.net/browse/NAILCASE-456)
+resolve: [NAILCASE-456](https://nailcase.atlassian.net/browse/NAILCASE-456)
 ref: [NAILCASE-123](https://nailcase.atlassian.net/browse/NAILCASE-123)
 ```
 

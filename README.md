@@ -1,4 +1,4 @@
-# PROJECT NAME
+# 오늘네일
 
 ![Release](https://img.shields.io/github/v/release/nickkies/microservice-project)
 ![Build Status](https://github.com/nickkies/microservice-project/actions/workflows/prod.yml/badge.svg)
@@ -24,7 +24,7 @@
 
 ## 📚 API Specification
 
-[api문서 github pages로 만들고 링크 입력](https://mobi-projects.github.io/nail-case-server/)
+[API Specification](https://mobi-projects.github.io/nail-case-server/)
 
 ## 📖 WIKI
 

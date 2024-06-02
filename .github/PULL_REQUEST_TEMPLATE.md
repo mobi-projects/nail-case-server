@@ -14,7 +14,7 @@
 
 ## 관련 이슈
 
-- Resolves: [NAILCASE-456](https://nailcase.atlassian.net/browse/NAILCASE-456)
+- Resolve: [NAILCASE-456](https://nailcase.atlassian.net/browse/NAILCASE-456)
 - Ref: [NAILCASE-123](https://nailcase.atlassian.net/browse/NAILCASE-123)
 
 ## 체크리스트
