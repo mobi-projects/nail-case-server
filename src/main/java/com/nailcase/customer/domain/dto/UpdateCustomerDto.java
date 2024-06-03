@@ -1,4 +1,6 @@
-package com.nailcase.customer.domain.dto.request;
+package com.nailcase.customer.domain.dto;
+
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -7,11 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCustomerRequest {
+public class UpdateCustomerDto {
 
 	private Long customerId;
 
@@ -22,4 +23,15 @@ public class UpdateCustomerRequest {
 	@NotNull
 	private Long modifiedBy;
 
+	public record Response(
+		Long customerId,
+		String name,
+		String email,
+		String phone,
+		LocalDateTime createdAt,
+		LocalDateTime modifiedAt,
+		Long createdBy,
+		Long modifiedBy) {
+
+	}
 }

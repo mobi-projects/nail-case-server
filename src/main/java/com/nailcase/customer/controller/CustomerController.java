@@ -7,10 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.nailcase.customer.domain.Customer;
-import com.nailcase.customer.domain.dto.request.CreateCustomerRequest;
-import com.nailcase.customer.domain.dto.request.UpdateCustomerRequest;
-import com.nailcase.customer.domain.dto.response.CreateCustomerResponse;
-import com.nailcase.customer.domain.dto.response.UpdateCustomerResponse;
+import com.nailcase.customer.domain.dto.CreateCustomerDto;
+import com.nailcase.customer.domain.dto.UpdateCustomerDto;
 import com.nailcase.customer.service.CustomerService;
 import com.nailcase.response.ListResponse;
 import com.nailcase.response.ResponseService;
@@ -21,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/customers")
 @RequiredArgsConstructor
 @Slf4j
 public class CustomerController {
@@ -46,17 +44,17 @@ public class CustomerController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<SingleResponse<CreateCustomerResponse>> createCustomer(@Valid @RequestBody CreateCustomerRequest createCustomerRequest) {
-		CreateCustomerResponse response = customerService.createCustomer(createCustomerRequest);
+	public ResponseEntity<SingleResponse<CreateCustomerDto.Response>> createCustomer(@Valid @RequestBody CreateCustomerDto createCustomerRequest) {
+		CreateCustomerDto.Response response = customerService.createCustomer(createCustomerRequest);
 		return ResponseEntity.ok(responseService.getSingleResponse(response));
 	}
 
-	@PutMapping("/edit/{id}")
-	public ResponseEntity<SingleResponse<UpdateCustomerResponse>> updateCustomer(
+	@PutMapping("/{id}")
+	public ResponseEntity<SingleResponse<UpdateCustomerDto.Response>> updateCustomer(
 		@PathVariable("id") Long id,
-		@Valid @RequestBody UpdateCustomerRequest updateCustomerRequest) {
+		@Valid @RequestBody UpdateCustomerDto updateCustomerDto) {
 
-		UpdateCustomerResponse response = customerService.updateCustomer(id, updateCustomerRequest);
+		UpdateCustomerDto.Response response = customerService.updateCustomer(id, updateCustomerDto);
 		return ResponseEntity.ok(responseService.getSingleResponse(response));
 	}
 
