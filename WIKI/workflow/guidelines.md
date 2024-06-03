@@ -36,6 +36,16 @@ hotfix/NAILCASE-789-critical-bug-fix
 - 코딩 스타일 가이드, 네이밍 규칙, 주석 작성법 등을 포함합니다.
 - 코딩 표준을 준수하여 코드의 가독성과 유지보수성을 높입니다.
 
+### 세팅 방법
+
+#### 1. 해당 파일들을 다운로드합니다.
+
+- [naver-intellij-formatter.xml](..%2F..%2F..%2F..%2FDownloads%2Fnaver-intellij-formatter.xml)
+- [naver-checkstyle-suppressions.xml](..%2F..%2F..%2F..%2FDownloads%2Fnaver-checkstyle-suppressions.xml)
+- [naver-checkstyle-rules.xml](..%2F..%2F..%2F..%2FDownloads%2Fnaver-checkstyle-rules.xml)
+
+#### 2. [setting-code-convention.md](setting-code-convention.md)에 설명을 따라서 세팅을 합니다.
+
 ## ✉️ Commit Message Style Guide
 
 좋은 커밋 메시지는 협업을 원활하게 하고 프로젝트의 히스토리를 추적하는 데 도움이 됩니다. 아래와 같은 구조로 커밋 메시지를 작성해주세요:
@@ -52,7 +62,8 @@ footer(option)
 
 ### Components
 
-- **emoji**: (optional) 커밋 메시지의 시작 부분에 이모지를 추가하여 커밋의 의도나 성격을 시각적으로 구분할 수 있습니다. 이는 변경 사항의 목적이나 영향을 한눈에 빠르게 식별하는 데 도움이 됩니다.
+- **emoji**: (optional) 커밋 메시지의 시작 부분에 이모지를 추가하여 커밋의 의도나 성격을 시각적으로 구분할 수 있습니다. 이는 변경 사항의 목적이나 영향을 한눈에 빠르게 식별하는 데 도움이
+  됩니다.
 - **type**: 커밋하는 변경 사항의 유형별로 정리하는 데 도움이 됩니다.
 - **scope** (optional): 변경 사항이 영향을 미치는 코드베이스의 부분을 지정하는 키워드
 - **title**: 변경 사항에 대한 간결한 설명. 대문자로 시작하고, 마침표 없이, 50자 이내로 요점을 담습니다.
