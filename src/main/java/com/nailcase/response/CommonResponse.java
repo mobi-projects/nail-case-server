@@ -10,6 +10,8 @@ public class CommonResponse {
 	private int code;
 	private String message;
 
-	public static final int SUCCESS_CODE = 0;
+	public static final int SUCCESS_CODE = 200;
 	public static final String SUCCESS_MESSAGE = "SUCCESS";
+
+
 }

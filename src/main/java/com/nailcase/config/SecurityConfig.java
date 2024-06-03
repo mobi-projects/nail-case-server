@@ -25,8 +25,7 @@ public class SecurityConfig {
 
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger", "/v3/api-docs/**", "/webjars/**", "/static/**").permitAll()  // Swagger와 정적 리소스 접근 허용
-				.requestMatchers("/api/login").permitAll() // 로그인 api
-				.requestMatchers("/api/signup").permitAll() // 회원가입 api
+				.requestMatchers("/api/customers/**").permitAll() // customer관련 api
 				.requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico").permitAll()
 				.anyRequest().authenticated() // 그 외 인증 없이 접근X

@@ -1,20 +1,19 @@
 package com.nailcase.customer.domain;
 
-import java.time.LocalDateTime;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.nailcase.common.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // 모든 필드를 초기화하는 생성자를 private로 생성
-@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@SuperBuilder
 @Schema(description = "사용자 상세 정보를 위한 도메인 객체")
 @Entity
 @Table(name = "Customers")
-public class Customer {
+public class Customer extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,16 +32,6 @@ public class Customer {
 	@Column(nullable = false, length = 32)
 	private String phone;
 
-	@Schema(title = "사용자 생성일")
-	@Column(nullable = false, updatable = false)
-	@CreationTimestamp
-	private LocalDateTime createdAt;
-
-	@Schema(title = "사용자 수정일")
-	@Column(nullable = false)
-	@UpdateTimestamp
-	private LocalDateTime modifiedAt;
-
 	@Schema(title = "사용자 생성자")
 	@Column(nullable = false, updatable = false)
 	private Long createdBy;
@@ -51,9 +40,11 @@ public class Customer {
 	@Column(nullable = false)
 	private Long modifiedBy;
 
+	public void updatePhone(String phone) {
+		this.phone = phone;
+	}
 
-	//
-	// @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
-	// @JoinColumn(name = "appointment_id")
-	// private Appointment appointment;
+	public void updateModifiedBy(Long modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
 }
