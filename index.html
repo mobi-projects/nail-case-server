@@ -689,9 +689,46 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+            defs["CreateCustomerDto"] = {
+  "required" : [ "createdBy", "email", "modifiedBy", "name", "phone" ],
+  "type" : "object",
+  "properties" : {
+    "name" : {
+      "maxLength" : 32,
+      "minLength" : 1,
+      "type" : "string"
+    },
+    "email" : {
+      "maxLength" : 128,
+      "minLength" : 0,
+      "type" : "string"
+    },
+    "phone" : {
+      "maxLength" : 32,
+      "minLength" : 0,
+      "type" : "string"
+    },
+    "createdBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    }
+  }
+};
             defs["Customer"] = {
   "type" : "object",
   "properties" : {
+    "createdAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
     "customerId" : {
       "type" : "integer",
       "format" : "int64"
@@ -708,16 +745,6 @@
       "title" : "사용자 휴대폰번호",
       "type" : "string"
     },
-    "createdAt" : {
-      "title" : "사용자 생성일",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "사용자 수정일",
-      "type" : "string",
-      "format" : "date-time"
-    },
     "createdBy" : {
       "title" : "사용자 생성자",
       "type" : "integer",
@@ -730,6 +757,61 @@
     }
   },
   "description" : "사용자 상세 정보를 위한 도메인 객체"
+};
+            defs["ListResponseCustomer"] = {
+  "type" : "object",
+  "properties" : {
+    "success" : {
+      "type" : "boolean"
+    },
+    "code" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "message" : {
+      "type" : "string"
+    },
+    "dataList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Customer"
+      }
+    }
+  }
+};
+            defs["Response"] = {
+  "type" : "object",
+  "properties" : {
+    "customerId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "phone" : {
+      "type" : "string"
+    },
+    "createdAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    }
+  }
 };
             defs["SingleResponseCustomer"] = {
   "type" : "object",
@@ -746,6 +828,43 @@
     },
     "data" : {
       "$ref" : "#/components/schemas/Customer"
+    }
+  }
+};
+            defs["SingleResponseResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "success" : {
+      "type" : "boolean"
+    },
+    "code" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "message" : {
+      "type" : "string"
+    },
+    "data" : {
+      "$ref" : "#/components/schemas/Response"
+    }
+  }
+};
+            defs["UpdateCustomerDto"] = {
+  "required" : [ "modifiedBy", "phone" ],
+  "type" : "object",
+  "properties" : {
+    "customerId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "phone" : {
+      "maxLength" : 32,
+      "minLength" : 0,
+      "type" : "string"
+    },
+    "modifiedBy" : {
+      "type" : "integer",
+      "format" : "int64"
     }
   }
 };
@@ -768,6 +887,18 @@
                   <li class="nav-header" data-group="CustomerController"><a href="#api-CustomerController">API Methods - CustomerController</a></li>
                     <li data-group="CustomerController" data-name="createCustomer" class="">
                       <a href="#api-CustomerController-createCustomer">createCustomer</a>
+                    </li>
+                    <li data-group="CustomerController" data-name="deleteCustomer" class="">
+                      <a href="#api-CustomerController-deleteCustomer">deleteCustomer</a>
+                    </li>
+                    <li data-group="CustomerController" data-name="getAllCustomers" class="">
+                      <a href="#api-CustomerController-getAllCustomers">getAllCustomers</a>
+                    </li>
+                    <li data-group="CustomerController" data-name="getCustomerById" class="">
+                      <a href="#api-CustomerController-getCustomerById">getCustomerById</a>
+                    </li>
+                    <li data-group="CustomerController" data-name="updateCustomer" class="">
+                      <a href="#api-CustomerController-updateCustomer">updateCustomer</a>
                     </li>
           </ul>
         </nav>
@@ -802,7 +933,7 @@
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/customers/new</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/customers/signup</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -825,7 +956,7 @@
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8080/api/v1/customers/new"</code></pre>
+"http://localhost:8080/api/v1/customers/signup"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-CustomerController-createCustomer-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -841,9 +972,9 @@ public class CustomerControllerApiExample {
     public static void main(String[] args) {
         
         CustomerControllerApi apiInstance = new CustomerControllerApi();
-        Customer body = ; // Customer | 
+        CreateCustomerDto body = ; // CreateCustomerDto | 
         try {
-            SingleResponseCustomer result = apiInstance.createCustomer(body);
+            SingleResponseResponse result = apiInstance.createCustomer(body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CustomerControllerApi#createCustomer");
@@ -860,9 +991,9 @@ public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
         CustomerControllerApi apiInstance = new CustomerControllerApi();
-        Customer body = ; // Customer | 
+        CreateCustomerDto body = ; // CreateCustomerDto | 
         try {
-            SingleResponseCustomer result = apiInstance.createCustomer(body);
+            SingleResponseResponse result = apiInstance.createCustomer(body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CustomerControllerApi#createCustomer");
@@ -876,12 +1007,12 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-createCustomer-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Customer *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">CreateCustomerDto *body = ; // 
 
 CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
 [apiInstance createCustomerWith:body
-              completionHandler: ^(SingleResponseCustomer output, NSError* error) {
+              completionHandler: ^(SingleResponseResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -896,7 +1027,7 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 
 var api = new NailCaseApi.CustomerControllerApi()
-var body = ; // {{Customer}} 
+var body = ; // {{CreateCustomerDto}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -927,11 +1058,11 @@ namespace Example
         {
 
             var apiInstance = new CustomerControllerApi();
-            var body = new Customer(); // Customer | 
+            var body = new CreateCustomerDto(); // CreateCustomerDto | 
 
             try
             {
-                SingleResponseCustomer result = apiInstance.createCustomer(body);
+                SingleResponseResponse result = apiInstance.createCustomer(body);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -949,7 +1080,7 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
-$body = ; // Customer | 
+$body = ; // CreateCustomerDto | 
 
 try {
     $result = $api_instance->createCustomer($body);
@@ -966,7 +1097,7 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
-my $body = WWW::SwaggerClient::Object::Customer->new(); # Customer | 
+my $body = WWW::SwaggerClient::Object::CreateCustomerDto->new(); # CreateCustomerDto | 
 
 eval { 
     my $result = $api_instance->createCustomer(body => $body);
@@ -986,7 +1117,7 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
-body =  # Customer | 
+body =  # CreateCustomerDto | 
 
 try: 
     api_response = api_instance.create_customer(body)
@@ -1016,7 +1147,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/Customer"
+        "$ref" : "#/components/schemas/CreateCustomerDto"
       }
     }
   },
@@ -1066,7 +1197,7 @@ except ApiException as e:
   "content" : {
     "*/*" : {
       "schema" : {
-        "$ref" : "#/components/schemas/SingleResponseCustomer"
+        "$ref" : "#/components/schemas/SingleResponseResponse"
       }
     }
   }
@@ -1092,6 +1223,1143 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-createCustomer-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CustomerController-deleteCustomer">
+                      <article id="api-CustomerController-deleteCustomer-0" data-group="User" data-name="deleteCustomer" data-version="0">
+                        <div class="pull-left">
+                          <h1>deleteCustomer</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/customers/delete/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CustomerController-deleteCustomer-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-deleteCustomer-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-deleteCustomer-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CustomerController-deleteCustomer-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CustomerController-deleteCustomer-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+"http://localhost:8080/api/v1/customers/delete/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CustomerControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        Long id = 789; // Long | 
+        try {
+            apiInstance.deleteCustomer(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#deleteCustomer");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CustomerControllerApi;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        Long id = 789; // Long | 
+        try {
+            apiInstance.deleteCustomer(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#deleteCustomer");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *id = 789; // 
+
+CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
+
+[apiInstance deleteCustomerWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.CustomerControllerApi()
+var id = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.deleteCustomer(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class deleteCustomerExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new CustomerControllerApi();
+            var id = 789;  // Long | 
+
+            try
+            {
+                apiInstance.deleteCustomer(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CustomerControllerApi.deleteCustomer: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiCustomerControllerApi();
+$id = 789; // Long | 
+
+try {
+    $api_instance->deleteCustomer($id);
+} catch (Exception $e) {
+    echo 'Exception when calling CustomerControllerApi->deleteCustomer: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CustomerControllerApi;
+
+my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
+my $id = 789; # Long | 
+
+eval { 
+    $api_instance->deleteCustomer(id => $id);
+};
+if ($@) {
+    warn "Exception when calling CustomerControllerApi->deleteCustomer: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.CustomerControllerApi()
+id = 789 # Long | 
+
+try: 
+    api_instance.delete_customer(id)
+except ApiException as e:
+    print("Exception when calling CustomerControllerApi->deleteCustomer: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_deleteCustomer_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CustomerController-getAllCustomers">
+                      <article id="api-CustomerController-getAllCustomers-0" data-group="User" data-name="getAllCustomers" data-version="0">
+                        <div class="pull-left">
+                          <h1>getAllCustomers</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/customers/all</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CustomerController-getAllCustomers-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-getAllCustomers-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-getAllCustomers-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CustomerController-getAllCustomers-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CustomerController-getAllCustomers-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+-H "Accept: */*"\
+"http://localhost:8080/api/v1/customers/all"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CustomerControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        try {
+            ListResponseCustomer result = apiInstance.getAllCustomers();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#getAllCustomers");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CustomerControllerApi;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        try {
+            ListResponseCustomer result = apiInstance.getAllCustomers();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#getAllCustomers");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
+
+[apiInstance getAllCustomersWithCompletionHandler: 
+              ^(ListResponseCustomer output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.CustomerControllerApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getAllCustomers(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getAllCustomersExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new CustomerControllerApi();
+
+            try
+            {
+                ListResponseCustomer result = apiInstance.getAllCustomers();
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CustomerControllerApi.getAllCustomers: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiCustomerControllerApi();
+
+try {
+    $result = $api_instance->getAllCustomers();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling CustomerControllerApi->getAllCustomers: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CustomerControllerApi;
+
+my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
+
+eval { 
+    my $result = $api_instance->getAllCustomers();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling CustomerControllerApi->getAllCustomers: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.CustomerControllerApi()
+
+try: 
+    api_response = api_instance.get_all_customers()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling CustomerControllerApi->getAllCustomers: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getAllCustomers-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getAllCustomers-200-schema">
+                                  <div id='responses-getAllCustomers-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ListResponseCustomer"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getAllCustomers-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getAllCustomers-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getAllCustomers-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CustomerController-getCustomerById">
+                      <article id="api-CustomerController-getCustomerById-0" data-group="User" data-name="getCustomerById" data-version="0">
+                        <div class="pull-left">
+                          <h1>getCustomerById</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/customers/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CustomerController-getCustomerById-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-getCustomerById-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-getCustomerById-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CustomerController-getCustomerById-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CustomerController-getCustomerById-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+-H "Accept: */*"\
+"http://localhost:8080/api/v1/customers/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CustomerControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        Long id = 789; // Long | 
+        try {
+            SingleResponseCustomer result = apiInstance.getCustomerById(id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#getCustomerById");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CustomerControllerApi;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        Long id = 789; // Long | 
+        try {
+            SingleResponseCustomer result = apiInstance.getCustomerById(id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#getCustomerById");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *id = 789; // 
+
+CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
+
+[apiInstance getCustomerByIdWith:id
+              completionHandler: ^(SingleResponseCustomer output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.CustomerControllerApi()
+var id = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getCustomerById(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CustomerController-getCustomerById-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getCustomerByIdExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new CustomerControllerApi();
+            var id = 789;  // Long | 
+
+            try
+            {
+                SingleResponseCustomer result = apiInstance.getCustomerById(id);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CustomerControllerApi.getCustomerById: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiCustomerControllerApi();
+$id = 789; // Long | 
+
+try {
+    $result = $api_instance->getCustomerById($id);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling CustomerControllerApi->getCustomerById: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CustomerControllerApi;
+
+my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
+my $id = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->getCustomerById(id => $id);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling CustomerControllerApi->getCustomerById: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.CustomerControllerApi()
+id = 789 # Long | 
+
+try: 
+    api_response = api_instance.get_customer_by_id(id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling CustomerControllerApi->getCustomerById: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_getCustomerById_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getCustomerById-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getCustomerById-200-schema">
+                                  <div id='responses-getCustomerById-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SingleResponseCustomer"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getCustomerById-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getCustomerById-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getCustomerById-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-CustomerController-updateCustomer">
+                      <article id="api-CustomerController-updateCustomer-0" data-group="User" data-name="updateCustomer" data-version="0">
+                        <div class="pull-left">
+                          <h1>updateCustomer</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/customers/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-CustomerController-updateCustomer-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-java">Java</a></li>
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-updateCustomer-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-CustomerController-updateCustomer-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-CustomerController-updateCustomer-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-CustomerController-updateCustomer-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/api/v1/customers/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.CustomerControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        UpdateCustomerDto body = ; // UpdateCustomerDto | 
+        Long id = 789; // Long | 
+        try {
+            SingleResponseResponse result = apiInstance.updateCustomer(body, id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#updateCustomer");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.CustomerControllerApi;
+
+public class CustomerControllerApiExample {
+
+    public static void main(String[] args) {
+        CustomerControllerApi apiInstance = new CustomerControllerApi();
+        UpdateCustomerDto body = ; // UpdateCustomerDto | 
+        Long id = 789; // Long | 
+        try {
+            SingleResponseResponse result = apiInstance.updateCustomer(body, id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CustomerControllerApi#updateCustomer");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">UpdateCustomerDto *body = ; // 
+Long *id = 789; // 
+
+CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
+
+[apiInstance updateCustomerWith:body
+    id:id
+              completionHandler: ^(SingleResponseResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.CustomerControllerApi()
+var body = ; // {{UpdateCustomerDto}} 
+var id = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.updateCustomer(bodyid, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-CustomerController-updateCustomer-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class updateCustomerExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new CustomerControllerApi();
+            var body = new UpdateCustomerDto(); // UpdateCustomerDto | 
+            var id = 789;  // Long | 
+
+            try
+            {
+                SingleResponseResponse result = apiInstance.updateCustomer(body, id);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling CustomerControllerApi.updateCustomer: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiCustomerControllerApi();
+$body = ; // UpdateCustomerDto | 
+$id = 789; // Long | 
+
+try {
+    $result = $api_instance->updateCustomer($body, $id);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling CustomerControllerApi->updateCustomer: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::CustomerControllerApi;
+
+my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
+my $body = WWW::SwaggerClient::Object::UpdateCustomerDto->new(); # UpdateCustomerDto | 
+my $id = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->updateCustomer(body => $body, id => $id);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling CustomerControllerApi->updateCustomer: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.CustomerControllerApi()
+body =  # UpdateCustomerDto | 
+id = 789 # Long | 
+
+try: 
+    api_response = api_instance.update_customer(body, id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling CustomerControllerApi->updateCustomer: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_updateCustomer_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UpdateCustomerDto"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updateCustomer_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updateCustomer_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateCustomer-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateCustomer-200-schema">
+                                  <div id='responses-updateCustomer-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SingleResponseResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateCustomer-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateCustomer-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateCustomer-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
