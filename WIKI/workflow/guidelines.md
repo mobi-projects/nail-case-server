@@ -38,13 +38,14 @@ hotfix/NAILCASE-789-critical-bug-fix
 
 ### 세팅 방법
 
-#### 1. 해당 파일들을 다운로드합니다.
+1. 해당 파일들을 다운로드합니다.
 
-- [naver-intellij-formatter.xml](..%2F..%2F..%2F..%2FDownloads%2Fnaver-intellij-formatter.xml)
-- [naver-checkstyle-suppressions.xml](..%2F..%2F..%2F..%2FDownloads%2Fnaver-checkstyle-suppressions.xml)
-- [naver-checkstyle-rules.xml](..%2F..%2F..%2F..%2FDownloads%2Fnaver-checkstyle-rules.xml)
+- [naver-intellij-formatter.xml](https://github.com/naver/hackday-conventions-java/blob/master/rule-config/naver-intellij-formatter.xml
+  )
+- [naver-checkstyle-rules.xml](https://github.com/naver/hackday-conventions-java/blob/master/rule-config/naver-checkstyle-rules.xml)
+- [naver-checkstyle-suppressions.xml](https://github.com/naver/hackday-conventions-java/blob/master/rule-config/naver-checkstyle-suppressions.xml)
 
-#### 2. [setting-code-convention.md](setting-code-convention.md)에 설명을 따라서 세팅을 합니다.
+2. [setting-code-convention.md](setting-code-convention.md)에 설명을 따라서 세팅을 합니다.
 
 ## ✉️ Commit Message Style Guide
 
