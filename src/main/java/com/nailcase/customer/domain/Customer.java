@@ -1,50 +1,49 @@
 package com.nailcase.customer.domain;
 
 import com.nailcase.common.BaseEntity;
+import com.nailcase.customer.domain.dto.CustomerDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@SuperBuilder
-@Schema(description = "사용자 상세 정보를 위한 도메인 객체")
 @Entity
-@Table(name = "Customers")
+@SuperBuilder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "사용자 상세 정보를 위한 도메인 객체")
+@Table(name = "customers")
 public class Customer extends BaseEntity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "customer_id", nullable = false)
 	private Long customerId;
 
 	@Schema(title = "사용자 이름")
-	@Column(nullable = false, length = 32)
+	@Column(name = "name", nullable = false, length = 32)
 	private String name;
 
 	@Schema(title = "사용자 이메일")
-	@Column(nullable = false, length = 128)
+	@Column(name = "email", nullable = false, length = 128)
 	private String email;
 
 	@Schema(title = "사용자 휴대폰번호")
-	@Column(nullable = false, length = 32)
+	@Column(name = "phone", nullable = false, length = 32)
 	private String phone;
 
-	@Schema(title = "사용자 생성자")
-	@Column(nullable = false, updatable = false)
-	private Long createdBy;
-
-	@Schema(title = "사용자 수정자")
-	@Column(nullable = false)
-	private Long modifiedBy;
-
-	public void updatePhone(String phone) {
-		this.phone = phone;
-	}
-
-	public void updateModifiedBy(Long modifiedBy) {
-		this.modifiedBy = modifiedBy;
+	public void update(CustomerDto.Request c) {
+		this.name = c.getName();
+		this.email = c.getEmail();
+		this.phone = c.getPhone();
 	}
 }
