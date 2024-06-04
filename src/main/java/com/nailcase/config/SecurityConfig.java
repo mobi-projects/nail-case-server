@@ -24,11 +24,16 @@ public class SecurityConfig {
 			)
 
 			.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers("/swagger-ui/**", "/swagger", "/v3/api-docs/**", "/webjars/**", "/static/**").permitAll()  // Swagger와 정적 리소스 접근 허용
-				.requestMatchers("/api/customers/**").permitAll() // customer관련 api
-				.requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console 접근 허용
-				.requestMatchers("/favicon.ico").permitAll()
-				.anyRequest().authenticated() // 그 외 인증 없이 접근X
+				.requestMatchers("/swagger-ui/**", "/swagger", "/v3/api-docs/**", "/webjars/**", "/static/**")
+				.permitAll()  // Swagger와 정적 리소스 접근 허용
+				.requestMatchers("/customers/**")
+				.permitAll() // customer관련 api
+				.requestMatchers(PathRequest.toH2Console())
+				.permitAll() // h2-console 접근 허용
+				.requestMatchers("/favicon.ico")
+				.permitAll()
+				.anyRequest()
+				.authenticated() // 그 외 인증 없이 접근X
 			);
 		return http.build();
 	}
