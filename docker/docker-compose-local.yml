@@ -74,7 +74,7 @@ services:
       POSTGRES_DB: newtips-postgresql
 
   backend:
-    image: "qushe8r/nail-case-server"
+    image: "newtips/nail-case-server"
     ports:
       - "8080:8080"
     restart: always
