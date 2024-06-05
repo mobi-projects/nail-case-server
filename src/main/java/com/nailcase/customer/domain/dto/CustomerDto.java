@@ -1,5 +1,9 @@
 package com.nailcase.customer.domain.dto;
 
+import java.time.LocalDateTime;
+
+import com.nailcase.util.DateUtils;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -7,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 public class CustomerDto {
 	@Data
@@ -39,14 +42,17 @@ public class CustomerDto {
 
 		private String phone;
 
-		@Setter
 		private Long createdAt;
 
-		@Setter
 		private Long modifiedAt;
 
 		private Long createdBy;
 
 		private Long modifiedBy;
+
+		public void setTimestampsFromLocalDateTime(LocalDateTime createdAt, LocalDateTime modifiedAt) {
+			this.createdAt = DateUtils.localDateTimeToUnixTimeStamp(createdAt);
+			this.modifiedAt = DateUtils.localDateTimeToUnixTimeStamp(modifiedAt);
+		}
 	}
 }

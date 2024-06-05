@@ -8,7 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 import com.nailcase.customer.domain.Customer;
 import com.nailcase.customer.domain.dto.CustomerDto;
-import com.nailcase.util.DateUtils;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
@@ -22,7 +21,6 @@ public interface CustomerMapper {
 
 	@BeforeMapping
 	default void beforeMapping(Customer customer, @MappingTarget CustomerDto.Response dto) {
-		dto.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(customer.getCreatedAt()));
-		dto.setModifiedAt(DateUtils.localDateTimeToUnixTimeStamp(customer.getModifiedAt()));
+		dto.setTimestampsFromLocalDateTime(customer.getCreatedAt(), customer.getModifiedAt());
 	}
 }
