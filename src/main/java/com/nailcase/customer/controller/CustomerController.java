@@ -2,6 +2,7 @@ package com.nailcase.customer.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nailcase.common.dto.PageRequestDto;
+import com.nailcase.customer.domain.Customer;
 import com.nailcase.customer.domain.dto.CustomerDto;
 import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import com.nailcase.customer.service.CustomerService;
@@ -43,8 +47,24 @@ public class CustomerController {
 	}
 
 	@GetMapping
-	public ResponseEntity<ListResponse<CustomerDto.Response>> getAllCustomers() {
-		List<CustomerDto.Response> customers = customerService.getAllCustomers();
+	public ResponseEntity<ListResponse<CustomerDto.Response>> getAllCustomers(
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(required = false) String name,
+		@RequestParam(required = false) String email,
+		@RequestParam(required = false) String phone
+	) {
+		Pageable pageable = PageRequestDto.builder()
+			.page(page)
+			.sort("createdAt")
+			.direction("DESC")
+			.build().toPageable();
+		Customer customer = Customer.builder()
+			.name(name)
+			.email(email)
+			.phone(phone)
+			.build();
+
+		List<CustomerDto.Response> customers = customerService.getAllCustomers(customer, pageable);
 		ListResponse<CustomerDto.Response> listResponse = responseService.getListResponse(customers);
 		return ResponseEntity.ok()
 			.contentType(MediaType.APPLICATION_JSON)

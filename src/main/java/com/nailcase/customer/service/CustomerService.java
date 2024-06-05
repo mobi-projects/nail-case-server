@@ -2,6 +2,7 @@ package com.nailcase.customer.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +11,7 @@ import com.nailcase.customer.domain.Customer;
 import com.nailcase.customer.domain.dto.CustomerDto;
 import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import com.nailcase.customer.repository.CustomerRepository;
+import com.nailcase.customer.specifications.CustomerSpecifications;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
 
@@ -28,9 +30,9 @@ public class CustomerService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<CustomerDto.Response> getAllCustomers() {
+	public List<CustomerDto.Response> getAllCustomers(Customer customer, Pageable pageable) {
 		return customerRepository
-			.findAll()
+			.findAll(CustomerSpecifications.CustomerSpecification(customer), pageable)
 			.stream()
 			.map(customerMapper::toResponse)
 			.toList();
