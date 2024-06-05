@@ -2,6 +2,8 @@ package com.nailcase.common;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,12 +24,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
-	// @CreatedDate
+	@CreatedDate
 	@Schema(title = "생성시간")
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	// @LastModifiedDate
+	@LastModifiedDate
 	@Schema(title = "수정시간")
 	@Column(name = "modified_at")
 	private LocalDateTime modifiedAt;
