@@ -2,10 +2,12 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'com.palantir.docker' version '0.36.0'
+	id "com.dorongold.task-tree" version '3.0.0'
 }
 
 group = 'com.nailcase'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
 	sourceCompatibility = '21'
@@ -34,7 +36,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// 스웨거
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // 스웨거
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
 	// 보일러플레이트 코드를 줄이기 위한 Lombok
@@ -63,4 +67,30 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+docker {
+	// test 주석 처리 해제하면 테스트 실행합니다.
+	// dependsOn check
+
+	// start
+	println "task: docker start, jar file:${tasks.bootJar.outputs.files.singleFile.name}"
+
+	// ./gradlew dockerPush -PdUsername=dockerUsername 으로 입력받은 dockerUsername
+	def dockerUsername = project.getProperties()["dUsername"]
+
+	if (dockerUsername) {
+		// dUsername을 입력하면 -> {{dUsername}}/nail-case:0.0.1-SNAPSHOT 형태로 이미지 생성됩니다.
+		// 항상 이미지 버전 명시하지 않고 최신버전은 latest로 당겨올 수 있습니다.
+		name "${dockerUsername}/${project.name}:${version}"
+		tag dockerUsername as String, "${dockerUsername}/${project.name}:latest"
+	} else {
+		// dUsername을 입력하지 않으면 로컬 이미지가 생성됩니다.
+		name "${project.name}:${version}"
+	}
+
+	// dockerfile 위치, dockerfile ARG
+	dockerfile file('./docker/dockerfile')
+	files tasks.bootJar.outputs.files
+	buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
 }
