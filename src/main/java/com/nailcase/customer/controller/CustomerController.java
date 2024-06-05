@@ -20,8 +20,6 @@ import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import com.nailcase.customer.service.CustomerService;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
-import com.nailcase.response.ResponseService;
-import com.nailcase.response.SingleResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,18 +30,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomerController {
-
+	
 	private final CustomerService customerService;
-	private final ResponseService responseService;
 
 	@GetMapping("/{id}")
-	public SingleResponse<CustomerDto.Response> getCustomerById(@PathVariable("id") Long id) {
-		CustomerDto.Response response = customerService.getCustomer(id);
-		return responseService.getSingleResponse(response);
+	public CustomerDto.Response getCustomerById(@PathVariable("id") Long id) {
+		return customerService.getCustomer(id);
 	}
 
 	@GetMapping
-	public SingleResponse<Page<CustomerDto.Response>> getAllCustomers(
+	public Page<CustomerDto.Response> getAllCustomers(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(required = false) String name,
 		@RequestParam(required = false) String email,
@@ -60,21 +56,19 @@ public class CustomerController {
 			.phone(phone)
 			.build();
 
-		Page<CustomerDto.Response> customers = customerService.getAllCustomers(customer, pageable);
-		return responseService.getSingleResponse(customers);
+		return customerService.getAllCustomers(customer, pageable);
 	}
 
 	@PostMapping("/signup")
-	public SingleResponse<CustomerDto.Response> createCustomer(
+	public CustomerDto.Response createCustomer(
 		@Valid @RequestBody CustomerDto.Request createCustomerRequest
 	) {
-		CustomerDto.Response response = customerService.createCustomer(createCustomerRequest);
-		return responseService.getSingleResponse(response);
+		return customerService.createCustomer(createCustomerRequest);
 	}
 
 	// 원래라면 id를 시큐리티에서 받아서 사용
 	@PutMapping("/{id}")
-	public SingleResponse<CustomerDto.Response> updateCustomer(
+	public CustomerDto.Response updateCustomer(
 		@PathVariable("id") Long id,
 		@Valid @RequestBody UpdateCustomerRequestDto updateCustomerRequest
 	) {
@@ -82,8 +76,7 @@ public class CustomerController {
 			throw new BusinessException(AuthErrorCode.INVALID_CREDENTIALS);
 		}
 
-		CustomerDto.Response response = customerService.updateCustomer(id, updateCustomerRequest);
-		return responseService.getSingleResponse(response);
+		return customerService.updateCustomer(id, updateCustomerRequest);
 	}
 
 	@DeleteMapping("/{id}")
