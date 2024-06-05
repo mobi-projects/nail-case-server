@@ -1,9 +1,7 @@
 package com.nailcase.customer.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +20,6 @@ import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import com.nailcase.customer.service.CustomerService;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
-import com.nailcase.response.ListResponse;
 import com.nailcase.response.ResponseService;
 import com.nailcase.response.SingleResponse;
 
@@ -40,14 +37,13 @@ public class CustomerController {
 	private final ResponseService responseService;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<SingleResponse<CustomerDto.Response>> getCustomerById(@PathVariable("id") Long id) {
-		CustomerDto.Response res = customerService.getCustomer(id);
-		SingleResponse<CustomerDto.Response> singleResponse = responseService.getSingleResponse(res);
-		return ResponseEntity.ok(singleResponse);
+	public SingleResponse<CustomerDto.Response> getCustomerById(@PathVariable("id") Long id) {
+		CustomerDto.Response response = customerService.getCustomer(id);
+		return responseService.getSingleResponse(response);
 	}
 
 	@GetMapping
-	public ResponseEntity<ListResponse<CustomerDto.Response>> getAllCustomers(
+	public SingleResponse<Page<CustomerDto.Response>> getAllCustomers(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(required = false) String name,
 		@RequestParam(required = false) String email,
@@ -64,24 +60,21 @@ public class CustomerController {
 			.phone(phone)
 			.build();
 
-		List<CustomerDto.Response> customers = customerService.getAllCustomers(customer, pageable);
-		ListResponse<CustomerDto.Response> listResponse = responseService.getListResponse(customers);
-		return ResponseEntity.ok()
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(listResponse);
+		Page<CustomerDto.Response> customers = customerService.getAllCustomers(customer, pageable);
+		return responseService.getSingleResponse(customers);
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<SingleResponse<CustomerDto.Response>> createCustomer(
+	public SingleResponse<CustomerDto.Response> createCustomer(
 		@Valid @RequestBody CustomerDto.Request createCustomerRequest
 	) {
 		CustomerDto.Response response = customerService.createCustomer(createCustomerRequest);
-		return ResponseEntity.ok(responseService.getSingleResponse(response));
+		return responseService.getSingleResponse(response);
 	}
 
 	// 원래라면 id를 시큐리티에서 받아서 사용
 	@PutMapping("/{id}")
-	public ResponseEntity<SingleResponse<CustomerDto.Response>> updateCustomer(
+	public SingleResponse<CustomerDto.Response> updateCustomer(
 		@PathVariable("id") Long id,
 		@Valid @RequestBody UpdateCustomerRequestDto updateCustomerRequest
 	) {
@@ -90,7 +83,7 @@ public class CustomerController {
 		}
 
 		CustomerDto.Response response = customerService.updateCustomer(id, updateCustomerRequest);
-		return ResponseEntity.ok(responseService.getSingleResponse(response));
+		return responseService.getSingleResponse(response);
 	}
 
 	@DeleteMapping("/{id}")
