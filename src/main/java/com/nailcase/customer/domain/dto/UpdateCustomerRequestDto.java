@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CustomerOptionalDto {
+public class UpdateCustomerRequestDto {
 	@NotNull
 	private Long customerId;
 
