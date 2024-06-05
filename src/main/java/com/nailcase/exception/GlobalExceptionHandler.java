@@ -1,8 +1,9 @@
 package com.nailcase.exception;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.nailcase.exception.codes.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,25 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.codes.CommonErrorCode;
+import com.nailcase.exception.codes.DatabaseErrorCode;
+import com.nailcase.exception.codes.ErrorCodeInterface;
+import com.nailcase.exception.codes.ErrorResponse;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getFieldErrors().forEach(error ->
+			errors.put(error.getField(), error.getDefaultMessage()));
+
+		return ResponseEntity.badRequest().body(errors);
+	}
 
 	@ExceptionHandler(BusinessException.class)
 	public ResponseEntity<String> handleBusinessException(BusinessException ex) {
@@ -24,7 +40,6 @@ public class GlobalExceptionHandler {
 		logger.error("BusinessException 발생: {}", ex.getMessage(), ex);
 		return ResponseEntity.status(ec.getCode()).body(ec.getMessage());
 	}
-
 
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {

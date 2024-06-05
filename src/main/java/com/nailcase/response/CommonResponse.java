@@ -12,6 +12,4 @@ public class CommonResponse {
 
 	public static final int SUCCESS_CODE = 200;
 	public static final String SUCCESS_MESSAGE = "SUCCESS";
-
-
 }

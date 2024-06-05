@@ -1,7 +1,9 @@
 package com.nailcase.util;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -46,5 +48,15 @@ public class DateUtils {
 	public static String formatDateTime(LocalDateTime dateTime, String pattern) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 		return dateTime.format(formatter);
+	}
+
+	// LocalDateTime을 Unix timestamp로 변환
+	public static Long localDateTimeToUnixTimeStamp(LocalDateTime dateTime) {
+		return dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+	}
+
+	// Unix timestamp를 LocalDateTime로 변환
+	public static LocalDateTime unixTimeStampToLocalDateTime(Long u) {
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(u), ZoneId.systemDefault());
 	}
 }
