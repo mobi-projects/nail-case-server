@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nailcase.customer.CustomerMapper;
 import com.nailcase.customer.domain.Customer;
 import com.nailcase.customer.domain.dto.CustomerDto;
+import com.nailcase.customer.domain.dto.CustomerOptionalDto;
 import com.nailcase.customer.repository.CustomerRepository;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
@@ -43,12 +44,11 @@ public class CustomerService {
 	}
 
 	@Transactional
-	public CustomerDto.Response updateCustomer(Long id, CustomerDto.Request updateCustomerRequest) {
+	public CustomerDto.Response updateCustomer(Long id, CustomerOptionalDto updateCustomerRequest) {
 		Customer customer = getCustomerById(id);
-
 		customer.update(updateCustomerRequest);
-
-		return customerMapper.toResponse(customer);
+		Customer updatedCustomer = customerRepository.saveAndFlush(customer);
+		return customerMapper.toResponse(updatedCustomer);
 	}
 
 	@Transactional

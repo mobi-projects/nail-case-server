@@ -1,7 +1,7 @@
 package com.nailcase.customer.domain;
 
 import com.nailcase.common.BaseEntity;
-import com.nailcase.customer.domain.dto.CustomerDto;
+import com.nailcase.customer.domain.dto.CustomerOptionalDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -41,9 +41,15 @@ public class Customer extends BaseEntity {
 	@Column(name = "phone", nullable = false, length = 32)
 	private String phone;
 
-	public void update(CustomerDto.Request c) {
-		this.name = c.getName();
-		this.email = c.getEmail();
-		this.phone = c.getPhone();
+	public void update(CustomerOptionalDto c) {
+		if (c.getName() != null) {
+			this.name = c.getName();
+		}
+		if (c.getEmail() != null) {
+			this.email = c.getEmail();
+		}
+		if (c.getPhone() != null) {
+			this.phone = c.getPhone();
+		}
 	}
 }

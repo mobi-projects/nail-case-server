@@ -13,8 +13,6 @@ public class CustomerDto {
 	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Request {
-		private Long customerId;
-
 		@NotNull
 		@Size(min = 1, max = 32)
 		private String name;

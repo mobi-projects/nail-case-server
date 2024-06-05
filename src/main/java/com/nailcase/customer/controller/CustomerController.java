@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.customer.domain.dto.CustomerDto;
+import com.nailcase.customer.domain.dto.CustomerOptionalDto;
 import com.nailcase.customer.service.CustomerService;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
@@ -62,7 +63,7 @@ public class CustomerController {
 	@PutMapping("/{id}")
 	public ResponseEntity<SingleResponse<CustomerDto.Response>> updateCustomer(
 		@PathVariable("id") Long id,
-		@Valid @RequestBody CustomerDto.Request updateCustomerRequest
+		@Valid @RequestBody CustomerOptionalDto updateCustomerRequest
 	) {
 		if (!id.equals(updateCustomerRequest.getCustomerId())) {
 			throw new BusinessException(AuthErrorCode.INVALID_CREDENTIALS);
