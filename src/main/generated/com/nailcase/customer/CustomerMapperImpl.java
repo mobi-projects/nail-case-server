@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-06-03T18:32:11+0900",
+    date = "2024-06-06T01:23:41+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.3 (Oracle Corporation)"
 )
 public class CustomerMapperImpl implements CustomerMapper {
@@ -19,7 +19,7 @@ public class CustomerMapperImpl implements CustomerMapper {
             return null;
         }
 
-        Customer.CustomerBuilder customer = Customer.builder();
+        Customer.CustomerBuilder<?, ?> customer = Customer.builder();
 
         customer.name( createCustomerDto.getName() );
         customer.email( createCustomerDto.getEmail() );
@@ -36,7 +36,7 @@ public class CustomerMapperImpl implements CustomerMapper {
             return null;
         }
 
-        Customer.CustomerBuilder customer = Customer.builder();
+        Customer.CustomerBuilder<?, ?> customer = Customer.builder();
 
         customer.customerId( updateCustomerDto.getCustomerId() );
         customer.phone( updateCustomerDto.getPhone() );
@@ -80,6 +80,7 @@ public class CustomerMapperImpl implements CustomerMapper {
             return null;
         }
 
+        Long customerId = null;
         String name = null;
         String email = null;
         String phone = null;
@@ -88,6 +89,7 @@ public class CustomerMapperImpl implements CustomerMapper {
         Long createdBy = null;
         Long modifiedBy = null;
 
+        customerId = customer.getCustomerId();
         name = customer.getName();
         email = customer.getEmail();
         phone = customer.getPhone();
@@ -96,9 +98,7 @@ public class CustomerMapperImpl implements CustomerMapper {
         createdBy = customer.getCreatedBy();
         modifiedBy = customer.getModifiedBy();
 
-        Long customerI = null;
-
-        UpdateCustomerDto.Response response = new UpdateCustomerDto.Response( customerI, name, email, phone, createdAt, modifiedAt, createdBy, modifiedBy );
+        UpdateCustomerDto.Response response = new UpdateCustomerDto.Response( customerId, name, email, phone, createdAt, modifiedAt, createdBy, modifiedBy );
 
         return response;
     }

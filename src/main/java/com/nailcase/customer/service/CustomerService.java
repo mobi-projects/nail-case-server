@@ -2,6 +2,7 @@ package com.nailcase.customer.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nailcase.customer.CustomerMapper;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class CustomerService {
 
 	private final CustomerRepository customerRepository;
+	private final PasswordEncoder passwordEncoder;
+
 	private final CustomerMapper customerMapper = CustomerMapper.INSTANCE;
 
 	public Customer getCustomerById(Long id) {
@@ -30,8 +33,13 @@ public class CustomerService {
 		return customerRepository.findAll();
 	}
 
-	public CreateCustomerDto.Response createCustomer(CreateCustomerDto createCustomerRequest) {
+	public CreateCustomerDto.Response createCustomer(CreateCustomerDto createCustomerRequest) throws Exception {
+		if (customerRepository.findByEmail(createCustomerRequest.getEmail()).isPresent()) {
+			throw new BusinessException(UserErrorCode.USER_ALREADY_EXISTS);
+		}
+
 		Customer customer = customerMapper.toEntity(createCustomerRequest);
+		customer.passwordEncode(passwordEncoder);
 		Customer savedCustomer = customerRepository.save(customer);
 		return customerMapper.toCreateResponse(savedCustomer);
 	}

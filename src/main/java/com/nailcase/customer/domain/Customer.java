@@ -1,9 +1,22 @@
 package com.nailcase.customer.domain;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.nailcase.common.BaseEntity;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -25,7 +38,7 @@ public class Customer extends BaseEntity {
 	private String name;
 
 	@Schema(title = "사용자 이메일")
-	@Column(nullable = false, length = 128)
+	@Column(nullable = false, length = 128, unique = true)
 	private String email;
 
 	@Schema(title = "사용자 휴대폰번호")
@@ -40,6 +53,23 @@ public class Customer extends BaseEntity {
 	@Column(nullable = false)
 	private Long modifiedBy;
 
+	@Schema(title = "비밀번호")
+	@Column(nullable = false)
+	private String password;
+
+	@Schema(title = "소셜 타입")
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private SocialType socialType; // KAKAO, NAVER, FACEBOOK
+
+	@Schema(title = "소셜 ID")
+	@Column(nullable = true)
+	private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role;
+
 	public void updatePhone(String phone) {
 		this.phone = phone;
 	}
@@ -47,4 +77,13 @@ public class Customer extends BaseEntity {
 	public void updateModifiedBy(Long modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
+
+	public void authorizeUser() {
+		this.role = Role.GUEST;
+	}
+
+	public void passwordEncode(PasswordEncoder passwordEncoder) {
+		this.password = passwordEncoder.encode(this.password);
+	}
+
 }

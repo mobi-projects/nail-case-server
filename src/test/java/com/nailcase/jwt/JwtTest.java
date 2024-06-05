@@ -1,0 +1,71 @@
+package com.nailcase.jwt;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Date;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.nailcase.customer.domain.Customer;
+import com.nailcase.customer.domain.Role;
+import com.nailcase.customer.repository.CustomerRepository;
+import com.nailcase.testUtils.StringGenerateFixture;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class JwtTest {
+
+	@Autowired
+	private JwtService jwtService;
+
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	private Customer existingCustomer;
+
+	@BeforeEach
+	public void setup() {
+		existingCustomer = Customer.builder()
+			.customerId(1L)
+			.password("password1234")
+			.name(StringGenerateFixture.makeByNumbersAndAlphabets(10))
+			.email("user@test.com")
+			.phone(StringGenerateFixture.makeByNumbersAndLowerLetters(11))
+			.role(Role.GUEST)
+			.createdBy(1L)
+			.modifiedBy(1L)
+			.build();
+		customerRepository.save(existingCustomer);
+	}
+
+	@Test
+	@DisplayName("Ensure that expired tokens are handled properly")
+	public void testTokenExpiration() {
+		String email = "user@test.com";
+		// 현재 시간에서 1초 빼서 만료 시간을 설정
+		Date now = new Date();
+		Date expiredTime = new Date(now.getTime() - 1000); // 현재 시간보다 1초 전으로 설정
+
+		// 만료된 토큰 생성
+		String expiredToken = JWT.create()
+			.withSubject("Test Subject")
+			.withExpiresAt(expiredTime)
+			.withClaim("email", email)
+			.sign(Algorithm.HMAC512(jwtService.getSecretKey()));
+
+		// 토큰 검증 시 예외가 발생해야 함
+		assertThrows(JWTVerificationException.class, () -> {
+			Algorithm algorithm = Algorithm.HMAC512(jwtService.getSecretKey());
+			JWT.require(algorithm).build().verify(expiredToken);
+		}, "Expired token should throw JWTVerificationException");
+	}
+
+}
