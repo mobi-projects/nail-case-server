@@ -52,19 +52,11 @@ public class DateUtils {
 
 	// LocalDateTime을 Unix timestamp로 변환
 	public static Long localDateTimeToUnixTimeStamp(LocalDateTime dateTime) {
-		// TODO remove
-		if (dateTime == null) {
-			dateTime = LocalDateTime.now();
-		}
 		return dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 	}
 
 	// Unix timestamp를 LocalDateTime로 변환
 	public static LocalDateTime unixTimeStampToLocalDateTime(Long u) {
-		// TODO remove
-		if (u == null) {
-			u = System.currentTimeMillis() / 1000;
-		}
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(u), ZoneId.systemDefault());
 	}
 }
