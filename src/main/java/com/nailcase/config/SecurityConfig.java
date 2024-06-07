@@ -3,15 +3,34 @@ package com.nailcase.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.nailcase.customer.repository.CustomerRepository;
+import com.nailcase.jwt.JwtService;
+import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.nailcase.oauth2.handler.OAuth2LoginFailureHandler;
+import com.nailcase.oauth2.handler.OAuth2LoginSuccessHandler;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+	private final JwtService jwtService;
+	private final CustomerRepository customerRepository;
+	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,8 +53,24 @@ public class SecurityConfig {
 				.permitAll()
 				.anyRequest()
 				.authenticated() // 그 외 인증 없이 접근X
-			);
+			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
+	}
+
+	@Bean
+	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
+		return new JwtAuthenticationProcessingFilter(jwtService, customerRepository);
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
+		return http.getSharedObject(AuthenticationManagerBuilder.class).build();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 }

@@ -30,6 +30,7 @@ public class CustomerService {
 
 	@Transactional(readOnly = true)
 	public Page<CustomerDto.Response> getAllCustomers(Customer customer, Pageable pageable) {
+
 		Page<Customer> customerPage = customerRepository
 			.findAll(CustomerSpecifications.CustomerSpecification(customer), pageable);
 
@@ -63,4 +64,6 @@ public class CustomerService {
 			.findById(id)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 	}
+
 }
+

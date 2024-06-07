@@ -6,6 +6,9 @@ import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,6 +44,23 @@ public class Customer extends BaseEntity {
 	@Column(name = "phone", nullable = false, length = 32)
 	private String phone;
 
+	@Schema(title = "비밀번호")
+	@Column(nullable = false)
+	private String password;
+
+	@Schema(title = "소셜 타입")
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private SocialType socialType; // KAKAO, NAVER, FACEBOOK
+
+	@Schema(title = "소셜 ID")
+	@Column(nullable = true)
+	private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role;
+
 	public void update(UpdateCustomerRequestDto c) {
 		if (c.getName() != null) {
 			this.name = c.getName();
@@ -52,4 +72,5 @@ public class Customer extends BaseEntity {
 			this.phone = c.getPhone();
 		}
 	}
+
 }

@@ -1,96 +1,106 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.0'
-	id 'io.spring.dependency-management' version '1.1.5'
-	id 'com.palantir.docker' version '0.36.0'
-	id "com.dorongold.task-tree" version '3.0.0'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.0'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'com.palantir.docker' version '0.36.0'
+    id "com.dorongold.task-tree" version '3.0.0'
 }
 
 group = 'com.nailcase'
 version = '0.0.1'
 
 java {
-	sourceCompatibility = '21'
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    sourceCompatibility = '21'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 compileJava {
-	options.compilerArgs << "-parameters"
+    options.compilerArgs << "-parameters"
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     // 스웨거
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
-	// 보일러플레이트 코드를 줄이기 위한 Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    // 보일러플레이트 코드를 줄이기 위한 Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    //oauth2.0
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // 개발 도구
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // 라이브 리로드 및 기타 개발 향상을 위한 Devtools
+
+    // 데이터베이스 관련 의존성
+    runtimeOnly 'com.h2database:h2' // 인메모리 테스트 및 개발용 H2 데이터베이스
+//    runtimeOnly 'org.postgresql:postgresql' // 프로덕션 사용을 위한 PostgreSQL 데이터베이스 (현재 주석 처리됨)
+
+    //jwt관련 라이브러리
+    implementation 'com.auth0:java-jwt:4.4.0'
+
+    //redis 관련 라이브러리
+    implementation('org.springframework.boot:spring-boot-starter-data-redis')
 
 
-	// 개발 도구
-	developmentOnly 'org.springframework.boot:spring-boot-devtools' // 라이브 리로드 및 기타 개발 향상을 위한 Devtools
+    // 테스트 의존성
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-validation'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.springframework.security:spring-security-test'
+    // Spring Security 테스트를 위한 보안 테스트 스타터 (보안 스타터 사용 시 필요)
 
-	// 데이터베이스 관련 의존성
-	runtimeOnly 'com.h2database:h2' // 인메모리 테스트 및 개발용 H2 데이터베이스
-//	runtimeOnly 'org.postgresql:postgresql' // 프로덕션 사용을 위한 PostgreSQL 데이터베이스 (현재 주석 처리됨)
-
-	// 테스트 의존성
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-validation'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트를 위한 보안 테스트 스타터 (보안 스타터 사용 시 필요)
-
-	testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
-	testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가
+    testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
+    testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 docker {
-	// test 주석 처리 해제하면 테스트 실행합니다.
-	// dependsOn check
+    // test 주석 처리 해제하면 테스트 실행합니다.
+    // dependsOn check
 
-	// start
-	println "task: docker start, jar file:${tasks.bootJar.outputs.files.singleFile.name}"
+    // start
+    println "task: docker start, jar file:${tasks.bootJar.outputs.files.singleFile.name}"
 
-	// ./gradlew dockerPush -PdUsername=dockerUsername 으로 입력받은 dockerUsername
-	def dockerUsername = project.getProperties()["dUsername"]
+    // ./gradlew dockerPush -PdUsername=dockerUsername 으로 입력받은 dockerUsername
+    def dockerUsername = project.getProperties()["dUsername"]
 
-	if (dockerUsername) {
-		// dUsername을 입력하면 -> {{dUsername}}/nail-case:0.0.1-SNAPSHOT 형태로 이미지 생성됩니다.
-		// 항상 이미지 버전 명시하지 않고 최신버전은 latest로 당겨올 수 있습니다.
-		name "${dockerUsername}/${project.name}:${version}"
-		tag dockerUsername as String, "${dockerUsername}/${project.name}:latest"
-	} else {
-		// dUsername을 입력하지 않으면 로컬 이미지가 생성됩니다.
-		name "${project.name}:${version}"
-	}
+    if (dockerUsername) {
+        // dUsername을 입력하면 -> {{dUsername}}/nail-case:0.0.1-SNAPSHOT 형태로 이미지 생성됩니다.
+        // 항상 이미지 버전 명시하지 않고 최신버전은 latest로 당겨올 수 있습니다.
+        name "${dockerUsername}/${project.name}:${version}"
+        tag dockerUsername as String, "${dockerUsername}/${project.name}:latest"
+    } else {
+        // dUsername을 입력하지 않으면 로컬 이미지가 생성됩니다.
+        name "${project.name}:${version}"
+    }
 
-	// dockerfile 위치, dockerfile ARG
-	dockerfile file('./docker/dockerfile')
-	files tasks.bootJar.outputs.files
-	buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
+    // dockerfile 위치, dockerfile ARG
+    dockerfile file('./docker/dockerfile')
+    files tasks.bootJar.outputs.files
+    buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
 }
