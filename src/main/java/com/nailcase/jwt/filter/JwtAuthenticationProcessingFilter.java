@@ -35,32 +35,22 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		if (request.getRequestURI().equals(NO_CHECK_URL)) {
-			filterChain.doFilter(request, response);
-			return;
-		}
 
-		String refreshToken = jwtService.extractRefreshToken(request)
-			.filter(jwtService::isTokenValid)
-			.orElse(null);
-
+		String refreshToken = jwtService.extractRefreshToken(request).filter(jwtService::isTokenValid).orElse(null);
 		if (refreshToken != null) {
 			checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
 			return;
 		}
-
 		if (refreshToken == null) {
 			checkAccessTokenAndAuthentication(request, response, filterChain);
 		}
 	}
 
 	public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-		jwtService.extractEmail(refreshToken)
-			.ifPresent(email -> {
-				String reIssuedRefreshToken = reIssueRefreshToken(email);
-				jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(email),
-					reIssuedRefreshToken);
-			});
+		jwtService.extractEmail(refreshToken).ifPresent(email -> {
+			String reIssuedRefreshToken = reIssueRefreshToken(email);
+			jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(email), reIssuedRefreshToken);
+		});
 	}
 
 	private String reIssueRefreshToken(String email) {
@@ -74,9 +64,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		log.info("checkAccessTokenAndAuthentication() 호출");
 		jwtService.extractAccessToken(request)
 			.filter(jwtService::isTokenValid)
-			.ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-				.ifPresent(email -> customerRepository.findByEmail(email)
-					.ifPresent(this::saveAuthentication)));
+			.flatMap(jwtService::extractEmail)
+			.flatMap(customerRepository::findByEmail)
+			.ifPresent(this::saveAuthentication);
 
 		filterChain.doFilter(request, response);
 	}
@@ -93,9 +83,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			.roles(myCustomer.getRole().name())
 			.build();
 
-		Authentication authentication =
-			new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-				authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+			authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}

@@ -47,7 +47,6 @@ public class SecurityConfig {
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
 				.requestMatchers("/api/v1/**")
 				.permitAll() // api
-				.requestMatchers("/secured-endpoint").authenticated()
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico")

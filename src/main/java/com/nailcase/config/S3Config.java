@@ -1,7 +1,5 @@
 package com.nailcase.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +13,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 @Configuration
 public class S3Config {
 
-	private static final Logger logger = LoggerFactory.getLogger(S3Config.class);
-
 	@Bean
 	public AmazonS3 amazonS3(
 		@Value("${cloud.aws.credentials.access-key}") String accessKey,
@@ -25,8 +21,6 @@ public class S3Config {
 		@Value("${cloud.aws.s3.endpoint}") String endpoint,
 		@Value("${cloud.aws.s3.bucket}") String bucketName
 	) {
-		logger.debug("Configuring Amazon S3 with accessKey: {}, region: {}, endpoint: {}, bucketName: {}",
-			accessKey, region, endpoint, bucketName);
 
 		AmazonS3 amazonS3 = AmazonS3ClientBuilder
 			.standard()

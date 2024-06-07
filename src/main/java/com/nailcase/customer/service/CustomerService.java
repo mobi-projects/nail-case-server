@@ -33,7 +33,7 @@ public class CustomerService {
 		return customerRepository.findAll();
 	}
 
-	public CreateCustomerDto.Response createCustomer(CreateCustomerDto createCustomerRequest) throws Exception {
+	public CreateCustomerDto.Response createCustomer(CreateCustomerDto createCustomerRequest) {
 		if (customerRepository.findByEmail(createCustomerRequest.getEmail()).isPresent()) {
 			throw new BusinessException(UserErrorCode.USER_ALREADY_EXISTS);
 		}

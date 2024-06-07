@@ -13,11 +13,10 @@ import lombok.Getter;
 /**
  * DefaultOAuth2User를 상속하고, email과 role 필드를 추가로 가진다.
  */
-
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-	private String email;
+	private final String email;
 	private Role role;
 
 	public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities,
@@ -25,6 +24,10 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 		String email, Role role) {
 		super(authorities, attributes, nameAttributeKey);
 		this.email = email;
+		this.role = role;
+	}
+
+	public void updateRole(Role role) {
 		this.role = role;
 	}
 }
