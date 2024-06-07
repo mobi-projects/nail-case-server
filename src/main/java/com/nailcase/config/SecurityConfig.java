@@ -52,7 +52,7 @@ public class SecurityConfig {
 				.requestMatchers("/favicon.ico")
 				.permitAll()
 				.anyRequest()
-				.authenticated() // 그 외 인증 없이 접근X
+				.authenticated()) // 그 외 인증 없이 접근X
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
