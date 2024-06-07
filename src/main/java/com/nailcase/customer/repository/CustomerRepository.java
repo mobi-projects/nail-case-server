@@ -12,4 +12,5 @@ import com.nailcase.customer.domain.Customer;
 public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer> {
 	Optional<Customer> findByEmail(String email);
 
+
 }

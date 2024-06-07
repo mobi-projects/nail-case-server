@@ -45,20 +45,16 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger", "/v3/api-docs/**", "/webjars/**", "/static/**")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
-				.requestMatchers("/api/v1/**")
-				.permitAll() // api
+				.requestMatchers("/customers/**")
+				.permitAll() // customer관련 api
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico")
 				.permitAll()
 				.anyRequest()
 				.authenticated() // 그 외 인증 없이 접근X
-			)
-			// .oauth2Login(oauth2 -> oauth2
-			// 	.successHandler(oAuth2LoginSuccessHandler)
-			// 	.failureHandler(oAuth2LoginFailureHandler)
-			// )
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
 	}
 
