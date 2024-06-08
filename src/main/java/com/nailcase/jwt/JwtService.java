@@ -47,24 +47,29 @@ public class JwtService {
 	private static final String BEARER = "Bearer ";
 
 	private final CustomerRepository customerRepository;
-	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisTemplate<String, Object> redisTemplate;
 
 	public String createAccessToken(String email) {
 
 		Date now = new Date();
-		return JWT.create()
+		String token = JWT.create()
 			.withSubject(ACCESS_TOKEN_SUBJECT)
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
 			.withClaim(EMAIL_CLAIM, email)
 			.sign(Algorithm.HMAC512(secretKey));
+		log.info("{} 해당 유저에 대한 AccessToken 발급", email);
+		return token;
 	}
 
-	public String createRefreshToken() {
+	public String createRefreshToken(String email) {
 		Date now = new Date();
-		return JWT.create()
+		String token = JWT.create()
 			.withSubject(REFRESH_TOKEN_SUBJECT)
+			.withClaim(EMAIL_CLAIM, email)
 			.withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
 			.sign(Algorithm.HMAC512(secretKey));
+		log.info("{} 해당 유저에 대한 RefreshToken 발급", email);
+		return token;
 	}
 
 	public void sendAccessToken(HttpServletResponse response, String accessToken) {
@@ -100,7 +105,7 @@ public class JwtService {
 				.getClaim(EMAIL_CLAIM)
 				.asString());
 		} catch (Exception e) {
-			log.error("액세스 토큰이 유효하지 않습니다.");
+			log.error("유효하지 않은 토큰입니다 : {}", accessToken, e);
 			return Optional.empty();
 		}
 	}
@@ -118,8 +123,10 @@ public class JwtService {
 			user -> {
 				redisTemplate.opsForValue()
 					.set(email, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
+				log.info("레디스에 refreshToken이 업데이트 되었습니다. {}", email);
 			},
 			() -> {
+				log.error("찾지 못한 유저 {}", email);
 				throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
 			}
 		);
@@ -130,7 +137,7 @@ public class JwtService {
 			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
 			return true;
 		} catch (Exception e) {
-			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+			log.error("유효하지 않은 토큰 : {}", token, e);
 			return false;
 		}
 	}

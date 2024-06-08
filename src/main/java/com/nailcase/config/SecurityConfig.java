@@ -3,6 +3,7 @@ package com.nailcase.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,6 +30,8 @@ public class SecurityConfig {
 
 	private final JwtService jwtService;
 	private final CustomerRepository customerRepository;
+	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
+
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
@@ -36,7 +39,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(AbstractHttpConfigurer::disable)
-
+			.cors(AbstractHttpConfigurer::disable)
 			// enable h2-console
 			.headers(headers -> headers
 				.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
@@ -60,7 +63,7 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-		return new JwtAuthenticationProcessingFilter(jwtService, customerRepository);
+		return new JwtAuthenticationProcessingFilter(jwtService, customerRepository, redisTemplate); // RedisTemplate 전달
 	}
 
 	@Bean
