@@ -4,11 +4,11 @@ x-minio-common: &minio-common
   expose:
     - "9000"
     - "9001"
-  #  environment:
-  #    MINIO_ROOT_USER: minioadmin
-  #    MINIO_ROOT_PASSWORD: minioadmin
+  environment:
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: minioadmin
   healthcheck:
-    test: ["CMD", "mc", "ready", "local"]
+    test: [ "CMD", "mc", "ready", "local" ]
     interval: 5s
     timeout: 5s
     retries: 5
