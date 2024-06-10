@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.nailcase.customer.domain.Customer;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer> {
+public interface CustomerRepository
+	extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer>, CustomerQuerydslRepository {
 	Optional<Customer> findByEmail(String email);
-
-
 }
