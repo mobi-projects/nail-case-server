@@ -10,7 +10,6 @@ import com.nailcase.customer.domain.Customer;
 import com.nailcase.customer.domain.dto.CustomerDto;
 import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import com.nailcase.customer.repository.CustomerRepository;
-import com.nailcase.customer.specifications.CustomerSpecifications;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
 
@@ -30,10 +29,9 @@ public class CustomerService {
 
 	@Transactional(readOnly = true)
 	public Page<CustomerDto.Response> getAllCustomers(Customer customer, Pageable pageable) {
-
-		Page<Customer> customerPage = customerRepository
-			.findAll(CustomerSpecifications.CustomerSpecification(customer), pageable);
-
+		// Page<Customer> customerPage = customerRepository
+		// 	.findAll(CustomerSpecifications.CustomerSpecification(customer), pageable);
+		Page<Customer> customerPage = customerRepository.findByConditions(customer, pageable);
 		return customerPage.map(customerMapper::toResponse);
 	}
 
@@ -64,6 +62,4 @@ public class CustomerService {
 			.findById(id)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 	}
-
 }
-
