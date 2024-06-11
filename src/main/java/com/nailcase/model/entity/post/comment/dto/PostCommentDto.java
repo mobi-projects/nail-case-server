@@ -1,8 +1,8 @@
-package com.nailcase.domain.post.comment.dto;
+package com.nailcase.model.entity.post.comment.dto;
 
 import java.time.LocalDateTime;
 
-import com.nailcase.domain.post.comment.PostComment;
+import com.nailcase.model.entity.post.comment.PostComment;
 import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;

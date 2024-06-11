@@ -1,7 +1,7 @@
-package com.nailcase.domain.post.comment;
+package com.nailcase.model.entity.post.comment;
 
 import com.nailcase.common.BaseEntity;
-import com.nailcase.domain.post.Post;
+import com.nailcase.model.entity.post.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;

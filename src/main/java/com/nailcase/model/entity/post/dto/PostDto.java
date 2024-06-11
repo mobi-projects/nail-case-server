@@ -1,43 +1,51 @@
-package com.nailcase.domain.post.dto;
+package com.nailcase.model.entity.post.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.nailcase.domain.post.Post;
-import com.nailcase.domain.post.comment.dto.PostCommentDto;
+import com.nailcase.model.entity.post.Post;
+import com.nailcase.model.entity.post.comment.dto.PostCommentDto;
+import com.nailcase.model.enums.Category;
 import com.nailcase.util.DateUtils;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class PostDto {
 	@Data
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class Request {
 		private String title;
-		private String body;
+		private Category category;
+		private String contents;
 	}
 
 	@Data
 	@AllArgsConstructor
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@NoArgsConstructor
 	public static class Response {
+		private Long postId;
 		private String title;
+		private Category category;
+		private String contents;
 		private Long likes;
+		private Long views;
+		private Long commentCount;
 		private Boolean liked;
 		private Long createdAt;
-		private String body;
 		private List<PostCommentDto.Response> comments;
 
-		public static Response from(Post post) {
+		public static Response from(Post post, Long viewCount) {
 			Response response = new Response();
+			response.setPostId(post.getPostId());
 			response.setTitle(post.getTitle());
-			response.setLikes(post.getLikeCounts());
-			response.setLiked(post.getLiked());
+			response.setCategory(post.getCategory());
+			response.setContents(post.getContents());
+			response.setLikes(post.getLikes());
+			response.setViews(viewCount != null ? viewCount : post.getViews());
+			response.setCommentCount((long)post.getPostComments().size());
 			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()));
-			response.setBody(post.getBody());
 
 			List<PostCommentDto.Response> commentResponses = post.getPostComments().stream()
 				.map(PostCommentDto.Response::from)
@@ -49,4 +57,3 @@ public class PostDto {
 		}
 	}
 }
-

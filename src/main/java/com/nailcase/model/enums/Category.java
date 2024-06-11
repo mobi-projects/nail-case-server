@@ -1,2 +1,5 @@
-package com.nailcase.model.enums;public class Category {
+package com.nailcase.model.enums;
+
+public enum Category {
+	NEWS, NOTICE
 }
