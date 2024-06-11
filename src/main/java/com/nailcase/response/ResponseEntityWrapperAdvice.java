@@ -39,7 +39,8 @@ public class ResponseEntityWrapperAdvice implements ResponseBodyAdvice<Object> {
 		@NonNull ServerHttpRequest request,
 		@NonNull ServerHttpResponse response
 	) {
-		if (request.getURI().getPath().equals("/api/v1/v3/api-docs")) {
+		if (request.getURI().getPath().startsWith("/api/v1/api-docs") ||
+			request.getURI().getPath().startsWith("/api/v1/swagger-ui")) {
 			return body; // 원본 데이터 반환
 		}
 		if (response instanceof ServletServerHttpResponse) {
