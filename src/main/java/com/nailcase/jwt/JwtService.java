@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.nailcase.customer.repository.CustomerRepository;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
+import com.nailcase.repository.MemberRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,7 +46,7 @@ public class JwtService {
 	private static final String EMAIL_CLAIM = "email";
 	private static final String BEARER = "Bearer ";
 
-	private final CustomerRepository customerRepository;
+	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
 
 	public String createAccessToken(String email) {
@@ -119,7 +119,7 @@ public class JwtService {
 	}
 
 	public void updateRefreshToken(String email, String refreshToken) {
-		customerRepository.findByEmail(email).ifPresentOrElse(
+		memberRepository.findByEmail(email).ifPresentOrElse(
 			user -> {
 				redisTemplate.opsForValue()
 					.set(email, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);

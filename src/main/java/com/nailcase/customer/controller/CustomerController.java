@@ -3,6 +3,7 @@ package com.nailcase.customer.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import com.nailcase.customer.domain.dto.UpdateCustomerRequestDto;
 import com.nailcase.customer.service.CustomerService;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.oauth2.CustomOAuth2User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomerController {
-	
+
 	private final CustomerService customerService;
+
+	@GetMapping("/auth-test")
+	public CustomOAuth2User authTest(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+		return customOAuth2User;
+	}
 
 	@GetMapping("/{id}")
 	public CustomerDto.Response getCustomerById(@PathVariable("id") Long id) {
