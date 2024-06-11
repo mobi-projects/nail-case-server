@@ -41,6 +41,10 @@ dependencies {
     // 스웨거
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
+    //minIO
+    implementation 'io.minio:minio:8.5.9'
+
+
     // 보일러플레이트 코드를 줄이기 위한 Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

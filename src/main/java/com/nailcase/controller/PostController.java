@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.model.entity.post.comment.dto.PostCommentDto;
 import com.nailcase.model.entity.post.dto.PostDto;
@@ -74,8 +75,22 @@ public class PostController {
 		postService.deleteComment(shopId, postId, commentId);
 	}
 
+	@PostMapping("/{postId}/images")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void addImageToPost(@PathVariable Long postId, @RequestParam("file") MultipartFile file,
+		@PathVariable String shopId) {
+		postService.addImageToPost(postId, file);
+	}
+
+	@DeleteMapping("/{postId}/images/{imageId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeImageFromPost(@PathVariable Long postId, @PathVariable Long imageId,
+		@PathVariable String shopId) {
+		postService.removeImageFromPost(postId, imageId);
+	}
+
 	@PostMapping("/{postId}/like")
-	public void likePost(@PathVariable Long postId, @RequestParam Long memberId) {
+	public void likePost(@PathVariable Long postId, @RequestParam Long memberId, @PathVariable String shopId) {
 		postService.likePost(postId, memberId);
 	}
 }

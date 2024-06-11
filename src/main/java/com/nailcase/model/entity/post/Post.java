@@ -18,8 +18,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -42,9 +40,9 @@ public class Post extends BaseEntity {
 	@Column(name = "post_id", nullable = false)
 	private Long postId;
 
-	@ManyToOne
-	@JoinColumn(name = "shop_id")
-	private Shop shop;
+	// @ManyToOne
+	// @JoinColumn(name = "shop_id")
+	// private Shop shop;
 
 	@Schema(title = "게시물 제목 이름")
 	@Column(name = "title", nullable = false, length = 32)
@@ -73,6 +71,9 @@ public class Post extends BaseEntity {
 	@OrderBy("commentId asc") // 댓글 정렬
 	private List<PostComment> postComments;
 
+	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<com.nailcase.model.entity.post.PostImage> postImages;
+
 	public void incrementViews(Long viewCount) {
 		this.views = viewCount;
 	}
@@ -89,4 +90,20 @@ public class Post extends BaseEntity {
 		this.likes += 1;
 	}
 
+	public void setPostImages(List<com.nailcase.model.entity.post.PostImage> postImages) {
+		this.postImages = postImages;
+		for (com.nailcase.model.entity.post.PostImage postImage : postImages) {
+			postImage.setPost(this);
+		}
+	}
+
+	public void addPostImage(com.nailcase.model.entity.post.PostImage postImage) {
+		postImages.add(postImage);
+		postImage.setPost(this);
+	}
+
+	public void removePostImage(com.nailcase.model.entity.post.PostImage postImage) {
+		postImages.remove(postImage);
+		postImage.setPost(null);
+	}
 }
