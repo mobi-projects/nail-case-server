@@ -11,12 +11,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.nailcase.customer.domain.Customer;
-import com.nailcase.customer.repository.CustomerRepository;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.jwt.JwtService;
-import com.nailcase.util.PasswordUtil;
+import com.nailcase.model.entity.Member;
+import com.nailcase.repository.MemberRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
-	private final CustomerRepository customerRepository;
+	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 추가
 	private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -73,22 +72,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		jwtService.extractAccessToken(request)
 			.filter(jwtService::isTokenValid)
 			.flatMap(jwtService::extractEmail)
-			.flatMap(customerRepository::findByEmail)
+			.flatMap(memberRepository::findByEmail)
 			.ifPresent(this::saveAuthentication);
 
 		filterChain.doFilter(request, response);
 	}
 
-	public void saveAuthentication(Customer myCustomer) {
-		String password = myCustomer.getPassword();
-		if (password == null) {
-			password = PasswordUtil.generateRandomPassword();
-		}
-
+	public void saveAuthentication(Member myMember) {
 		UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-			.username(myCustomer.getEmail())
-			.password(password)
-			.roles(myCustomer.getRole().name())
+			.username(myMember.getEmail())
+			.roles(myMember.getRole().name())
 			.build();
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
