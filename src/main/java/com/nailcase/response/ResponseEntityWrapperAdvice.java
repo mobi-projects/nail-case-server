@@ -18,43 +18,46 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-@ControllerAdvice
 @RequiredArgsConstructor
+@ControllerAdvice
 public class ResponseEntityWrapperAdvice implements ResponseBodyAdvice<Object> {
 	private final ResponseService responseService;
 
 	@Override
-	public boolean supports(
-		@NonNull MethodParameter returnType,
-		@Nullable Class<? extends HttpMessageConverter<?>> converterType
-	) {
-		return !returnType.getParameterType().equals(ResponseEntity.class);
+	public boolean supports(@NonNull MethodParameter returnType,
+		@Nullable Class<? extends HttpMessageConverter<?>> converterType) {
+		// Advice를 적용할 클래스를 명시적으로 제한
+		return SingleResponse.class.isAssignableFrom(returnType.getParameterType()) ||
+			ListResponse.class.isAssignableFrom(returnType.getParameterType());
 	}
 
 	@Override
-	public Object beforeBodyWrite(
-		Object body,
-		@NonNull MethodParameter returnType,
+	public Object beforeBodyWrite(Object body, @NonNull MethodParameter returnType,
 		@Nullable MediaType selectedContentType,
 		@Nullable Class<? extends HttpMessageConverter<?>> selectedConverterType,
-		@NonNull ServerHttpRequest request,
-		@NonNull ServerHttpResponse response
-	) {
-		if (body instanceof ResponseEntity) {
+		@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response) {
+		// ResponseEntity는 바로 반환
+		if (body instanceof ResponseEntity<?>) {
 			return body;
 		}
+
+		// HttpServletResponse를 사용하여 상태 코드 확인
 		if (response instanceof ServletServerHttpResponse) {
 			HttpServletResponse servletResponse = ((ServletServerHttpResponse)response).getServletResponse();
 			int status = servletResponse.getStatus();
+
+			// 상태 코드가 OK(200) 이외의 경우, 원본 body 반환
 			if (status != HttpStatus.OK.value()) {
 				return body;
 			}
 
+			// List 타입 처리
 			if (body instanceof List<?>) {
 				return responseService.getListResponse((List<?>)body);
-			} else {
-				return responseService.getSingleResponse(body);
 			}
+
+			// Single 객체 처리
+			return responseService.getSingleResponse(body);
 		}
 
 		return body;
