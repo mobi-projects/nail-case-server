@@ -47,6 +47,9 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
+    //MinIo관련
+    implementation 'io.minio:minio:8.5.9'
+
     //oauth2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
