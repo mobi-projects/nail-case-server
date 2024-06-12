@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -27,7 +28,7 @@ public class ResponseEntityWrapperAdvice implements ResponseBodyAdvice<Object> {
 		@NonNull MethodParameter returnType,
 		@Nullable Class<? extends HttpMessageConverter<?>> converterType
 	) {
-		return true;
+		return !returnType.getParameterType().equals(ResponseEntity.class);
 	}
 
 	@Override
@@ -39,9 +40,8 @@ public class ResponseEntityWrapperAdvice implements ResponseBodyAdvice<Object> {
 		@NonNull ServerHttpRequest request,
 		@NonNull ServerHttpResponse response
 	) {
-		if (request.getURI().getPath().startsWith("/api/v1/api-docs") ||
-			request.getURI().getPath().startsWith("/api/v1/swagger-ui")) {
-			return body; // 원본 데이터 반환
+		if (body instanceof ResponseEntity) {
+			return body;
 		}
 		if (response instanceof ServletServerHttpResponse) {
 			HttpServletResponse servletResponse = ((ServletServerHttpResponse)response).getServletResponse();

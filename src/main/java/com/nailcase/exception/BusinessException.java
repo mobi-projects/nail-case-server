@@ -10,6 +10,11 @@ public class BusinessException extends RuntimeException {
 		this.errorCodeInterface = errorCodeInterface;
 	}
 
+	public BusinessException(ErrorCodeInterface errorCodeInterface, Throwable cause) {
+		super(errorCodeInterface.getMessage(), cause);
+		this.errorCodeInterface = errorCodeInterface;
+	}
+
 	public ErrorCodeInterface getErrorCode() {
 		return errorCodeInterface;
 	}
