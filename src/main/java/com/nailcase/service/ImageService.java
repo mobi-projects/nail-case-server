@@ -1,62 +1,95 @@
+// ImageService
 package com.nailcase.service;
 
-import java.io.InputStream;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.IOUtils;
+import com.nailcase.common.Image;
+import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ImageErrorCode;
+import com.nailcase.repository.ImageRepository;
 
-import io.minio.BucketExistsArgs;
-import io.minio.GetObjectArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ImageService {
 
-	private final MinioClient minioClient;
+	private final AmazonS3 amazonS3;
+	private final ImageRepository imageRepository;
 
-	public void uploadImage(MultipartFile file, String bucketName, String objectName) {
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucket;
+
+	public void uploadImage(MultipartFile file, String objectName) {
 		try {
-			boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
-			if (!bucketExists) {
-				minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-			}
-			minioClient.putObject(PutObjectArgs.builder()
-				.bucket(bucketName)
-				.object(objectName)
-				.stream(file.getInputStream(), file.getSize(), -1)
-				.build());
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setContentLength(file.getSize());
+			objectMetadata.setContentType(file.getContentType());
+
+			amazonS3.putObject(bucket, objectName, file.getInputStream(), objectMetadata);
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.UPLOAD_FAILURE, e);
 		}
 	}
 
-	public InputStream downloadImage(String bucketName, String objectName) {
+	public byte[] downloadImage(String objectName) {
 		try {
-			return minioClient.getObject(GetObjectArgs.builder()
-				.bucket(bucketName)
-				.object(objectName)
-				.build());
+			S3Object s3Object = amazonS3.getObject(bucket, objectName);
+			S3ObjectInputStream inputStream = s3Object.getObjectContent();
+			return IOUtils.toByteArray(inputStream);
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.DOWNLOAD_FAILURE, e);
 		}
 	}
 
-	public void deleteImage(String bucketName, String objectName) {
+	public void deleteImage(String objectName) {
 		try {
-			minioClient.removeObject(RemoveObjectArgs.builder()
-				.bucket(bucketName)
-				.object(objectName)
-				.build());
+			amazonS3.deleteObject(bucket, objectName);
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.DELETE_FAILURE, e);
 		}
+	}
+
+	@Transactional
+	public ImageDto saveImage(MultipartFile file, Image image) {
+		try {
+			String objectName = generateUniqueObjectName(file.getOriginalFilename());
+
+			uploadImage(file, objectName);
+
+			image.setBucketName(bucket);
+			image.setObjectName(objectName);
+
+			Image savedImage = imageRepository.save(image);
+
+			return ImageDto.builder()
+				.id(savedImage.getId())
+				.bucketName(savedImage.getBucketName())
+				.objectName(savedImage.getObjectName())
+				.url(generateImageUrl(savedImage.getObjectName()))
+				.build();
+		} catch (Exception e) {
+			throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);
+		}
+	}
+
+	private String generateUniqueObjectName(String originalFilename) {
+		return UUID.randomUUID() + "_" + originalFilename;
+	}
+
+	private String generateImageUrl(String objectName) {
+		return amazonS3.getUrl(bucket, objectName).toString();
 	}
 }
