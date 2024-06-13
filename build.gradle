@@ -55,6 +55,7 @@ dependencies {
 
     // 데이터베이스 관련 의존성
     runtimeOnly 'com.h2database:h2' // 인메모리 테스트 및 개발용 H2 데이터베이스
+    testImplementation 'com.h2database:h2'
 //    runtimeOnly 'org.postgresql:postgresql' // 프로덕션 사용을 위한 PostgreSQL 데이터베이스 (현재 주석 처리됨)
 
     //jwt관련 라이브러리
