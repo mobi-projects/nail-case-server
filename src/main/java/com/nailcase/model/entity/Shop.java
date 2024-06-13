@@ -1,5 +1,7 @@
 package com.nailcase.model.entity;
 
+import java.util.List;
+
 import com.nailcase.common.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -44,4 +47,7 @@ public class Shop extends BaseEntity {
 
 	@OneToOne(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private ShopInfo shopInfo;
+
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	List<ShopHours> shopHoursList;
 }
