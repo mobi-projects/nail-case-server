@@ -8,12 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.jwt.JwtService;
+import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.entity.Member;
 import com.nailcase.repository.MemberRepository;
 
@@ -46,13 +46,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		checkAccessTokenAndAuthentication(request, response, filterChain);
 	}
 
-	public void checkRefreshTokenAndReIssueAccessToken(@NonNull HttpServletResponse response,
+	private void checkRefreshTokenAndReIssueAccessToken(@NonNull HttpServletResponse response,
 		@NonNull String refreshToken) {
 		jwtService.extractEmail(refreshToken).ifPresent(email -> {
 			String savedRefreshToken = (String)redisTemplate.opsForValue().get(email);
 			if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
 				String reIssuedRefreshToken = reIssueRefreshToken(email);
-				jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(email),
+				Member member = memberRepository.findByEmail(email)
+					.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+				jwtService.sendAccessAndRefreshToken(response,
+					jwtService.createAccessToken(email, member.getMemberId()),
 					reIssuedRefreshToken);
 			} else {
 				throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
@@ -66,7 +69,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		return reIssuedRefreshToken;
 	}
 
-	public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
+	private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 		log.info("checkAccessTokenAndAuthentication() 호출");
 		jwtService.extractAccessToken(request)
@@ -78,14 +81,21 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	public void saveAuthentication(Member myMember) {
-		UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-			.username(myMember.getEmail())
-			.roles(myMember.getRole().name())
-			.build();
+	private void saveAuthentication(Member myMember) {
+		// 혹시 싶어서 남겨두었습니다.
+		// UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
+		// 	.username(String.valueOf(myMember.getMemberId()))
+		// 	.password("")
+		// 	.roles(myMember.getRole().name())
+		// 	.build();
 
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-			authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+		// Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+		// 	authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+
+		MemberDetails memberDetails = MemberDetails.withMember(myMember);
+
+		Authentication authentication = new UsernamePasswordAuthenticationToken(
+			memberDetails, memberDetails.getPassword(), memberDetails.getAuthorities());
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
