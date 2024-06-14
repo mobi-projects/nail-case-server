@@ -33,7 +33,7 @@ public class Shop extends BaseEntity {
 	private Long shopId;
 
 	@Setter
-	@Column(name = "ownerId", nullable = false, insertable = false, updatable = false)
+	@Column(name = "owner_id", nullable = false, insertable = false, updatable = false)
 	private Long ownerId;
 
 	@ManyToOne(fetch = FetchType.EAGER)
