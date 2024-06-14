@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ShopRegisterDto;
-import com.nailcase.oauth2.CustomOAuth2User;
 import com.nailcase.service.ShopService;
 
 import jakarta.validation.Valid;
@@ -28,14 +28,14 @@ public class ShopController {
 	@PostMapping
 	public ShopRegisterDto.Response registerShop(
 		@Valid @RequestBody ShopRegisterDto.Request shopRegisterRequest,
-		@AuthenticationPrincipal CustomOAuth2User customOAuth2User
+		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return shopService.registerShop(shopRegisterRequest, customOAuth2User.getMemberId());
+		return shopService.registerShop(shopRegisterRequest, memberDetails.getMemberId());
 	}
 
 	@GetMapping("/{shopId}")
 	public void getShopById(@PathVariable Long shopId) {
-		
+
 	}
 
 	@GetMapping
