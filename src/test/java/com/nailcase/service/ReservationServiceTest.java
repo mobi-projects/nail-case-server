@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +79,53 @@ class ReservationServiceTest {
 			.hasFieldOrPropertyWithValue("nailArtistId", 1L)
 			.hasFieldOrPropertyWithValue("remove", RemoveOption.IN_SHOP)
 			.hasFieldOrPropertyWithValue("status", ReservationStatus.PENDING)
+			.hasFieldOrPropertyWithValue("startTime", 1718240400L)
+			.hasFieldOrPropertyWithValue("endTime", 1718247600L)
+			.hasFieldOrProperty("conditionList")
+			.hasFieldOrProperty("treatmentList")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList().getFirst().getConditionList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst().getConditionList().getFirst())
+			.hasFieldOrPropertyWithValue("option", ConditionOption.REPAIR)
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList().getFirst().getTreatmentList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst().getTreatmentList().getFirst())
+			.hasFieldOrPropertyWithValue("option", TreatmentOption.AOM)
+			.hasFieldOrPropertyWithValue("imageId", 1L)
+			.hasFieldOrPropertyWithValue("imageUrl", "hello/imageUrl")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+	}
+
+	@Test
+	void updateReservation() {
+		Long shopId = 1L;
+		Long reservationId = 1L;
+		ReservationDto.Patch reservationPatchDto = FixtureFactory.createReservationPatchDto(
+			ReservationStatus.CANCELED,
+			List.of(FixtureFactory.createReservationDetailPatchDto(
+				1L,
+				1L
+			))
+		);
+
+		given(reservationRepository.findById(anyLong()))
+			.willReturn(Optional.ofNullable(this.reservation(reservationId)));
+
+		ReservationDto.Response response =
+			reservationService.updateReservation(shopId, reservationId, reservationPatchDto);
+		assertThat(response).hasFieldOrPropertyWithValue("reservationId", reservationId)
+			.hasFieldOrProperty("reservationDetailList")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst())
+			.hasFieldOrPropertyWithValue("reservationDetailId", 1L)
+			.hasFieldOrPropertyWithValue("nailArtistId", 1L)
+			.hasFieldOrPropertyWithValue("remove", RemoveOption.IN_SHOP)
+			.hasFieldOrPropertyWithValue("status", ReservationStatus.CANCELED)
 			.hasFieldOrPropertyWithValue("startTime", 1718240400L)
 			.hasFieldOrPropertyWithValue("endTime", 1718247600L)
 			.hasFieldOrProperty("conditionList")
