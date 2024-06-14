@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.mapper.ReservationMapper;
+import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
+import com.nailcase.model.entity.NailArtists;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.repository.ReservationDetailRepository;
@@ -55,6 +58,41 @@ public class ReservationService {
 		return reservationMapper.toResponse(savedReservation);
 	}
 
+	@Transactional
+	public ReservationDto.Response updateReservation(Long shopId, Long reservationId, ReservationDto.Patch dto) {
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new RuntimeException("reservation not found"));
+		if (!reservation.getShop().getShopId().equals(shopId)) {
+			throw new BusinessException(CommonErrorCode.NOT_FOUND);
+		}
+
+		// TODO: api 분리 status / nailArtist
+		if (dto.getStatus() != null) {
+			if (!isUpdatable(dto, reservation)) {
+				throw new BusinessException(ReservationErrorCode.STATUS_NOT_UPDATABLE);
+			}
+			reservation.getReservationDetailList()
+				.forEach(reservationDetail -> reservationDetail.updateStatus(dto.getStatus()));
+		}
+
+		// TODO: api 분리 status / nailArtist
+		// TODO: status 가 canceled, rejected, complete 라면 변경 불가능
+		if (!dto.getReservationDetailDtoList().isEmpty()) {
+			for (ReservationDetailDto.Patch detailDto : dto.getReservationDetailDtoList()) {
+				Long targetReservationDetailId = detailDto.getReservationDetailId();
+				Long nailArtistId = detailDto.getNailArtistId();
+				ReservationDetail targetReservationDetail = reservation.getReservationDetailList().stream()
+					.filter(reservationDetail ->
+						reservationDetail.getReservationDetailId().equals(targetReservationDetailId))
+					.findAny()
+					.orElseThrow();
+				targetReservationDetail.updateArtist(NailArtists.builder().nailArtistId(nailArtistId).build());
+			}
+		}
+
+		return reservationMapper.toResponse(reservation);
+	}
+
 	private boolean checkReservationAvailability(
 		List<ReservationDetail> reservationDetailList,
 		Integer availableSeats,
@@ -71,5 +109,10 @@ public class ReservationService {
 							&& (reservationDetail.getEndTime().isAfter(reservationTime)
 							|| reservationDetail.getEndTime().isEqual(reservationTime)))
 					.count() >= availableSeats);
+	}
+
+	private boolean isUpdatable(ReservationDto.Patch dto, Reservation reservation) {
+		return reservation.getReservationDetailList().stream()
+			.anyMatch(reservationDetail -> reservationDetail.isStatusUpdatable(dto.getStatus()));
 	}
 }
