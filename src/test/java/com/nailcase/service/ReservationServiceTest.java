@@ -3,6 +3,7 @@ package com.nailcase.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,6 +127,49 @@ class ReservationServiceTest {
 			.hasFieldOrPropertyWithValue("nailArtistId", 1L)
 			.hasFieldOrPropertyWithValue("remove", RemoveOption.IN_SHOP)
 			.hasFieldOrPropertyWithValue("status", ReservationStatus.CANCELED)
+			.hasFieldOrPropertyWithValue("startTime", 1718240400L)
+			.hasFieldOrPropertyWithValue("endTime", 1718247600L)
+			.hasFieldOrProperty("conditionList")
+			.hasFieldOrProperty("treatmentList")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList().getFirst().getConditionList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst().getConditionList().getFirst())
+			.hasFieldOrPropertyWithValue("option", ConditionOption.REPAIR)
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList().getFirst().getTreatmentList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst().getTreatmentList().getFirst())
+			.hasFieldOrPropertyWithValue("option", TreatmentOption.AOM)
+			.hasFieldOrPropertyWithValue("imageId", 1L)
+			.hasFieldOrPropertyWithValue("imageUrl", "hello/imageUrl")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+	}
+
+	@Test
+	void listReservation() {
+		Long shopId = 1L;
+		Long startTime = 1718240400L;
+		Long endTime = 1718247600L;
+
+		given(reservationRepository
+			.findReservationListWithinDateRange(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class)))
+			.willReturn(List.of(this.reservation(1L), this.reservation(2L), this.reservation(3L)));
+
+		List<ReservationDto.Response> responses = reservationService.listReservation(shopId, startTime, endTime);
+		ReservationDto.Response response = responses.getFirst();
+		assertThat(responses).hasSize(3);
+		assertThat(response).hasFieldOrPropertyWithValue("reservationId", 1L)
+			.hasFieldOrProperty("reservationDetailList")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst())
+			.hasFieldOrPropertyWithValue("reservationDetailId", 1L)
+			.hasFieldOrPropertyWithValue("nailArtistId", 1L)
+			.hasFieldOrPropertyWithValue("remove", RemoveOption.IN_SHOP)
+			.hasFieldOrPropertyWithValue("status", ReservationStatus.PENDING)
 			.hasFieldOrPropertyWithValue("startTime", 1718240400L)
 			.hasFieldOrPropertyWithValue("endTime", 1718247600L)
 			.hasFieldOrProperty("conditionList")
