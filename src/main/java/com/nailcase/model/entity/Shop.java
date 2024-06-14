@@ -1,6 +1,6 @@
 package com.nailcase.model.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
 
@@ -56,5 +56,5 @@ public class Shop extends BaseEntity {
 	private ShopInfo shopInfo;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	List<ShopHour> shopHourList;
+	Set<ShopHour> shopHours;
 }
