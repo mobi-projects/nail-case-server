@@ -56,5 +56,5 @@ public class Shop extends BaseEntity {
 	private ShopInfo shopInfo;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	List<ShopHours> shopHoursList;
+	List<ShopHour> shopHourList;
 }

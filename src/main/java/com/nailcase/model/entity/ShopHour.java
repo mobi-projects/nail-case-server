@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "shop_hours")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ShopHours extends BaseEntity {
+public class ShopHour extends BaseEntity {
 
 	@Id
 	@Column(name = "shop_hours_id")
