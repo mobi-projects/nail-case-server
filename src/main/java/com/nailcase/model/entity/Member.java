@@ -50,10 +50,10 @@ public class Member extends BaseEntity {
 	private String password;*/
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "socialType")
+	@Column(name = "social_type")
 	private SocialType socialType; // KAKAO, NAVER, FACEBOOK*/
 
-	@Column(name = "socialId", unique = true)
+	@Column(name = "social_id", unique = true)
 	private String socialId;
 
 	@Setter
@@ -61,7 +61,7 @@ public class Member extends BaseEntity {
 	@Column(name = "role", nullable = false)
 	private Role role;
 
-	@Column(name = "profileImgUrl", length = 128)
+	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

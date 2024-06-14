@@ -1,6 +1,7 @@
 package com.nailcase.model.entity;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.nailcase.common.BaseEntity;
 import com.nailcase.converter.LocalDateTimeToLocalTimeConverter;
@@ -16,9 +17,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@SuperBuilder
 @Table(name = "shop_hours")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShopHour extends BaseEntity {
@@ -38,11 +42,17 @@ public class ShopHour extends BaseEntity {
 	@Column(name = "day_of_week", nullable = false)
 	private int dayOfWeek;
 
+	@Builder.Default
+	@Column(name = "is_open")
+	private Boolean isOpen = false;
+
+	@Builder.Default
 	@Column(name = "open_time", nullable = false, columnDefinition = "TIME")
 	@Convert(converter = LocalDateTimeToLocalTimeConverter.class)
-	private LocalDateTime openTime;
+	private LocalDateTime openTime = LocalDateTime.now().with(LocalTime.of(9, 0));
 
+	@Builder.Default
 	@Column(name = "close_time", nullable = false, columnDefinition = "TIME")
 	@Convert(converter = LocalDateTimeToLocalTimeConverter.class)
-	private LocalDateTime closeTime;
+	private LocalDateTime closeTime = LocalDateTime.now().with(LocalTime.of(18, 0));
 }

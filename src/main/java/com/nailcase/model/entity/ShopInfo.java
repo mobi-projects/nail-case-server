@@ -13,8 +13,10 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@SuperBuilder
 @Table(name = "shop_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShopInfo extends BaseEntity {
