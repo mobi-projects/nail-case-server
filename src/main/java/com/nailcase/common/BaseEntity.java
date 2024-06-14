@@ -2,7 +2,9 @@ package com.nailcase.common;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -34,12 +36,12 @@ public class BaseEntity {
 	@Column(name = "modified_at")
 	private LocalDateTime modifiedAt;
 
-	// @CreatedBy
+	@CreatedBy
 	@Schema(title = "생성자")
 	@Column(name = "create_by")
 	private String createdBy;
 
-	// @LastModifiedBy
+	@LastModifiedBy
 	@Schema(title = "수정자")
 	@Column(name = "modified_by")
 	private String modifiedBy;
