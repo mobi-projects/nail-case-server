@@ -190,6 +190,44 @@ class ReservationServiceTest {
 			.hasFieldOrProperty("modifiedAt");
 	}
 
+	@Test
+	void viewReservation() {
+		Long shopId = 1L;
+		Long reservationId = 1L;
+
+		given(reservationRepository.findById(anyLong()))
+			.willReturn(Optional.ofNullable(this.reservation(reservationId)));
+		ReservationDto.Response response = reservationService.viewReservation(shopId, reservationId);
+		assertThat(response).hasFieldOrPropertyWithValue("reservationId", 1L)
+			.hasFieldOrProperty("reservationDetailList")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst())
+			.hasFieldOrPropertyWithValue("reservationDetailId", 1L)
+			.hasFieldOrPropertyWithValue("nailArtistId", 1L)
+			.hasFieldOrPropertyWithValue("remove", RemoveOption.IN_SHOP)
+			.hasFieldOrPropertyWithValue("status", ReservationStatus.PENDING)
+			.hasFieldOrPropertyWithValue("startTime", 1718240400L)
+			.hasFieldOrPropertyWithValue("endTime", 1718247600L)
+			.hasFieldOrProperty("conditionList")
+			.hasFieldOrProperty("treatmentList")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList().getFirst().getConditionList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst().getConditionList().getFirst())
+			.hasFieldOrPropertyWithValue("option", ConditionOption.REPAIR)
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+		assertThat(response.getReservationDetailList().getFirst().getTreatmentList()).hasSize(1);
+		assertThat(response.getReservationDetailList().getFirst().getTreatmentList().getFirst())
+			.hasFieldOrPropertyWithValue("option", TreatmentOption.AOM)
+			.hasFieldOrPropertyWithValue("imageId", 1L)
+			.hasFieldOrPropertyWithValue("imageUrl", "hello/imageUrl")
+			.hasFieldOrProperty("createdAt")
+			.hasFieldOrProperty("modifiedAt");
+	}
+
 	private Reservation reservation(Long reservationId) {
 		return FixtureFactory.createReservation(
 			reservationId,
