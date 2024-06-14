@@ -18,9 +18,12 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "shops")
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shop extends BaseEntity {
 
@@ -28,6 +31,10 @@ public class Shop extends BaseEntity {
 	@Column(name = "shop_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopId;
+
+	@Setter
+	@Column(name = "ownerId", nullable = false, insertable = false, updatable = false)
+	private Long ownerId;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id", referencedColumnName = "member_id")

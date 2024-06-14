@@ -24,17 +24,18 @@ import lombok.NoArgsConstructor;
 public class ShopHours extends BaseEntity {
 
 	@Id
+	@Column(name = "shop_hours_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long shop_hours_id;
+	private Long shopHoursId;
 
-	@Column(nullable = false)
-	private Long shop_id;
+	@Column(name = "shop_id", nullable = false)
+	private Long shopId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id", referencedColumnName = "shop_id", insertable = false, updatable = false)
 	private Shop shop;
 
-	@Column(nullable = false)
+	@Column(name = "day_of_week", nullable = false)
 	private int dayOfWeek;
 
 	@Column(name = "open_time", nullable = false, columnDefinition = "TIME")
