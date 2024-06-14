@@ -103,6 +103,13 @@ public class ReservationService {
 			.toList();
 	}
 
+	public ReservationDto.Response viewReservation(Long shopId, Long reservationId) {
+		return reservationRepository.findById(reservationId)
+			.filter(reservation -> reservation.getShop().getShopId().equals(shopId))
+			.map(reservationMapper::toResponse)
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+	}
+
 	private boolean checkReservationAvailability(
 		List<ReservationDetail> reservationDetailList,
 		Integer availableSeats,
