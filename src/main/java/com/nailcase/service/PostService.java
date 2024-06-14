@@ -34,21 +34,26 @@ public class PostService {
 	private final PostImageService postImageService;
 
 	public List<PostImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
-		return files.stream()
+		List<PostImage> tempImages = files.stream()
 			.map(file -> {
-				PostImage tempImage = new PostImage(); // Post ID 없이 이미지 생성
+				PostImage tempImage = new PostImage();
 				tempImage.setCreatedBy(memberId);
 				tempImage.setModifiedBy(memberId);
-				ImageDto savedImageDto = postImageService.saveImage(file, tempImage);
-				return PostImageDto.builder()
-					.id(savedImageDto.getId())
-					.bucketName(savedImageDto.getBucketName())
-					.objectName(savedImageDto.getObjectName())
-					.url(savedImageDto.getUrl())
-					.createdBy(savedImageDto.getCreatedBy())
-					.modifiedBy(savedImageDto.getModifiedBy())
-					.build();
+				return tempImage;
 			})
+			.collect(Collectors.toList());
+
+		List<ImageDto> savedImageDtos = postImageService.saveImages(files, tempImages);
+
+		return savedImageDtos.stream()
+			.map(savedImageDto -> PostImageDto.builder()
+				.id(savedImageDto.getId())
+				.bucketName(savedImageDto.getBucketName())
+				.objectName(savedImageDto.getObjectName())
+				.url(savedImageDto.getUrl())
+				.createdBy(savedImageDto.getCreatedBy())
+				.modifiedBy(savedImageDto.getModifiedBy())
+				.build())
 			.collect(Collectors.toList());
 	}
 
@@ -84,7 +89,6 @@ public class PostService {
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		post.updateTitle(postRequest.getTitle());
 		post.updateContents(postRequest.getContents());
-		System.out.println("Asdfasdfasdfasd");
 		// 기존 이미지 삭제
 		post.getPostImages().forEach(postImage -> {
 			postImageService.deleteImage(postImage.getObjectName());
@@ -104,18 +108,30 @@ public class PostService {
 	}
 
 	@Transactional
-	public void addImageToPost(Long postId, List<MultipartFile> files) {
+	public void addImageToPost(Long postId, List<MultipartFile> files, Long memberId) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 
 		List<PostImage> postImages = files.stream()
 			.map(file -> {
-				ImageDto savedImage = postImageService.saveImage(file,
-					new PostImage());
+				PostImage postImage = new PostImage();
+				postImage.setCreatedBy(memberId);
+				postImage.setModifiedBy(memberId);
+				postImage.setPost(post);
+				return postImage;
+			})
+			.collect(Collectors.toList());
+
+		List<ImageDto> savedImages = postImageService.saveImages(files, postImages);
+
+		postImages = savedImages.stream()
+			.map(savedImage -> {
 				PostImage postImage = new PostImage();
 				postImage.setBucketName(savedImage.getBucketName());
 				postImage.setObjectName(savedImage.getObjectName());
 				postImage.setPost(post);
+				postImage.setCreatedBy(savedImage.getCreatedBy());
+				postImage.setModifiedBy(savedImage.getModifiedBy());
 				return postImage;
 			})
 			.collect(Collectors.toList());
@@ -170,12 +186,15 @@ public class PostService {
 		postRepository.deleteById(postId);
 	}
 
-	public PostCommentDto.Response registerComment(Long shopId, Long postId, PostCommentDto.Request commentRequest) {
+	public PostCommentDto.Response registerComment(Long shopId, Long postId, PostCommentDto.Request commentRequest,
+		Long memberId) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		PostComment postComment = PostComment.builder()
 			.body(commentRequest.getBody())
 			.post(post)
+			.createdBy(memberId)
+			.modifiedBy(memberId)
 			.build();
 		commentRepository.save(postComment);
 		return PostCommentDto.Response.from(postComment);

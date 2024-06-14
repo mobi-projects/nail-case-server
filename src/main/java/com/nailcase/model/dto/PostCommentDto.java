@@ -17,6 +17,7 @@ public class PostCommentDto {
 		private Long postCommentId;
 		private String body;
 		private Long postId;
+		private Long createdBy;
 	}
 
 	@Data

@@ -1,6 +1,8 @@
 package com.nailcase.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -100,6 +102,18 @@ public class ImageService<T extends Image> {
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);
 		}
+	}
+
+	public <T extends Image> List<ImageDto> saveImages(List<MultipartFile> files, List<T> images,
+		JpaRepository<T, Long> imageRepository) {
+		List<ImageDto> savedImageDtos = new ArrayList<>();
+		for (int i = 0; i < files.size(); i++) {
+			MultipartFile file = files.get(i);
+			T image = images.get(i);
+			ImageDto savedImageDto = saveImage(file, image, imageRepository);
+			savedImageDtos.add(savedImageDto);
+		}
+		return savedImageDtos;
 	}
 
 	private String generateUniqueObjectName(String originalFilename) {

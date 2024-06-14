@@ -73,8 +73,10 @@ public class PostController {
 	@PostMapping("/{announcementId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
 	public PostCommentDto.Response registerComment(@PathVariable Long shopId, @PathVariable Long announcementId,
-		@RequestBody PostCommentDto.Request commentRequest) {
-		return postService.registerComment(shopId, announcementId, commentRequest);
+		@RequestBody PostCommentDto.Request commentRequest, @RequestParam Long memberId) {
+		// @RequestHeader("Authorization") String authorizationHeader
+		// Long memberId = extractMemberIdFromToken(authorizationHeader)
+		return postService.registerComment(shopId, announcementId, commentRequest, memberId);
 	}
 
 	@PutMapping("/{announcementId}/comments/{commentId}")
@@ -93,8 +95,11 @@ public class PostController {
 	@PostMapping("/{announcementId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
-		@PathVariable String shopId) {
-		postService.addImageToPost(announcementId, files);
+		@RequestParam Long memberId, @PathVariable String shopId) {
+		// 토큰에서 사용자 정보 추출
+		// @RequestHeader("Authorization") String authorizationHeader
+		// Long memberId = extractMemberIdFromToken(authorizationHeader);
+		postService.addImageToPost(announcementId, files, memberId);
 	}
 
 	@DeleteMapping("/{announcementId}/images/{imageId}")

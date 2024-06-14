@@ -1,5 +1,7 @@
 package com.nailcase.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +22,7 @@ public class PostImageService extends ImageService<PostImage> {
 		this.postImageRepository = postImageRepository;
 	}
 
-	public ImageDto saveImage(MultipartFile file, PostImage image) {
-		return super.saveImage(file, image, postImageRepository);
+	public List<ImageDto> saveImages(List<MultipartFile> files, List<PostImage> images) {
+		return super.saveImages(files, images, postImageRepository);
 	}
 }
