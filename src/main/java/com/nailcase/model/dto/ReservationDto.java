@@ -3,6 +3,8 @@ package com.nailcase.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nailcase.model.enums.ReservationStatus;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -27,6 +29,14 @@ public class ReservationDto {
 		public Long getEndTime() {
 			return reservationDetailList.getLast().getEndTime();
 		}
+	}
+
+	@Data
+	public static class Patch {
+
+		private ReservationStatus status;
+
+		private List<ReservationDetailDto.Patch> reservationDetailDtoList = new ArrayList<>();
 	}
 
 	@Data

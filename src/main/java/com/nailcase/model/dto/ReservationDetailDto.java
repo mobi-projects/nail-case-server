@@ -35,6 +35,14 @@ public class ReservationDetailDto {
 	}
 
 	@Data
+	public static class Patch {
+
+		private Long reservationDetailId;
+
+		private Long nailArtistId;
+	}
+
+	@Data
 	public static class Response {
 
 		private Long reservationDetailId;
