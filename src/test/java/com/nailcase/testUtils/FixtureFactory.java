@@ -85,6 +85,26 @@ public class FixtureFactory {
 		return treatmentDto;
 	}
 
+	public static ReservationDto.Patch createReservationPatchDto(
+		ReservationStatus status,
+		List<ReservationDetailDto.Patch> reservationDetailList
+	) {
+		ReservationDto.Patch reservationDto = new ReservationDto.Patch();
+		reservationDto.setStatus(status);
+		reservationDto.setReservationDetailDtoList(reservationDetailList);
+		return reservationDto;
+	}
+
+	public static ReservationDetailDto.Patch createReservationDetailPatchDto(
+		Long reservationDetailId,
+		Long nailArtistId
+	) {
+		ReservationDetailDto.Patch reservationDetailDto = new ReservationDetailDto.Patch();
+		reservationDetailDto.setReservationDetailId(reservationDetailId);
+		reservationDetailDto.setNailArtistId(nailArtistId);
+		return reservationDetailDto;
+	}
+
 	public static Reservation createReservation(
 		Long reservationId,
 		Long shopId,
