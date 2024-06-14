@@ -13,6 +13,12 @@ import com.nailcase.util.DateUtils;
 )
 public interface ConditionMapper {
 
+	@Mapping(target = "conditionId", ignore = true)
+	@Mapping(target = "reservationDetail", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "modifiedAt", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "modifiedBy", ignore = true)
 	Condition toEntity(ConditionDto.Post dto);
 
 	@Mapping(
