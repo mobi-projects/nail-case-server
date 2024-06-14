@@ -15,10 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.nailcase.oauth2.AuditorAwareImpl;
+import com.nailcase.oauth2.CustomOAuth2UserService;
 import com.nailcase.oauth2.handler.OAuth2LoginFailureHandler;
 import com.nailcase.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.nailcase.repository.MemberRepository;
@@ -34,6 +38,7 @@ public class SecurityConfig {
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 
+	private final CustomOAuth2UserService customOAuth2UserService;
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
@@ -54,11 +59,14 @@ public class SecurityConfig {
 				.permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico")
 				.permitAll()
-				.requestMatchers("/oauth2/sign-up")
+				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
 			.oauth2Login(oauth2 -> oauth2
+				.loginPage("/oauth2/authorization/kakao")
+				.userInfoEndpoint(userInfo -> userInfo
+					.userService(customOAuth2UserService))
 				.successHandler(oAuth2LoginSuccessHandler)
 				.failureHandler(oAuth2LoginFailureHandler)
 				.defaultSuccessUrl("/swagger-ui/index.html", true))
@@ -67,6 +75,19 @@ public class SecurityConfig {
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+	}
+
+	@Bean
+	public CorsFilter corsFilter() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowCredentials(true);
+		config.addAllowedOrigin("http://localhost:8081"); // 로컬 개발 환경
+		config.addAllowedOrigin("배포환경"); // 배포 환경
+		config.addAllowedHeader("*");
+		config.addAllowedMethod("*");
+		source.registerCorsConfiguration("/**", config);
+		return new CorsFilter(source);
 	}
 
 	@Bean
