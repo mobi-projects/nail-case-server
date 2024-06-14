@@ -7,11 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.entity.post.Post;
-import com.nailcase.model.entity.post.PostImage;
-import com.nailcase.model.entity.post.comment.PostComment;
-import com.nailcase.model.entity.post.comment.dto.PostCommentDto;
-import com.nailcase.model.entity.post.dto.PostDto;
+import com.nailcase.common.dto.ImageDto;
+import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.ImageErrorCode;
+import com.nailcase.exception.codes.PostErrorCode;
+import com.nailcase.model.dto.PostCommentDto;
+import com.nailcase.model.dto.PostDto;
+import com.nailcase.model.dto.PostImageDto;
+import com.nailcase.model.entity.Post;
+import com.nailcase.model.entity.PostComment;
+import com.nailcase.model.entity.PostImage;
 import com.nailcase.repository.PostCommentsRepository;
 import com.nailcase.repository.PostImageRepository;
 import com.nailcase.repository.PostsRepository;
@@ -26,69 +31,116 @@ public class PostService {
 	private final PostCommentsRepository commentRepository;
 	private final PostImageRepository postImageRepository;
 	private final BitmapService bitmapService;
-	private final MinioService minioService;
+	private final PostImageService postImageService;
+
+	public List<PostImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
+		return files.stream()
+			.map(file -> {
+				PostImage tempImage = new PostImage(); // Post ID 없이 이미지 생성
+				tempImage.setCreatedBy(memberId);
+				tempImage.setModifiedBy(memberId);
+				ImageDto savedImageDto = postImageService.saveImage(file, tempImage);
+				return PostImageDto.builder()
+					.id(savedImageDto.getId())
+					.bucketName(savedImageDto.getBucketName())
+					.objectName(savedImageDto.getObjectName())
+					.url(savedImageDto.getUrl())
+					.createdBy(savedImageDto.getCreatedBy())
+					.modifiedBy(savedImageDto.getModifiedBy())
+					.build();
+			})
+			.collect(Collectors.toList());
+	}
 
 	public PostDto.Response registerPost(Long shopId, PostDto.Request postRequest) {
 		Post post = Post.builder()
 			.title(postRequest.getTitle())
+			.modifiedBy(postRequest.getMemberId())
+			.createdBy(postRequest.getMemberId())
+			.category(postRequest.getCategory())
 			.contents(postRequest.getContents())
-			.likes(0L)
-			.views(0L)
 			.build();
 
-		List<PostImage> postImages = postRequest.getImageUrls().stream()
-			.map(url -> PostImage.builder().url(url).post(post).build())
-			.collect(Collectors.toList());
-		post.setPostImages(postImages);
-
 		postRepository.save(post);
+
+		if (postRequest.getImageIds() != null && !postRequest.getImageIds().isEmpty()) {
+			List<PostImage> postImages = postRequest.getImageIds().stream()
+				.map(imageId -> {
+					PostImage image = postImageRepository.findById(imageId)
+						.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
+					image.setPost(post); // 게시물과 이미지 연결
+					return image;
+				})
+				.collect(Collectors.toList());
+
+			postImageRepository.saveAll(postImages);
+		}
+
 		return PostDto.Response.from(post, 0L);
 	}
 
 	public PostDto.Response updatePost(Long shopId, Long postId, PostDto.Request postRequest) {
 		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		post.updateTitle(postRequest.getTitle());
 		post.updateContents(postRequest.getContents());
+		System.out.println("Asdfasdfasdfasd");
+		// 기존 이미지 삭제
+		post.getPostImages().forEach(postImage -> {
+			postImageService.deleteImage(postImage.getObjectName());
+			postImageRepository.delete(postImage);
+		});
+		post.getPostImages().clear();
 
-		List<PostImage> postImages = postRequest.getImageUrls().stream()
-			.map(url -> PostImage.builder().url(url).post(post).build())
+		// 새로운 이미지 연결
+		List<PostImage> newPostImages = postRequest.getImageIds().stream()
+			.map(imageId -> postImageRepository.findById(imageId)
+				.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND)))
 			.collect(Collectors.toList());
-		post.setPostImages(postImages);
+		post.getPostImages().addAll(newPostImages);
+		postImageRepository.saveAll(newPostImages);
 
-		postRepository.save(post);
 		return PostDto.Response.from(post, post.getViews());
 	}
 
-	public void addImageToPost(Long postId, MultipartFile file) {
+	@Transactional
+	public void addImageToPost(Long postId, List<MultipartFile> files) {
 		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-		if (post.getPostImages().size() >= 5) {
-			throw new IllegalArgumentException("Cannot add more than 5 images to a post");
-		}
-		String objectName = "post-images/" + postId + "/" + file.getOriginalFilename();
-		String url = minioService.uploadFile("your-bucket-name", objectName, file);
-		PostImage postImage = PostImage.builder().url(url).post(post).build();
-		post.addPostImage(postImage);
-		postImageRepository.save(postImage);
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+
+		List<PostImage> postImages = files.stream()
+			.map(file -> {
+				ImageDto savedImage = postImageService.saveImage(file,
+					new PostImage());
+				PostImage postImage = new PostImage();
+				postImage.setBucketName(savedImage.getBucketName());
+				postImage.setObjectName(savedImage.getObjectName());
+				postImage.setPost(post);
+				return postImage;
+			})
+			.collect(Collectors.toList());
+
+		post.getPostImages().addAll(postImages);
+		postImageRepository.saveAll(postImages);
 		postRepository.save(post);
 	}
 
 	public void removeImageFromPost(Long postId, Long imageId) {
 		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		PostImage postImage = postImageRepository.findById(imageId)
-			.orElseThrow(() -> new IllegalArgumentException("Invalid image ID"));
-		String objectName =
-			"post-images/" + postId + "/" + postImage.getUrl().substring(postImage.getUrl().lastIndexOf('/') + 1);
-		minioService.deleteFile("your-bucket-name", objectName);
+			.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
+
+		String objectName = postImage.getObjectName();
+		postImageService.deleteImage(objectName);
+
 		post.removePostImage(postImage);
 		postImageRepository.delete(postImage);
-		postRepository.save(post);
 	}
 
 	public List<PostDto.Response> listShopNews(Long shopId) {
-		List<Post> posts = postRepository.findByShopId(shopId);
+		// List<Post> posts = postRepository.findByShopId();
+		List<Post> posts = postRepository.findAll();
 		return posts.stream()
 			.map(post -> PostDto.Response.from(post, post.getViews()))
 			.collect(Collectors.toList());
@@ -96,7 +148,7 @@ public class PostService {
 
 	public PostDto.Response viewShopNews(Long shopId, Long postId, Long memberId) {
 		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("조회된 게시물이 없습니다."));
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 
 		// 조회수 증가 로직
 		String key = "post:view:count:" + postId;  // Redis에서 조회수를 저장할 키
@@ -120,7 +172,7 @@ public class PostService {
 
 	public PostCommentDto.Response registerComment(Long shopId, Long postId, PostCommentDto.Request commentRequest) {
 		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		PostComment postComment = PostComment.builder()
 			.body(commentRequest.getBody())
 			.post(post)
@@ -132,7 +184,7 @@ public class PostService {
 	public PostCommentDto.Response updateComment(Long commentId,
 		PostCommentDto.Request commentRequest) {
 		PostComment postComment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
+			.orElseThrow(() -> new BusinessException(PostErrorCode.COMMENT_NOT_FOUND));
 		postComment.updateBody(commentRequest.getBody());
 		commentRepository.save(postComment); // 엔티티 저장 후 업데이트된 값을 반영
 		return PostCommentDto.Response.from(postComment);
@@ -144,7 +196,7 @@ public class PostService {
 
 	public void likePost(Long postId, Long memberId) {
 		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("조회된 게시물이 없습니다."));
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		String key = "post:like:count:" + postId;
 		long offset = memberId;
 		Boolean alreadyLiked = bitmapService.getBit(key, offset).orElse(false);

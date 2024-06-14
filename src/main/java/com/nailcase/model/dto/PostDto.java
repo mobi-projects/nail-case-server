@@ -1,11 +1,12 @@
-package com.nailcase.model.entity.post.dto;
+package com.nailcase.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.nailcase.model.entity.post.Post;
-import com.nailcase.model.entity.post.PostImage;
-import com.nailcase.model.entity.post.comment.dto.PostCommentDto;
+import com.nailcase.model.entity.Post;
+import com.nailcase.model.entity.PostComment;
+import com.nailcase.model.entity.PostImage;
 import com.nailcase.model.enums.Category;
 import com.nailcase.util.DateUtils;
 
@@ -18,16 +19,21 @@ public class PostDto {
 	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Request {
+		private List<Long> imageIds; // 이미지 ID 목록
+		// private Long shopId;
+		private Long memberId;
 		private String title;
 		private Category category;
 		private String contents;
-		private List<String> imageUrls;
 	}
 
 	@Data
 	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Response {
+		private List<Long> imageIds;
+		private Long memberId;
+		// private Long shopId;
 		private Long postId;
 		private String title;
 		private Category category;
@@ -48,20 +54,37 @@ public class PostDto {
 			response.setContents(post.getContents());
 			response.setLikes(post.getLikes());
 			response.setViews(viewCount != null ? viewCount : post.getViews());
-			response.setCommentCount((long)post.getPostComments().size());
 			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()));
 
-			List<PostCommentDto.Response> commentResponses = post.getPostComments().stream()
+			response.setMemberId(post.getCreatedBy());
+
+			List<PostImage> postImages = post.getPostImages();
+			if (postImages != null) {
+				List<String> imageUrls = postImages.stream()
+					.map(postImage -> postImage.getBucketName() + "/" + postImage.getObjectName())
+					.collect(Collectors.toList());
+				response.setImageUrls(imageUrls);
+				List<Long> imageIds = postImages.stream()
+					.map(PostImage::getImageId)
+					.collect(Collectors.toList());
+				response.setImageIds(imageIds);
+			} else {
+				response.setImageUrls(new ArrayList<>());
+				response.setImageIds(new ArrayList<>());
+			}
+
+			List<PostComment> comments = post.getPostComments();
+			if (comments == null) {
+				comments = new ArrayList<>(); // null일 경우 빈 리스트 할당
+			}
+
+			List<PostCommentDto.Response> commentResponses = comments.stream()
 				.map(PostCommentDto.Response::from)
 				.collect(Collectors.toList());
 			response.setComments(commentResponses);
 
-			List<String> imageUrls = post.getPostImages().stream()
-				.map(PostImage::getUrl)
-				.collect(Collectors.toList());
-			response.setImageUrls(imageUrls);
-
 			return response;
 		}
+
 	}
 }

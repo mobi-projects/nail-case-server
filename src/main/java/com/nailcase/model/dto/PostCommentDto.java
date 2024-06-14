@@ -1,8 +1,8 @@
-package com.nailcase.model.entity.post.comment.dto;
+package com.nailcase.model.dto;
 
 import java.time.LocalDateTime;
 
-import com.nailcase.model.entity.post.comment.PostComment;
+import com.nailcase.model.entity.PostComment;
 import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;
@@ -26,7 +26,7 @@ public class PostCommentDto {
 		private Long postCommentId;
 		private String body;
 		private Long createdAt;
-		private String createdBy;
+		private Long createdBy;
 
 		public void setTimestampsFromLocalDateTime(LocalDateTime createdAt) {
 			this.createdAt = DateUtils.localDateTimeToUnixTimeStamp(createdAt);

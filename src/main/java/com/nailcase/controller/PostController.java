@@ -15,17 +15,29 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.entity.post.comment.dto.PostCommentDto;
-import com.nailcase.model.entity.post.dto.PostDto;
+import com.nailcase.model.dto.PostCommentDto;
+import com.nailcase.model.dto.PostDto;
+import com.nailcase.model.dto.PostImageDto;
 import com.nailcase.service.PostService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@RequestMapping("/shops/{shopId}/posts")
+@RequestMapping("/shops/{shopId}/announcements")
 @RequiredArgsConstructor
 public class PostController {
 	private final PostService postService;
+
+	// 이미지만 업로드하는 API
+	@PostMapping("/images")
+	@ResponseStatus(HttpStatus.CREATED)
+	public List<PostImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
+		@PathVariable Long shopId,
+		@RequestParam Long memberId) {
+		return postService.uploadImages(files, memberId);
+	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -33,10 +45,10 @@ public class PostController {
 		return postService.registerPost(shopId, postRequest);
 	}
 
-	@PutMapping("/{postId}")
-	public PostDto.Response updatePost(@PathVariable Long postId, @RequestBody PostDto.Request postRequest,
+	@PutMapping("/{announcementId}")
+	public PostDto.Response updatePost(@PathVariable Long announcementId, @RequestBody PostDto.Request postRequest,
 		@PathVariable Long shopId) {
-		return postService.updatePost(shopId, postId, postRequest);
+		return postService.updatePost(shopId, announcementId, postRequest);
 	}
 
 	@GetMapping
@@ -44,53 +56,56 @@ public class PostController {
 		return postService.listShopNews(shopId);
 	}
 
-	@GetMapping("/{postId}")
-	public PostDto.Response viewShopNews(@PathVariable Long postId, @PathVariable Long shopId,
+	@GetMapping("/{announcementId}")
+	public PostDto.Response viewShopNews(@PathVariable Long announcementId, @PathVariable Long shopId,
 		@RequestParam Long memberId) {
-		return postService.viewShopNews(shopId, postId, memberId);
+		// @RequestHeader("Authorization") String authorizationHeader
+		// Long memberId = extractMemberIdFromToken(authorizationHeader);
+		return postService.viewShopNews(shopId, announcementId, memberId);
 	}
 
-	@DeleteMapping("/{postId}")
+	@DeleteMapping("/{announcementId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deletePost(@PathVariable Long shopId, @PathVariable Long postId) {
-		postService.deletePost(shopId, postId);
+	public void deletePost(@PathVariable Long shopId, @PathVariable Long announcementId) {
+		postService.deletePost(shopId, announcementId);
 	}
 
-	@PostMapping("/{postId}/comments")
+	@PostMapping("/{announcementId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
-	public PostCommentDto.Response registerComment(@PathVariable Long shopId, @PathVariable Long postId,
+	public PostCommentDto.Response registerComment(@PathVariable Long shopId, @PathVariable Long announcementId,
 		@RequestBody PostCommentDto.Request commentRequest) {
-		return postService.registerComment(shopId, postId, commentRequest);
+		return postService.registerComment(shopId, announcementId, commentRequest);
 	}
 
-	@PutMapping("/{postId}/comments/{commentId}")
-	public PostCommentDto.Response updateComment(@PathVariable Long shopId, @PathVariable Long postId,
+	@PutMapping("/{announcementId}/comments/{commentId}")
+	public PostCommentDto.Response updateComment(@PathVariable Long shopId, @PathVariable Long announcementId,
 		@PathVariable Long commentId, @RequestBody PostCommentDto.Request commentRequest) {
 		return postService.updateComment(commentId, commentRequest);
 	}
 
-	@DeleteMapping("/{postId}/comments/{commentId}")
+	@DeleteMapping("/{announcementId}/comments/{commentId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteComment(@PathVariable Long shopId, @PathVariable Long postId, @PathVariable Long commentId) {
-		postService.deleteComment(shopId, postId, commentId);
+	public void deleteComment(@PathVariable Long shopId, @PathVariable Long announcementId,
+		@PathVariable Long commentId) {
+		postService.deleteComment(shopId, announcementId, commentId);
 	}
 
-	@PostMapping("/{postId}/images")
+	@PostMapping("/{announcementId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addImageToPost(@PathVariable Long postId, @RequestParam("file") MultipartFile file,
+	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
 		@PathVariable String shopId) {
-		postService.addImageToPost(postId, file);
+		postService.addImageToPost(announcementId, files);
 	}
 
-	@DeleteMapping("/{postId}/images/{imageId}")
+	@DeleteMapping("/{announcementId}/images/{imageId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeImageFromPost(@PathVariable Long postId, @PathVariable Long imageId,
+	public void removeImageFromPost(@PathVariable Long announcementId, @PathVariable Long imageId,
 		@PathVariable String shopId) {
-		postService.removeImageFromPost(postId, imageId);
+		postService.removeImageFromPost(announcementId, imageId);
 	}
 
-	@PostMapping("/{postId}/like")
-	public void likePost(@PathVariable Long postId, @RequestParam Long memberId, @PathVariable String shopId) {
-		postService.likePost(postId, memberId);
+	@PostMapping("/{announcementId}/like")
+	public void likePost(@PathVariable Long announcementId, @RequestParam Long memberId, @PathVariable String shopId) {
+		postService.likePost(announcementId, memberId);
 	}
 }

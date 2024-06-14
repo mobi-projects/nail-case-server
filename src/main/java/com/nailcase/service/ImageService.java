@@ -1,9 +1,15 @@
-// ImageService
 package com.nailcase.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,18 +22,16 @@ import com.nailcase.common.Image;
 import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ImageErrorCode;
-import com.nailcase.repository.ImageRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Transactional
-@RequiredArgsConstructor
 @Service
-public class ImageService {
+@RequiredArgsConstructor
+public class ImageService<T extends Image> {
 
 	private final AmazonS3 amazonS3;
-	private final ImageRepository imageRepository;
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
@@ -38,17 +42,30 @@ public class ImageService {
 			objectMetadata.setContentLength(file.getSize());
 			objectMetadata.setContentType(file.getContentType());
 
+			objectMetadata.addUserMetadata("original-filename", file.getOriginalFilename());
+
 			amazonS3.putObject(bucket, objectName, file.getInputStream(), objectMetadata);
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.UPLOAD_FAILURE, e);
 		}
 	}
 
-	public byte[] downloadImage(String objectName) {
+	public ResponseEntity<byte[]> downloadImage(String objectName) {
 		try {
 			S3Object s3Object = amazonS3.getObject(bucket, objectName);
 			S3ObjectInputStream inputStream = s3Object.getObjectContent();
-			return IOUtils.toByteArray(inputStream);
+			byte[] fileData = IOUtils.toByteArray(inputStream);
+
+			String originalFilename = s3Object.getObjectMetadata().getUserMetaDataOf("original-filename");
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentDisposition(ContentDisposition.builder("attachment")
+				.filename(originalFilename, StandardCharsets.UTF_8)
+				.build());
+
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+			return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.DOWNLOAD_FAILURE, e);
 		}
@@ -62,8 +79,7 @@ public class ImageService {
 		}
 	}
 
-	@Transactional
-	public ImageDto saveImage(MultipartFile file, Image image) {
+	public <T extends Image> ImageDto saveImage(MultipartFile file, T image, JpaRepository<T, Long> imageRepository) {
 		try {
 			String objectName = generateUniqueObjectName(file.getOriginalFilename());
 
@@ -72,13 +88,14 @@ public class ImageService {
 			image.setBucketName(bucket);
 			image.setObjectName(objectName);
 
-			Image savedImage = imageRepository.save(image);
-
+			T savedImage = imageRepository.save(image);
 			return ImageDto.builder()
-				.id(savedImage.getId())
+				.id(savedImage.getImageId())
 				.bucketName(savedImage.getBucketName())
 				.objectName(savedImage.getObjectName())
 				.url(generateImageUrl(savedImage.getObjectName()))
+				.createdBy(savedImage.getCreatedBy())
+				.modifiedBy(savedImage.getModifiedBy())
 				.build();
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);

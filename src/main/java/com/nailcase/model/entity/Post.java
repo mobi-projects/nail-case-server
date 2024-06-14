@@ -1,11 +1,12 @@
-package com.nailcase.model.entity.post;
+package com.nailcase.model.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import com.nailcase.common.BaseEntity;
-import com.nailcase.model.entity.post.comment.PostComment;
 import com.nailcase.model.enums.Category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,15 +35,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "게시물에 대한 엔티티")
 @Table(name = "posts")
+@DynamicInsert
 public class Post extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "post_id", nullable = false)
 	private Long postId;
 
-	// @ManyToOne
-	// @JoinColumn(name = "shop_id")
-	// private Shop shop;
+	// @Column(name = "shop_id")
+	// private Long shopId;
 
 	@Schema(title = "게시물 제목 이름")
 	@Column(name = "title", nullable = false, length = 32)
@@ -60,19 +61,19 @@ public class Post extends BaseEntity {
 	@Schema(title = "좋아요 수")
 	@Column(name = "likes", nullable = false)
 	@ColumnDefault("0")
-	private Long likes;
+	private Long likes = 0L;
 
 	@Schema(title = "조회수")
 	@Column(name = "views", nullable = false)
 	@ColumnDefault("0")
-	private Long views;
+	private Long views = 0L;
 
-	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) // 댓글은 한번에 다 불러와야 하므로 eager
-	@OrderBy("commentId asc") // 댓글 정렬
-	private List<PostComment> postComments;
+	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OrderBy("commentId asc")
+	private List<PostComment> postComments = new ArrayList<>();
 
 	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<com.nailcase.model.entity.post.PostImage> postImages;
+	private List<PostImage> postImages = new ArrayList<>();
 
 	public void incrementViews(Long viewCount) {
 		this.views = viewCount;
@@ -90,19 +91,12 @@ public class Post extends BaseEntity {
 		this.likes += 1;
 	}
 
-	public void setPostImages(List<com.nailcase.model.entity.post.PostImage> postImages) {
-		this.postImages = postImages;
-		for (com.nailcase.model.entity.post.PostImage postImage : postImages) {
-			postImage.setPost(this);
-		}
-	}
-
-	public void addPostImage(com.nailcase.model.entity.post.PostImage postImage) {
+	public void addPostImage(PostImage postImage) {
 		postImages.add(postImage);
 		postImage.setPost(this);
 	}
 
-	public void removePostImage(com.nailcase.model.entity.post.PostImage postImage) {
+	public void removePostImage(PostImage postImage) {
 		postImages.remove(postImage);
 		postImage.setPost(null);
 	}
