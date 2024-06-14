@@ -93,6 +93,16 @@ public class ReservationService {
 		return reservationMapper.toResponse(reservation);
 	}
 
+	public List<ReservationDto.Response> listReservation(Long shopId, Long startUnixTimeStamp, Long endUnixTimeStamp) {
+		LocalDateTime startDate = DateUtils.unixTimeStampToLocalDateTime(startUnixTimeStamp);
+		LocalDateTime endDate = DateUtils.unixTimeStampToLocalDateTime(endUnixTimeStamp);
+		List<Reservation> reservationList =
+			reservationRepository.findReservationListWithinDateRange(shopId, startDate, endDate);
+		return reservationList.stream()
+			.map(reservationMapper::toResponse)
+			.toList();
+	}
+
 	private boolean checkReservationAvailability(
 		List<ReservationDetail> reservationDetailList,
 		Integer availableSeats,
