@@ -11,12 +11,13 @@ import com.nailcase.model.enums.Role;
 import lombok.Getter;
 
 /**
- * DefaultOAuth2User를 상속하고, email과 role 필드를 추가로 가진다.
+ * DefaultOAuth2User를 상속하고, email과 role, memberId 필드를 추가로 가진다.
  */
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
 	private final String email;
+	private final Long memberId;
 	private Role role;
 
 	public CustomOAuth2User(
@@ -24,11 +25,13 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 		Map<String, Object> attributes,
 		String nameAttributeKey,
 		String email,
-		Role role
+		Role role,
+		Long memberId
 	) {
 		super(authorities, attributes, nameAttributeKey);
 		this.email = email;
 		this.role = role;
+		this.memberId = memberId;
 	}
 
 	public void updateRole(Role role) {
