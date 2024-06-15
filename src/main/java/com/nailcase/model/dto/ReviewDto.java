@@ -1,8 +1,8 @@
-package com.nailcase.model.entity.review.dto;
+package com.nailcase.model.dto;
 
 import java.time.LocalDateTime;
 
-import com.nailcase.model.entity.review.Review;
+import com.nailcase.model.entity.Review;
 import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;
@@ -19,7 +19,7 @@ public class ReviewDto {
 		private Long shopId;
 		private Long memberId;
 		private Long shopMemberId;
-		private String title;
+		private String contents;
 		private Double rating;
 	}
 
@@ -30,13 +30,12 @@ public class ReviewDto {
 		private Long reviewId;
 		private Long shopId;
 		private Long memberId;
-		private Long shopMemberId;
-		private String title;
+		private String contents;
 		private Double rating;
 		private Long createdAt;
-		private String createdBy;
+		private Long createdBy;
 		private Long modifiedAt;
-		private String modifiedBy;
+		private Long modifiedBy;
 
 		public void setTimestampsFromLocalDateTime(LocalDateTime createdAt, LocalDateTime modifiedAt) {
 			this.createdAt = DateUtils.localDateTimeToUnixTimeStamp(createdAt);
@@ -47,9 +46,8 @@ public class ReviewDto {
 			Response response = new Response();
 			response.setReviewId(review.getReviewId());
 			response.setShopId(review.getShop().getShopId());
-			response.setMemberId(review.getMember().getMember_id());
-			response.setShopMemberId(review.getShopMember().getShopMemberId());
-			response.setTitle(review.getTitle());
+			response.setMemberId(review.getMember().getMemberId());
+			response.setContents(review.getContents());
 			response.setRating(review.getRating());
 			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(review.getCreatedAt()));
 			response.setCreatedBy(review.getCreatedBy());

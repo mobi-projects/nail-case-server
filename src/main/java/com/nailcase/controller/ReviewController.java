@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.entity.review.comment.dto.ReviewCommentDto;
-import com.nailcase.model.entity.review.dto.ReviewDto;
+import com.nailcase.model.dto.ReviewCommentDto;
+import com.nailcase.model.dto.ReviewDto;
 import com.nailcase.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +30,9 @@ public class ReviewController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Long registerReview(@PathVariable Long shopId, @RequestBody ReviewDto.Request request) {
-		return reviewService.registerReview(shopId, request);
+	public Long registerReview(@PathVariable Long shopId, @RequestBody ReviewDto.Request request,
+		@RequestParam(value = "files", required = false) List<MultipartFile> files) {
+		return reviewService.registerReview(shopId, request, files);
 	}
 
 	@GetMapping
@@ -44,6 +47,20 @@ public class ReviewController {
 		return reviewService.viewReview(shopId, reviewId);
 	}
 
+	@PutMapping("/{reviewId}")
+	@ResponseStatus(HttpStatus.OK)
+	public void updateReview(@PathVariable Long shopId, @PathVariable Long reviewId,
+		@RequestBody ReviewDto.Request request,
+		@RequestParam(value = "files", required = false) List<MultipartFile> files) {
+		reviewService.updateReview(shopId, reviewId, request, files);
+	}
+
+	@DeleteMapping("/{reviewId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteReview(@PathVariable Long shopId, @PathVariable Long reviewId) {
+		reviewService.deleteReview(shopId, reviewId);
+	}
+
 	@PostMapping("/{reviewId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Long registerReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
@@ -53,22 +70,15 @@ public class ReviewController {
 
 	@PutMapping("/{reviewId}/comments/{commentId}")
 	@ResponseStatus(HttpStatus.OK)
-	public void updateReviewComment(
-		@PathVariable Long shopId,
-		@PathVariable Long reviewId,
-		@PathVariable Long commentId,
-		@RequestBody ReviewCommentDto.Request request
-	) {
+	public void updateReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
+		@PathVariable Long commentId, @RequestBody ReviewCommentDto.Request request) {
 		reviewService.updateReviewComment(shopId, reviewId, commentId, request);
 	}
 
 	@DeleteMapping("/{reviewId}/comments/{commentId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteReviewComment(
-		@PathVariable Long shopId,
-		@PathVariable Long reviewId,
-		@PathVariable Long commentId
-	) {
+	public void deleteReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
+		@PathVariable Long commentId) {
 		reviewService.deleteReviewComment(shopId, reviewId, commentId);
 	}
 }

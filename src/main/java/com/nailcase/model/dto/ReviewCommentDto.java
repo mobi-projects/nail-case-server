@@ -1,8 +1,8 @@
-package com.nailcase.model.entity.review.comment.dto;
+package com.nailcase.model.dto;
 
 import java.time.LocalDateTime;
 
-import com.nailcase.model.entity.review.comment.ReviewComment;
+import com.nailcase.model.entity.ReviewComment;
 import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;
@@ -18,6 +18,7 @@ public class ReviewCommentDto {
 		private Long reviewCommentId;
 		private String contents;
 		private Long reviewId;
+		private Long memberId;
 	}
 
 	@Data
@@ -27,7 +28,7 @@ public class ReviewCommentDto {
 		private Long reviewCommentId;
 		private String contents;
 		private Long createdAt;
-		private String createdBy;
+		private Long createdBy;
 
 		public void setTimestampsFromLocalDateTime(LocalDateTime createdAt) {
 			this.createdAt = DateUtils.localDateTimeToUnixTimeStamp(createdAt);

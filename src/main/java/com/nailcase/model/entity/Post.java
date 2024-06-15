@@ -91,6 +91,10 @@ public class Post extends BaseEntity {
 		this.likes += 1;
 	}
 
+	public void decrementLikes() {
+		this.likes -= 1;
+	}
+
 	public void addPostImage(PostImage postImage) {
 		postImages.add(postImage);
 		postImage.setPost(this);

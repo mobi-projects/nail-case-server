@@ -1,7 +1,6 @@
-package com.nailcase.model.entity.review.comment;
+package com.nailcase.model.entity;
 
 import com.nailcase.common.BaseEntity;
-import com.nailcase.model.entity.review.Review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -32,7 +31,7 @@ public class ReviewComment extends BaseEntity {
 	@Column(name = "review_comment_id", nullable = false)
 	private Long reviewCommentId;
 
-	@Schema(title = "댓글 내용")
+	@Schema(title = "리뷰 댓글 내용")
 	@Column(name = "contents", nullable = false, columnDefinition = "TEXT")
 	private String contents;
 
