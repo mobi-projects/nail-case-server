@@ -29,11 +29,4 @@ public class Image extends BaseEntity {
 	@Column(name = "object_name")
 	private String objectName;
 
-	public void setCreatedBy(Long createdBy) {
-		super.setCreatedBy(createdBy);
-	}
-
-	public void setModifiedBy(Long modifiedBy) {
-		super.setModifiedBy(modifiedBy);
-	}
 }
