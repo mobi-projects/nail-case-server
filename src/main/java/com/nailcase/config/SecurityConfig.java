@@ -3,6 +3,7 @@ package com.nailcase.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.nailcase.oauth2.AuditorAwareImpl;
 import com.nailcase.oauth2.handler.OAuth2LoginFailureHandler;
 import com.nailcase.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.nailcase.repository.MemberRepository;
@@ -48,6 +50,8 @@ public class SecurityConfig {
 				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
 					"/static/**")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
+				.requestMatchers("/shops/**")
+				.permitAll()
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico")
@@ -80,6 +84,11 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public AuditorAware<Long> auditorProvider() {
+		return new AuditorAwareImpl();
 	}
 
 }

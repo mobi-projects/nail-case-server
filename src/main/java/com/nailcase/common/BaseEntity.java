@@ -14,10 +14,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 // TODO User table, spring security 함께 작업 필요
 @Getter
+@Setter
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -35,12 +37,15 @@ public class BaseEntity {
 	private LocalDateTime modifiedAt;
 
 	// @CreatedBy
+	@Setter
 	@Schema(title = "생성자")
-	@Column(name = "create_by")
-	private String createdBy;
+	@Column(name = "create_by", nullable = false)
+	private Long createdBy;
 
 	// @LastModifiedBy
+	@Setter
 	@Schema(title = "수정자")
-	@Column(name = "modified_by")
-	private String modifiedBy;
+	@Column(name = "modified_by", nullable = false)
+	private Long modifiedBy;
+
 }
