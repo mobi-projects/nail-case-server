@@ -31,7 +31,6 @@ public class ShopService {
 		ShopRegisterDto.Request shopRegisterRequest,
 		Long memberId
 	) throws BusinessException {
-		// 이 친구가 있어야함
 		// Set member role MANAGER
 		Member member = memberRepository
 			.findById(memberId)
