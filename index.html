@@ -806,50 +806,21 @@
     }
   }
 };
-            defs["Request"] = {
-  "required" : [ "email", "name", "phone" ],
+            defs["PostImageDto"] = {
   "type" : "object",
   "properties" : {
-    "name" : {
-      "maxLength" : 32,
-      "minLength" : 1,
-      "type" : "string"
-    },
-    "email" : {
-      "maxLength" : 128,
-      "minLength" : 0,
-      "type" : "string"
-    },
-    "phone" : {
-      "maxLength" : 32,
-      "minLength" : 0,
-      "type" : "string"
-    }
-  }
-};
-            defs["Response"] = {
-  "type" : "object",
-  "properties" : {
-    "customerId" : {
+    "id" : {
       "type" : "integer",
       "format" : "int64"
     },
-    "name" : {
+    "bucketName" : {
       "type" : "string"
     },
-    "email" : {
+    "objectName" : {
       "type" : "string"
     },
-    "phone" : {
+    "url" : {
       "type" : "string"
-    },
-    "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
     },
     "createdBy" : {
       "type" : "integer",
@@ -858,6 +829,93 @@
     "modifiedBy" : {
       "type" : "integer",
       "format" : "int64"
+    }
+  }
+};
+            defs["Request"] = {
+  "type" : "object",
+  "properties" : {
+    "imageIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
+    },
+    "memberId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "title" : {
+      "type" : "string"
+    },
+    "category" : {
+      "type" : "string",
+      "enum" : [ "NEWS", "NOTICE" ]
+    },
+    "contents" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["Response"] = {
+  "type" : "object",
+  "properties" : {
+    "imageIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
+    },
+    "memberId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "postId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "title" : {
+      "type" : "string"
+    },
+    "category" : {
+      "type" : "string",
+      "enum" : [ "NEWS", "NOTICE" ]
+    },
+    "contents" : {
+      "type" : "string"
+    },
+    "likes" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "views" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "commentCount" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "liked" : {
+      "type" : "boolean"
+    },
+    "createdAt" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "imageUrls" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "comments" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Response"
+      }
     }
   }
 };
@@ -952,11 +1010,17 @@
                       <a href="#api-MonthlyArtController-viewMonthlyArt">viewMonthlyArt</a>
                     </li>
                   <li class="nav-header" data-group="PostController"><a href="#api-PostController">API Methods - PostController</a></li>
+                    <li data-group="PostController" data-name="addImageToPost" class="">
+                      <a href="#api-PostController-addImageToPost">addImageToPost</a>
+                    </li>
                     <li data-group="PostController" data-name="deleteComment" class="">
                       <a href="#api-PostController-deleteComment">deleteComment</a>
                     </li>
                     <li data-group="PostController" data-name="deletePost" class="">
                       <a href="#api-PostController-deletePost">deletePost</a>
+                    </li>
+                    <li data-group="PostController" data-name="likePost" class="">
+                      <a href="#api-PostController-likePost">likePost</a>
                     </li>
                     <li data-group="PostController" data-name="listShopNews" class="">
                       <a href="#api-PostController-listShopNews">listShopNews</a>
@@ -967,11 +1031,17 @@
                     <li data-group="PostController" data-name="registerPost" class="">
                       <a href="#api-PostController-registerPost">registerPost</a>
                     </li>
+                    <li data-group="PostController" data-name="removeImageFromPost" class="">
+                      <a href="#api-PostController-removeImageFromPost">removeImageFromPost</a>
+                    </li>
                     <li data-group="PostController" data-name="updateComment" class="">
                       <a href="#api-PostController-updateComment">updateComment</a>
                     </li>
                     <li data-group="PostController" data-name="updatePost" class="">
                       <a href="#api-PostController-updatePost">updatePost</a>
+                    </li>
+                    <li data-group="PostController" data-name="uploadImages" class="">
+                      <a href="#api-PostController-uploadImages">uploadImages</a>
                     </li>
                     <li data-group="PostController" data-name="viewShopNews" class="">
                       <a href="#api-PostController-viewShopNews">viewShopNews</a>
@@ -3637,6 +3707,346 @@ except ApiException as e:
                   </section>
                 <section id="api-PostController">
                   <h1>PostController</h1>
+                    <div id="api-PostController-addImageToPost">
+                      <article id="api-PostController-addImageToPost-0" data-group="User" data-name="addImageToPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>addImageToPost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}/images</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-PostController-addImageToPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-addImageToPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-addImageToPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-addImageToPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-PostController-addImageToPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images?files=&memberId="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-PostController-addImageToPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.PostControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
+        array[byte[]] files = ; // array[byte[]] | 
+        Long memberId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.addImageToPost(announcementId, files, memberId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#addImageToPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-PostController-addImageToPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
+        array[byte[]] files = ; // array[byte[]] | 
+        Long memberId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.addImageToPost(announcementId, files, memberId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#addImageToPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-PostController-addImageToPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-PostController-addImageToPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+array[byte[]] *files = ; // 
+Long *memberId = 789; // 
+String *shopId = shopId_example; // 
+
+PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
+
+[apiInstance addImageToPostWith:announcementId
+    files:files
+    memberId:memberId
+    shopId:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-addImageToPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.PostControllerApi()
+var announcementId = 789; // {{Long}} 
+var files = ; // {{array[byte[]]}} 
+var memberId = 789; // {{Long}} 
+var shopId = shopId_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.addImageToPost(announcementId, files, memberId, shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-PostController-addImageToPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-PostController-addImageToPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class addImageToPostExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new PostControllerApi();
+            var announcementId = 789;  // Long | 
+            var files = new array[byte[]](); // array[byte[]] | 
+            var memberId = 789;  // Long | 
+            var shopId = shopId_example;  // String | 
+
+            try
+            {
+                apiInstance.addImageToPost(announcementId, files, memberId, shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling PostControllerApi.addImageToPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-addImageToPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiPostControllerApi();
+$announcementId = 789; // Long | 
+$files = ; // array[byte[]] | 
+$memberId = 789; // Long | 
+$shopId = shopId_example; // String | 
+
+try {
+    $api_instance->addImageToPost($announcementId, $files, $memberId, $shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling PostControllerApi->addImageToPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-addImageToPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::PostControllerApi;
+
+my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $announcementId = 789; # Long | 
+my $files = []; # array[byte[]] | 
+my $memberId = 789; # Long | 
+my $shopId = shopId_example; # String | 
+
+eval { 
+    $api_instance->addImageToPost(announcementId => $announcementId, files => $files, memberId => $memberId, shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling PostControllerApi->addImageToPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-addImageToPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.PostControllerApi()
+announcementId = 789 # Long | 
+files =  # array[byte[]] | 
+memberId = 789 # Long | 
+shopId = shopId_example # String | 
+
+try: 
+    api_instance.add_image_to_post(announcementId, files, memberId, shopId)
+except ApiException as e:
+    print("Exception when calling PostControllerApi->addImageToPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">announcementId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_addImageToPost_announcementId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_addImageToPost_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">files*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_addImageToPost_files">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    array[byte[]]
+                                                </span>
+                                                    <span class="format">
+                                                        (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">memberId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_addImageToPost_memberId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 201 - Created </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-PostController-deleteComment">
                       <article id="api-PostController-deleteComment-0" data-group="User" data-name="deleteComment" data-version="0">
                         <div class="pull-left">
@@ -3649,7 +4059,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/shops/{shopId}/posts/{postId}/comments/{commentId}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}/comments/{commentId}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -3670,7 +4080,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-deleteComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/{postId}/comments/{commentId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-deleteComment-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -3687,10 +4097,10 @@ public class PostControllerApiExample {
         
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            apiInstance.deleteComment(shopId, postId, commentId);
+            apiInstance.deleteComment(shopId, announcementId, commentId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deleteComment");
             e.printStackTrace();
@@ -3707,10 +4117,10 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            apiInstance.deleteComment(shopId, postId, commentId);
+            apiInstance.deleteComment(shopId, announcementId, commentId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deleteComment");
             e.printStackTrace();
@@ -3724,13 +4134,13 @@ public class PostControllerApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-PostController-deleteComment-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
-Long *postId = 789; // 
+Long *announcementId = 789; // 
 Long *commentId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance deleteCommentWith:shopId
-    postId:postId
+    announcementId:announcementId
     commentId:commentId
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -3745,7 +4155,7 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
-var postId = 789; // {{Long}} 
+var announcementId = 789; // {{Long}} 
 var commentId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
@@ -3755,7 +4165,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deleteComment(shopId, postId, commentId, callback);
+api.deleteComment(shopId, announcementId, commentId, callback);
 </code></pre>
                             </div>
 
@@ -3778,12 +4188,12 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
-            var postId = 789;  // Long | 
+            var announcementId = 789;  // Long | 
             var commentId = 789;  // Long | 
 
             try
             {
-                apiInstance.deleteComment(shopId, postId, commentId);
+                apiInstance.deleteComment(shopId, announcementId, commentId);
             }
             catch (Exception e)
             {
@@ -3801,11 +4211,11 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
-$postId = 789; // Long | 
+$announcementId = 789; // Long | 
 $commentId = 789; // Long | 
 
 try {
-    $api_instance->deleteComment($shopId, $postId, $commentId);
+    $api_instance->deleteComment($shopId, $announcementId, $commentId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->deleteComment: ', $e->getMessage(), PHP_EOL;
 }
@@ -3819,11 +4229,11 @@ use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
-my $postId = 789; # Long | 
+my $announcementId = 789; # Long | 
 my $commentId = 789; # Long | 
 
 eval { 
-    $api_instance->deleteComment(shopId => $shopId, postId => $postId, commentId => $commentId);
+    $api_instance->deleteComment(shopId => $shopId, announcementId => $announcementId, commentId => $commentId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->deleteComment: $@\n";
@@ -3840,11 +4250,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 shopId = 789 # Long | 
-postId = 789 # Long | 
+announcementId = 789 # Long | 
 commentId = 789 # Long | 
 
 try: 
-    api_instance.delete_comment(shopId, postId, commentId)
+    api_instance.delete_comment(shopId, announcementId, commentId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->deleteComment: %s\n" % e)</code></pre>
                             </div>
@@ -3880,11 +4290,11 @@ except ApiException as e:
                                       </div>
                                   </td>
                                   </tr>
-                                  <tr><td style="width:150px;">postId*</td>
+                                  <tr><td style="width:150px;">announcementId*</td>
                                   <td>
                                   
                                   
-                                      <div id="d2e199_deleteComment_postId">
+                                      <div id="d2e199_deleteComment_announcementId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -3931,7 +4341,7 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
+                            <h3> Status: 204 - No Content </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -3954,7 +4364,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/shops/{shopId}/posts/{postId}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -3975,7 +4385,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-deletePost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/{postId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-deletePost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -3992,9 +4402,9 @@ public class PostControllerApiExample {
         
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         try {
-            apiInstance.deletePost(shopId, postId);
+            apiInstance.deletePost(shopId, announcementId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deletePost");
             e.printStackTrace();
@@ -4011,9 +4421,9 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         try {
-            apiInstance.deletePost(shopId, postId);
+            apiInstance.deletePost(shopId, announcementId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deletePost");
             e.printStackTrace();
@@ -4027,12 +4437,12 @@ public class PostControllerApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-PostController-deletePost-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
-Long *postId = 789; // 
+Long *announcementId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance deletePostWith:shopId
-    postId:postId
+    announcementId:announcementId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -4046,7 +4456,7 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
-var postId = 789; // {{Long}} 
+var announcementId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -4055,7 +4465,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deletePost(shopId, postId, callback);
+api.deletePost(shopId, announcementId, callback);
 </code></pre>
                             </div>
 
@@ -4078,11 +4488,11 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
-            var postId = 789;  // Long | 
+            var announcementId = 789;  // Long | 
 
             try
             {
-                apiInstance.deletePost(shopId, postId);
+                apiInstance.deletePost(shopId, announcementId);
             }
             catch (Exception e)
             {
@@ -4100,10 +4510,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
-$postId = 789; // Long | 
+$announcementId = 789; // Long | 
 
 try {
-    $api_instance->deletePost($shopId, $postId);
+    $api_instance->deletePost($shopId, $announcementId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->deletePost: ', $e->getMessage(), PHP_EOL;
 }
@@ -4117,10 +4527,10 @@ use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
-my $postId = 789; # Long | 
+my $announcementId = 789; # Long | 
 
 eval { 
-    $api_instance->deletePost(shopId => $shopId, postId => $postId);
+    $api_instance->deletePost(shopId => $shopId, announcementId => $announcementId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->deletePost: $@\n";
@@ -4137,10 +4547,10 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 shopId = 789 # Long | 
-postId = 789 # Long | 
+announcementId = 789 # Long | 
 
 try: 
-    api_instance.delete_post(shopId, postId)
+    api_instance.delete_post(shopId, announcementId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->deletePost: %s\n" % e)</code></pre>
                             </div>
@@ -4176,11 +4586,11 @@ except ApiException as e:
                                       </div>
                                   </td>
                                   </tr>
-                                  <tr><td style="width:150px;">postId*</td>
+                                  <tr><td style="width:150px;">announcementId*</td>
                                   <td>
                                   
                                   
-                                      <div id="d2e199_deletePost_postId">
+                                      <div id="d2e199_deletePost_announcementId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -4203,6 +4613,315 @@ except ApiException as e:
 
 
 
+
+                          <h2>Responses</h2>
+                            <h3> Status: 204 - No Content </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-PostController-likePost">
+                      <article id="api-PostController-likePost-0" data-group="User" data-name="likePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>likePost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}/like</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-PostController-likePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-likePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-likePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-likePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-likePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-likePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-likePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-likePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-likePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-likePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-likePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-PostController-likePost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/like?memberId="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-PostController-likePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.PostControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
+        Long memberId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.likePost(announcementId, memberId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#likePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-PostController-likePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
+        Long memberId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.likePost(announcementId, memberId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#likePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-PostController-likePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-PostController-likePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+Long *memberId = 789; // 
+String *shopId = shopId_example; // 
+
+PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
+
+[apiInstance likePostWith:announcementId
+    memberId:memberId
+    shopId:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-likePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.PostControllerApi()
+var announcementId = 789; // {{Long}} 
+var memberId = 789; // {{Long}} 
+var shopId = shopId_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.likePost(announcementId, memberId, shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-PostController-likePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-PostController-likePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class likePostExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new PostControllerApi();
+            var announcementId = 789;  // Long | 
+            var memberId = 789;  // Long | 
+            var shopId = shopId_example;  // String | 
+
+            try
+            {
+                apiInstance.likePost(announcementId, memberId, shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling PostControllerApi.likePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-likePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiPostControllerApi();
+$announcementId = 789; // Long | 
+$memberId = 789; // Long | 
+$shopId = shopId_example; // String | 
+
+try {
+    $api_instance->likePost($announcementId, $memberId, $shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling PostControllerApi->likePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-likePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::PostControllerApi;
+
+my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $announcementId = 789; # Long | 
+my $memberId = 789; # Long | 
+my $shopId = shopId_example; # String | 
+
+eval { 
+    $api_instance->likePost(announcementId => $announcementId, memberId => $memberId, shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling PostControllerApi->likePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-likePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.PostControllerApi()
+announcementId = 789 # Long | 
+memberId = 789 # Long | 
+shopId = shopId_example # String | 
+
+try: 
+    api_instance.like_post(announcementId, memberId, shopId)
+except ApiException as e:
+    print("Exception when calling PostControllerApi->likePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">announcementId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_likePost_announcementId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_likePost_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">memberId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_likePost_memberId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -4228,7 +4947,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}/posts</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}/announcements</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -4249,7 +4968,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-listShopNews-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
-"http://localhost:8081/api/v1/shops/{shopId}/posts"</code></pre>
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-listShopNews-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -4267,7 +4987,8 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         try {
-            apiInstance.listShopNews(shopId);
+            array[Response] result = apiInstance.listShopNews(shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#listShopNews");
             e.printStackTrace();
@@ -4285,7 +5006,8 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         try {
-            apiInstance.listShopNews(shopId);
+            array[Response] result = apiInstance.listShopNews(shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#listShopNews");
             e.printStackTrace();
@@ -4303,7 +5025,10 @@ public class PostControllerApiExample {
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance listShopNewsWith:shopId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(array[Response] output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -4321,7 +5046,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 api.listShopNews(shopId, callback);
@@ -4350,7 +5075,8 @@ namespace Example
 
             try
             {
-                apiInstance.listShopNews(shopId);
+                array[Response] result = apiInstance.listShopNews(shopId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -4370,7 +5096,8 @@ $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
 
 try {
-    $api_instance->listShopNews($shopId);
+    $result = $api_instance->listShopNews($shopId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->listShopNews: ', $e->getMessage(), PHP_EOL;
 }
@@ -4386,7 +5113,8 @@ my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
 
 eval { 
-    $api_instance->listShopNews(shopId => $shopId);
+    my $result = $api_instance->listShopNews(shopId => $shopId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->listShopNews: $@\n";
@@ -4405,7 +5133,8 @@ api_instance = swagger_client.PostControllerApi()
 shopId = 789 # Long | 
 
 try: 
-    api_instance.list_shop_news(shopId)
+    api_response = api_instance.list_shop_news(shopId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->listShopNews: %s\n" % e)</code></pre>
                             </div>
@@ -4451,9 +5180,53 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-listShopNews-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-listShopNews-200-schema">
+                                  <div id='responses-listShopNews-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Response"
+        },
+        "x-content-type" : "*/*"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-listShopNews-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-listShopNews-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-listShopNews-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -4471,7 +5244,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/posts/{postId}/comments</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}/comments</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -4492,7 +5265,9 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-registerComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/{postId}/comments"</code></pre>
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments?memberId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-registerComment-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -4508,10 +5283,13 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
+        Long memberId = 789; // Long | 
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         try {
-            apiInstance.registerComment(shopId, postId);
+            Response result = apiInstance.registerComment(body, memberId, shopId, announcementId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerComment");
             e.printStackTrace();
@@ -4527,10 +5305,13 @@ public class PostControllerApiExample {
 
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
+        Long memberId = 789; // Long | 
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         try {
-            apiInstance.registerComment(shopId, postId);
+            Response result = apiInstance.registerComment(body, memberId, shopId, announcementId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerComment");
             e.printStackTrace();
@@ -4543,14 +5324,21 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-registerComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
-Long *postId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+Long *memberId = 789; // 
+Long *shopId = 789; // 
+Long *announcementId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance registerCommentWith:shopId
-    postId:postId
-              completionHandler: ^(NSError* error) {
+[apiInstance registerCommentWith:body
+    memberId:memberId
+    shopId:shopId
+    announcementId:announcementId
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -4562,17 +5350,19 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 
 var api = new NailCaseApi.PostControllerApi()
+var body = ; // {{Request}} 
+var memberId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
-var postId = 789; // {{Long}} 
+var announcementId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerComment(shopId, postId, callback);
+api.registerComment(bodymemberIdshopIdannouncementId, callback);
 </code></pre>
                             </div>
 
@@ -4594,12 +5384,15 @@ namespace Example
         {
 
             var apiInstance = new PostControllerApi();
+            var body = new Request(); // Request | 
+            var memberId = 789;  // Long | 
             var shopId = 789;  // Long | 
-            var postId = 789;  // Long | 
+            var announcementId = 789;  // Long | 
 
             try
             {
-                apiInstance.registerComment(shopId, postId);
+                Response result = apiInstance.registerComment(body, memberId, shopId, announcementId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -4616,11 +5409,14 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
+$body = ; // Request | 
+$memberId = 789; // Long | 
 $shopId = 789; // Long | 
-$postId = 789; // Long | 
+$announcementId = 789; // Long | 
 
 try {
-    $api_instance->registerComment($shopId, $postId);
+    $result = $api_instance->registerComment($body, $memberId, $shopId, $announcementId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->registerComment: ', $e->getMessage(), PHP_EOL;
 }
@@ -4633,11 +5429,14 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
+my $memberId = 789; # Long | 
 my $shopId = 789; # Long | 
-my $postId = 789; # Long | 
+my $announcementId = 789; # Long | 
 
 eval { 
-    $api_instance->registerComment(shopId => $shopId, postId => $postId);
+    my $result = $api_instance->registerComment(body => $body, memberId => $memberId, shopId => $shopId, announcementId => $announcementId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->registerComment: $@\n";
@@ -4653,11 +5452,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
+body =  # Request | 
+memberId = 789 # Long | 
 shopId = 789 # Long | 
-postId = 789 # Long | 
+announcementId = 789 # Long | 
 
 try: 
-    api_instance.register_comment(shopId, postId)
+    api_response = api_instance.register_comment(body, memberId, shopId, announcementId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->registerComment: %s\n" % e)</code></pre>
                             </div>
@@ -4693,11 +5495,11 @@ except ApiException as e:
                                       </div>
                                   </td>
                                   </tr>
-                                  <tr><td style="width:150px;">postId*</td>
+                                  <tr><td style="width:150px;">announcementId*</td>
                                   <td>
                                   
                                   
-                                      <div id="d2e199_registerComment_postId">
+                                      <div id="d2e199_registerComment_announcementId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -4718,16 +5520,128 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Request"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_registerComment_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_registerComment_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">memberId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_registerComment_memberId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
+                            <h3> Status: 201 - Created </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerComment-201-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerComment-201-schema">
+                                  <div id='responses-registerComment-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Created",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerComment-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerComment-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerComment-201-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -4745,7 +5659,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/posts/</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/announcements</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -4766,7 +5680,9 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-registerPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/"</code></pre>
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-registerPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -4782,9 +5698,11 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.registerPost(shopId);
+            Response result = apiInstance.registerPost(body, shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerPost");
             e.printStackTrace();
@@ -4800,9 +5718,11 @@ public class PostControllerApiExample {
 
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.registerPost(shopId);
+            Response result = apiInstance.registerPost(body, shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerPost");
             e.printStackTrace();
@@ -4815,12 +5735,17 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-registerPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance registerPostWith:shopId
-              completionHandler: ^(NSError* error) {
+[apiInstance registerPostWith:body
+    shopId:shopId
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -4832,16 +5757,17 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 
 var api = new NailCaseApi.PostControllerApi()
+var body = ; // {{Request}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerPost(shopId, callback);
+api.registerPost(bodyshopId, callback);
 </code></pre>
                             </div>
 
@@ -4863,11 +5789,13 @@ namespace Example
         {
 
             var apiInstance = new PostControllerApi();
+            var body = new Request(); // Request | 
             var shopId = 789;  // Long | 
 
             try
             {
-                apiInstance.registerPost(shopId);
+                Response result = apiInstance.registerPost(body, shopId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -4884,10 +5812,12 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
+$body = ; // Request | 
 $shopId = 789; // Long | 
 
 try {
-    $api_instance->registerPost($shopId);
+    $result = $api_instance->registerPost($body, $shopId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->registerPost: ', $e->getMessage(), PHP_EOL;
 }
@@ -4900,10 +5830,12 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
 my $shopId = 789; # Long | 
 
 eval { 
-    $api_instance->registerPost(shopId => $shopId);
+    my $result = $api_instance->registerPost(body => $body, shopId => $shopId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->registerPost: $@\n";
@@ -4919,10 +5851,12 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
+body =  # Request | 
 shopId = 789 # Long | 
 
 try: 
-    api_instance.register_post(shopId)
+    api_response = api_instance.register_post(body, shopId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->registerPost: %s\n" % e)</code></pre>
                             </div>
@@ -4961,11 +5895,396 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Request"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_registerPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_registerPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
+                            <h3> Status: 201 - Created </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerPost-201-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerPost-201-schema">
+                                  <div id='responses-registerPost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Created",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerPost-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerPost-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerPost-201-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-PostController-removeImageFromPost">
+                      <article id="api-PostController-removeImageFromPost-0" data-group="User" data-name="removeImageFromPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>removeImageFromPost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}/images/{imageId}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-PostController-removeImageFromPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-removeImageFromPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-removeImageFromPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-removeImageFromPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-PostController-removeImageFromPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images/{imageId}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.PostControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
+        Long imageId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.removeImageFromPost(announcementId, imageId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#removeImageFromPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
+        Long imageId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.removeImageFromPost(announcementId, imageId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#removeImageFromPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+Long *imageId = 789; // 
+String *shopId = shopId_example; // 
+
+PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
+
+[apiInstance removeImageFromPostWith:announcementId
+    imageId:imageId
+    shopId:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.PostControllerApi()
+var announcementId = 789; // {{Long}} 
+var imageId = 789; // {{Long}} 
+var shopId = shopId_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.removeImageFromPost(announcementId, imageId, shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-PostController-removeImageFromPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class removeImageFromPostExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new PostControllerApi();
+            var announcementId = 789;  // Long | 
+            var imageId = 789;  // Long | 
+            var shopId = shopId_example;  // String | 
+
+            try
+            {
+                apiInstance.removeImageFromPost(announcementId, imageId, shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling PostControllerApi.removeImageFromPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiPostControllerApi();
+$announcementId = 789; // Long | 
+$imageId = 789; // Long | 
+$shopId = shopId_example; // String | 
+
+try {
+    $api_instance->removeImageFromPost($announcementId, $imageId, $shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling PostControllerApi->removeImageFromPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::PostControllerApi;
+
+my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $announcementId = 789; # Long | 
+my $imageId = 789; # Long | 
+my $shopId = shopId_example; # String | 
+
+eval { 
+    $api_instance->removeImageFromPost(announcementId => $announcementId, imageId => $imageId, shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling PostControllerApi->removeImageFromPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.PostControllerApi()
+announcementId = 789 # Long | 
+imageId = 789 # Long | 
+shopId = shopId_example # String | 
+
+try: 
+    api_instance.remove_image_from_post(announcementId, imageId, shopId)
+except ApiException as e:
+    print("Exception when calling PostControllerApi->removeImageFromPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">announcementId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_removeImageFromPost_announcementId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">imageId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_removeImageFromPost_imageId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_removeImageFromPost_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 204 - No Content </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -4988,7 +6307,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/shops/{shopId}/posts/{postId}/comments/{commentId}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}/comments/{commentId}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -5009,7 +6328,9 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-updateComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/{postId}/comments/{commentId}"</code></pre>
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-updateComment-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -5025,11 +6346,13 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            apiInstance.updateComment(shopId, postId, commentId);
+            Response result = apiInstance.updateComment(body, shopId, announcementId, commentId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updateComment");
             e.printStackTrace();
@@ -5045,11 +6368,13 @@ public class PostControllerApiExample {
 
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            apiInstance.updateComment(shopId, postId, commentId);
+            Response result = apiInstance.updateComment(body, shopId, announcementId, commentId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updateComment");
             e.printStackTrace();
@@ -5062,16 +6387,21 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-updateComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
-Long *postId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+Long *shopId = 789; // 
+Long *announcementId = 789; // 
 Long *commentId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance updateCommentWith:shopId
-    postId:postId
+[apiInstance updateCommentWith:body
+    shopId:shopId
+    announcementId:announcementId
     commentId:commentId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -5083,18 +6413,19 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 
 var api = new NailCaseApi.PostControllerApi()
+var body = ; // {{Request}} 
 var shopId = 789; // {{Long}} 
-var postId = 789; // {{Long}} 
+var announcementId = 789; // {{Long}} 
 var commentId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateComment(shopId, postId, commentId, callback);
+api.updateComment(bodyshopIdannouncementIdcommentId, callback);
 </code></pre>
                             </div>
 
@@ -5116,13 +6447,15 @@ namespace Example
         {
 
             var apiInstance = new PostControllerApi();
+            var body = new Request(); // Request | 
             var shopId = 789;  // Long | 
-            var postId = 789;  // Long | 
+            var announcementId = 789;  // Long | 
             var commentId = 789;  // Long | 
 
             try
             {
-                apiInstance.updateComment(shopId, postId, commentId);
+                Response result = apiInstance.updateComment(body, shopId, announcementId, commentId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -5139,12 +6472,14 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
+$body = ; // Request | 
 $shopId = 789; // Long | 
-$postId = 789; // Long | 
+$announcementId = 789; // Long | 
 $commentId = 789; // Long | 
 
 try {
-    $api_instance->updateComment($shopId, $postId, $commentId);
+    $result = $api_instance->updateComment($body, $shopId, $announcementId, $commentId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->updateComment: ', $e->getMessage(), PHP_EOL;
 }
@@ -5157,12 +6492,14 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
 my $shopId = 789; # Long | 
-my $postId = 789; # Long | 
+my $announcementId = 789; # Long | 
 my $commentId = 789; # Long | 
 
 eval { 
-    $api_instance->updateComment(shopId => $shopId, postId => $postId, commentId => $commentId);
+    my $result = $api_instance->updateComment(body => $body, shopId => $shopId, announcementId => $announcementId, commentId => $commentId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->updateComment: $@\n";
@@ -5178,12 +6515,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
+body =  # Request | 
 shopId = 789 # Long | 
-postId = 789 # Long | 
+announcementId = 789 # Long | 
 commentId = 789 # Long | 
 
 try: 
-    api_instance.update_comment(shopId, postId, commentId)
+    api_response = api_instance.update_comment(body, shopId, announcementId, commentId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->updateComment: %s\n" % e)</code></pre>
                             </div>
@@ -5219,11 +6558,11 @@ except ApiException as e:
                                       </div>
                                   </td>
                                   </tr>
-                                  <tr><td style="width:150px;">postId*</td>
+                                  <tr><td style="width:150px;">announcementId*</td>
                                   <td>
                                   
                                   
-                                      <div id="d2e199_updateComment_postId">
+                                      <div id="d2e199_updateComment_announcementId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -5266,6 +6605,49 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Request"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updateComment_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updateComment_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
@@ -5273,9 +6655,49 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateComment-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateComment-200-schema">
+                                  <div id='responses-updateComment-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateComment-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateComment-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateComment-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -5293,7 +6715,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/shops/{shopId}/posts/{postId}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -5314,7 +6736,9 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-updatePost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/{postId}"</code></pre>
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-updatePost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -5330,10 +6754,12 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
+        Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
-        String postId = postId_example; // String | 
         try {
-            apiInstance.updatePost(shopId, postId);
+            Response result = apiInstance.updatePost(body, announcementId, shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updatePost");
             e.printStackTrace();
@@ -5349,10 +6775,12 @@ public class PostControllerApiExample {
 
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
+        Request body = ; // Request | 
+        Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
-        String postId = postId_example; // String | 
         try {
-            apiInstance.updatePost(shopId, postId);
+            Response result = apiInstance.updatePost(body, announcementId, shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updatePost");
             e.printStackTrace();
@@ -5365,14 +6793,19 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-updatePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
-String *postId = postId_example; // 
+                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+Long *announcementId = 789; // 
+Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance updatePostWith:shopId
-    postId:postId
-              completionHandler: ^(NSError* error) {
+[apiInstance updatePostWith:body
+    announcementId:announcementId
+    shopId:shopId
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -5384,17 +6817,18 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 
 var api = new NailCaseApi.PostControllerApi()
+var body = ; // {{Request}} 
+var announcementId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
-var postId = postId_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updatePost(shopId, postId, callback);
+api.updatePost(bodyannouncementIdshopId, callback);
 </code></pre>
                             </div>
 
@@ -5416,12 +6850,14 @@ namespace Example
         {
 
             var apiInstance = new PostControllerApi();
+            var body = new Request(); // Request | 
+            var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
-            var postId = postId_example;  // String | 
 
             try
             {
-                apiInstance.updatePost(shopId, postId);
+                Response result = apiInstance.updatePost(body, announcementId, shopId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -5438,11 +6874,13 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
+$body = ; // Request | 
+$announcementId = 789; // Long | 
 $shopId = 789; // Long | 
-$postId = postId_example; // String | 
 
 try {
-    $api_instance->updatePost($shopId, $postId);
+    $result = $api_instance->updatePost($body, $announcementId, $shopId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->updatePost: ', $e->getMessage(), PHP_EOL;
 }
@@ -5455,11 +6893,13 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
+my $announcementId = 789; # Long | 
 my $shopId = 789; # Long | 
-my $postId = postId_example; # String | 
 
 eval { 
-    $api_instance->updatePost(shopId => $shopId, postId => $postId);
+    my $result = $api_instance->updatePost(body => $body, announcementId => $announcementId, shopId => $shopId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->updatePost: $@\n";
@@ -5475,11 +6915,13 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
+body =  # Request | 
+announcementId = 789 # Long | 
 shopId = 789 # Long | 
-postId = postId_example # String | 
 
 try: 
-    api_instance.update_post(shopId, postId)
+    api_response = api_instance.update_post(body, announcementId, shopId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->updatePost: %s\n" % e)</code></pre>
                             </div>
@@ -5493,6 +6935,28 @@ except ApiException as e:
                                   <th width="150px">Name</th>
                                   <th>Description</th>
                                 </tr>
+                                  <tr><td style="width:150px;">announcementId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_updatePost_announcementId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
                                   <tr><td style="width:150px;">shopId*</td>
                                   <td>
                                   
@@ -5515,16 +6979,351 @@ except ApiException as e:
                                       </div>
                                   </td>
                                   </tr>
-                                  <tr><td style="width:150px;">postId*</td>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Request"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updatePost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updatePost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updatePost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updatePost-200-schema">
+                                  <div id='responses-updatePost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updatePost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updatePost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updatePost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-PostController-uploadImages">
+                      <article id="api-PostController-uploadImages-0" data-group="User" data-name="uploadImages" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadImages</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/announcements/images</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-PostController-uploadImages-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-uploadImages-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-uploadImages-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-uploadImages-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-uploadImages-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-PostController-uploadImages-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/images?files=&memberId="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-PostController-uploadImages-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.PostControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        
+        PostControllerApi apiInstance = new PostControllerApi();
+        array[byte[]] files = ; // array[byte[]] | 
+        Long shopId = 789; // Long | 
+        Long memberId = 789; // Long | 
+        try {
+            array[PostImageDto] result = apiInstance.uploadImages(files, shopId, memberId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#uploadImages");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-PostController-uploadImages-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
+
+public class PostControllerApiExample {
+
+    public static void main(String[] args) {
+        PostControllerApi apiInstance = new PostControllerApi();
+        array[byte[]] files = ; // array[byte[]] | 
+        Long shopId = 789; // Long | 
+        Long memberId = 789; // Long | 
+        try {
+            array[PostImageDto] result = apiInstance.uploadImages(files, shopId, memberId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling PostControllerApi#uploadImages");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-PostController-uploadImages-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-PostController-uploadImages-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">array[byte[]] *files = ; // 
+Long *shopId = 789; // 
+Long *memberId = 789; // 
+
+PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
+
+[apiInstance uploadImagesWith:files
+    shopId:shopId
+    memberId:memberId
+              completionHandler: ^(array[PostImageDto] output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-uploadImages-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+
+var api = new NailCaseApi.PostControllerApi()
+var files = ; // {{array[byte[]]}} 
+var shopId = 789; // {{Long}} 
+var memberId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.uploadImages(files, shopId, memberId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-PostController-uploadImages-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-PostController-uploadImages-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadImagesExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new PostControllerApi();
+            var files = new array[byte[]](); // array[byte[]] | 
+            var shopId = 789;  // Long | 
+            var memberId = 789;  // Long | 
+
+            try
+            {
+                array[PostImageDto] result = apiInstance.uploadImages(files, shopId, memberId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling PostControllerApi.uploadImages: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-uploadImages-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiPostControllerApi();
+$files = ; // array[byte[]] | 
+$shopId = 789; // Long | 
+$memberId = 789; // Long | 
+
+try {
+    $result = $api_instance->uploadImages($files, $shopId, $memberId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling PostControllerApi->uploadImages: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-uploadImages-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::PostControllerApi;
+
+my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $files = []; # array[byte[]] | 
+my $shopId = 789; # Long | 
+my $memberId = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->uploadImages(files => $files, shopId => $shopId, memberId => $memberId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling PostControllerApi->uploadImages: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-PostController-uploadImages-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.PostControllerApi()
+files =  # array[byte[]] | 
+shopId = 789 # Long | 
+memberId = 789 # Long | 
+
+try: 
+    api_response = api_instance.upload_images(files, shopId, memberId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling PostControllerApi->uploadImages: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
                                   <td>
                                   
                                   
-                                      <div id="d2e199_updatePost_postId">
+                                      <div id="d2e199_uploadImages_shopId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      String
+                                                      Long
                                                   </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
                                   
                                               </div>
                                                   <div class="inner required">
@@ -5539,14 +7338,109 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">files*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_uploadImages_files">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    array[byte[]]
+                                                </span>
+                                                    <span class="format">
+                                                        (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">memberId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_uploadImages_memberId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
+                            <h3> Status: 201 - Created </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadImages-201-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadImages-201-schema">
+                                  <div id='responses-uploadImages-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Created",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/PostImageDto"
+        },
+        "x-content-type" : "*/*"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadImages-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadImages-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadImages-201-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -5564,7 +7458,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}/posts/{postId}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}/announcements/{announcementId}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -5585,7 +7479,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-viewShopNews-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
-"http://localhost:8081/api/v1/shops/{shopId}/posts/{postId}"</code></pre>
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}?memberId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-viewShopNews-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -5601,10 +7496,12 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         
         PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long memberId = 789; // Long | 
         try {
-            apiInstance.viewShopNews(shopId, postId);
+            Response result = apiInstance.viewShopNews(announcementId, shopId, memberId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#viewShopNews");
             e.printStackTrace();
@@ -5620,10 +7517,12 @@ public class PostControllerApiExample {
 
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
+        Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
-        Long postId = 789; // Long | 
+        Long memberId = 789; // Long | 
         try {
-            apiInstance.viewShopNews(shopId, postId);
+            Response result = apiInstance.viewShopNews(announcementId, shopId, memberId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#viewShopNews");
             e.printStackTrace();
@@ -5636,14 +7535,19 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-viewShopNews-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
-Long *postId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+Long *shopId = 789; // 
+Long *memberId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance viewShopNewsWith:shopId
-    postId:postId
-              completionHandler: ^(NSError* error) {
+[apiInstance viewShopNewsWith:announcementId
+    shopId:shopId
+    memberId:memberId
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -5655,17 +7559,18 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 
 var api = new NailCaseApi.PostControllerApi()
+var announcementId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
-var postId = 789; // {{Long}} 
+var memberId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.viewShopNews(shopId, postId, callback);
+api.viewShopNews(announcementId, shopId, memberId, callback);
 </code></pre>
                             </div>
 
@@ -5687,12 +7592,14 @@ namespace Example
         {
 
             var apiInstance = new PostControllerApi();
+            var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
-            var postId = 789;  // Long | 
+            var memberId = 789;  // Long | 
 
             try
             {
-                apiInstance.viewShopNews(shopId, postId);
+                Response result = apiInstance.viewShopNews(announcementId, shopId, memberId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -5709,11 +7616,13 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
+$announcementId = 789; // Long | 
 $shopId = 789; // Long | 
-$postId = 789; // Long | 
+$memberId = 789; // Long | 
 
 try {
-    $api_instance->viewShopNews($shopId, $postId);
+    $result = $api_instance->viewShopNews($announcementId, $shopId, $memberId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->viewShopNews: ', $e->getMessage(), PHP_EOL;
 }
@@ -5726,11 +7635,13 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
+my $announcementId = 789; # Long | 
 my $shopId = 789; # Long | 
-my $postId = 789; # Long | 
+my $memberId = 789; # Long | 
 
 eval { 
-    $api_instance->viewShopNews(shopId => $shopId, postId => $postId);
+    my $result = $api_instance->viewShopNews(announcementId => $announcementId, shopId => $shopId, memberId => $memberId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->viewShopNews: $@\n";
@@ -5746,11 +7657,13 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
+announcementId = 789 # Long | 
 shopId = 789 # Long | 
-postId = 789 # Long | 
+memberId = 789 # Long | 
 
 try: 
-    api_instance.view_shop_news(shopId, postId)
+    api_response = api_instance.view_shop_news(announcementId, shopId, memberId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->viewShopNews: %s\n" % e)</code></pre>
                             </div>
@@ -5764,6 +7677,28 @@ except ApiException as e:
                                   <th width="150px">Name</th>
                                   <th>Description</th>
                                 </tr>
+                                  <tr><td style="width:150px;">announcementId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_viewShopNews_announcementId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
                                   <tr><td style="width:150px;">shopId*</td>
                                   <td>
                                   
@@ -5786,41 +7721,88 @@ except ApiException as e:
                                       </div>
                                   </td>
                                   </tr>
-                                  <tr><td style="width:150px;">postId*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_viewShopNews_postId">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      Long
-                                                  </span>
-                                                      <span class="format">
-                                                          (int64)
-                                                      </span>
-                                  
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
                             </table>
 
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">memberId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_viewShopNews_memberId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-viewShopNews-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-viewShopNews-200-schema">
+                                  <div id='responses-viewShopNews-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-viewShopNews-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-viewShopNews-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-viewShopNews-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
