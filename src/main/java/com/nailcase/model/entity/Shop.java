@@ -1,6 +1,6 @@
 package com.nailcase.model.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
 
@@ -17,10 +17,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+@Getter
 @Entity
 @Table(name = "shops")
 @SuperBuilder
@@ -32,9 +33,9 @@ public class Shop extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopId;
 
-	@Setter
-	@Column(name = "owner_id", nullable = false, insertable = false, updatable = false)
-	private Long ownerId;
+	// @Setter
+	// @Column(name = "owner_id", nullable = false, insertable = false, updatable = false)
+	// private Long ownerId;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id", referencedColumnName = "member_id")
@@ -56,5 +57,12 @@ public class Shop extends BaseEntity {
 	private ShopInfo shopInfo;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	List<ShopHours> shopHoursList;
+	private Set<ShopHour> shopHours;
+
+	// shop service에 있는 메소드 그대로 사용
+	public void setOwnerId(Long userId) {
+		this.member = Member.builder()
+			.memberId(userId)
+			.build();
+	}
 }
