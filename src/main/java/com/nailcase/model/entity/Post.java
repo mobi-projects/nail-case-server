@@ -22,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -74,6 +75,9 @@ public class Post extends BaseEntity {
 
 	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PostImage> postImages = new ArrayList<>();
+
+	@Version
+	private Long version;  // 낙관적 잠금을 위한 버전 필드
 
 	public void incrementViews(Long viewCount) {
 		this.views = viewCount;
