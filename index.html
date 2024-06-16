@@ -1086,6 +1086,9 @@
                     <li data-group="ShopController" data-name="deleteShop" class="">
                       <a href="#api-ShopController-deleteShop">deleteShop</a>
                     </li>
+                    <li data-group="ShopController" data-name="getShopById" class="">
+                      <a href="#api-ShopController-getShopById">getShopById</a>
+                    </li>
                     <li data-group="ShopController" data-name="registerShop" class="">
                       <a href="#api-ShopController-registerShop">registerShop</a>
                     </li>
@@ -1163,6 +1166,8 @@
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CustomerController-authTest-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/customers/auth-test"</code></pre>
                           </div>
@@ -1178,7 +1183,13 @@ import java.util.*;
 public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         CustomerControllerApi apiInstance = new CustomerControllerApi();
         try {
             CustomOAuth2User result = apiInstance.authTest();
@@ -1213,7 +1224,10 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-authTest-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
 CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
 [apiInstance authTestWithCompletionHandler: 
@@ -1230,6 +1244,12 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-CustomerController-authTest-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.CustomerControllerApi()
 var callback = function(error, data, response) {
@@ -1260,6 +1280,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new CustomerControllerApi();
 
             try
@@ -1281,6 +1304,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
 
 try {
@@ -1296,6 +1322,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
 
@@ -1314,6 +1343,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
@@ -1418,6 +1450,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CustomerController-createCustomer-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/customers/signup"</code></pre>
@@ -1434,7 +1468,13 @@ import java.util.*;
 public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         CustomerControllerApi apiInstance = new CustomerControllerApi();
         Request body = ; // Request | 
         try {
@@ -1471,7 +1511,10 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-createCustomer-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Request *body = ; // 
 
 CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
@@ -1489,6 +1532,12 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-CustomerController-createCustomer-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.CustomerControllerApi()
 var body = ; // {{Request}} 
@@ -1521,6 +1570,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new CustomerControllerApi();
             var body = new Request(); // Request | 
 
@@ -1543,6 +1595,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
 $body = ; // Request | 
 
@@ -1559,6 +1614,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
@@ -1578,6 +1636,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
@@ -1726,6 +1787,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CustomerController-deleteCustomer-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/customers/{id}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-java">
@@ -1740,7 +1803,13 @@ import java.util.*;
 public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         CustomerControllerApi apiInstance = new CustomerControllerApi();
         Long id = 789; // Long | 
         try {
@@ -1775,7 +1844,10 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *id = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *id = 789; // 
 
 CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
@@ -1790,6 +1862,12 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-CustomerController-deleteCustomer-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.CustomerControllerApi()
 var id = 789; // {{Long}} 
@@ -1822,6 +1900,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new CustomerControllerApi();
             var id = 789;  // Long | 
 
@@ -1843,6 +1924,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
 $id = 789; // Long | 
 
@@ -1858,6 +1942,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
 my $id = 789; # Long | 
@@ -1876,6 +1963,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
@@ -1969,6 +2059,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CustomerController-getAllCustomers-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/customers?page=&name=&email=&phone="</code></pre>
                           </div>
@@ -1984,7 +2076,13 @@ import java.util.*;
 public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         CustomerControllerApi apiInstance = new CustomerControllerApi();
         Integer page = 56; // Integer | 
         String name = name_example; // String | 
@@ -2027,7 +2125,10 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Integer *page = 56; //  (optional) (default to 1)
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Integer *page = 56; //  (optional) (default to 1)
 String *name = name_example; //  (optional)
 String *email = email_example; //  (optional)
 String *phone = phone_example; //  (optional)
@@ -2051,6 +2152,12 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-CustomerController-getAllCustomers-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.CustomerControllerApi()
 var opts = { 
@@ -2087,6 +2194,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new CustomerControllerApi();
             var page = 56;  // Integer |  (optional)  (default to 1)
             var name = name_example;  // String |  (optional) 
@@ -2112,6 +2222,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
 $page = 56; // Integer | 
 $name = name_example; // String | 
@@ -2131,6 +2244,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
 my $page = 56; # Integer | 
@@ -2153,6 +2269,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
@@ -2335,6 +2454,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CustomerController-getCustomerById-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/customers/{id}"</code></pre>
                           </div>
@@ -2350,7 +2471,13 @@ import java.util.*;
 public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         CustomerControllerApi apiInstance = new CustomerControllerApi();
         Long id = 789; // Long | 
         try {
@@ -2387,7 +2514,10 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *id = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *id = 789; // 
 
 CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
@@ -2405,6 +2535,12 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-CustomerController-getCustomerById-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.CustomerControllerApi()
 var id = 789; // {{Long}} 
@@ -2437,6 +2573,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new CustomerControllerApi();
             var id = 789;  // Long | 
 
@@ -2459,6 +2598,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
 $id = 789; // Long | 
 
@@ -2475,6 +2617,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
 my $id = 789; # Long | 
@@ -2494,6 +2639,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
@@ -2628,6 +2776,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CustomerController-updateCustomer-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/customers/{id}"</code></pre>
@@ -2644,7 +2794,13 @@ import java.util.*;
 public class CustomerControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         CustomerControllerApi apiInstance = new CustomerControllerApi();
         UpdateCustomerRequestDto body = ; // UpdateCustomerRequestDto | 
         Long id = 789; // Long | 
@@ -2683,7 +2839,10 @@ public class CustomerControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">UpdateCustomerRequestDto *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+UpdateCustomerRequestDto *body = ; // 
 Long *id = 789; // 
 
 CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
@@ -2703,6 +2862,12 @@ CustomerControllerApi *apiInstance = [[CustomerControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-CustomerController-updateCustomer-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.CustomerControllerApi()
 var body = ; // {{UpdateCustomerRequestDto}} 
@@ -2736,6 +2901,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new CustomerControllerApi();
             var body = new UpdateCustomerRequestDto(); // UpdateCustomerRequestDto | 
             var id = 789;  // Long | 
@@ -2759,6 +2927,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiCustomerControllerApi();
 $body = ; // UpdateCustomerRequestDto | 
 $id = 789; // Long | 
@@ -2776,6 +2947,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::CustomerControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::CustomerControllerApi->new();
 my $body = WWW::SwaggerClient::Object::UpdateCustomerRequestDto->new(); # UpdateCustomerRequestDto | 
@@ -2796,6 +2970,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.CustomerControllerApi()
@@ -2977,6 +3154,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-MonthlyArtController-listMonthlyArt-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/monthly-art"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-listMonthlyArt-0-java">
@@ -2991,7 +3170,13 @@ import java.util.*;
 public class MonthlyArtControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -3026,7 +3211,10 @@ public class MonthlyArtControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-MonthlyArtController-listMonthlyArt-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
@@ -3041,6 +3229,12 @@ MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-MonthlyArtController-listMonthlyArt-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
@@ -3073,6 +3267,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
 
@@ -3094,6 +3291,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 
@@ -3109,6 +3309,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::MonthlyArtControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
@@ -3127,6 +3330,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.MonthlyArtControllerApi()
@@ -3220,6 +3426,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-MonthlyArtController-registerMonthlyArt-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/monthly-art"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-registerMonthlyArt-0-java">
@@ -3234,7 +3442,13 @@ import java.util.*;
 public class MonthlyArtControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -3269,7 +3483,10 @@ public class MonthlyArtControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-MonthlyArtController-registerMonthlyArt-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
@@ -3284,6 +3501,12 @@ MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-MonthlyArtController-registerMonthlyArt-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
@@ -3316,6 +3539,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
 
@@ -3337,6 +3563,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 
@@ -3352,6 +3581,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::MonthlyArtControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
@@ -3370,6 +3602,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.MonthlyArtControllerApi()
@@ -3463,6 +3698,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-MonthlyArtController-viewMonthlyArt-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-viewMonthlyArt-0-java">
@@ -3477,7 +3714,13 @@ import java.util.*;
 public class MonthlyArtControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
@@ -3514,7 +3757,10 @@ public class MonthlyArtControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-MonthlyArtController-viewMonthlyArt-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *monthlyArtId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
@@ -3531,6 +3777,12 @@ MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-MonthlyArtController-viewMonthlyArt-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
@@ -3564,6 +3816,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
             var monthlyArtId = 789;  // Long | 
@@ -3586,6 +3841,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 $monthlyArtId = 789; // Long | 
@@ -3602,6 +3860,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::MonthlyArtControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
@@ -3621,6 +3882,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.MonthlyArtControllerApi()
@@ -3740,6 +4004,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-addImageToPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images?files=&memberId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-addImageToPost-0-java">
@@ -3754,7 +4020,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         array[byte[]] files = ; // array[byte[]] | 
@@ -3795,7 +4067,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-addImageToPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *announcementId = 789; // 
 array[byte[]] *files = ; // 
 Long *memberId = 789; // 
 String *shopId = shopId_example; // 
@@ -3816,6 +4091,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-addImageToPost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
@@ -3851,6 +4132,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var files = new array[byte[]](); // array[byte[]] | 
@@ -3875,6 +4159,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $files = ; // array[byte[]] | 
@@ -3893,6 +4180,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
@@ -3914,6 +4204,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -4080,6 +4373,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-deleteComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-deleteComment-0-java">
@@ -4094,7 +4389,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
@@ -4133,7 +4434,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-deleteComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *announcementId = 789; // 
 Long *commentId = 789; // 
 
@@ -4152,6 +4456,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-deleteComment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
@@ -4186,6 +4496,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
             var announcementId = 789;  // Long | 
@@ -4209,6 +4522,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
 $announcementId = 789; // Long | 
@@ -4226,6 +4542,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
@@ -4246,6 +4565,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -4385,6 +4707,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-deletePost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-deletePost-0-java">
@@ -4399,7 +4723,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
@@ -4436,7 +4766,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-deletePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *announcementId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
@@ -4453,6 +4786,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-deletePost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
@@ -4486,6 +4825,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
             var announcementId = 789;  // Long | 
@@ -4508,6 +4850,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
 $announcementId = 789; // Long | 
@@ -4524,6 +4869,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
@@ -4543,6 +4891,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -4659,6 +5010,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-likePost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/like?memberId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-likePost-0-java">
@@ -4673,7 +5026,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long memberId = 789; // Long | 
@@ -4712,7 +5071,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-likePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *announcementId = 789; // 
 Long *memberId = 789; // 
 String *shopId = shopId_example; // 
 
@@ -4731,6 +5093,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-likePost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
@@ -4765,6 +5133,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var memberId = 789;  // Long | 
@@ -4788,6 +5159,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $memberId = 789; // Long | 
@@ -4805,6 +5179,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
@@ -4825,6 +5202,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -4968,6 +5348,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-listShopNews-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements"</code></pre>
                           </div>
@@ -4983,7 +5365,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -5020,7 +5408,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-listShopNews-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
@@ -5038,6 +5429,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-listShopNews-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
@@ -5070,6 +5467,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
 
@@ -5092,6 +5492,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
 
@@ -5108,6 +5511,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
@@ -5127,6 +5533,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -5265,6 +5674,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-registerComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments?memberId="</code></pre>
@@ -5281,7 +5692,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Request body = ; // Request | 
         Long memberId = 789; // Long | 
@@ -5324,7 +5741,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-registerComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Request *body = ; // 
 Long *memberId = 789; // 
 Long *shopId = 789; // 
 Long *announcementId = 789; // 
@@ -5348,6 +5768,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-registerComment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Request}} 
@@ -5383,6 +5809,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var body = new Request(); // Request | 
             var memberId = 789;  // Long | 
@@ -5408,6 +5837,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Request | 
 $memberId = 789; // Long | 
@@ -5427,6 +5859,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
@@ -5449,6 +5884,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -5680,6 +6118,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-registerPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements"</code></pre>
@@ -5696,7 +6136,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Request body = ; // Request | 
         Long shopId = 789; // Long | 
@@ -5735,7 +6181,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-registerPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Request *body = ; // 
 Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
@@ -5755,6 +6204,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-registerPost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Request}} 
@@ -5788,6 +6243,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var body = new Request(); // Request | 
             var shopId = 789;  // Long | 
@@ -5811,6 +6269,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Request | 
 $shopId = 789; // Long | 
@@ -5828,6 +6289,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
@@ -5848,6 +6312,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -6026,6 +6493,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-removeImageFromPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images/{imageId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-java">
@@ -6040,7 +6509,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long imageId = 789; // Long | 
@@ -6079,7 +6554,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *announcementId = 789; // 
 Long *imageId = 789; // 
 String *shopId = shopId_example; // 
 
@@ -6098,6 +6576,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
@@ -6132,6 +6616,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var imageId = 789;  // Long | 
@@ -6155,6 +6642,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $imageId = 789; // Long | 
@@ -6172,6 +6662,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
@@ -6192,6 +6685,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -6328,6 +6824,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-updateComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}"</code></pre>
@@ -6344,7 +6842,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Request body = ; // Request | 
         Long shopId = 789; // Long | 
@@ -6387,7 +6891,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-updateComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Request *body = ; // 
 Long *shopId = 789; // 
 Long *announcementId = 789; // 
 Long *commentId = 789; // 
@@ -6411,6 +6918,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-updateComment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Request}} 
@@ -6446,6 +6959,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var body = new Request(); // Request | 
             var shopId = 789;  // Long | 
@@ -6471,6 +6987,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Request | 
 $shopId = 789; // Long | 
@@ -6490,6 +7009,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
@@ -6512,6 +7034,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -6736,6 +7261,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-updatePost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
@@ -6752,7 +7279,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Request body = ; // Request | 
         Long announcementId = 789; // Long | 
@@ -6793,7 +7326,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-updatePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Request *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Request *body = ; // 
 Long *announcementId = 789; // 
 Long *shopId = 789; // 
 
@@ -6815,6 +7351,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-updatePost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Request}} 
@@ -6849,6 +7391,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var body = new Request(); // Request | 
             var announcementId = 789;  // Long | 
@@ -6873,6 +7418,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Request | 
 $announcementId = 789; // Long | 
@@ -6891,6 +7439,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
@@ -6912,6 +7463,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -7113,6 +7667,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-uploadImages-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/images?files=&memberId="</code></pre>
                           </div>
@@ -7128,7 +7684,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
@@ -7169,7 +7731,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-uploadImages-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">array[byte[]] *files = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+array[byte[]] *files = ; // 
 Long *shopId = 789; // 
 Long *memberId = 789; // 
 
@@ -7191,6 +7756,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-uploadImages-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var files = ; // {{array[byte[]]}} 
@@ -7225,6 +7796,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var files = new array[byte[]](); // array[byte[]] | 
             var shopId = 789;  // Long | 
@@ -7249,6 +7823,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $files = ; // array[byte[]] | 
 $shopId = 789; // Long | 
@@ -7267,6 +7844,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $files = []; # array[byte[]] | 
@@ -7288,6 +7868,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -7479,6 +8062,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PostController-viewShopNews-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}?memberId="</code></pre>
                           </div>
@@ -7494,7 +8079,13 @@ import java.util.*;
 public class PostControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
@@ -7535,7 +8126,10 @@ public class PostControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-PostController-viewShopNews-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *announcementId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *announcementId = 789; // 
 Long *shopId = 789; // 
 Long *memberId = 789; // 
 
@@ -7557,6 +8151,12 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-PostController-viewShopNews-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
@@ -7591,6 +8191,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
@@ -7615,6 +8218,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $shopId = 789; // Long | 
@@ -7633,6 +8239,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
@@ -7654,6 +8263,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
@@ -7844,6 +8456,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReservationController-listReservation-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-listReservation-0-java">
@@ -7858,7 +8472,13 @@ import java.util.*;
 public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -7893,7 +8513,10 @@ public class ReservationControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReservationController-listReservation-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
@@ -7908,6 +8531,12 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReservationController-listReservation-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
@@ -7940,6 +8569,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
 
@@ -7961,6 +8593,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
 
@@ -7976,6 +8611,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReservationControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
@@ -7994,6 +8632,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
@@ -8087,6 +8728,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReservationController-registerReservation-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-registerReservation-0-java">
@@ -8101,7 +8744,13 @@ import java.util.*;
 public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -8136,7 +8785,10 @@ public class ReservationControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReservationController-registerReservation-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
@@ -8151,6 +8803,12 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReservationController-registerReservation-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
@@ -8183,6 +8841,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
 
@@ -8204,6 +8865,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
 
@@ -8219,6 +8883,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReservationControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
@@ -8237,6 +8904,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
@@ -8330,6 +9000,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReservationController-updateReservation-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-updateReservation-0-java">
@@ -8344,7 +9016,13 @@ import java.util.*;
 public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
@@ -8381,7 +9059,10 @@ public class ReservationControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReservationController-updateReservation-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *reservationId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
@@ -8398,6 +9079,12 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReservationController-updateReservation-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
@@ -8431,6 +9118,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
             var reservationId = 789;  // Long | 
@@ -8453,6 +9143,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
 $reservationId = 789; // Long | 
@@ -8469,6 +9162,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReservationControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
@@ -8488,6 +9184,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
@@ -8604,6 +9303,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReservationController-viewReservation-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-viewReservation-0-java">
@@ -8618,7 +9319,13 @@ import java.util.*;
 public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
@@ -8655,7 +9362,10 @@ public class ReservationControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReservationController-viewReservation-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *reservationId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
@@ -8672,6 +9382,12 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReservationController-viewReservation-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
@@ -8705,6 +9421,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
             var reservationId = 789;  // Long | 
@@ -8727,6 +9446,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
 $reservationId = 789; // Long | 
@@ -8743,6 +9465,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReservationControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
@@ -8762,6 +9487,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
@@ -8881,6 +9609,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReviewController-deleteReviewComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}/comments/{commentId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-deleteReviewComment-0-java">
@@ -8895,7 +9625,13 @@ import java.util.*;
 public class ReviewControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         String shopId = shopId_example; // String | 
         Long reviewId = 789; // Long | 
@@ -8934,7 +9670,10 @@ public class ReviewControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReviewController-deleteReviewComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *shopId = shopId_example; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+String *shopId = shopId_example; // 
 Long *reviewId = 789; // 
 Long *commentId = 789; // 
 
@@ -8953,6 +9692,12 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReviewController-deleteReviewComment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var shopId = shopId_example; // {{String}} 
@@ -8987,6 +9732,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReviewControllerApi();
             var shopId = shopId_example;  // String | 
             var reviewId = 789;  // Long | 
@@ -9010,6 +9758,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $shopId = shopId_example; // String | 
 $reviewId = 789; // Long | 
@@ -9027,6 +9778,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $shopId = shopId_example; # String | 
@@ -9047,6 +9801,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
@@ -9183,6 +9940,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReviewController-listReviews-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-listReviews-0-java">
@@ -9197,7 +9956,13 @@ import java.util.*;
 public class ReviewControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -9232,7 +9997,10 @@ public class ReviewControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReviewController-listReviews-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
@@ -9247,6 +10015,12 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReviewController-listReviews-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var shopId = 789; // {{Long}} 
@@ -9279,6 +10053,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReviewControllerApi();
             var shopId = 789;  // Long | 
 
@@ -9300,6 +10077,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $shopId = 789; // Long | 
 
@@ -9315,6 +10095,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $shopId = 789; # Long | 
@@ -9333,6 +10116,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
@@ -9426,6 +10212,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReviewController-registerReview-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-registerReview-0-java">
@@ -9440,7 +10228,13 @@ import java.util.*;
 public class ReviewControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -9475,7 +10269,10 @@ public class ReviewControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReviewController-registerReview-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
@@ -9490,6 +10287,12 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReviewController-registerReview-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var shopId = 789; // {{Long}} 
@@ -9522,6 +10325,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReviewControllerApi();
             var shopId = 789;  // Long | 
 
@@ -9543,6 +10349,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $shopId = 789; // Long | 
 
@@ -9558,6 +10367,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $shopId = 789; # Long | 
@@ -9576,6 +10388,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
@@ -9669,6 +10484,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReviewController-registerReviewComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}/comments"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-registerReviewComment-0-java">
@@ -9683,7 +10500,13 @@ import java.util.*;
 public class ReviewControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
@@ -9720,7 +10543,10 @@ public class ReviewControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReviewController-registerReviewComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *reviewId = 789; // 
 
 ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
@@ -9737,6 +10563,12 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReviewController-registerReviewComment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var shopId = 789; // {{Long}} 
@@ -9770,6 +10602,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReviewControllerApi();
             var shopId = 789;  // Long | 
             var reviewId = 789;  // Long | 
@@ -9792,6 +10627,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $shopId = 789; // Long | 
 $reviewId = 789; // Long | 
@@ -9808,6 +10646,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $shopId = 789; # Long | 
@@ -9827,6 +10668,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
@@ -9943,6 +10787,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReviewController-updateReviewComment-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}/comments/{commentId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-updateReviewComment-0-java">
@@ -9957,7 +10803,13 @@ import java.util.*;
 public class ReviewControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
@@ -9996,7 +10848,10 @@ public class ReviewControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReviewController-updateReviewComment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *reviewId = 789; // 
 Long *commentId = 789; // 
 
@@ -10015,6 +10870,12 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReviewController-updateReviewComment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var shopId = 789; // {{Long}} 
@@ -10049,6 +10910,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReviewControllerApi();
             var shopId = 789;  // Long | 
             var reviewId = 789;  // Long | 
@@ -10072,6 +10936,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $shopId = 789; // Long | 
 $reviewId = 789; // Long | 
@@ -10089,6 +10956,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $shopId = 789; # Long | 
@@ -10109,6 +10979,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
@@ -10248,6 +11121,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ReviewController-viewReview-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-viewReview-0-java">
@@ -10262,7 +11137,13 @@ import java.util.*;
 public class ReviewControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
@@ -10299,7 +11180,10 @@ public class ReviewControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ReviewController-viewReview-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *reviewId = 789; // 
 
 ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
@@ -10316,6 +11200,12 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ReviewController-viewReview-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var shopId = 789; // {{Long}} 
@@ -10349,6 +11239,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ReviewControllerApi();
             var shopId = 789;  // Long | 
             var reviewId = 789;  // Long | 
@@ -10371,6 +11264,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $shopId = 789; // Long | 
 $reviewId = 789; // Long | 
@@ -10387,6 +11283,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $shopId = 789; # Long | 
@@ -10406,6 +11305,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
@@ -10525,6 +11427,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ScheduleController-listSchedule-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/schedule"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ScheduleController-listSchedule-0-java">
@@ -10539,7 +11443,13 @@ import java.util.*;
 public class ScheduleControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ScheduleControllerApi apiInstance = new ScheduleControllerApi();
         String shopId = shopId_example; // String | 
         try {
@@ -10574,7 +11484,10 @@ public class ScheduleControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ScheduleController-listSchedule-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *shopId = shopId_example; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+String *shopId = shopId_example; // 
 
 ScheduleControllerApi *apiInstance = [[ScheduleControllerApi alloc] init];
 
@@ -10589,6 +11502,12 @@ ScheduleControllerApi *apiInstance = [[ScheduleControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ScheduleController-listSchedule-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ScheduleControllerApi()
 var shopId = shopId_example; // {{String}} 
@@ -10621,6 +11540,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ScheduleControllerApi();
             var shopId = shopId_example;  // String | 
 
@@ -10642,6 +11564,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiScheduleControllerApi();
 $shopId = shopId_example; // String | 
 
@@ -10657,6 +11582,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ScheduleControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ScheduleControllerApi->new();
 my $shopId = shopId_example; # String | 
@@ -10675,6 +11603,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ScheduleControllerApi()
@@ -10768,6 +11699,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ShopController-deleteShop-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-deleteShop-0-java">
@@ -10782,7 +11715,13 @@ import java.util.*;
 public class ShopControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ShopControllerApi apiInstance = new ShopControllerApi();
         String shopId = shopId_example; // String | 
         try {
@@ -10817,7 +11756,10 @@ public class ShopControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ShopController-deleteShop-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *shopId = shopId_example; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+String *shopId = shopId_example; // 
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
@@ -10832,6 +11774,12 @@ ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ShopController-deleteShop-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var shopId = shopId_example; // {{String}} 
@@ -10864,6 +11812,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ShopControllerApi();
             var shopId = shopId_example;  // String | 
 
@@ -10885,6 +11836,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiShopControllerApi();
 $shopId = shopId_example; // String | 
 
@@ -10900,6 +11854,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
 my $shopId = shopId_example; # String | 
@@ -10918,6 +11875,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
@@ -10948,6 +11908,278 @@ except ApiException as e:
                                                   <span class="type">
                                                       String
                                                   </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ShopController-getShopById">
+                      <article id="api-ShopController-getShopById-0" data-group="User" data-name="getShopById" data-version="0">
+                        <div class="pull-left">
+                          <h1>getShopById</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ShopController-getShopById-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopController-getShopById-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopController-getShopById-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopController-getShopById-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopController-getShopById-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopController-getShopById-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopController-getShopById-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopController-getShopById-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopController-getShopById-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopController-getShopById-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopController-getShopById-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ShopController-getShopById-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/shops/{shopId}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ShopController-getShopById-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ShopControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ShopControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ShopControllerApi apiInstance = new ShopControllerApi();
+        Long shopId = 789; // Long | 
+        try {
+            apiInstance.getShopById(shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopControllerApi#getShopById");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ShopController-getShopById-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopControllerApi;
+
+public class ShopControllerApiExample {
+
+    public static void main(String[] args) {
+        ShopControllerApi apiInstance = new ShopControllerApi();
+        Long shopId = 789; // Long | 
+        try {
+            apiInstance.getShopById(shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopControllerApi#getShopById");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ShopController-getShopById-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ShopController-getShopById-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
+
+ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
+
+[apiInstance getShopByIdWith:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-getShopById-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ShopControllerApi()
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.getShopById(shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ShopController-getShopById-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ShopController-getShopById-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getShopByIdExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ShopControllerApi();
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                apiInstance.getShopById(shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ShopControllerApi.getShopById: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-getShopById-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiShopControllerApi();
+$shopId = 789; // Long | 
+
+try {
+    $api_instance->getShopById($shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling ShopControllerApi->getShopById: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-getShopById-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ShopControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
+my $shopId = 789; # Long | 
+
+eval { 
+    $api_instance->getShopById(shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling ShopControllerApi->getShopById: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-getShopById-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ShopControllerApi()
+shopId = 789 # Long | 
+
+try: 
+    api_instance.get_shop_by_id(shopId)
+except ApiException as e:
+    print("Exception when calling ShopControllerApi->getShopById: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_getShopById_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
                                   
                                               </div>
                                                   <div class="inner required">
@@ -11008,6 +12240,10 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ShopController-registerShop-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-registerShop-0-java">
@@ -11022,10 +12258,18 @@ import java.util.*;
 public class ShopControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ShopControllerApi apiInstance = new ShopControllerApi();
+        Request body = ; // Request | 
         try {
-            apiInstance.registerShop();
+            Response result = apiInstance.registerShop(body);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
             e.printStackTrace();
@@ -11041,8 +12285,10 @@ public class ShopControllerApiExample {
 
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
+        Request body = ; // Request | 
         try {
-            apiInstance.registerShop();
+            Response result = apiInstance.registerShop(body);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
             e.printStackTrace();
@@ -11055,11 +12301,18 @@ public class ShopControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ShopController-registerShop-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Request *body = ; // 
+
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
-[apiInstance registerShopWithCompletionHandler: 
-              ^(NSError* error) {
+[apiInstance registerShopWith:body
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -11069,16 +12322,24 @@ ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ShopController-registerShop-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
+var body = ; // {{Request}} 
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerShop(callback);
+api.registerShop(body, callback);
 </code></pre>
                             </div>
 
@@ -11099,11 +12360,16 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ShopControllerApi();
+            var body = new Request(); // Request | 
 
             try
             {
-                apiInstance.registerShop();
+                Response result = apiInstance.registerShop(body);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -11119,10 +12385,15 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiShopControllerApi();
+$body = ; // Request | 
 
 try {
-    $api_instance->registerShop();
+    $result = $api_instance->registerShop($body);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->registerShop: ', $e->getMessage(), PHP_EOL;
 }
@@ -11134,10 +12405,15 @@ try {
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopControllerApi;
 
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
 
 eval { 
-    $api_instance->registerShop();
+    my $result = $api_instance->registerShop(body => $body);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ShopControllerApi->registerShop: $@\n";
@@ -11151,11 +12427,16 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
+body =  # Request | 
 
 try: 
-    api_instance.register_shop()
+    api_response = api_instance.register_shop(body)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->registerShop: %s\n" % e)</code></pre>
                             </div>
@@ -11165,6 +12446,49 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Request"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_registerShop_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_registerShop_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
@@ -11172,9 +12496,49 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerShop-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerShop-200-schema">
+                                  <div id='responses-registerShop-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerShop-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerShop-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerShop-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -11213,6 +12577,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ShopController-searchShop-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-searchShop-0-java">
@@ -11227,7 +12593,13 @@ import java.util.*;
 public class ShopControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ShopControllerApi apiInstance = new ShopControllerApi();
         try {
             apiInstance.searchShop();
@@ -11260,7 +12632,10 @@ public class ShopControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ShopController-searchShop-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
 [apiInstance searchShopWithCompletionHandler: 
@@ -11274,6 +12649,12 @@ ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ShopController-searchShop-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var callback = function(error, data, response) {
@@ -11304,6 +12685,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ShopControllerApi();
 
             try
@@ -11324,6 +12708,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiShopControllerApi();
 
 try {
@@ -11338,6 +12725,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
 
@@ -11355,6 +12745,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
@@ -11421,6 +12814,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ShopInfoController-listCovers-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/covers"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-java">
@@ -11435,7 +12830,13 @@ import java.util.*;
 public class ShopInfoControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -11470,7 +12871,10 @@ public class ShopInfoControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 
@@ -11485,6 +12889,12 @@ ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopInfoControllerApi()
 var shopId = 789; // {{Long}} 
@@ -11517,6 +12927,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ShopInfoControllerApi();
             var shopId = 789;  // Long | 
 
@@ -11538,6 +12951,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiShopInfoControllerApi();
 $shopId = 789; // Long | 
 
@@ -11553,6 +12969,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopInfoControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
 my $shopId = 789; # Long | 
@@ -11571,6 +12990,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopInfoControllerApi()
@@ -11664,6 +13086,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ShopInfoController-updateCover-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/covers/{coverId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-java">
@@ -11678,7 +13102,13 @@ import java.util.*;
 public class ShopInfoControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
         Long shopId = 789; // Long | 
         Long coverId = 789; // Long | 
@@ -11715,7 +13145,10 @@ public class ShopInfoControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 Long *coverId = 789; // 
 
 ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
@@ -11732,6 +13165,12 @@ ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopInfoControllerApi()
 var shopId = 789; // {{Long}} 
@@ -11765,6 +13204,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ShopInfoControllerApi();
             var shopId = 789;  // Long | 
             var coverId = 789;  // Long | 
@@ -11787,6 +13229,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiShopInfoControllerApi();
 $shopId = 789; // Long | 
 $coverId = 789; // Long | 
@@ -11803,6 +13248,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopInfoControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
 my $shopId = 789; # Long | 
@@ -11822,6 +13270,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopInfoControllerApi()
@@ -11938,6 +13389,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-ShopInfoController-viewInfo-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/info"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-java">
@@ -11952,7 +13405,13 @@ import java.util.*;
 public class ShopInfoControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -11987,7 +13446,10 @@ public class ShopInfoControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 
@@ -12002,6 +13464,12 @@ ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopInfoControllerApi()
 var shopId = 789; // {{Long}} 
@@ -12034,6 +13502,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new ShopInfoControllerApi();
             var shopId = 789;  // Long | 
 
@@ -12055,6 +13526,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiShopInfoControllerApi();
 $shopId = 789; // Long | 
 
@@ -12070,6 +13544,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopInfoControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
 my $shopId = 789; # Long | 
@@ -12088,6 +13565,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopInfoControllerApi()
@@ -12184,6 +13664,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-WorkHourController-updateWorkHour-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/hours"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-WorkHourController-updateWorkHour-0-java">
@@ -12198,7 +13680,13 @@ import java.util.*;
 public class WorkHourControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         WorkHourControllerApi apiInstance = new WorkHourControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -12233,7 +13721,10 @@ public class WorkHourControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-WorkHourController-updateWorkHour-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 WorkHourControllerApi *apiInstance = [[WorkHourControllerApi alloc] init];
 
@@ -12248,6 +13739,12 @@ WorkHourControllerApi *apiInstance = [[WorkHourControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-WorkHourController-updateWorkHour-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.WorkHourControllerApi()
 var shopId = 789; // {{Long}} 
@@ -12280,6 +13777,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new WorkHourControllerApi();
             var shopId = 789;  // Long | 
 
@@ -12301,6 +13801,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiWorkHourControllerApi();
 $shopId = 789; // Long | 
 
@@ -12316,6 +13819,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::WorkHourControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::WorkHourControllerApi->new();
 my $shopId = 789; # Long | 
@@ -12334,6 +13840,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.WorkHourControllerApi()
@@ -12427,6 +13936,8 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-WorkHourController-viewWorkHour-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
 "http://localhost:8081/api/v1/shops/{shopId}/hours"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-WorkHourController-viewWorkHour-0-java">
@@ -12441,7 +13952,13 @@ import java.util.*;
 public class WorkHourControllerApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
         WorkHourControllerApi apiInstance = new WorkHourControllerApi();
         Long shopId = 789; // Long | 
         try {
@@ -12476,7 +13993,10 @@ public class WorkHourControllerApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-WorkHourController-viewWorkHour-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *shopId = 789; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
 
 WorkHourControllerApi *apiInstance = [[WorkHourControllerApi alloc] init];
 
@@ -12491,6 +14011,12 @@ WorkHourControllerApi *apiInstance = [[WorkHourControllerApi alloc] init];
 
                             <div class="tab-pane" id="examples-WorkHourController-viewWorkHour-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.WorkHourControllerApi()
 var shopId = 789; // {{Long}} 
@@ -12523,6 +14049,9 @@ namespace Example
         public void main()
         {
 
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
             var apiInstance = new WorkHourControllerApi();
             var shopId = 789;  // Long | 
 
@@ -12544,6 +14073,9 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 $api_instance = new Swagger\Client\ApiWorkHourControllerApi();
 $shopId = 789; // Long | 
 
@@ -12559,6 +14091,9 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::WorkHourControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::WorkHourControllerApi->new();
 my $shopId = 789; # Long | 
@@ -12577,6 +14112,9 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.WorkHourControllerApi()
