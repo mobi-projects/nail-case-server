@@ -1,6 +1,6 @@
 package com.nailcase.model.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
 import com.nailcase.model.enums.Role;
@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -49,21 +50,22 @@ public class Member extends BaseEntity {
 	private String password;*/
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "socialType")
+	@Column(name = "social_type")
 	private SocialType socialType; // KAKAO, NAVER, FACEBOOK*/
 
-	@Column(name = "socialId", unique = true)
+	@Column(name = "social_id")
 	private String socialId;
 
+	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
 	private Role role;
 
-	@Column(name = "profileImgUrl", length = 128)
+	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Shop> shopList;
+	private Set<Shop> shops;
 
 	// TODO
 	public Member update(String name) {

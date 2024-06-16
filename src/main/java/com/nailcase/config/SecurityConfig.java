@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.nailcase.oauth2.AuditorAwareImpl;
+import com.nailcase.oauth2.CustomOAuth2UserService;
 import com.nailcase.oauth2.handler.OAuth2LoginFailureHandler;
 import com.nailcase.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.nailcase.repository.MemberRepository;
@@ -34,6 +35,7 @@ public class SecurityConfig {
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 
+	private final CustomOAuth2UserService customOAuth2UserService;
 	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
@@ -56,14 +58,19 @@ public class SecurityConfig {
 				.permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico")
 				.permitAll()
-				.requestMatchers("/oauth2/sign-up")
+				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
 			.oauth2Login(oauth2 -> oauth2
-				.successHandler(oAuth2LoginSuccessHandler)
-				.failureHandler(oAuth2LoginFailureHandler)
-				.defaultSuccessUrl("/swagger-ui/index.html", true))
+					// TODO: OAuth2 로그인을 하면 session을 사용하게 되어 이 부분을 수정해야함.
+					.loginPage("/oauth2/authorization/kakao")
+					.userInfoEndpoint(userInfo -> userInfo
+						.userService(customOAuth2UserService))
+					.successHandler(oAuth2LoginSuccessHandler)
+					.failureHandler(oAuth2LoginFailureHandler)
+				// .defaultSuccessUrl("/swagger-ui/index.html", false)
+			)
 			.logout(logout -> logout
 				.logoutSuccessUrl("/"))
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
