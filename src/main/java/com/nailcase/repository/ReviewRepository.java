@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.nailcase.model.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-	List<Review> findByShopId(Long shopId);
+	List<Review> findByShop_ShopId(Long shopId);
 
-	Optional<Review> findByShopIdAndReviewId(Long shopId, Long reviewId);
+	//findByShopId
+	// findByShop_ShopId
+	Optional<Review> findByShop_ShopIdAndReviewId(Long shopId, Long reviewId);
 }
