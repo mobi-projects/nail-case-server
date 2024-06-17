@@ -6,8 +6,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Set;
-
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,8 +94,8 @@ public class ShopControllerTest {
 
 		// 필수 필드(shopName, phone)가 누락된 요청 데이터
 		EasyRandomParameters params = new EasyRandomParameters()
-			.excludeField(named("shopName").and(ofType(Set.class)))
-			.excludeField(named("phone").and(ofType(Set.class)));
+			.excludeField(named("shopName").and(ofType(String.class)))
+			.excludeField(named("phone").and(ofType(String.class)));
 		ShopRegisterDto.Request requestDto = new EasyRandom(params).nextObject(ShopRegisterDto.Request.class);
 
 		String requestJson = om.registerModule(new JavaTimeModule())
