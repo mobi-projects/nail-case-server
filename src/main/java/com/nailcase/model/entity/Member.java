@@ -53,7 +53,7 @@ public class Member extends BaseEntity {
 	@Column(name = "social_type")
 	private SocialType socialType; // KAKAO, NAVER, FACEBOOK*/
 
-	@Column(name = "social_id", unique = true)
+	@Column(name = "social_id")
 	private String socialId;
 
 	@Setter

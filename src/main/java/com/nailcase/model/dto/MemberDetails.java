@@ -6,13 +6,14 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.nailcase.model.entity.Member;
 
 import lombok.Getter;
 
 @Getter
-public class MemberDetails extends User {
+public class MemberDetails extends User implements UserDetails {
 
 	private final Long memberId;
 

@@ -6,6 +6,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.nailcase.model.dto.MemberDetails;
+
 import lombok.NonNull;
 
 public class AuditorAwareImpl implements AuditorAware<Long> {
@@ -22,11 +24,14 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
 			return Optional.empty();
 		}
 
-		if (authentication.getPrincipal() instanceof CustomOAuth2User user) {
+		/*if (authentication.getPrincipal() instanceof CustomOAuth2User user) {
+			return Optional.of(user.getMemberId());
+		}*/
+
+		if (authentication.getPrincipal() instanceof MemberDetails user) {
 			return Optional.of(user.getMemberId());
 		}
 
 		return Optional.empty();
 	}
 }
-
