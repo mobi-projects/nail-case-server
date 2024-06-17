@@ -26,10 +26,7 @@ public class ShopInfo extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopInfoId;
 
-	@Column(name = "shop_id", nullable = false)
-	private Long shopId;
-
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shop_info_id", referencedColumnName = "shop_id", insertable = false, updatable = false)
+	@JoinColumn(name = "shop_id", nullable = false)
 	private Shop shop;
 }

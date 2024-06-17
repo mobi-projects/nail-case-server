@@ -32,11 +32,8 @@ public class ShopHour extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopHoursId;
 
-	@Column(name = "shop_id", nullable = false)
-	private Long shopId;
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shop_id", referencedColumnName = "shop_id", insertable = false, updatable = false)
+	@JoinColumn(name = "shop_id", nullable = false)
 	private Shop shop;
 
 	@Column(name = "day_of_week", nullable = false)

@@ -28,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "mambers")
 @SuperBuilder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
