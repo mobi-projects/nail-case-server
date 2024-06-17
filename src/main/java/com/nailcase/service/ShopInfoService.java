@@ -2,6 +2,7 @@ package com.nailcase.service;
 
 import org.springframework.stereotype.Service;
 
+import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.repository.ShopInfoRepository;
 
@@ -14,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopInfoService {
 	private final ShopInfoRepository shopInfoRepository;
 
-	public void initShopInfo(Long shopId) {
-		ShopInfo initShopInfo = ShopInfo.builder().shopId(shopId).build();
+	public void initShopInfo(Shop shop) {
+		ShopInfo initShopInfo = ShopInfo.builder().shop(shop).build();
 		shopInfoRepository.save(initShopInfo);
 	}
 }
