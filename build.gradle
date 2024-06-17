@@ -69,12 +69,13 @@ dependencies {
     //redis 관련 라이브러리
     implementation('org.springframework.boot:spring-boot-starter-data-redis')
 
-
     // 테스트 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-validation'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.jeasy:easy-random-core:5.0.0'
+    testImplementation 'org.jeasy:easy-random:5.0.0'   // 랜덤 테스트 데이터 생성
     // Spring Security 테스트를 위한 보안 테스트 스타터 (보안 스타터 사용 시 필요)
 
     testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
