@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Set;
+
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,6 +78,7 @@ public class ShopControllerTest {
 		// When
 		doReturn(responseDto).when(shopService).registerShop(any(ShopRegisterDto.Request.class), eq(1L));
 
+		// Then
 		mockMvc
 			.perform(post("/shops")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -83,5 +86,29 @@ public class ShopControllerTest {
 				.header("Authorization", "Bearer " + jwt))
 			.andExpect(status().isCreated())
 			.andExpect(content().json(responseJson));
+	}
+
+	@Test
+	@DisplayName("Post요청시 필수 필드 누락으로 인해 HTTP.BAD_REQUEST를 반환한다.")
+	void registerShopMissingRequiredFields() throws Exception {
+		// Given
+		String jwt = fixtureFactory.getMemberFixtureFactory().createMemberAndGetJwt();
+
+		// 필수 필드(shopName, phone)가 누락된 요청 데이터
+		EasyRandomParameters params = new EasyRandomParameters()
+			.excludeField(named("shopName").and(ofType(Set.class)))
+			.excludeField(named("phone").and(ofType(Set.class)));
+		ShopRegisterDto.Request requestDto = new EasyRandom(params).nextObject(ShopRegisterDto.Request.class);
+
+		String requestJson = om.registerModule(new JavaTimeModule())
+			.writeValueAsString(requestDto);
+
+		// When & Then
+		mockMvc
+			.perform(post("/shops")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson)
+				.header("Authorization", "Bearer " + jwt))
+			.andExpect(status().isBadRequest());
 	}
 }
