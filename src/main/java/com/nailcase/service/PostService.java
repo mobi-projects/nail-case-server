@@ -216,7 +216,8 @@ public class PostService {
 		Member currentMember = memberRepository.findById(SecurityUtil.getCurrentMemberId())
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-		boolean alreadyLiked = postLikedMemberRepository.existsByPostIdAndMemberId(postId, currentMember.getMemberId());
+		boolean alreadyLiked = postLikedMemberRepository.existsByPost_PostIdAndMember_MemberId(postId,
+			currentMember.getMemberId());
 		if (!alreadyLiked) {
 			PostLikedMember postLike = new PostLikedMember();
 			postLike.updatePost(post);
@@ -231,7 +232,7 @@ public class PostService {
 	public void unlikePost(Long postId) {
 		Member currentMember = memberRepository.findById(SecurityUtil.getCurrentMemberId())
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-		PostLikedMember postLike = postLikedMemberRepository.findByPostIdAndMemberId(postId,
+		PostLikedMember postLike = postLikedMemberRepository.findByPost_PostIdAndMember_MemberId(postId,
 				currentMember.getMemberId())
 			.orElseThrow(() -> new BusinessException(PostErrorCode.LIKE_NOT_FOUND));
 

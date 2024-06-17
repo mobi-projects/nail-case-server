@@ -35,11 +35,11 @@ public class PostLikedMember extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "postId", referencedColumnName = "id")
+	@JoinColumn(name = "post_id")
 	private Post post;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "memberId", referencedColumnName = "id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@CreatedDate

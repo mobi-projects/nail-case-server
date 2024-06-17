@@ -78,21 +78,21 @@ public class ReviewService {
 	}
 
 	public List<ReviewDto.Response> listReviews(Long shopId) {
-		List<Review> reviews = reviewRepository.findByShopId(shopId);
+		List<Review> reviews = reviewRepository.findByShop_ShopId(shopId);
 		return reviews.stream()
 			.map(ReviewDto.Response::from)
 			.collect(Collectors.toList());
 	}
 
 	public ReviewDto.Response viewReview(Long shopId, Long reviewId) {
-		Review review = reviewRepository.findByShopIdAndReviewId(shopId, reviewId)
+		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
 			.orElseThrow(() -> new BusinessException(NOT_FOUND));
 		return ReviewDto.Response.from(review);
 	}
 
 	@Transactional
 	public void updateReview(Long shopId, Long reviewId, ReviewDto.Request request, List<MultipartFile> files) {
-		Review review = reviewRepository.findByShopIdAndReviewId(shopId, reviewId)
+		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
 			.orElseThrow(() -> new BusinessException(NOT_FOUND));
 
 		review.getReviewImages().forEach(reviewImage -> {
@@ -133,7 +133,7 @@ public class ReviewService {
 
 	@Transactional
 	public void deleteReview(Long shopId, Long reviewId) {
-		Review review = reviewRepository.findByShopIdAndReviewId(shopId, reviewId)
+		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
 			.orElseThrow(() -> new BusinessException(NOT_FOUND));
 
 		reviewRepository.delete(review);
@@ -141,7 +141,7 @@ public class ReviewService {
 
 	@Transactional
 	public Long registerReviewComment(Long shopId, Long reviewId, ReviewCommentDto.Request request) {
-		Review review = reviewRepository.findByShopIdAndReviewId(shopId, reviewId)
+		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
 			.orElseThrow(() -> new BusinessException(NOT_FOUND));
 
 		ReviewComment reviewComment = ReviewComment.builder()
