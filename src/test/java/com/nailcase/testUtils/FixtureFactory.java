@@ -1,5 +1,12 @@
 package com.nailcase.testUtils;
 
+import org.springframework.stereotype.Component;
+
+import com.nailcase.testUtils.fixtureFactory.MemberFixtureFactory;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * 테스트를 위해 미리 정의된 데이터를 생성하는 유틸리티 클래스입니다.
  * 이 클래스는 다양한 유형의 테스트 데이터를 생성하는 메서드를 제공합니다.
@@ -16,5 +23,9 @@ package com.nailcase.testUtils;
  * List<User> userList = FixtureFactory.createUserList(5);
  * }</pre>
  */
+@Getter
+@Component
+@RequiredArgsConstructor
 public class FixtureFactory {
+	private final MemberFixtureFactory memberFixtureFactory;
 }
