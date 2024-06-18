@@ -27,7 +27,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class NailArtists {
+public class NailArtist {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class NailArtists {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id")
-	private Shops shop;
+	private Shop shop;
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "nailArtist")
@@ -46,11 +46,7 @@ public class NailArtists {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "nailArtist")
 	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
 
-	public void associdateUp() {
-		this.shop.associateUp(this);
-	}
-
-	public void associateDown(Shops shop) {
+	public void associateDown(Shop shop) {
 		if (shop != null) {
 			this.shop = shop;
 		}
