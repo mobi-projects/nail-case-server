@@ -20,6 +20,8 @@ import com.nailcase.exception.codes.DatabaseErrorCode;
 import com.nailcase.exception.codes.ErrorCodeInterface;
 import com.nailcase.exception.codes.ErrorResponse;
 
+import io.minio.errors.MinioException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -63,6 +65,11 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
 		logger.error("Unexpected exception 발생: {}", ex.getMessage(), ex);
 		return buildErrorResponse(CommonErrorCode.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(MinioException.class)
+	public ResponseEntity<String> handleMinioException(MinioException e) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 	}
 
 	private ResponseEntity<ErrorResponse> buildErrorResponse(ErrorCodeInterface errorCode, HttpStatus status) {

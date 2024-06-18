@@ -2,7 +2,9 @@ package com.nailcase.common;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -14,10 +16,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 // TODO User table, spring security 함께 작업 필요
 @Getter
+@Setter
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,13 +38,15 @@ public class BaseEntity {
 	@Column(name = "modified_at")
 	private LocalDateTime modifiedAt;
 
-	// @CreatedBy
+	@CreatedBy
+	@Setter
 	@Schema(title = "생성자")
 	@Column(name = "create_by")
-	private String createdBy;
+	private Long createdBy;
 
-	// @LastModifiedBy
+	@LastModifiedBy
+	@Setter
 	@Schema(title = "수정자")
 	@Column(name = "modified_by")
-	private String modifiedBy;
+	private Long modifiedBy;
 }

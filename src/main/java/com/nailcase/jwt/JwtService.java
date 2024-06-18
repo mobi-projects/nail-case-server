@@ -49,13 +49,13 @@ public class JwtService {
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	public String createAccessToken(String email) {
-
+	public String createAccessToken(String email, Long memberId) {
 		Date now = new Date();
 		String token = JWT.create()
 			.withSubject(ACCESS_TOKEN_SUBJECT)
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
 			.withClaim(EMAIL_CLAIM, email)
+			.withClaim("memberId", memberId)
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("{} 해당 유저에 대한 AccessToken 발급", email);
 		return token;

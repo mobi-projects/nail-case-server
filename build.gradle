@@ -41,11 +41,16 @@ dependencies {
     // 스웨거
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
+    //minIO
+    implementation 'io.minio:minio:8.5.9'
+
+
     // 보일러플레이트 코드를 줄이기 위한 Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
 
     //oauth2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -55,6 +60,7 @@ dependencies {
 
     // 데이터베이스 관련 의존성
     runtimeOnly 'com.h2database:h2' // 인메모리 테스트 및 개발용 H2 데이터베이스
+    testImplementation 'com.h2database:h2'
 //    runtimeOnly 'org.postgresql:postgresql' // 프로덕션 사용을 위한 PostgreSQL 데이터베이스 (현재 주석 처리됨)
 
     //jwt관련 라이브러리
@@ -109,4 +115,11 @@ docker {
     dockerfile file('./docker/dockerfile')
     files tasks.bootJar.outputs.files
     buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
+}
+tasks.withType(GroovyCompile).configureEach {
+    groovyOptions.parameters = true
 }
