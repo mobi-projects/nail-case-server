@@ -45,7 +45,6 @@ public class ReviewDto {
 		private List<String> imageUrls;
 		private List<ReviewCommentDto.Response> comments;
 
-		//@Todo 지우기
 		public static Response from(Review review) {
 			Response response = new Response();
 			response.setReviewId(review.getReviewId());
