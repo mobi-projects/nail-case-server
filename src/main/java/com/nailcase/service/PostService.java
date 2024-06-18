@@ -76,8 +76,6 @@ public class PostService {
 		Post post = Post.builder()
 			.title(postRequest.getTitle())
 			.shop(shop)
-			.likes(0L)
-			.views(0L)
 			.category(postRequest.getCategory())
 			.contents(postRequest.getContents())
 			.build();

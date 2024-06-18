@@ -27,6 +27,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -62,11 +63,13 @@ public class Post extends BaseEntity {
 	@Column(name = "contents", nullable = false, columnDefinition = "TEXT")
 	private String contents;
 
+	@Builder.Default
 	@Schema(title = "좋아요 수")
 	@Column(name = "likes", nullable = false)
 	@ColumnDefault("0")
 	private Long likes = 0L;
 
+	@Builder.Default
 	@Schema(title = "조회수")
 	@Column(name = "views", nullable = false)
 	@ColumnDefault("0")
