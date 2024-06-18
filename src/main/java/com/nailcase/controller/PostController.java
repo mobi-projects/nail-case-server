@@ -34,9 +34,8 @@ public class PostController {
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<PostImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
-		@PathVariable Long shopId,
-		@RequestParam Long memberId) {
-		return postService.uploadImages(files, memberId);
+		@PathVariable Long shopId) {
+		return postService.uploadImages(files);
 	}
 
 	@PostMapping
@@ -57,11 +56,8 @@ public class PostController {
 	}
 
 	@GetMapping("/{announcementId}")
-	public PostDto.Response viewShopNews(@PathVariable Long announcementId, @PathVariable Long shopId,
-		@RequestParam Long memberId) {
-		// @RequestHeader("Authorization") String authorizationHeader
-		// Long memberId = extractMemberIdFromToken(authorizationHeader);
-		return postService.viewShopNews(shopId, announcementId, memberId);
+	public PostDto.Response viewShopNews(@PathVariable Long announcementId, @PathVariable Long shopId) {
+		return postService.viewShopNews(shopId, announcementId);
 	}
 
 	@DeleteMapping("/{announcementId}")
@@ -73,10 +69,8 @@ public class PostController {
 	@PostMapping("/{announcementId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
 	public PostCommentDto.Response registerComment(@PathVariable Long shopId, @PathVariable Long announcementId,
-		@RequestBody PostCommentDto.Request commentRequest, @RequestParam Long memberId) {
-		// @RequestHeader("Authorization") String authorizationHeader
-		// Long memberId = extractMemberIdFromToken(authorizationHeader)
-		return postService.registerComment(shopId, announcementId, commentRequest, memberId);
+		@RequestBody PostCommentDto.Request commentRequest) {
+		return postService.registerComment(shopId, announcementId, commentRequest);
 	}
 
 	@PutMapping("/{announcementId}/comments/{commentId}")
@@ -95,11 +89,8 @@ public class PostController {
 	@PostMapping("/{announcementId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
-		@RequestParam Long memberId, @PathVariable String shopId) {
-		// 토큰에서 사용자 정보 추출
-		// @RequestHeader("Authorization") String authorizationHeader
-		// Long memberId = extractMemberIdFromToken(authorizationHeader);
-		postService.addImageToPost(announcementId, files, memberId);
+		@PathVariable String shopId) {
+		postService.addImageToPost(announcementId, files);
 	}
 
 	@DeleteMapping("/{announcementId}/images/{imageId}")
@@ -110,7 +101,12 @@ public class PostController {
 	}
 
 	@PostMapping("/{announcementId}/like")
-	public void likePost(@PathVariable Long announcementId, @RequestParam Long memberId, @PathVariable String shopId) {
-		postService.likePost(announcementId, memberId);
+	public void likePost(@PathVariable Long announcementId, @PathVariable Long shopId) {
+		postService.likePost(announcementId);
+	}
+
+	@PostMapping("/{announcementId}/unlike")
+	public void unLikePost(@PathVariable Long announcementId, @PathVariable Long shopId) {
+		postService.unlikePost(announcementId);
 	}
 }
