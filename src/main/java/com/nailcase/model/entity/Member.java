@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity
-@Table(name = "mambers")
+@Table(name = "members")
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
