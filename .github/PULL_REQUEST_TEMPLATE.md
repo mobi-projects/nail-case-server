@@ -1,6 +1,6 @@
 # Pull Request
 
-[Contribution Guidelines](https://github.com/mobi-projects/nail-case-server/WIKI/workflow/guidelines)
+[Contribution Guidelines](https://github.com/mobi-projects/nail-case-server/blob/main/WIKI/workflow/guidelines.md)
 
 ## PR 제목
 
