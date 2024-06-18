@@ -17,6 +17,7 @@ import com.nailcase.model.enums.ConditionOption;
 import com.nailcase.model.enums.RemoveOption;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.model.enums.TreatmentOption;
+import com.nailcase.util.DateUtils;
 
 /**
  * 테스트를 위해 미리 정의된 데이터를 생성하는 유틸리티 클래스입니다.
@@ -35,6 +36,121 @@ import com.nailcase.model.enums.TreatmentOption;
  * }</pre>
  */
 public class FixtureFactory {
+	// SHOP
+	public static final Long FIXTURE_SHOP_ID = 1L;
+	public static final int FIXTURE_AVAILABLE_SEATS = 3;
+
+	// NAIL_ARTIST
+	public static final Long FIXTURE_NAIL_ARTIST_ID = 1L;
+
+	// RESERVATION
+	public static final Long FIXTURE_RESERVATION_ID = 1L;
+
+	// RESERVATION_DETAIL
+	public static final Long FIXTURE_RESERVATION_DETAIL_ID = 1L;
+	public static final Long FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME = 1718240400L;
+	public static final LocalDateTime FIXTURE_RESERVATION_DETAIL_START_TIME =
+		DateUtils.unixTimeStampToLocalDateTime(FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME);
+	public static final Long FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME = 1718247600L;
+	public static final LocalDateTime FIXTURE_RESERVATION_DETAIL_END_TIME =
+		DateUtils.unixTimeStampToLocalDateTime(FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME);
+	public static final ReservationStatus FIXTURE_RESERVATION_STATUS = ReservationStatus.PENDING;
+	public static final ReservationStatus FIXTURE_RESERVATION_PATCH_STATUS = ReservationStatus.CANCELED;
+	public static final RemoveOption FIXTURE_RESERVATION_REMOVE = RemoveOption.IN_SHOP;
+	public static final Boolean FIXTURE_RESERVATION_EXTEND = true;
+
+	// CONDITION
+	public static final Long FIXTURE_CONDITION_ID = 1L;
+	public static final ConditionOption FIXTURE_CONDITION_OPTION = ConditionOption.REPAIR;
+
+	// TREATMENT
+	public static final Long FIXTURE_TREATMENT_ID = 1L;
+	public static final TreatmentOption FIXTURE_TREATMENT_OPTION = TreatmentOption.AOM;
+	public static final Long FIXTURE_IMAGE_ID = 1L;
+	public static final String FIXTURE_IMAGE_URL = "hello/imageUrl";
+
+	public Treatment treatment() {
+		return createTreatment(
+			FIXTURE_TREATMENT_ID,
+			FIXTURE_TREATMENT_OPTION,
+			FIXTURE_IMAGE_ID,
+			FIXTURE_IMAGE_URL
+		);
+	}
+
+	public TreatmentDto.Post treatmentPostDto() {
+		return createTreatmentPostDto(
+			FIXTURE_TREATMENT_OPTION,
+			FIXTURE_IMAGE_ID,
+			FIXTURE_IMAGE_URL
+		);
+	}
+
+	public Condition condition() {
+		return createCondition(FIXTURE_CONDITION_ID, FIXTURE_CONDITION_OPTION);
+	}
+
+	public ConditionDto.Post conditionPostDto() {
+		return createConditionPostDto(FIXTURE_CONDITION_OPTION);
+	}
+
+	public ReservationDetail reservationDetail() {
+		return createReservationDetail(
+			FIXTURE_RESERVATION_DETAIL_ID,
+			FIXTURE_SHOP_ID,
+			FIXTURE_NAIL_ARTIST_ID,
+			List.of(treatment()),
+			List.of(condition()),
+			FIXTURE_RESERVATION_DETAIL_START_TIME,
+			FIXTURE_RESERVATION_DETAIL_END_TIME,
+			FIXTURE_RESERVATION_STATUS,
+			FIXTURE_RESERVATION_REMOVE,
+			FIXTURE_RESERVATION_EXTEND
+		);
+	}
+
+	public ReservationDetailDto.Post reservationDetailPostDto() {
+		return createReservationDetailPostDto(
+			FIXTURE_SHOP_ID,
+			FIXTURE_RESERVATION_REMOVE,
+			FIXTURE_RESERVATION_EXTEND,
+			FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME,
+			FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME,
+			List.of(conditionPostDto()),
+			List.of(treatmentPostDto())
+		);
+	}
+
+	public ReservationDetailDto.Patch reservationDetailPatchDto() {
+		return createReservationDetailPatchDto(
+			FIXTURE_RESERVATION_DETAIL_ID,
+			FIXTURE_NAIL_ARTIST_ID
+		);
+	}
+
+	public Reservation reservation() {
+		return createReservation(
+			FIXTURE_RESERVATION_ID,
+			FIXTURE_SHOP_ID,
+			FIXTURE_NAIL_ARTIST_ID,
+			List.of(reservationDetail())
+		);
+	}
+
+	public ReservationDto.Post reservationPostDto() {
+		return createReservationPostDto(
+			FIXTURE_SHOP_ID,
+			List.of(reservationDetailPostDto())
+		);
+	}
+
+	public ReservationDto.Patch reservationPatchDto() {
+		return createReservationPatchDto(
+			FIXTURE_RESERVATION_PATCH_STATUS,
+			List.of(reservationDetailPatchDto())
+		);
+	}
+
 	public static ReservationDto.Post createReservationPostDto(
 		Long shopId,
 		List<ReservationDetailDto.Post> reservationDetailList
@@ -113,7 +229,7 @@ public class FixtureFactory {
 	) {
 		return Reservation.builder()
 			.reservationId(reservationId)
-			.shop(Shops.builder().shopId(shopId).build())
+			.shop(Shops.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
 			.nailArtist(NailArtists.builder().nailArtistId(nailArtistId).build())
 			.reservationDetailList(reservationDetailList)
 			.createdAt(LocalDateTime.now())
@@ -135,7 +251,7 @@ public class FixtureFactory {
 	) {
 		return ReservationDetail.builder()
 			.reservationDetailId(reservationDetailId)
-			.shop(Shops.builder().shopId(shopId).build())
+			.shop(Shops.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
 			.nailArtist(NailArtists.builder().nailArtistId(nailArtistId).build())
 			.treatmentList(treatmentList)
 			.conditionList(conditionList)
