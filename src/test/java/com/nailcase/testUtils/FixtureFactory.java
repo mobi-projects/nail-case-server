@@ -8,10 +8,10 @@ import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.TreatmentDto;
 import com.nailcase.model.entity.Condition;
-import com.nailcase.model.entity.NailArtists;
+import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
-import com.nailcase.model.entity.Shops;
+import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.Treatment;
 import com.nailcase.model.enums.ConditionOption;
 import com.nailcase.model.enums.RemoveOption;
@@ -36,6 +36,9 @@ import com.nailcase.util.DateUtils;
  * }</pre>
  */
 public class FixtureFactory {
+	// MEMBER
+	public static final Long FIXTURE_MEMBER_ID = 1L;
+
 	// SHOP
 	public static final Long FIXTURE_SHOP_ID = 1L;
 	public static final int FIXTURE_AVAILABLE_SEATS = 3;
@@ -229,8 +232,8 @@ public class FixtureFactory {
 	) {
 		return Reservation.builder()
 			.reservationId(reservationId)
-			.shop(Shops.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
-			.nailArtist(NailArtists.builder().nailArtistId(nailArtistId).build())
+			.shop(Shop.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
+			.nailArtist(NailArtist.builder().nailArtistId(nailArtistId).build())
 			.reservationDetailList(reservationDetailList)
 			.createdAt(LocalDateTime.now())
 			.modifiedAt(LocalDateTime.now())
@@ -251,8 +254,8 @@ public class FixtureFactory {
 	) {
 		return ReservationDetail.builder()
 			.reservationDetailId(reservationDetailId)
-			.shop(Shops.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
-			.nailArtist(NailArtists.builder().nailArtistId(nailArtistId).build())
+			.shop(Shop.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
+			.nailArtist(NailArtist.builder().nailArtistId(nailArtistId).build())
 			.treatmentList(treatmentList)
 			.conditionList(conditionList)
 			.startTime(startTime)

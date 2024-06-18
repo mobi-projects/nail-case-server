@@ -27,7 +27,7 @@ import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
-import com.nailcase.model.entity.Shops;
+import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.repository.ReservationDetailRepository;
 import com.nailcase.repository.ReservationRepository;
@@ -63,7 +63,11 @@ class ReservationServiceTest {
 		)).willReturn(List.of());
 		given(reservationRepository.save(any(Reservation.class))).willReturn(this.reservation(reservationId));
 
-		ReservationDto.Response response = reservationService.createReservation(shopId, reservationPostDto);
+		ReservationDto.Response response = reservationService.createReservation(
+			shopId,
+			FixtureFactory.FIXTURE_MEMBER_ID,
+			reservationPostDto
+		);
 
 		assertThat(response).hasFieldOrPropertyWithValue("reservationId", reservationId)
 			.hasFieldOrProperty("reservationDetailList")
@@ -106,13 +110,14 @@ class ReservationServiceTest {
 		Assertions.assertThrows(BusinessException.class,
 			() -> reservationService.createReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				reservationPostDtoWithInvalidTimeRange));
 	}
 
 	@Test
 	void createReservation_reservationOverBooked() {
 		ReservationDetail reservationDetail = fixtureFactory.reservationDetail();
-		Shops shop = reservationDetail.getShop(); // availableSeats = 3, reservationDetail = 1
+		Shop shop = reservationDetail.getShop(); // availableSeats = 3, reservationDetail = 1
 		shop.minusAvailableSeats(); // availableSeats = 2, reservationDetail = 1
 		shop.minusAvailableSeats(); // availableSeats = 1, reservationDetail = 1
 		given(reservationDetailRepository.findOngoingReservationDetailList(
@@ -123,7 +128,7 @@ class ReservationServiceTest {
 
 		Assertions.assertThrows(BusinessException.class,
 			() -> reservationService.createReservation(
-				FixtureFactory.FIXTURE_SHOP_ID, fixtureFactory.reservationPostDto()));
+				FixtureFactory.FIXTURE_SHOP_ID, FixtureFactory.FIXTURE_MEMBER_ID, fixtureFactory.reservationPostDto()));
 	}
 
 	@Test
@@ -134,6 +139,7 @@ class ReservationServiceTest {
 		ReservationDto.Response response = reservationService.updateReservation(
 			FixtureFactory.FIXTURE_SHOP_ID,
 			FixtureFactory.FIXTURE_RESERVATION_ID,
+			FixtureFactory.FIXTURE_MEMBER_ID,
 			fixtureFactory.reservationPatchDto()
 		);
 
@@ -177,6 +183,7 @@ class ReservationServiceTest {
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				fixtureFactory.reservationPatchDto()
 			),
 			ReservationErrorCode.RESERVATION_NOT_FOUND.getMessage()
@@ -193,6 +200,7 @@ class ReservationServiceTest {
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID + 1L,
 				reservationId,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				fixtureFactory.reservationPatchDto()
 			),
 			CommonErrorCode.NOT_FOUND.getMessage()
@@ -214,6 +222,7 @@ class ReservationServiceTest {
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				fixtureFactory.reservationPatchDto()
 			),
 			ReservationErrorCode.STATUS_NOT_UPDATABLE.getMessage()
@@ -235,6 +244,7 @@ class ReservationServiceTest {
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				fixtureFactory.reservationPatchDto()
 			),
 			ReservationErrorCode.STATUS_NOT_UPDATABLE.getMessage()
@@ -258,6 +268,7 @@ class ReservationServiceTest {
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				reservationPatchDto
 			),
 			ReservationErrorCode.STATUS_NOT_UPDATABLE.getMessage()
@@ -279,6 +290,7 @@ class ReservationServiceTest {
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
+				FixtureFactory.FIXTURE_MEMBER_ID,
 				reservationPatchDto
 			),
 			ReservationErrorCode.RESERVATION_NOT_FOUND.getMessage()
