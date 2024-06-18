@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.MemberDetails;
-import com.nailcase.model.dto.ShopRegisterDto;
+import com.nailcase.model.dto.ShopDto;
 import com.nailcase.service.ShopService;
 
 import jakarta.validation.Valid;
@@ -29,8 +29,8 @@ public class ShopController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ShopRegisterDto.Response registerShop(
-		@Valid @RequestBody ShopRegisterDto.Request shopRegisterRequest,
+	public ShopDto.Response registerShop(
+		@Valid @RequestBody ShopDto.Post shopRegisterRequest,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
 		return shopService.registerShop(shopRegisterRequest, memberDetails.getMemberId());

@@ -6,10 +6,10 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class ShopRegisterDto {
+public class ShopDto {
 	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class Request {
+	public static class Post {
 		@NotBlank
 		@Size(max = 128)
 		private String shopName;

@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nailcase.config.SecurityConfig;
-import com.nailcase.model.dto.ShopRegisterDto;
+import com.nailcase.model.dto.ShopDto;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.service.ShopService;
 import com.nailcase.testUtils.FixtureFactory;
@@ -76,8 +76,8 @@ public class ShopControllerTest {
 		String jwt = fixtureFactory.getMemberFixtureFactory().createMemberAndGetJwt();
 		EasyRandomParameters params = new EasyRandomParameters()
 			.randomize(named("phone"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(16));
-		ShopRegisterDto.Request requestDto = new EasyRandom(params).nextObject(ShopRegisterDto.Request.class);
-		ShopRegisterDto.Response responseDto = new ShopRegisterDto.Response();
+		ShopDto.Post requestDto = new EasyRandom(params).nextObject(ShopDto.Post.class);
+		ShopDto.Response responseDto = new ShopDto.Response();
 		Reflection.setField(responseDto, "shopId", 1L);
 		String requestJson = om.registerModule(new JavaTimeModule())
 			.writeValueAsString(requestDto);
@@ -85,7 +85,7 @@ public class ShopControllerTest {
 			.writeValueAsString(responseDto);
 
 		// When
-		doReturn(responseDto).when(shopService).registerShop(any(ShopRegisterDto.Request.class), eq(1L));
+		doReturn(responseDto).when(shopService).registerShop(any(ShopDto.Post.class), eq(1L));
 
 		// Then
 		mockMvc
@@ -107,7 +107,7 @@ public class ShopControllerTest {
 		EasyRandomParameters params = new EasyRandomParameters()
 			.excludeField(named("shopName").and(ofType(String.class)))
 			.excludeField(named("phone").and(ofType(String.class)));
-		ShopRegisterDto.Request requestDto = new EasyRandom(params).nextObject(ShopRegisterDto.Request.class);
+		ShopDto.Post requestDto = new EasyRandom(params).nextObject(ShopDto.Post.class);
 
 		String requestJson = om.registerModule(new JavaTimeModule())
 			.writeValueAsString(requestDto);

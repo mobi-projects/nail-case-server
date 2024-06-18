@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.mapper.ShopMapper;
-import com.nailcase.model.dto.ShopRegisterDto;
+import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.Role;
@@ -27,8 +27,8 @@ public class ShopService {
 	private final ShopHourService shopHourService;
 
 	@Transactional
-	public ShopRegisterDto.Response registerShop(
-		ShopRegisterDto.Request shopRegisterRequest,
+	public ShopDto.Response registerShop(
+		ShopDto.Post shopRegisterRequest,
 		Long memberId
 	) throws BusinessException {
 		// Set member role MANAGER
