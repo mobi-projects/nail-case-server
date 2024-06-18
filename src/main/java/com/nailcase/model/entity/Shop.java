@@ -77,12 +77,6 @@ public class Shop extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
 	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
 
-	// shop service에 있는 메소드 그대로 사용
-	public void setOwnerId(Long userId) {
-		this.member = Member.builder()
-			.memberId(userId)
-			.build();
-	}
 
 	public void associateDown() {
 		this.nailArtistList.forEach(nailArtist -> nailArtist.associateDown(this));

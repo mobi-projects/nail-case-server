@@ -28,7 +28,7 @@ public class ShopService {
 
 	@Transactional
 	public ShopDto.Response registerShop(
-		ShopDto.Post shopRegisterRequest,
+		ShopDto.Post request,
 		Long memberId
 	) throws BusinessException {
 		// Set member role MANAGER
@@ -39,8 +39,12 @@ public class ShopService {
 		member.setRole(Role.MANAGER);
 
 		// Create shop
-		Shop shop = shopMapper.toEntity(shopRegisterRequest);
-		shop.setOwnerId(memberId);
+		Shop shop = Shop.builder()
+			.shopName(request.getShopName())
+			.phone(request.getPhone())
+			.overview(request.getOverview())
+			.member(member)
+			.build();
 
 		Shop savedShop = shopRepository.save(shop);
 

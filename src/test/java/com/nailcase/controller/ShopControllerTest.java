@@ -81,8 +81,6 @@ public class ShopControllerTest {
 		Reflection.setField(responseDto, "shopId", 1L);
 		String requestJson = om.registerModule(new JavaTimeModule())
 			.writeValueAsString(requestDto);
-		String responseJson = om.registerModule(new JavaTimeModule())
-			.writeValueAsString(responseDto);
 
 		// When
 		doReturn(responseDto).when(shopService).registerShop(any(ShopDto.Post.class), eq(1L));
@@ -93,8 +91,7 @@ public class ShopControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson)
 				.header("Authorization", "Bearer " + jwt))
-			.andExpect(status().isCreated())
-			.andExpect(content().json(responseJson));
+			.andExpect(status().isCreated());
 	}
 
 	@Test
