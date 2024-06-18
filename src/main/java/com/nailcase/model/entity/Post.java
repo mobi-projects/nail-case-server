@@ -19,6 +19,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -43,8 +45,9 @@ public class Post extends BaseEntity {
 	@Column(name = "post_id", nullable = false)
 	private Long postId;
 
-	// @Column(name = "shop_id")
-	// private Long shopId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "shop_id")
+	private Shop shop;
 
 	@Schema(title = "게시물 제목 이름")
 	@Column(name = "title", nullable = false, length = 32)
@@ -85,6 +88,15 @@ public class Post extends BaseEntity {
 
 	public void updateTitle(String title) {
 		this.title = title;
+	}
+
+	public void registerPostImages(List<PostImage> newImages) {
+		if (postImages == null) {
+			postImages = new ArrayList<>();
+		}
+		for (PostImage newImage : newImages) {
+			addPostImage(newImage);
+		}
 	}
 
 	public void updateContents(String contents) {

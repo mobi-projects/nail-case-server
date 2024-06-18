@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.nailcase.exception.codes.ErrorCodeInterface;
+import com.nailcase.exception.codes.ErrorResponse;
+
 @Service
 public class ResponseService {
 
@@ -25,5 +28,13 @@ public class ResponseService {
 		response.setCode(CommonResponse.SUCCESS_CODE);
 		response.setSuccess(true);
 		response.setMessage(CommonResponse.SUCCESS_MESSAGE);
+	}
+
+	public ErrorResponse getErrorResponse(Object error, int status) {
+		if (error instanceof ErrorCodeInterface) {
+			ErrorCodeInterface errorCode = (ErrorCodeInterface)error;
+			return new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
+		}
+		return new ErrorResponse(status, "An unexpected error has occurred.");
 	}
 }
