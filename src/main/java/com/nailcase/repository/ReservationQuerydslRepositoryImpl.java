@@ -24,20 +24,6 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 
 	private final JPAQueryFactory queryFactory;
 
-	// @Override
-	// public List<Reservation> query(Long shopId, LocalDateTime startTime, LocalDateTime endTime) {
-	// 	return queryFactory.selectFrom(QReservation.reservation)
-	// 		.join(QReservation.reservation.shop, QShops.shops)
-	// 		.fetchJoin()
-	// 		.join(QReservation.reservation.reservationDetailList, QReservationDetail.reservationDetail)
-	// 		.fetchJoin()
-	// 		.where(QReservation.reservation.shop.shopId.eq(shopId),
-	// 			QReservationDetail.reservationDetail.startTime.before(endTime),
-	// 			QReservationDetail.reservationDetail.startTime.after(startTime))
-	// 		.orderBy(QReservationDetail.reservationDetail.startTime.asc())
-	// 		.fetch();
-	// }
-
 	@Override
 	public List<Reservation> findReservationListWithinDateRange(Long shopId, LocalDateTime startDate,
 		LocalDateTime endDate) {
@@ -59,7 +45,6 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.map(ReservationDetail::getReservationDetailId)
 			.toList();
 
-		System.out.println(reservationDetailIdList);
 		queryFactory.selectFrom(QCondition.condition)
 			.where(QCondition.condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
 			.fetch();
