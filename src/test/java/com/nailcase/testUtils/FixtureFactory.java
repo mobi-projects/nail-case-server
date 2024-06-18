@@ -1,5 +1,12 @@
 package com.nailcase.testUtils;
 
+import org.springframework.stereotype.Component;
+
+import com.nailcase.testUtils.fixtureFactory.MemberFixtureFactory;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +42,13 @@ import com.nailcase.util.DateUtils;
  * List<User> userList = FixtureFactory.createUserList(5);
  * }</pre>
  */
+@Getter
+@Component
+@RequiredArgsConstructor
 public class FixtureFactory {
+
+	private final MemberFixtureFactory memberFixtureFactory;
+
 	// MEMBER
 	public static final Long FIXTURE_MEMBER_ID = 1L;
 
