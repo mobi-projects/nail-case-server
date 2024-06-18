@@ -85,7 +85,7 @@ public class FixtureFactory {
 	public static final Long FIXTURE_IMAGE_ID = 1L;
 	public static final String FIXTURE_IMAGE_URL = "hello/imageUrl";
 
-	public Treatment treatment() {
+	public static Treatment treatment() {
 		return createTreatment(
 			FIXTURE_TREATMENT_ID,
 			FIXTURE_TREATMENT_OPTION,
@@ -94,7 +94,7 @@ public class FixtureFactory {
 		);
 	}
 
-	public TreatmentDto.Post treatmentPostDto() {
+	public static TreatmentDto.Post treatmentPostDto() {
 		return createTreatmentPostDto(
 			FIXTURE_TREATMENT_OPTION,
 			FIXTURE_IMAGE_ID,
@@ -102,15 +102,15 @@ public class FixtureFactory {
 		);
 	}
 
-	public Condition condition() {
+	public static Condition condition() {
 		return createCondition(FIXTURE_CONDITION_ID, FIXTURE_CONDITION_OPTION);
 	}
 
-	public ConditionDto.Post conditionPostDto() {
+	public static ConditionDto.Post conditionPostDto() {
 		return createConditionPostDto(FIXTURE_CONDITION_OPTION);
 	}
 
-	public ReservationDetail reservationDetail() {
+	public static ReservationDetail reservationDetail() {
 		return createReservationDetail(
 			FIXTURE_RESERVATION_DETAIL_ID,
 			FIXTURE_SHOP_ID,
@@ -125,7 +125,7 @@ public class FixtureFactory {
 		);
 	}
 
-	public ReservationDetailDto.Post reservationDetailPostDto() {
+	public static ReservationDetailDto.Post reservationDetailPostDto() {
 		return createReservationDetailPostDto(
 			FIXTURE_SHOP_ID,
 			FIXTURE_RESERVATION_REMOVE,
@@ -137,14 +137,14 @@ public class FixtureFactory {
 		);
 	}
 
-	public ReservationDetailDto.Patch reservationDetailPatchDto() {
+	public static ReservationDetailDto.Patch reservationDetailPatchDto() {
 		return createReservationDetailPatchDto(
 			FIXTURE_RESERVATION_DETAIL_ID,
 			FIXTURE_NAIL_ARTIST_ID
 		);
 	}
 
-	public Reservation reservation() {
+	public static Reservation reservation() {
 		return createReservation(
 			FIXTURE_RESERVATION_ID,
 			FIXTURE_SHOP_ID,
@@ -153,14 +153,14 @@ public class FixtureFactory {
 		);
 	}
 
-	public ReservationDto.Post reservationPostDto() {
+	public static ReservationDto.Post reservationPostDto() {
 		return createReservationPostDto(
 			FIXTURE_SHOP_ID,
 			List.of(reservationDetailPostDto())
 		);
 	}
 
-	public ReservationDto.Patch reservationPatchDto() {
+	public static ReservationDto.Patch reservationPatchDto() {
 		return createReservationPatchDto(
 			FIXTURE_RESERVATION_PATCH_STATUS,
 			List.of(reservationDetailPatchDto())
