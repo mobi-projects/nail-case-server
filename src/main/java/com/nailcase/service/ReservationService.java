@@ -40,16 +40,8 @@ public class ReservationService {
 			throw new BusinessException(ReservationErrorCode.INVALID_TIME_RANGE);
 		}
 
-		// 예약 초과인지 여부 검토 => 시간이 reservationDetail 에 저장된 경우
-		List<ReservationDetail> reservationDetailList =
-			reservationDetailRepository.findOngoingReservationDetailList(shopId, startTime, endTime);
-		if (!reservationDetailList.isEmpty()) {
-			Integer availableSeats = reservationDetailList.getFirst().getShop().getAvailableSeats();
-			int reservationHour = endTime.getHour() - startTime.getHour();
-			if (checkReservationAvailability(reservationDetailList, availableSeats, reservationHour, startTime)) {
-				throw new BusinessException(ReservationErrorCode.RESERVATION_OVERBOOKED);
-			}
-		}
+		// 예약 초과인지 여부 검토
+		validateReservationAvailability(shopId, startTime, endTime);
 
 		// 예약 생성
 		Reservation reservation = reservationMapper.toEntity(shopId, dto);
@@ -61,7 +53,7 @@ public class ReservationService {
 	@Transactional
 	public ReservationDto.Response updateReservation(Long shopId, Long reservationId, ReservationDto.Patch dto) {
 		Reservation reservation = reservationRepository.findById(reservationId)
-			.orElseThrow(() -> new RuntimeException("reservation not found"));
+			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 		if (!reservation.getShop().getShopId().equals(shopId)) {
 			throw new BusinessException(CommonErrorCode.NOT_FOUND);
 		}
@@ -85,7 +77,7 @@ public class ReservationService {
 					.filter(reservationDetail ->
 						reservationDetail.getReservationDetailId().equals(targetReservationDetailId))
 					.findAny()
-					.orElseThrow();
+					.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 				targetReservationDetail.updateArtist(NailArtists.builder().nailArtistId(nailArtistId).build());
 			}
 		}
@@ -108,6 +100,18 @@ public class ReservationService {
 			.filter(reservation -> reservation.getShop().getShopId().equals(shopId))
 			.map(reservationMapper::toResponse)
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+	}
+
+	private void validateReservationAvailability(Long shopId, LocalDateTime startTime, LocalDateTime endTime) {
+		List<ReservationDetail> reservationDetailList =
+			reservationDetailRepository.findOngoingReservationDetailList(shopId, startTime, endTime);
+		if (!reservationDetailList.isEmpty()) {
+			Integer availableSeats = reservationDetailList.getFirst().getShop().getAvailableSeats();
+			int reservationHour = endTime.getHour() - startTime.getHour();
+			if (checkReservationAvailability(reservationDetailList, availableSeats, reservationHour, startTime)) {
+				throw new BusinessException(ReservationErrorCode.RESERVATION_OVERBOOKED);
+			}
+		}
 	}
 
 	private boolean checkReservationAvailability(
