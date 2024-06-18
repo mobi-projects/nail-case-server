@@ -24,11 +24,4 @@ public class PostImage extends Image {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	public void setCreatedBy(Long createdBy) {
-		super.setCreatedBy(createdBy);
-	}
-
-	public void setModifiedBy(Long modifiedBy) {
-		super.setModifiedBy(modifiedBy);
-	}
 }

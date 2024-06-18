@@ -1,5 +1,7 @@
 package com.nailcase.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
@@ -19,6 +21,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +29,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity
-@Table(name = "mambers")
+@Table(name = "members")
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -66,6 +69,10 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Shop> shops;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Reservation> reservations = new ArrayList<>();
 
 	// TODO
 	public Member update(String name) {

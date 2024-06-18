@@ -11,15 +11,21 @@ import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.PostErrorCode;
+import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
+import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Post;
 import com.nailcase.model.entity.PostComment;
 import com.nailcase.model.entity.PostImage;
+import com.nailcase.model.entity.PostLikedMember;
+import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.PostCommentsRepository;
 import com.nailcase.repository.PostImageRepository;
+import com.nailcase.repository.PostLikedMemberRepository;
 import com.nailcase.repository.PostsRepository;
+import com.nailcase.util.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,13 +38,13 @@ public class PostService {
 	private final PostImageRepository postImageRepository;
 	private final BitmapService bitmapService;
 	private final PostImageService postImageService;
+	private final MemberRepository memberRepository;
+	private final PostLikedMemberRepository postLikedMemberRepository;
 
-	public List<PostImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
+	public List<PostImageDto> uploadImages(List<MultipartFile> files) {
 		List<PostImage> tempImages = files.stream()
 			.map(file -> {
 				PostImage tempImage = new PostImage();
-				tempImage.setCreatedBy(memberId);
-				tempImage.setModifiedBy(memberId);
 				return tempImage;
 			})
 			.collect(Collectors.toList());
@@ -60,12 +66,9 @@ public class PostService {
 	public PostDto.Response registerPost(Long shopId, PostDto.Request postRequest) {
 		Post post = Post.builder()
 			.title(postRequest.getTitle())
-			.modifiedBy(postRequest.getMemberId())
-			.createdBy(postRequest.getMemberId())
 			.category(postRequest.getCategory())
 			.contents(postRequest.getContents())
 			.build();
-
 		postRepository.save(post);
 
 		if (postRequest.getImageIds() != null && !postRequest.getImageIds().isEmpty()) {
@@ -108,15 +111,13 @@ public class PostService {
 	}
 
 	@Transactional
-	public void addImageToPost(Long postId, List<MultipartFile> files, Long memberId) {
+	public void addImageToPost(Long postId, List<MultipartFile> files) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 
 		List<PostImage> postImages = files.stream()
 			.map(file -> {
 				PostImage postImage = new PostImage();
-				postImage.setCreatedBy(memberId);
-				postImage.setModifiedBy(memberId);
 				postImage.setPost(post);
 				return postImage;
 			})
@@ -130,8 +131,6 @@ public class PostService {
 				postImage.setBucketName(savedImage.getBucketName());
 				postImage.setObjectName(savedImage.getObjectName());
 				postImage.setPost(post);
-				postImage.setCreatedBy(savedImage.getCreatedBy());
-				postImage.setModifiedBy(savedImage.getModifiedBy());
 				return postImage;
 			})
 			.collect(Collectors.toList());
@@ -162,20 +161,20 @@ public class PostService {
 			.collect(Collectors.toList());
 	}
 
-	public PostDto.Response viewShopNews(Long shopId, Long postId, Long memberId) {
+	public PostDto.Response viewShopNews(Long shopId, Long postId) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 
 		// 조회수 증가 로직
 		String key = "post:view:count:" + postId;  // Redis에서 조회수를 저장할 키
-		long offset = memberId; // 사용자 ID를 오프셋으로 사용
+		long offset = SecurityUtil.getCurrentMemberId();
 		Boolean alreadyViewed = bitmapService.getBit(key, offset).orElse(false);
 
 		if (!alreadyViewed) {
 			bitmapService.setBit(key, offset, true);
 			Long viewCount = bitmapService.bitCount(key).orElse(0L);
-			post.incrementViews(viewCount);  // 조회수 증가 메서드 호출
-			postRepository.save(post); // 엔티티 저장 후 업데이트된 값을 반영
+			post.incrementViews(viewCount);
+			postRepository.save(post);
 		}
 
 		Long currentViewCount = bitmapService.bitCount(key).orElse(0L);
@@ -186,15 +185,12 @@ public class PostService {
 		postRepository.deleteById(postId);
 	}
 
-	public PostCommentDto.Response registerComment(Long shopId, Long postId, PostCommentDto.Request commentRequest,
-		Long memberId) {
+	public PostCommentDto.Response registerComment(Long shopId, Long postId, PostCommentDto.Request commentRequest) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		PostComment postComment = PostComment.builder()
 			.body(commentRequest.getBody())
 			.post(post)
-			.createdBy(memberId)
-			.modifiedBy(memberId)
 			.build();
 		commentRepository.save(postComment);
 		return PostCommentDto.Response.from(postComment);
@@ -213,17 +209,37 @@ public class PostService {
 		commentRepository.deleteById(commentId);
 	}
 
-	public void likePost(Long postId, Long memberId) {
+	@Transactional
+	public void likePost(Long postId) {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-		String key = "post:like:count:" + postId;
-		long offset = memberId;
-		Boolean alreadyLiked = bitmapService.getBit(key, offset).orElse(false);
+		Member currentMember = memberRepository.findById(SecurityUtil.getCurrentMemberId())
+			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
+		boolean alreadyLiked = postLikedMemberRepository.existsByPost_PostIdAndMember_MemberId(postId,
+			currentMember.getMemberId());
 		if (!alreadyLiked) {
-			bitmapService.setBit(key, offset, true);
+			PostLikedMember postLike = new PostLikedMember();
+			postLike.updatePost(post);
+			postLike.updateMember(currentMember);
+			postLikedMemberRepository.save(postLike);
 			post.incrementLikes();
 			postRepository.save(post);
 		}
+	}
+
+	@Transactional
+	public void unlikePost(Long postId) {
+		Member currentMember = memberRepository.findById(SecurityUtil.getCurrentMemberId())
+			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+		PostLikedMember postLike = postLikedMemberRepository.findByPost_PostIdAndMember_MemberId(postId,
+				currentMember.getMemberId())
+			.orElseThrow(() -> new BusinessException(PostErrorCode.LIKE_NOT_FOUND));
+
+		postLikedMemberRepository.delete(postLike);
+		Post post = postRepository.findById(postId)
+			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+		post.decrementLikes();
+		postRepository.save(post);
 	}
 }

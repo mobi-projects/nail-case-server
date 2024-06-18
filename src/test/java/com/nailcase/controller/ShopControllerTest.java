@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nailcase.config.SecurityConfig;
 import com.nailcase.model.dto.ShopRegisterDto;
+import com.nailcase.repository.ShopRepository;
 import com.nailcase.service.ShopService;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
@@ -35,6 +37,9 @@ public class ShopControllerTest {
 
 	@MockBean
 	private ShopService shopService;
+
+	@Autowired
+	private ShopRepository shopRepository;
 
 	@Autowired
 	private FixtureFactory fixtureFactory;
@@ -56,6 +61,12 @@ public class ShopControllerTest {
 			.addFilter(securityConfig.jwtAuthenticationProcessingFilter())
 			.build();
 		om = new ObjectMapper();
+	}
+
+	@AfterEach
+	public void cleanUp() {
+		shopRepository.deleteAll(); // Shop 데이터 삭제
+		fixtureFactory.getMemberFixtureFactory().deleteAllMembers(); // Member 데이터 삭제
 	}
 
 	@Test

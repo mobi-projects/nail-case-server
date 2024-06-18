@@ -23,7 +23,7 @@ public class MemberFixtureFactory {
 	private static final Long MEMBER_ID = 1L;
 
 	private static final String EMAIL = StringGenerateFixture.makeEmail(10);
-	
+
 	private static final Role ROLE = Role.GUEST;
 
 	private final JwtService jwtService;
@@ -41,5 +41,9 @@ public class MemberFixtureFactory {
 		memberRepository.save(member);
 
 		return jwtService.createAccessToken(member.getEmail(), member.getMemberId());
+	}
+
+	public void deleteAllMembers() {
+		memberRepository.deleteAll();
 	}
 }
