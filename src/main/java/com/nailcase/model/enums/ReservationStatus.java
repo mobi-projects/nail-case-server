@@ -8,4 +8,6 @@ public enum ReservationStatus {
 	// CANCELED -> X
 	// REJECTED -> X
 	// CONFIRMED -> X
+	// user( 현재 로그인된 )가 reservation의 예약자가 아닐 때 CANCEL -> X
+	// user( 현재 로그인된 )가 shop의 관리자가 아닐 때 REJECT -> X
 }
