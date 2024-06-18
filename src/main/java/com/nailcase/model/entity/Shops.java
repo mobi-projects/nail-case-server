@@ -52,6 +52,14 @@ public class Shops extends BaseEntity {
 		this.nailArtistList.forEach(nailArtist -> nailArtist.associateDown(this));
 	}
 
+	public void minusAvailableSeats() {
+		this.availableSeats--;
+	}
+
+	public void plusAvailableSeats() {
+		this.availableSeats++;
+	}
+
 	public void associateUp(NailArtists nailArtist) {
 		if (nailArtist != null) {
 			this.nailArtistList.add(nailArtist);
