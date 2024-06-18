@@ -2,6 +2,7 @@ package com.nailcase.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.service.ReservationService;
 
@@ -26,9 +28,10 @@ public class ReservationController {
 	@PostMapping
 	public ReservationDto.Response registerReservation(
 		@PathVariable Long shopId,
-		@RequestBody ReservationDto.Post dto
+		@RequestBody ReservationDto.Post dto,
+		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return reservationService.createReservation(shopId, dto);
+		return reservationService.createReservation(shopId, memberDetails.getMemberId(), dto);
 	}
 
 	// TODO: 어디까지 변경 가능한지 알아야 함
@@ -36,9 +39,10 @@ public class ReservationController {
 	public ReservationDto.Response updateReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@RequestBody ReservationDto.Patch dto
+		@RequestBody ReservationDto.Patch dto,
+		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return reservationService.updateReservation(shopId, reservationId, dto);
+		return reservationService.updateReservation(shopId, reservationId, memberDetails.getMemberId(), dto);
 	}
 
 	@GetMapping
@@ -47,6 +51,8 @@ public class ReservationController {
 		@RequestParam Long startTime,
 		@RequestParam Long endTime
 	) {
+		// TODO: 예약 조회할때 shop 에 권한있는 사람일 때 목록 조회 가능
+		// TODO: 예약을 위해 예약 조회할때에는 정보가 간소화 되어야 함
 		return reservationService.listReservation(shopId, startTime, endTime);
 	}
 

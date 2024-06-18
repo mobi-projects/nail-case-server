@@ -13,7 +13,7 @@ import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.mapper.ReservationMapper;
 import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
-import com.nailcase.model.entity.NailArtists;
+import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.repository.ReservationDetailRepository;
@@ -32,7 +32,7 @@ public class ReservationService {
 	private final ReservationDetailRepository reservationDetailRepository;
 
 	@Transactional
-	public ReservationDto.Response createReservation(Long shopId, ReservationDto.Post dto) {
+	public ReservationDto.Response createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
 		// startTime, endTime 비교 유효성 검사
 		LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(dto.getStartTime());
 		LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(dto.getEndTime());
@@ -44,14 +44,20 @@ public class ReservationService {
 		validateReservationAvailability(shopId, startTime, endTime);
 
 		// 예약 생성
-		Reservation reservation = reservationMapper.toEntity(shopId, dto);
+		Reservation reservation = reservationMapper.toEntity(shopId, memberId, dto);
 		reservation.associateDown();
 		Reservation savedReservation = reservationRepository.save(reservation);
 		return reservationMapper.toResponse(savedReservation);
 	}
 
 	@Transactional
-	public ReservationDto.Response updateReservation(Long shopId, Long reservationId, ReservationDto.Patch dto) {
+	public ReservationDto.Response updateReservation(
+		Long shopId,
+		Long reservationId,
+		Long memberId,
+		ReservationDto.Patch dto
+	) {
+		// TODO: memberId 가 shop에 권한이 있는 사람이거나 예약자 본인이어야 함 -> or 조건 쿼리, 어플리케이션 처리 선택
 		Reservation reservation = reservationRepository.findById(reservationId)
 			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 		if (!reservation.getShop().getShopId().equals(shopId)) {
@@ -78,7 +84,7 @@ public class ReservationService {
 						reservationDetail.getReservationDetailId().equals(targetReservationDetailId))
 					.findAny()
 					.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
-				targetReservationDetail.updateArtist(NailArtists.builder().nailArtistId(nailArtistId).build());
+				targetReservationDetail.updateArtist(NailArtist.builder().nailArtistId(nailArtistId).build());
 			}
 		}
 
