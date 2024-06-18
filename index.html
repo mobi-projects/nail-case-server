@@ -742,12 +742,6 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
-    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -767,6 +761,12 @@
       "items" : {
         "$ref" : "#/components/schemas/SortObject"
       }
+    },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
@@ -803,6 +803,45 @@
       "items" : {
         "$ref" : "#/components/schemas/SortObject"
       }
+    }
+  }
+};
+            defs["Patch"] = {
+  "type" : "object",
+  "properties" : {
+    "status" : {
+      "type" : "string",
+      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED" ]
+    },
+    "reservationDetailDtoList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Patch"
+      }
+    }
+  }
+};
+            defs["Post"] = {
+  "required" : [ "reservationDetailList" ],
+  "type" : "object",
+  "properties" : {
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationDetailList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/Post"
+      }
+    },
+    "endTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
     }
   }
 };
@@ -8599,7 +8638,8 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/reservations"</code></pre>
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/shops/{shopId}/reservations?startTime=&endTime="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-listReservation-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -8622,8 +8662,11 @@ public class ReservationControllerApiExample {
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
+        Long startTime = 789; // Long | 
+        Long endTime = 789; // Long | 
         try {
-            apiInstance.listReservation(shopId);
+            array[Response] result = apiInstance.listReservation(shopId, startTime, endTime);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
             e.printStackTrace();
@@ -8640,8 +8683,11 @@ public class ReservationControllerApiExample {
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
+        Long startTime = 789; // Long | 
+        Long endTime = 789; // Long | 
         try {
-            apiInstance.listReservation(shopId);
+            array[Response] result = apiInstance.listReservation(shopId, startTime, endTime);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
             e.printStackTrace();
@@ -8658,11 +8704,18 @@ public class ReservationControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
+Long *startTime = 789; // 
+Long *endTime = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance listReservationWith:shopId
-              completionHandler: ^(NSError* error) {
+    startTime:startTime
+    endTime:endTime
+              completionHandler: ^(array[Response] output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -8681,15 +8734,17 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
+var startTime = 789; // {{Long}} 
+var endTime = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listReservation(shopId, callback);
+api.listReservation(shopId, startTime, endTime, callback);
 </code></pre>
                             </div>
 
@@ -8715,10 +8770,13 @@ namespace Example
 
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
+            var startTime = 789;  // Long | 
+            var endTime = 789;  // Long | 
 
             try
             {
-                apiInstance.listReservation(shopId);
+                array[Response] result = apiInstance.listReservation(shopId, startTime, endTime);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -8739,9 +8797,12 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
+$startTime = 789; // Long | 
+$endTime = 789; // Long | 
 
 try {
-    $api_instance->listReservation($shopId);
+    $result = $api_instance->listReservation($shopId, $startTime, $endTime);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->listReservation: ', $e->getMessage(), PHP_EOL;
 }
@@ -8758,9 +8819,12 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
+my $startTime = 789; # Long | 
+my $endTime = 789; # Long | 
 
 eval { 
-    $api_instance->listReservation(shopId => $shopId);
+    my $result = $api_instance->listReservation(shopId => $shopId, startTime => $startTime, endTime => $endTime);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ReservationControllerApi->listReservation: $@\n";
@@ -8780,9 +8844,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
 shopId = 789 # Long | 
+startTime = 789 # Long | 
+endTime = 789 # Long | 
 
 try: 
-    api_instance.list_reservation(shopId)
+    api_response = api_instance.list_reservation(shopId, startTime, endTime)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->listReservation: %s\n" % e)</code></pre>
                             </div>
@@ -8823,14 +8890,109 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">startTime*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listReservation_startTime">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">endTime*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listReservation_endTime">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-listReservation-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-listReservation-200-schema">
+                                  <div id='responses-listReservation-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/Response"
+        },
+        "x-content-type" : "*/*"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-listReservation-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-listReservation-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-listReservation-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -8871,6 +9033,8 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-registerReservation-0-java">
@@ -8893,9 +9057,11 @@ public class ReservationControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
+        Post body = ; // Post | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.registerReservation(shopId);
+            Response result = apiInstance.registerReservation(body, shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#registerReservation");
             e.printStackTrace();
@@ -8911,9 +9077,11 @@ public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
+        Post body = ; // Post | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.registerReservation(shopId);
+            Response result = apiInstance.registerReservation(body, shopId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#registerReservation");
             e.printStackTrace();
@@ -8929,12 +9097,17 @@ public class ReservationControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Post *body = ; // 
 Long *shopId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
-[apiInstance registerReservationWith:shopId
-              completionHandler: ^(NSError* error) {
+[apiInstance registerReservationWith:body
+    shopId:shopId
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -8952,16 +9125,17 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
+var body = ; // {{Post}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerReservation(shopId, callback);
+api.registerReservation(bodyshopId, callback);
 </code></pre>
                             </div>
 
@@ -8986,11 +9160,13 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new ReservationControllerApi();
+            var body = new Post(); // Post | 
             var shopId = 789;  // Long | 
 
             try
             {
-                apiInstance.registerReservation(shopId);
+                Response result = apiInstance.registerReservation(body, shopId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -9010,10 +9186,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
+$body = ; // Post | 
 $shopId = 789; // Long | 
 
 try {
-    $api_instance->registerReservation($shopId);
+    $result = $api_instance->registerReservation($body, $shopId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->registerReservation: ', $e->getMessage(), PHP_EOL;
 }
@@ -9029,10 +9207,12 @@ use WWW::SwaggerClient::ReservationControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Post->new(); # Post | 
 my $shopId = 789; # Long | 
 
 eval { 
-    $api_instance->registerReservation(shopId => $shopId);
+    my $result = $api_instance->registerReservation(body => $body, shopId => $shopId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ReservationControllerApi->registerReservation: $@\n";
@@ -9051,10 +9231,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
+body =  # Post | 
 shopId = 789 # Long | 
 
 try: 
-    api_instance.register_reservation(shopId)
+    api_response = api_instance.register_reservation(body, shopId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->registerReservation: %s\n" % e)</code></pre>
                             </div>
@@ -9093,6 +9275,49 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Post"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_registerReservation_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_registerReservation_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
@@ -9100,9 +9325,49 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerReservation-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerReservation-200-schema">
+                                  <div id='responses-registerReservation-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerReservation-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerReservation-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerReservation-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -9143,6 +9408,8 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
  -H "Authorization: Bearer [[accessToken]]"\
 \
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-updateReservation-0-java">
@@ -9165,10 +9432,12 @@ public class ReservationControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
+        Patch body = ; // Patch | 
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            apiInstance.updateReservation(shopId, reservationId);
+            Response result = apiInstance.updateReservation(body, shopId, reservationId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#updateReservation");
             e.printStackTrace();
@@ -9184,10 +9453,12 @@ public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
+        Patch body = ; // Patch | 
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            apiInstance.updateReservation(shopId, reservationId);
+            Response result = apiInstance.updateReservation(body, shopId, reservationId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#updateReservation");
             e.printStackTrace();
@@ -9203,14 +9474,19 @@ public class ReservationControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Patch *body = ; // 
 Long *shopId = 789; // 
 Long *reservationId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
-[apiInstance updateReservationWith:shopId
+[apiInstance updateReservationWith:body
+    shopId:shopId
     reservationId:reservationId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -9228,6 +9504,7 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
+var body = ; // {{Patch}} 
 var shopId = 789; // {{Long}} 
 var reservationId = 789; // {{Long}} 
 
@@ -9235,10 +9512,10 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateReservation(shopId, reservationId, callback);
+api.updateReservation(bodyshopIdreservationId, callback);
 </code></pre>
                             </div>
 
@@ -9263,12 +9540,14 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new ReservationControllerApi();
+            var body = new Patch(); // Patch | 
             var shopId = 789;  // Long | 
             var reservationId = 789;  // Long | 
 
             try
             {
-                apiInstance.updateReservation(shopId, reservationId);
+                Response result = apiInstance.updateReservation(body, shopId, reservationId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -9288,11 +9567,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
+$body = ; // Patch | 
 $shopId = 789; // Long | 
 $reservationId = 789; // Long | 
 
 try {
-    $api_instance->updateReservation($shopId, $reservationId);
+    $result = $api_instance->updateReservation($body, $shopId, $reservationId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->updateReservation: ', $e->getMessage(), PHP_EOL;
 }
@@ -9308,11 +9589,13 @@ use WWW::SwaggerClient::ReservationControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Patch->new(); # Patch | 
 my $shopId = 789; # Long | 
 my $reservationId = 789; # Long | 
 
 eval { 
-    $api_instance->updateReservation(shopId => $shopId, reservationId => $reservationId);
+    my $result = $api_instance->updateReservation(body => $body, shopId => $shopId, reservationId => $reservationId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ReservationControllerApi->updateReservation: $@\n";
@@ -9331,11 +9614,13 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
+body =  # Patch | 
 shopId = 789 # Long | 
 reservationId = 789 # Long | 
 
 try: 
-    api_instance.update_reservation(shopId, reservationId)
+    api_response = api_instance.update_reservation(body, shopId, reservationId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->updateReservation: %s\n" % e)</code></pre>
                             </div>
@@ -9396,6 +9681,49 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Patch"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updateReservation_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updateReservation_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
@@ -9403,9 +9731,49 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateReservation-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateReservation-200-schema">
+                                  <div id='responses-updateReservation-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateReservation-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateReservation-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateReservation-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -9446,6 +9814,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 \
+-H "Accept: */*"\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-viewReservation-0-java">
@@ -9471,7 +9840,8 @@ public class ReservationControllerApiExample {
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            apiInstance.viewReservation(shopId, reservationId);
+            Response result = apiInstance.viewReservation(shopId, reservationId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#viewReservation");
             e.printStackTrace();
@@ -9490,7 +9860,8 @@ public class ReservationControllerApiExample {
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            apiInstance.viewReservation(shopId, reservationId);
+            Response result = apiInstance.viewReservation(shopId, reservationId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#viewReservation");
             e.printStackTrace();
@@ -9513,7 +9884,10 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance viewReservationWith:shopId
     reservationId:reservationId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -9538,7 +9912,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 api.viewReservation(shopId, reservationId, callback);
@@ -9571,7 +9945,8 @@ namespace Example
 
             try
             {
-                apiInstance.viewReservation(shopId, reservationId);
+                Response result = apiInstance.viewReservation(shopId, reservationId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -9595,7 +9970,8 @@ $shopId = 789; // Long |
 $reservationId = 789; // Long | 
 
 try {
-    $api_instance->viewReservation($shopId, $reservationId);
+    $result = $api_instance->viewReservation($shopId, $reservationId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->viewReservation: ', $e->getMessage(), PHP_EOL;
 }
@@ -9615,7 +9991,8 @@ my $shopId = 789; # Long |
 my $reservationId = 789; # Long | 
 
 eval { 
-    $api_instance->viewReservation(shopId => $shopId, reservationId => $reservationId);
+    my $result = $api_instance->viewReservation(shopId => $shopId, reservationId => $reservationId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ReservationControllerApi->viewReservation: $@\n";
@@ -9638,7 +10015,8 @@ shopId = 789 # Long |
 reservationId = 789 # Long | 
 
 try: 
-    api_instance.view_reservation(shopId, reservationId)
+    api_response = api_instance.view_reservation(shopId, reservationId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->viewReservation: %s\n" % e)</code></pre>
                             </div>
@@ -9706,9 +10084,49 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-viewReservation-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-viewReservation-200-schema">
+                                  <div id='responses-viewReservation-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-viewReservation-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-viewReservation-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-viewReservation-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
