@@ -45,8 +45,8 @@ public class ShopService {
 		Shop savedShop = shopRepository.save(shop);
 
 		// Create shop info, shop hour init
-		shopInfoService.initShopInfo(memberId);
-		shopHourService.initShopHour(memberId);
+		shopInfoService.initShopInfo(savedShop);
+		shopHourService.initShopHour(savedShop);
 
 		return shopMapper.toResponse(savedShop);
 	}
