@@ -6,12 +6,12 @@ import org.mapstruct.Mapping;
 
 import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.entity.ReservationDetail;
-import com.nailcase.model.entity.Shops;
+import com.nailcase.model.entity.Shop;
 import com.nailcase.util.DateUtils;
 
 @Mapper(
 	uses = {ConditionMapper.class, TreatmentMapper.class},
-	imports = {DateUtils.class, Shops.class},
+	imports = {DateUtils.class, Shop.class},
 	componentModel = "spring",
 	injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
@@ -19,7 +19,7 @@ public interface ReservationDetailMapper {
 
 	@Mapping(
 		target = "shop",
-		expression = "java( Shops.builder().shopId(dto.getShopId()).build() )"
+		expression = "java( Shop.builder().shopId(dto.getShopId()).build() )"
 	)
 
 	@Mapping(

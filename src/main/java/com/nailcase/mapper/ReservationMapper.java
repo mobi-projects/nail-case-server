@@ -6,13 +6,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.nailcase.model.dto.ReservationDto;
+import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Reservation;
-import com.nailcase.model.entity.Shops;
+import com.nailcase.model.entity.Shop;
 import com.nailcase.util.DateUtils;
 
 @Mapper(
 	uses = ReservationDetailMapper.class,
-	imports = {DateUtils.class, Shops.class},
+	imports = {DateUtils.class, Shop.class, Member.class},
 	componentModel = "spring",
 	injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
@@ -26,7 +27,11 @@ public interface ReservationMapper {
 
 	@Mapping(
 		target = "shop",
-		expression = "java( Shops.builder().shopId(dto.getShopId()).build() )"
+		expression = "java( Shop.builder().shopId(dto.getShopId()).build() )"
+	)
+	@Mapping(
+		target = "customer",
+		expression = "java( Member.builder().memberId(memberId).build() )"
 	)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "modifiedAt", ignore = true)
@@ -34,7 +39,7 @@ public interface ReservationMapper {
 	@Mapping(target = "modifiedBy", ignore = true)
 	@Mapping(target = "reservationId", ignore = true)
 	@Mapping(target = "nailArtist", ignore = true)
-	Reservation toEntity(Long shopId, ReservationDto.Post dto);
+	Reservation toEntity(Long shopId, Long memberId, ReservationDto.Post dto);
 
 	@Mapping(
 		target = "createdAt",

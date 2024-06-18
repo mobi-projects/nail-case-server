@@ -38,11 +38,16 @@ public class Reservation extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id")
-	private Shops shop;
+	private Shop shop;
+
+	// 외부 방문 고객인 경우?
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member customer;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "nail_artist_id")
-	private NailArtists nailArtist;
+	private NailArtist nailArtist;
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservation")

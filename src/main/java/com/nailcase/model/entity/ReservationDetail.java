@@ -43,11 +43,11 @@ public class ReservationDetail extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id")
-	private Shops shop;
+	private Shop shop;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "nail_artist_id")
-	private NailArtists nailArtist;
+	private NailArtist nailArtist;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reservation_id")
@@ -100,7 +100,7 @@ public class ReservationDetail extends BaseEntity {
 		this.treatmentList.forEach(treatment -> treatment.associateDown(this));
 	}
 
-	public void updateArtist(NailArtists nailArtist) {
+	public void updateArtist(NailArtist nailArtist) {
 		if (nailArtist != null) {
 			this.nailArtist = nailArtist;
 		}

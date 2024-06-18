@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.QReservationDetail;
-import com.nailcase.model.entity.QShops;
+import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.ReservationStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,7 +23,7 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 	public List<ReservationDetail> findOngoingReservationDetailList(Long shopId, LocalDateTime startTime,
 		LocalDateTime endTime) {
 		return queryFactory.selectFrom(QReservationDetail.reservationDetail)
-			.join(QReservationDetail.reservationDetail.shop, QShops.shops)
+			.join(QReservationDetail.reservationDetail.shop, QShop.shop)
 			.fetchJoin()
 			.where(QReservationDetail.reservationDetail.shop.shopId.eq(shopId),
 				QReservationDetail.reservationDetail.status.ne(ReservationStatus.CANCELED),

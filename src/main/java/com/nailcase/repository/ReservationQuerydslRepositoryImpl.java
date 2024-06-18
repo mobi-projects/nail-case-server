@@ -7,10 +7,10 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.QCondition;
-import com.nailcase.model.entity.QNailArtists;
+import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QReservation;
 import com.nailcase.model.entity.QReservationDetail;
-import com.nailcase.model.entity.QShops;
+import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.QTreatment;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
@@ -30,9 +30,9 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 		List<Reservation> reservationList = queryFactory.selectFrom(QReservation.reservation)
 			.leftJoin(QReservation.reservation.reservationDetailList, QReservationDetail.reservationDetail)
 			.fetchJoin()
-			.leftJoin(QReservation.reservation.shop, QShops.shops)
+			.leftJoin(QReservation.reservation.shop, QShop.shop)
 			.fetchJoin()
-			.leftJoin(QReservation.reservation.nailArtist, QNailArtists.nailArtists)
+			.leftJoin(QReservation.reservation.nailArtist, QNailArtist.nailArtist)
 			.fetchJoin()
 			.where(QReservation.reservation.shop.shopId.eq(shopId),
 				QReservationDetail.reservationDetail.startTime.between(startDate, endDate))
