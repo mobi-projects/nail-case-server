@@ -76,7 +76,7 @@ services:
   backend:
     image: "newtips/nail-case-server"
     ports:
-      - "8080:8080"
+      - "8081:8081"
     restart: always
     depends_on:
       - minio1
@@ -86,7 +86,7 @@ services:
       - redis
       - postgresql
     environment:
-      SERVER_PORT: 8080
+      SERVER_PORT: 8081
       SPRING_APPLICATION_NAME: newtips-server
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -101,6 +101,9 @@ services:
       spring_datasource_password: postgresql
       spring_jpa_hibernate_ddl-auto: update
       spring_jpa_open-in-view: false
+      spring_data_redis_host: redis
+      spring_data_redis_port: 6379
+      spring_jpa_database-platform:
 #      logging_level_org_springframework: DEBUG
 
 volumes:
