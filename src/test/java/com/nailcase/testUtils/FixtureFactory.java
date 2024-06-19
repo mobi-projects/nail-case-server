@@ -21,6 +21,7 @@ import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.model.enums.TreatmentOption;
 import com.nailcase.testUtils.fixtureFactory.MemberFixture;
 import com.nailcase.testUtils.fixtureFactory.MemberFixtureToBootTest;
+import com.nailcase.testUtils.fixtureFactory.ShopFixture;
 import com.nailcase.util.DateUtils;
 
 import lombok.Getter;
@@ -50,6 +51,7 @@ public class FixtureFactory {
 	private final MemberFixtureToBootTest memberFixtureToBootTest;
 
 	public static final MemberFixture memberFixture = new MemberFixture();
+	public static final ShopFixture shopFixture = new ShopFixture();
 
 	// MEMBER
 	public static final Long FIXTURE_MEMBER_ID = 1L;
