@@ -131,6 +131,27 @@ public class ShopServiceTest {
 		assertEquals(shop, shopCaptor.getValue());
 	}
 
+	@Test
+	@DisplayName("deleteShop 실패 테스트 - ShopDeletionForbidden")
+	void deleteShopFailShopDeletionForbidden() {
+		// Given
+		Shop shop = shopFixture.getShop();
+		Long invalidMemberId = -1L; // Invalid member ID
+
+		when(shopRepository.findById(shop.getShopId())).thenReturn(Optional.of(shop));
+
+		// When
+		BusinessException exception = assertThrows(BusinessException.class, () -> {
+			shopService.deleteShop(shop.getShopId(), invalidMemberId);
+		});
+
+		// Then
+		assertEquals(ShopErrorCode.SHOP_DELETION_FORBIDDEN, exception.getErrorCode());
+
+		verify(shopRepository, times(1)).findById(shop.getShopId());
+		verify(shopRepository, times(0)).delete(any(Shop.class));
+	}
+
 	private boolean equals(ShopDto.Response expected, ShopDto.Response actual) {
 		return expected.getShopId().equals(actual.getShopId()) &&
 			expected.getOwnerId().equals(actual.getOwnerId()) &&
