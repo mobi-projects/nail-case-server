@@ -51,6 +51,7 @@ public class PostService {
 			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
 		}
 
+
 		List<PostImage> tempImages = files.stream()
 			.map(file -> {
 				PostImage tempImage = new PostImage();
@@ -221,6 +222,7 @@ public class PostService {
 		PostComment postComment = PostComment.builder()
 			.body(commentRequest.getBody())
 			.post(post)
+			.createdBy(memberId)
 			.build();
 		commentRepository.save(postComment);
 		return PostCommentDto.Response.from(postComment);
