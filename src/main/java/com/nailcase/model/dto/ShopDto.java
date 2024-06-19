@@ -22,6 +22,10 @@ public class ShopDto {
 		private String phone;
 
 		private String overview;
+
+		private String address;
+
+		private int availableSeats;
 	}
 
 	@Data
@@ -29,5 +33,17 @@ public class ShopDto {
 	@EqualsAndHashCode(callSuper = true)
 	public static class Response extends BaseTimeDto {
 		private Long shopId;
+
+		private String ownerId;
+
+		private String shopName;
+
+		private String phone;
+
+		private String overview;
+
+		private String address;
+
+		private String availableSeats;
 	}
 }

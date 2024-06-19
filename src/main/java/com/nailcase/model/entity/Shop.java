@@ -56,8 +56,9 @@ public class Shop extends BaseEntity {
 	@Column(name = "address", length = 128)
 	private String address;
 
+	@Builder.Default
 	@Column(name = "available_seat")
-	private Integer availableSeats;
+	private Integer availableSeats = 0;
 
 	@OneToOne(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private ShopInfo shopInfo;
@@ -76,7 +77,6 @@ public class Shop extends BaseEntity {
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
 	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
-
 
 	public void associateDown() {
 		this.nailArtistList.forEach(nailArtist -> nailArtist.associateDown(this));
