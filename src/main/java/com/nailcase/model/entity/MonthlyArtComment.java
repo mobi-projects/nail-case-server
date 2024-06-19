@@ -21,9 +21,9 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "이달의 아 댓글에 대한 엔티티")
+@Schema(description = "이달의 아트 댓글에 대한 엔티티")
 @SuperBuilder
-@Table(name = "montly_art_comments")
+@Table(name = "monthly_art_comments")
 public class MonthlyArtComment extends BaseEntity {
 
 	@Id
@@ -36,8 +36,8 @@ public class MonthlyArtComment extends BaseEntity {
 	private String body;
 
 	@ManyToOne
-	@JoinColumn(name = "post_id")
-	private Post post;
+	@JoinColumn(name = "monthly_art_id")
+	private MonthlyArt monthlyArt;
 
 	public void updateBody(String body) {
 		this.body = body;

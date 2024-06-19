@@ -9,10 +9,11 @@ import com.nailcase.model.entity.MonthlyArtLikedMember;
 
 public interface MonthlyArtLikedMemberRepository extends JpaRepository<MonthlyArtLikedMember, Long> {
 
-	Boolean existsByMonthlyArt_MonthlyArtIdAndMember_MemberId(Long monthlyId, Long memberId);
+	Boolean existsByMonthlyArt_MonthlyArtIdAndMember_MemberId(Long monthlyArtId, Long memberId);
 
-	Optional<MonthlyArtLikedMember> findByMonthlyArt_MonthlyArtAndMember_MemberId(Long monthlyId, Long memberId);
+	Optional<MonthlyArtLikedMember> findByMonthlyArt_MonthlyArtIdAndMember_MemberId(Long monthlyArtId, Long memberId);
 
-	List<MonthlyArtLikedMember> findByMonthlyArt_MonthlyArtInAndMember_MemberId(List<Long> monthlyIds, Long memberId);
+	List<MonthlyArtLikedMember> findByMonthlyArt_MonthlyArtIdInAndMember_MemberId(List<Long> monthlyArtIds,
+		Long memberId);
 
 }

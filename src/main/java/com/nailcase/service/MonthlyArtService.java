@@ -168,7 +168,7 @@ public class MonthlyArtService {
 	public List<MonthlyArtDto.Response> listMonthlyArts(Long shopId, Long memberId) {
 		List<MonthlyArt> monthlyArts = monthlyArtRepository.findByShop_ShopId(shopId);
 		List<Long> monthlyArtIds = monthlyArts.stream().map(MonthlyArt::getMonthlyArtId).collect(Collectors.toList());
-		List<MonthlyArtLikedMember> likedMonthlyArts = monthlyArtLikedMemberRepository.findByMonthlyArt_MonthlyArtInAndMember_MemberId(
+		List<MonthlyArtLikedMember> likedMonthlyArts = monthlyArtLikedMemberRepository.findByMonthlyArt_MonthlyArtIdInAndMember_MemberId(
 			monthlyArtIds, memberId);
 		Set<Long> likedMonthlyArtIds = likedMonthlyArts.stream()
 			.map(monthlyArtLikedMember -> monthlyArtLikedMember.getMonthlyArt().getMonthlyArtId())
@@ -229,7 +229,7 @@ public class MonthlyArtService {
 
 	@Transactional
 	public void unlikeMonthlyArt(Long monthlyArtId, Long memberId) {
-		MonthlyArtLikedMember monthlyArtLikedMember = monthlyArtLikedMemberRepository.findByMonthlyArt_MonthlyArtAndMember_MemberId(
+		MonthlyArtLikedMember monthlyArtLikedMember = monthlyArtLikedMemberRepository.findByMonthlyArt_MonthlyArtIdAndMember_MemberId(
 				monthlyArtId,
 				memberId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.LIKE_NOT_FOUND));

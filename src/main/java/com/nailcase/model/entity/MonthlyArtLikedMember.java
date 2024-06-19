@@ -38,7 +38,7 @@ public class MonthlyArtLikedMember extends BaseEntity {
 	@JoinColumn(name = "monthly_art_id")
 	private MonthlyArt monthlyArt;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
 
