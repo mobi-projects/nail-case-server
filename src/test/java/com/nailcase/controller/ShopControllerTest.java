@@ -66,14 +66,14 @@ public class ShopControllerTest {
 	@AfterEach
 	public void cleanUp() {
 		shopRepository.deleteAll(); // Shop 데이터 삭제
-		fixtureFactory.getMemberFixtureFactory().deleteAllMembers(); // Member 데이터 삭제
+		fixtureFactory.getMemberFixtureToBootTest().deleteAllMembers(); // Member 데이터 삭제
 	}
 
 	@Test
 	@DisplayName("Post요청시 HTTP.CREATE와 응답을 반환한다.")
 	void registerShopSuccess() throws Exception {
 		// Given
-		String jwt = fixtureFactory.getMemberFixtureFactory().createMemberAndGetJwt();
+		String jwt = fixtureFactory.getMemberFixtureToBootTest().createMemberAndGetJwt();
 		EasyRandomParameters params = new EasyRandomParameters()
 			.randomize(named("phone"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(16));
 		ShopDto.Post requestDto = new EasyRandom(params).nextObject(ShopDto.Post.class);
@@ -98,7 +98,7 @@ public class ShopControllerTest {
 	@DisplayName("Post요청시 필수 필드 누락으로 인해 HTTP.BAD_REQUEST를 반환한다.")
 	void registerShopMissingRequiredFields() throws Exception {
 		// Given
-		String jwt = fixtureFactory.getMemberFixtureFactory().createMemberAndGetJwt();
+		String jwt = fixtureFactory.getMemberFixtureToBootTest().createMemberAndGetJwt();
 
 		// 필수 필드(shopName, phone)가 누락된 요청 데이터
 		EasyRandomParameters params = new EasyRandomParameters()
