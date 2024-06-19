@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -83,12 +84,10 @@ public class ShopServiceTest {
 		when(shopRepository.findById(shopId)).thenReturn(Optional.of(shop));
 
 		// When
-		ShopDto.Response result = shopService.getShopById(shopId);
+		ShopDto.Response result = shopService.getShop(shopId);
 
 		// Then
 		assertTrue(equals(response, result));
-
-		// Verify interactions with mocks
 		verify(shopRepository, times(1)).findById(shopId);
 	}
 
@@ -101,14 +100,35 @@ public class ShopServiceTest {
 
 		// When
 		BusinessException exception = assertThrows(BusinessException.class, () -> {
-			shopService.getShopById(shopId);
+			shopService.getShop(shopId);
 		});
 
 		// Then
 		assertEquals(ShopErrorCode.SHOP_NOT_FOUND, exception.getErrorCode());
-
-		// Verify interactions with mocks
 		verify(shopRepository, times(1)).findById(shopId);
+	}
+
+	@Test
+	@DisplayName("deleteShop 성공 테스트")
+	void deleteShopSuccess() throws BusinessException {
+		// Given
+		Shop shop = shopFixture.getShop();
+		Long shopId = shop.getShopId();
+		Long memberId = shop.getMember().getMemberId();
+
+		when(shopRepository.findById(shopId)).thenReturn(Optional.of(shop));
+
+		// When
+		shopService.deleteShop(shopId, memberId);
+
+		// Then
+		verify(shopRepository, times(1)).findById(shopId);
+		verify(shopRepository, times(1)).delete(shop);
+
+		ArgumentCaptor<Shop> shopCaptor = ArgumentCaptor.forClass(Shop.class);
+		verify(shopRepository).delete(shopCaptor.capture());
+
+		assertEquals(shop, shopCaptor.getValue());
 	}
 
 	private boolean equals(ShopDto.Response expected, ShopDto.Response actual) {
