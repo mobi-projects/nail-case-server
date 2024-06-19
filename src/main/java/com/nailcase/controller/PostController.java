@@ -41,6 +41,23 @@ public class PostController {
 		log.info("Uploading images for shopId: {}", shopId);
 		return postService.uploadImages(files, memberId);
 	}
+  
+	@PostMapping("/{announcementId}/images")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
+		@PathVariable String shopId) {
+		log.info("Adding images to post: {} for shopId: {}", announcementId, shopId);
+		postService.addImageToPost(announcementId, files);
+	}
+
+	@DeleteMapping("/{announcementId}/images/{imageId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeImageFromPost(@PathVariable Long announcementId, @PathVariable Long imageId,
+		@PathVariable String shopId) {
+		log.info("Removing image: {} from post: {}", imageId, announcementId);
+		postService.removeImageFromPost(announcementId, imageId);
+	}
+
 
 	@PostMapping
 	public PostDto.Response registerPost(@PathVariable Long shopId, @RequestBody PostDto.Request postRequest) {
@@ -100,22 +117,6 @@ public class PostController {
 		@PathVariable Long commentId) {
 		log.info("Deleting comment: {} from post: {}", commentId, announcementId);
 		postService.deleteComment(shopId, announcementId, commentId);
-	}
-
-	@PostMapping("/{announcementId}/images")
-	@ResponseStatus(HttpStatus.CREATED)
-	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
-		@PathVariable String shopId) {
-		log.info("Adding images to post: {} for shopId: {}", announcementId, shopId);
-		postService.addImageToPost(announcementId, files);
-	}
-
-	@DeleteMapping("/{announcementId}/images/{imageId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeImageFromPost(@PathVariable Long announcementId, @PathVariable Long imageId,
-		@PathVariable String shopId) {
-		log.info("Removing image: {} from post: {}", imageId, announcementId);
-		postService.removeImageFromPost(announcementId, imageId);
 	}
 
 	@PostMapping("/{announcementId}/like")

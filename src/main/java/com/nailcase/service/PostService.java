@@ -45,7 +45,12 @@ public class PostService {
 	private final PostLikedMemberRepository postLikedMemberRepository;
 	private final ShopRepository shopRepository;
 
+	@Transactional
 	public List<PostImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
+		if (files.size() > 6) {
+			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
+		}
+
 
 		List<PostImage> tempImages = files.stream()
 			.map(file -> {
@@ -209,6 +214,7 @@ public class PostService {
 		postRepository.deleteById(postId);
 	}
 
+	@Transactional
 	public PostCommentDto.Response registerComment(Long shopId, Long postId, PostCommentDto.Request commentRequest,
 		Long memberId) {
 		Post post = postRepository.findById(postId)

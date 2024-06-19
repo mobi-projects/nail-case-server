@@ -73,4 +73,23 @@ public class Review extends BaseEntity {
 		this.rating = rating;
 	}
 
+	public void registerReviewImages(List<ReviewImage> newImages) {
+		if (reviewImages == null) {
+			reviewImages = new ArrayList<>();
+		}
+		for (ReviewImage newImage : newImages) {
+			addReviewImage(newImage);
+		}
+	}
+
+	public void addReviewImage(ReviewImage reviewImage) {
+		reviewImages.add(reviewImage);
+		reviewImage.setReview(this);
+	}
+
+	public void removeReviewImage(ReviewImage reviewImage) {
+		reviewImages.remove(reviewImage);
+		reviewImage.setReview(null);
+	}
+
 }
