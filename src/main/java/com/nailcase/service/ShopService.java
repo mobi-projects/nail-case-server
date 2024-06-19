@@ -57,9 +57,25 @@ public class ShopService {
 	}
 
 	@Transactional(readOnly = true)
-	public ShopDto.Response getShopById(Long shopId) throws BusinessException {
-		Shop shop = shopRepository.findById(shopId)
+	public ShopDto.Response getShop(Long shopId) throws BusinessException {
+		return shopMapper.toResponse(getShopById(shopId));
+	}
+
+	@Transactional
+	public void deleteShop(Long shopId, Long memberId) throws BusinessException {
+		Shop shop = getShopById(shopId);
+
+		if (!shop.getMember().getMemberId().equals(memberId)) {
+			throw new BusinessException(ShopErrorCode.SHOP_DELETION_FORBIDDEN);
+		}
+
+		shopRepository.delete(shop);
+
+		// TODO 사진 관련 처리
+	}
+
+	private Shop getShopById(Long shopId) throws BusinessException {
+		return shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
-		return shopMapper.toResponse(shop);
 	}
 }

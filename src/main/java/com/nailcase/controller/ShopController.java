@@ -38,7 +38,7 @@ public class ShopController {
 
 	@GetMapping("/{shopId}")
 	public ShopDto.Response getShopById(@PathVariable Long shopId) {
-		return shopService.getShopById(shopId);
+		return shopService.getShop(shopId);
 	}
 
 	@GetMapping
@@ -46,6 +46,8 @@ public class ShopController {
 	}
 
 	@DeleteMapping("/{shopId}")
-	public void deleteShop(@PathVariable String shopId) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteShop(@PathVariable Long shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
+		shopService.deleteShop(shopId, memberDetails.getMemberId());
 	}
 }
