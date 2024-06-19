@@ -1,14 +1,9 @@
 package com.nailcase.testUtils;
 
-import org.springframework.stereotype.Component;
-
-import com.nailcase.testUtils.fixtureFactory.MemberFixtureFactory;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import com.nailcase.model.dto.ConditionDto;
 import com.nailcase.model.dto.ReservationDetailDto;
@@ -24,7 +19,12 @@ import com.nailcase.model.enums.ConditionOption;
 import com.nailcase.model.enums.RemoveOption;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.model.enums.TreatmentOption;
+import com.nailcase.testUtils.fixtureFactory.MemberFixture;
+import com.nailcase.testUtils.fixtureFactory.MemberFixtureToBootTest;
 import com.nailcase.util.DateUtils;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 테스트를 위해 미리 정의된 데이터를 생성하는 유틸리티 클래스입니다.
@@ -47,7 +47,9 @@ import com.nailcase.util.DateUtils;
 @RequiredArgsConstructor
 public class FixtureFactory {
 
-	private final MemberFixtureFactory memberFixtureFactory;
+	private final MemberFixtureToBootTest memberFixtureToBootTest;
+
+	public static final MemberFixture memberFixture = new MemberFixture();
 
 	// MEMBER
 	public static final Long FIXTURE_MEMBER_ID = 1L;
