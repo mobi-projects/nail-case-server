@@ -37,8 +37,8 @@ public class ShopController {
 	}
 
 	@GetMapping("/{shopId}")
-	public void getShopById(@PathVariable Long shopId) {
-
+	public ShopDto.Response getShopById(@PathVariable Long shopId) {
+		return shopService.getShopById(shopId);
 	}
 
 	@GetMapping

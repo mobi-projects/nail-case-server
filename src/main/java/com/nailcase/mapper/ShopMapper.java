@@ -26,5 +26,6 @@ public interface ShopMapper {
 		target = "modifiedAt",
 		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getModifiedAt()))"
 	)
+	@Mapping(target = "ownerId", source = "member.memberId")
 	ShopDto.Response toResponse(Shop shop);
 }

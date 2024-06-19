@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
@@ -53,5 +54,12 @@ public class ShopService {
 		shopHourService.initShopHour(savedShop);
 
 		return shopMapper.toResponse(savedShop);
+	}
+
+	@Transactional(readOnly = true)
+	public ShopDto.Response getShopById(Long shopId) throws BusinessException {
+		Shop shop = shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+		return shopMapper.toResponse(shop);
 	}
 }
