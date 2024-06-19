@@ -874,6 +874,13 @@
             defs["Request"] = {
   "type" : "object",
   "properties" : {
+    "imageIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
+    },
     "reviewId" : {
       "type" : "integer",
       "format" : "int64"
@@ -902,14 +909,7 @@
             defs["Response"] = {
   "type" : "object",
   "properties" : {
-    "imageIds" : {
-      "type" : "array",
-      "items" : {
-        "type" : "integer",
-        "format" : "int64"
-      }
-    },
-    "memberId" : {
+    "reviewId" : {
       "type" : "integer",
       "format" : "int64"
     },
@@ -917,38 +917,39 @@
       "type" : "integer",
       "format" : "int64"
     },
-    "postId" : {
+    "memberId" : {
       "type" : "integer",
       "format" : "int64"
-    },
-    "title" : {
-      "type" : "string"
-    },
-    "category" : {
-      "type" : "string",
-      "enum" : [ "NEWS", "NOTICE" ]
     },
     "contents" : {
       "type" : "string"
     },
-    "likes" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "views" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "liked" : {
-      "type" : "boolean"
-    },
-    "commentCount" : {
-      "type" : "integer",
-      "format" : "int64"
+    "rating" : {
+      "type" : "number",
+      "format" : "double"
     },
     "createdAt" : {
       "type" : "integer",
       "format" : "int64"
+    },
+    "createdBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedAt" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "imageIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
     },
     "imageUrls" : {
       "type" : "array",
@@ -961,6 +962,32 @@
       "items" : {
         "$ref" : "#/components/schemas/Response"
       }
+    }
+  }
+};
+            defs["ReviewImageDto"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "bucketName" : {
+      "type" : "string"
+    },
+    "objectName" : {
+      "type" : "string"
+    },
+    "url" : {
+      "type" : "string"
+    },
+    "createdBy" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "type" : "integer",
+      "format" : "int64"
     }
   }
 };
@@ -1088,8 +1115,8 @@
                     <li data-group="PostController" data-name="updatePost" class="">
                       <a href="#api-PostController-updatePost">updatePost</a>
                     </li>
-                    <li data-group="PostController" data-name="uploadImages" class="">
-                      <a href="#api-PostController-uploadImages">uploadImages</a>
+                    <li data-group="PostController" data-name="uploadImages1" class="">
+                      <a href="#api-PostController-uploadImages1">uploadImages1</a>
                     </li>
                     <li data-group="PostController" data-name="viewShopNews" class="">
                       <a href="#api-PostController-viewShopNews">viewShopNews</a>
@@ -1108,6 +1135,9 @@
                       <a href="#api-ReservationController-viewReservation">viewReservation</a>
                     </li>
                   <li class="nav-header" data-group="ReviewController"><a href="#api-ReviewController">API Methods - ReviewController</a></li>
+                    <li data-group="ReviewController" data-name="addImageToReview" class="">
+                      <a href="#api-ReviewController-addImageToReview">addImageToReview</a>
+                    </li>
                     <li data-group="ReviewController" data-name="deleteReview" class="">
                       <a href="#api-ReviewController-deleteReview">deleteReview</a>
                     </li>
@@ -1123,11 +1153,17 @@
                     <li data-group="ReviewController" data-name="registerReviewComment" class="">
                       <a href="#api-ReviewController-registerReviewComment">registerReviewComment</a>
                     </li>
+                    <li data-group="ReviewController" data-name="removeImageFromReview" class="">
+                      <a href="#api-ReviewController-removeImageFromReview">removeImageFromReview</a>
+                    </li>
                     <li data-group="ReviewController" data-name="updateReview" class="">
                       <a href="#api-ReviewController-updateReview">updateReview</a>
                     </li>
                     <li data-group="ReviewController" data-name="updateReviewComment" class="">
                       <a href="#api-ReviewController-updateReviewComment">updateReviewComment</a>
+                    </li>
+                    <li data-group="ReviewController" data-name="uploadImages" class="">
+                      <a href="#api-ReviewController-uploadImages">uploadImages</a>
                     </li>
                     <li data-group="ReviewController" data-name="viewReview" class="">
                       <a href="#api-ReviewController-viewReview">viewReview</a>
@@ -7887,10 +7923,10 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-PostController-uploadImages">
-                      <article id="api-PostController-uploadImages-0" data-group="User" data-name="uploadImages" data-version="0">
+                    <div id="api-PostController-uploadImages1">
+                      <article id="api-PostController-uploadImages1-0" data-group="User" data-name="uploadImages1" data-version="0">
                         <div class="pull-left">
-                          <h1>uploadImages</h1>
+                          <h1>uploadImages1</h1>
                           <p></p>
                         </div>
                         <div class="pull-right"></div>
@@ -7904,28 +7940,28 @@ except ApiException as e:
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-PostController-uploadImages-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-PostController-uploadImages-0-java">Java</a></li>
-                          <li class=""><a href="#examples-PostController-uploadImages-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-PostController-uploadImages-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-PostController-uploadImages-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-PostController-uploadImages-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-PostController-uploadImages-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-PostController-uploadImages-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-PostController-uploadImages-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-PostController-uploadImages-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-PostController-uploadImages-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-PostController-uploadImages1-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-uploadImages1-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-uploadImages1-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-uploadImages1-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-PostController-uploadImages-0-curl">
+                          <div class="tab-pane active" id="examples-PostController-uploadImages1-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/images?files="</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-PostController-uploadImages-0-java">
+                          <div class="tab-pane" id="examples-PostController-uploadImages1-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -7948,17 +7984,17 @@ public class PostControllerApiExample {
         array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
         try {
-            array[PostImageDto] result = apiInstance.uploadImages(files, shopId);
+            array[PostImageDto] result = apiInstance.uploadImages1(files, shopId);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling PostControllerApi#uploadImages");
+            System.err.println("Exception when calling PostControllerApi#uploadImages1");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-PostController-uploadImages-0-android">
+                          <div class="tab-pane" id="examples-PostController-uploadImages1-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
 
 public class PostControllerApiExample {
@@ -7968,20 +8004,20 @@ public class PostControllerApiExample {
         array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
         try {
-            array[PostImageDto] result = apiInstance.uploadImages(files, shopId);
+            array[PostImageDto] result = apiInstance.uploadImages1(files, shopId);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling PostControllerApi#uploadImages");
+            System.err.println("Exception when calling PostControllerApi#uploadImages1");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-PostController-uploadImages-0-groovy">
+  <div class="tab-pane" id="examples-PostController-uploadImages1-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-PostController-uploadImages-0-objc">
+                            <div class="tab-pane" id="examples-PostController-uploadImages1-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
@@ -7990,7 +8026,7 @@ Long *shopId = 789; //
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance uploadImagesWith:files
+[apiInstance uploadImages1With:files
     shopId:shopId
               completionHandler: ^(array[PostImageDto] output, NSError* error) {
                             if (output) {
@@ -8003,7 +8039,7 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-uploadImages-0-javascript">
+                            <div class="tab-pane" id="examples-PostController-uploadImages1-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 var defaultClient = NailCaseApi.ApiClient.instance;
 
@@ -8023,14 +8059,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.uploadImages(files, shopId, callback);
+api.uploadImages1(files, shopId, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-PostController-uploadImages-0-angular">
+                            <!--<div class="tab-pane" id="examples-PostController-uploadImages1-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-PostController-uploadImages-0-csharp">
+                            <div class="tab-pane" id="examples-PostController-uploadImages1-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -8039,7 +8075,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class uploadImagesExample
+    public class uploadImages1Example
     {
         public void main()
         {
@@ -8053,12 +8089,12 @@ namespace Example
 
             try
             {
-                array[PostImageDto] result = apiInstance.uploadImages(files, shopId);
+                array[PostImageDto] result = apiInstance.uploadImages1(files, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling PostControllerApi.uploadImages: " + e.Message );
+                Debug.Print("Exception when calling PostControllerApi.uploadImages1: " + e.Message );
             }
         }
     }
@@ -8066,7 +8102,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-uploadImages-0-php">
+                            <div class="tab-pane" id="examples-PostController-uploadImages1-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -8078,15 +8114,15 @@ $files = ; // array[byte[]] |
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->uploadImages($files, $shopId);
+    $result = $api_instance->uploadImages1($files, $shopId);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling PostControllerApi->uploadImages: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PostControllerApi->uploadImages1: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-uploadImages-0-perl">
+                            <div class="tab-pane" id="examples-PostController-uploadImages1-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
@@ -8099,15 +8135,15 @@ my $files = []; # array[byte[]] |
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->uploadImages(files => $files, shopId => $shopId);
+    my $result = $api_instance->uploadImages1(files => $files, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling PostControllerApi->uploadImages: $@\n";
+    warn "Exception when calling PostControllerApi->uploadImages1: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-uploadImages-0-python">
+                            <div class="tab-pane" id="examples-PostController-uploadImages1-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -8123,10 +8159,10 @@ files =  # array[byte[]] |
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.upload_images(files, shopId)
+    api_response = api_instance.upload_images1(files, shopId)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling PostControllerApi->uploadImages: %s\n" % e)</code></pre>
+    print("Exception when calling PostControllerApi->uploadImages1: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -8142,7 +8178,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_uploadImages_shopId">
+                                      <div id="d2e199_uploadImages1_shopId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -8175,7 +8211,7 @@ except ApiException as e:
                                 <td>
                                 
                                 
-                                    <div id="d2e199_uploadImages_files">
+                                    <div id="d2e199_uploadImages1_files">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -8200,14 +8236,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-uploadImages-201-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-uploadImages1-201-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-uploadImages-201-schema">
-                                  <div id='responses-uploadImages-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-uploadImages1-201-schema">
+                                  <div id='responses-uploadImages1-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -8237,14 +8273,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-uploadImages-201-schema-data').val(stringify(schema));
-                                        var result = $('#responses-uploadImages-201-schema-201');
+                                        $('#responses-uploadImages1-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadImages1-201-schema-201');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-uploadImages-201-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-uploadImages1-201-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -10139,6 +10175,344 @@ except ApiException as e:
                   </section>
                 <section id="api-ReviewController">
                   <h1>ReviewController</h1>
+                    <div id="api-ReviewController-addImageToReview">
+                      <article id="api-ReviewController-addImageToReview-0" data-group="User" data-name="addImageToReview" data-version="0">
+                        <div class="pull-left">
+                          <h1>addImageToReview</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/reviews/{reviewId}/images</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ReviewController-addImageToReview-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ReviewController-addImageToReview-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ReviewController-addImageToReview-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ReviewController-addImageToReview-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ReviewController-addImageToReview-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}/images?files="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ReviewControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReviewControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ReviewControllerApi apiInstance = new ReviewControllerApi();
+        Long reviewId = 789; // Long | 
+        array[byte[]] files = ; // array[byte[]] | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.addImageToReview(reviewId, files, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReviewControllerApi#addImageToReview");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ReviewControllerApi;
+
+public class ReviewControllerApiExample {
+
+    public static void main(String[] args) {
+        ReviewControllerApi apiInstance = new ReviewControllerApi();
+        Long reviewId = 789; // Long | 
+        array[byte[]] files = ; // array[byte[]] | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.addImageToReview(reviewId, files, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReviewControllerApi#addImageToReview");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *reviewId = 789; // 
+array[byte[]] *files = ; // 
+String *shopId = shopId_example; // 
+
+ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
+
+[apiInstance addImageToReviewWith:reviewId
+    files:files
+    shopId:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ReviewControllerApi()
+var reviewId = 789; // {{Long}} 
+var files = ; // {{array[byte[]]}} 
+var shopId = shopId_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.addImageToReview(reviewId, files, shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ReviewController-addImageToReview-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class addImageToReviewExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ReviewControllerApi();
+            var reviewId = 789;  // Long | 
+            var files = new array[byte[]](); // array[byte[]] | 
+            var shopId = shopId_example;  // String | 
+
+            try
+            {
+                apiInstance.addImageToReview(reviewId, files, shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ReviewControllerApi.addImageToReview: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiReviewControllerApi();
+$reviewId = 789; // Long | 
+$files = ; // array[byte[]] | 
+$shopId = shopId_example; // String | 
+
+try {
+    $api_instance->addImageToReview($reviewId, $files, $shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling ReviewControllerApi->addImageToReview: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
+my $reviewId = 789; # Long | 
+my $files = []; # array[byte[]] | 
+my $shopId = shopId_example; # String | 
+
+eval { 
+    $api_instance->addImageToReview(reviewId => $reviewId, files => $files, shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling ReviewControllerApi->addImageToReview: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-addImageToReview-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ReviewControllerApi()
+reviewId = 789 # Long | 
+files =  # array[byte[]] | 
+shopId = shopId_example # String | 
+
+try: 
+    api_instance.add_image_to_review(reviewId, files, shopId)
+except ApiException as e:
+    print("Exception when calling ReviewControllerApi->addImageToReview: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">reviewId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_addImageToReview_reviewId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_addImageToReview_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">files*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_addImageToReview_files">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    array[byte[]]
+                                                </span>
+                                                    <span class="format">
+                                                        (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 201 - Created </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-ReviewController-deleteReview">
                       <article id="api-ReviewController-deleteReview-0" data-group="User" data-name="deleteReview" data-version="0">
                         <div class="pull-left">
@@ -11139,7 +11513,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/reviews?files="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/reviews"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-registerReview-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -11162,10 +11536,9 @@ public class ReviewControllerApiExample {
 
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Request body = ; // Request | 
-        array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
         try {
-            Long result = apiInstance.registerReview(body, files, shopId);
+            Response result = apiInstance.registerReview(body, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#registerReview");
@@ -11183,10 +11556,9 @@ public class ReviewControllerApiExample {
     public static void main(String[] args) {
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Request body = ; // Request | 
-        array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
         try {
-            Long result = apiInstance.registerReview(body, files, shopId);
+            Response result = apiInstance.registerReview(body, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#registerReview");
@@ -11204,15 +11576,13 @@ public class ReviewControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Request *body = ; // 
-array[byte[]] *files = ; // 
 Long *shopId = 789; // 
 
 ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
 [apiInstance registerReviewWith:body
-    files:files
     shopId:shopId
-              completionHandler: ^(Long output, NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -11234,7 +11604,6 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var body = ; // {{Request}} 
-var files = ; // {{array[byte[]]}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
@@ -11244,7 +11613,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerReview(bodyfilesshopId, callback);
+api.registerReview(bodyshopId, callback);
 </code></pre>
                             </div>
 
@@ -11270,12 +11639,11 @@ namespace Example
 
             var apiInstance = new ReviewControllerApi();
             var body = new Request(); // Request | 
-            var files = new array[byte[]](); // array[byte[]] | 
             var shopId = 789;  // Long | 
 
             try
             {
-                Long result = apiInstance.registerReview(body, files, shopId);
+                Response result = apiInstance.registerReview(body, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -11297,11 +11665,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $body = ; // Request | 
-$files = ; // array[byte[]] | 
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->registerReview($body, $files, $shopId);
+    $result = $api_instance->registerReview($body, $shopId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReviewControllerApi->registerReview: ', $e->getMessage(), PHP_EOL;
@@ -11319,11 +11686,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
-my $files = []; # array[byte[]] | 
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->registerReview(body => $body, files => $files, shopId => $shopId);
+    my $result = $api_instance->registerReview(body => $body, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
@@ -11344,11 +11710,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
 body =  # Request | 
-files =  # array[byte[]] | 
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.register_review(body, files, shopId)
+    api_response = api_instance.register_review(body, shopId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReviewControllerApi->registerReview: %s\n" % e)</code></pre>
@@ -11433,59 +11798,28 @@ except ApiException as e:
                             </table>
 
 
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">files*</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_registerReview_files">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[byte[]]
-                                                </span>
-                                                    <span class="format">
-                                                        (binary)
-                                                    </span>
-                                
-                                            </div>
-                                                <div class="inner required">
-                                                    Required
-                                                </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                            </table>
 
                           <h2>Responses</h2>
-                            <h3> Status: 201 - Created </h3>
+                            <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-registerReview-201-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-registerReview-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-registerReview-201-schema">
-                                  <div id='responses-registerReview-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-registerReview-200-schema">
+                                  <div id='responses-registerReview-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Created",
+  "description" : "OK",
   "content" : {
     "*/*" : {
       "schema" : {
-        "type" : "integer",
-        "format" : "int64",
-        "x-content-type" : "*/*"
+        "$ref" : "#/components/schemas/Response"
       }
     }
   }
@@ -11503,14 +11837,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-registerReview-201-schema-data').val(stringify(schema));
-                                        var result = $('#responses-registerReview-201-schema-201');
+                                        $('#responses-registerReview-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerReview-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-registerReview-201-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-registerReview-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -11580,7 +11914,7 @@ public class ReviewControllerApiExample {
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
         try {
-            Long result = apiInstance.registerReviewComment(body, shopId, reviewId);
+            Response result = apiInstance.registerReviewComment(body, shopId, reviewId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#registerReviewComment");
@@ -11601,7 +11935,7 @@ public class ReviewControllerApiExample {
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
         try {
-            Long result = apiInstance.registerReviewComment(body, shopId, reviewId);
+            Response result = apiInstance.registerReviewComment(body, shopId, reviewId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#registerReviewComment");
@@ -11627,7 +11961,7 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 [apiInstance registerReviewCommentWith:body
     shopId:shopId
     reviewId:reviewId
-              completionHandler: ^(Long output, NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -11690,7 +12024,7 @@ namespace Example
 
             try
             {
-                Long result = apiInstance.registerReviewComment(body, shopId, reviewId);
+                Response result = apiInstance.registerReviewComment(body, shopId, reviewId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -11872,28 +12206,26 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 201 - Created </h3>
+                            <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-registerReviewComment-201-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-registerReviewComment-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-registerReviewComment-201-schema">
-                                  <div id='responses-registerReviewComment-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-registerReviewComment-200-schema">
+                                  <div id='responses-registerReviewComment-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Created",
+  "description" : "OK",
   "content" : {
     "*/*" : {
       "schema" : {
-        "type" : "integer",
-        "format" : "int64",
-        "x-content-type" : "*/*"
+        "$ref" : "#/components/schemas/Response"
       }
     }
   }
@@ -11911,15 +12243,346 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-registerReviewComment-201-schema-data').val(stringify(schema));
-                                        var result = $('#responses-registerReviewComment-201-schema-201');
+                                        $('#responses-registerReviewComment-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerReviewComment-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-registerReviewComment-201-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-registerReviewComment-200-schema-data' type='hidden' value=''></input>
                                 </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ReviewController-removeImageFromReview">
+                      <article id="api-ReviewController-removeImageFromReview-0" data-group="User" data-name="removeImageFromReview" data-version="0">
+                        <div class="pull-left">
+                          <h1>removeImageFromReview</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/shops/{shopId}/reviews/{reviewId}/images/{imageId}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ReviewController-removeImageFromReview-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ReviewController-removeImageFromReview-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ReviewController-removeImageFromReview-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ReviewController-removeImageFromReview-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ReviewController-removeImageFromReview-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}/images/{imageId}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ReviewControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReviewControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ReviewControllerApi apiInstance = new ReviewControllerApi();
+        Long reviewId = 789; // Long | 
+        Long imageId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.removeImageFromReview(reviewId, imageId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReviewControllerApi#removeImageFromReview");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ReviewControllerApi;
+
+public class ReviewControllerApiExample {
+
+    public static void main(String[] args) {
+        ReviewControllerApi apiInstance = new ReviewControllerApi();
+        Long reviewId = 789; // Long | 
+        Long imageId = 789; // Long | 
+        String shopId = shopId_example; // String | 
+        try {
+            apiInstance.removeImageFromReview(reviewId, imageId, shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReviewControllerApi#removeImageFromReview");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *reviewId = 789; // 
+Long *imageId = 789; // 
+String *shopId = shopId_example; // 
+
+ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
+
+[apiInstance removeImageFromReviewWith:reviewId
+    imageId:imageId
+    shopId:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ReviewControllerApi()
+var reviewId = 789; // {{Long}} 
+var imageId = 789; // {{Long}} 
+var shopId = shopId_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.removeImageFromReview(reviewId, imageId, shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class removeImageFromReviewExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ReviewControllerApi();
+            var reviewId = 789;  // Long | 
+            var imageId = 789;  // Long | 
+            var shopId = shopId_example;  // String | 
+
+            try
+            {
+                apiInstance.removeImageFromReview(reviewId, imageId, shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ReviewControllerApi.removeImageFromReview: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiReviewControllerApi();
+$reviewId = 789; // Long | 
+$imageId = 789; // Long | 
+$shopId = shopId_example; // String | 
+
+try {
+    $api_instance->removeImageFromReview($reviewId, $imageId, $shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling ReviewControllerApi->removeImageFromReview: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
+my $reviewId = 789; # Long | 
+my $imageId = 789; # Long | 
+my $shopId = shopId_example; # String | 
+
+eval { 
+    $api_instance->removeImageFromReview(reviewId => $reviewId, imageId => $imageId, shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling ReviewControllerApi->removeImageFromReview: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-removeImageFromReview-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ReviewControllerApi()
+reviewId = 789 # Long | 
+imageId = 789 # Long | 
+shopId = shopId_example # String | 
+
+try: 
+    api_instance.remove_image_from_review(reviewId, imageId, shopId)
+except ApiException as e:
+    print("Exception when calling ReviewControllerApi->removeImageFromReview: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">reviewId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_removeImageFromReview_reviewId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">imageId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_removeImageFromReview_imageId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_removeImageFromReview_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 204 - No Content </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
                         </article>
@@ -11960,8 +12623,9 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
  -H "Authorization: Bearer [[accessToken]]"\
 \
+-H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}?files="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReviewController-updateReview-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -11984,11 +12648,11 @@ public class ReviewControllerApiExample {
 
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Request body = ; // Request | 
-        array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
         try {
-            apiInstance.updateReview(body, files, shopId, reviewId);
+            Response result = apiInstance.updateReview(body, shopId, reviewId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#updateReview");
             e.printStackTrace();
@@ -12005,11 +12669,11 @@ public class ReviewControllerApiExample {
     public static void main(String[] args) {
         ReviewControllerApi apiInstance = new ReviewControllerApi();
         Request body = ; // Request | 
-        array[byte[]] files = ; // array[byte[]] | 
         Long shopId = 789; // Long | 
         Long reviewId = 789; // Long | 
         try {
-            apiInstance.updateReview(body, files, shopId, reviewId);
+            Response result = apiInstance.updateReview(body, shopId, reviewId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#updateReview");
             e.printStackTrace();
@@ -12026,17 +12690,18 @@ public class ReviewControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Request *body = ; // 
-array[byte[]] *files = ; // 
 Long *shopId = 789; // 
 Long *reviewId = 789; // 
 
 ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
 
 [apiInstance updateReviewWith:body
-    files:files
     shopId:shopId
     reviewId:reviewId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -12055,7 +12720,6 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReviewControllerApi()
 var body = ; // {{Request}} 
-var files = ; // {{array[byte[]]}} 
 var shopId = 789; // {{Long}} 
 var reviewId = 789; // {{Long}} 
 
@@ -12063,10 +12727,10 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateReview(bodyfilesshopIdreviewId, callback);
+api.updateReview(bodyshopIdreviewId, callback);
 </code></pre>
                             </div>
 
@@ -12092,13 +12756,13 @@ namespace Example
 
             var apiInstance = new ReviewControllerApi();
             var body = new Request(); // Request | 
-            var files = new array[byte[]](); // array[byte[]] | 
             var shopId = 789;  // Long | 
             var reviewId = 789;  // Long | 
 
             try
             {
-                apiInstance.updateReview(body, files, shopId, reviewId);
+                Response result = apiInstance.updateReview(body, shopId, reviewId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -12119,12 +12783,12 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiReviewControllerApi();
 $body = ; // Request | 
-$files = ; // array[byte[]] | 
 $shopId = 789; // Long | 
 $reviewId = 789; // Long | 
 
 try {
-    $api_instance->updateReview($body, $files, $shopId, $reviewId);
+    $result = $api_instance->updateReview($body, $shopId, $reviewId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReviewControllerApi->updateReview: ', $e->getMessage(), PHP_EOL;
 }
@@ -12141,12 +12805,12 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Request->new(); # Request | 
-my $files = []; # array[byte[]] | 
 my $shopId = 789; # Long | 
 my $reviewId = 789; # Long | 
 
 eval { 
-    $api_instance->updateReview(body => $body, files => $files, shopId => $shopId, reviewId => $reviewId);
+    my $result = $api_instance->updateReview(body => $body, shopId => $shopId, reviewId => $reviewId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ReviewControllerApi->updateReview: $@\n";
@@ -12166,12 +12830,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ReviewControllerApi()
 body =  # Request | 
-files =  # array[byte[]] | 
 shopId = 789 # Long | 
 reviewId = 789 # Long | 
 
 try: 
-    api_instance.update_review(body, files, shopId, reviewId)
+    api_response = api_instance.update_review(body, shopId, reviewId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReviewControllerApi->updateReview: %s\n" % e)</code></pre>
                             </div>
@@ -12277,43 +12941,54 @@ except ApiException as e:
                             </table>
 
 
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">files*</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_updateReview_files">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    array[byte[]]
-                                                </span>
-                                                    <span class="format">
-                                                        (binary)
-                                                    </span>
-                                
-                                            </div>
-                                                <div class="inner required">
-                                                    Required
-                                                </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateReview-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateReview-200-schema">
+                                  <div id='responses-updateReview-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateReview-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateReview-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateReview-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -12354,6 +13029,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
  -H "Authorization: Bearer [[accessToken]]"\
 \
+-H "Accept: */*"\
 -H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/reviews/{reviewId}/comments/{commentId}"</code></pre>
                           </div>
@@ -12382,7 +13058,8 @@ public class ReviewControllerApiExample {
         Long reviewId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            apiInstance.updateReviewComment(body, shopId, reviewId, commentId);
+            Response result = apiInstance.updateReviewComment(body, shopId, reviewId, commentId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#updateReviewComment");
             e.printStackTrace();
@@ -12403,7 +13080,8 @@ public class ReviewControllerApiExample {
         Long reviewId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            apiInstance.updateReviewComment(body, shopId, reviewId, commentId);
+            Response result = apiInstance.updateReviewComment(body, shopId, reviewId, commentId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReviewControllerApi#updateReviewComment");
             e.printStackTrace();
@@ -12430,7 +13108,10 @@ ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
     shopId:shopId
     reviewId:reviewId
     commentId:commentId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -12457,7 +13138,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 api.updateReviewComment(bodyshopIdreviewIdcommentId, callback);
@@ -12492,7 +13173,8 @@ namespace Example
 
             try
             {
-                apiInstance.updateReviewComment(body, shopId, reviewId, commentId);
+                Response result = apiInstance.updateReviewComment(body, shopId, reviewId, commentId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -12518,7 +13200,8 @@ $reviewId = 789; // Long |
 $commentId = 789; // Long | 
 
 try {
-    $api_instance->updateReviewComment($body, $shopId, $reviewId, $commentId);
+    $result = $api_instance->updateReviewComment($body, $shopId, $reviewId, $commentId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReviewControllerApi->updateReviewComment: ', $e->getMessage(), PHP_EOL;
 }
@@ -12540,7 +13223,8 @@ my $reviewId = 789; # Long |
 my $commentId = 789; # Long | 
 
 eval { 
-    $api_instance->updateReviewComment(body => $body, shopId => $shopId, reviewId => $reviewId, commentId => $commentId);
+    my $result = $api_instance->updateReviewComment(body => $body, shopId => $shopId, reviewId => $reviewId, commentId => $commentId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling ReviewControllerApi->updateReviewComment: $@\n";
@@ -12565,7 +13249,8 @@ reviewId = 789 # Long |
 commentId = 789 # Long | 
 
 try: 
-    api_instance.update_review_comment(body, shopId, reviewId, commentId)
+    api_response = api_instance.update_review_comment(body, shopId, reviewId, commentId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReviewControllerApi->updateReviewComment: %s\n" % e)</code></pre>
                             </div>
@@ -12698,9 +13383,413 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateReviewComment-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateReviewComment-200-schema">
+                                  <div id='responses-updateReviewComment-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateReviewComment-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateReviewComment-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateReviewComment-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ReviewController-uploadImages">
+                      <article id="api-ReviewController-uploadImages-0" data-group="User" data-name="uploadImages" data-version="0">
+                        <div class="pull-left">
+                          <h1>uploadImages</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/reviews/images</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ReviewController-uploadImages-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ReviewController-uploadImages-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ReviewController-uploadImages-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ReviewController-uploadImages-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ReviewController-uploadImages-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/shops/{shopId}/reviews/images?files="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ReviewController-uploadImages-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ReviewControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ReviewControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ReviewControllerApi apiInstance = new ReviewControllerApi();
+        array[byte[]] files = ; // array[byte[]] | 
+        Long shopId = 789; // Long | 
+        try {
+            array[ReviewImageDto] result = apiInstance.uploadImages(files, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReviewControllerApi#uploadImages");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ReviewController-uploadImages-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ReviewControllerApi;
+
+public class ReviewControllerApiExample {
+
+    public static void main(String[] args) {
+        ReviewControllerApi apiInstance = new ReviewControllerApi();
+        array[byte[]] files = ; // array[byte[]] | 
+        Long shopId = 789; // Long | 
+        try {
+            array[ReviewImageDto] result = apiInstance.uploadImages(files, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ReviewControllerApi#uploadImages");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ReviewController-uploadImages-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ReviewController-uploadImages-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+array[byte[]] *files = ; // 
+Long *shopId = 789; // 
+
+ReviewControllerApi *apiInstance = [[ReviewControllerApi alloc] init];
+
+[apiInstance uploadImagesWith:files
+    shopId:shopId
+              completionHandler: ^(array[ReviewImageDto] output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-uploadImages-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ReviewControllerApi()
+var files = ; // {{array[byte[]]}} 
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.uploadImages(files, shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ReviewController-uploadImages-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ReviewController-uploadImages-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class uploadImagesExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ReviewControllerApi();
+            var files = new array[byte[]](); // array[byte[]] | 
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                array[ReviewImageDto] result = apiInstance.uploadImages(files, shopId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ReviewControllerApi.uploadImages: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-uploadImages-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiReviewControllerApi();
+$files = ; // array[byte[]] | 
+$shopId = 789; // Long | 
+
+try {
+    $result = $api_instance->uploadImages($files, $shopId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ReviewControllerApi->uploadImages: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-uploadImages-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ReviewControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ReviewControllerApi->new();
+my $files = []; # array[byte[]] | 
+my $shopId = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->uploadImages(files => $files, shopId => $shopId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ReviewControllerApi->uploadImages: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ReviewController-uploadImages-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ReviewControllerApi()
+files =  # array[byte[]] | 
+shopId = 789 # Long | 
+
+try: 
+    api_response = api_instance.upload_images(files, shopId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ReviewControllerApi->uploadImages: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_uploadImages_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">files*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_uploadImages_files">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    array[byte[]]
+                                                </span>
+                                                    <span class="format">
+                                                        (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 201 - Created </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-uploadImages-201-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-uploadImages-201-schema">
+                                  <div id='responses-uploadImages-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Created",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/ReviewImageDto"
+        },
+        "x-content-type" : "*/*"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-uploadImages-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-uploadImages-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-uploadImages-201-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
