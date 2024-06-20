@@ -12,18 +12,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-// TODO User table, spring security 함께 작업 필요
 @Getter
-@Setter
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,24 +27,20 @@ import lombok.experimental.SuperBuilder;
 public class BaseEntity {
 	@CreatedDate
 	@Schema(title = "생성시간")
-	@Column(name = "created_at")
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private LocalDateTime createdAt;
 
 	@LastModifiedDate
 	@Schema(title = "수정시간")
-	@Column(name = "modified_at")
-	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modified_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private LocalDateTime modifiedAt;
 
 	@CreatedBy
-	@Setter
 	@Schema(title = "생성자")
 	@Column(name = "create_by")
 	private Long createdBy;
 
 	@LastModifiedBy
-	@Setter
 	@Schema(title = "수정자")
 	@Column(name = "modified_by")
 	private Long modifiedBy;
