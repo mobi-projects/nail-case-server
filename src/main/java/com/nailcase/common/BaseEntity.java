@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,11 +33,13 @@ public class BaseEntity {
 	@CreatedDate
 	@Schema(title = "생성시간")
 	@Column(name = "created_at")
+	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime createdAt;
 
 	@LastModifiedDate
 	@Schema(title = "수정시간")
 	@Column(name = "modified_at")
+	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime modifiedAt;
 
 	@CreatedBy

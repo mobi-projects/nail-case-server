@@ -8,7 +8,7 @@ import com.nailcase.exception.codes.AuthErrorCode;
 
 public class SecurityUtil {
 
-	public static Long getCurrentMemberId() {
+	public static Long getCurrentMemberEmail() {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication == null || authentication.getName() == null) {
