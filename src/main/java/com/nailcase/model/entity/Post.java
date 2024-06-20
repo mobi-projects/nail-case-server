@@ -19,12 +19,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -43,8 +46,9 @@ public class Post extends BaseEntity {
 	@Column(name = "post_id", nullable = false)
 	private Long postId;
 
-	// @Column(name = "shop_id")
-	// private Long shopId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "shop_id")
+	private Shop shop;
 
 	@Schema(title = "게시물 제목 이름")
 	@Column(name = "title", nullable = false, length = 32)
@@ -59,11 +63,13 @@ public class Post extends BaseEntity {
 	@Column(name = "contents", nullable = false, columnDefinition = "TEXT")
 	private String contents;
 
+	@Builder.Default
 	@Schema(title = "좋아요 수")
 	@Column(name = "likes", nullable = false)
 	@ColumnDefault("0")
 	private Long likes = 0L;
 
+	@Builder.Default
 	@Schema(title = "조회수")
 	@Column(name = "views", nullable = false)
 	@ColumnDefault("0")
@@ -85,6 +91,15 @@ public class Post extends BaseEntity {
 
 	public void updateTitle(String title) {
 		this.title = title;
+	}
+
+	public void registerPostImages(List<PostImage> newImages) {
+		if (postImages == null) {
+			postImages = new ArrayList<>();
+		}
+		for (PostImage newImage : newImages) {
+			addPostImage(newImage);
+		}
 	}
 
 	public void updateContents(String contents) {

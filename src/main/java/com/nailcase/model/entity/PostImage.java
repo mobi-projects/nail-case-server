@@ -15,11 +15,11 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "post_image")
 @Getter
-@Setter
 @NoArgsConstructor
 @SuperBuilder
 public class PostImage extends Image {
 
+	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
 	private Post post;

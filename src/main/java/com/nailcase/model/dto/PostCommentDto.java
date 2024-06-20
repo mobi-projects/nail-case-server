@@ -14,10 +14,8 @@ public class PostCommentDto {
 	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Request {
-		private Long postCommentId;
 		private String body;
 		private Long postId;
-		private Long createdBy;
 	}
 
 	@Data

@@ -15,7 +15,13 @@ public class BusinessException extends RuntimeException {
 		this.errorCodeInterface = errorCodeInterface;
 	}
 
+	public BusinessException(ErrorCodeInterface errorCodeInterface, String message) {
+		super(message);
+		this.errorCodeInterface = errorCodeInterface;
+	}
+
 	public ErrorCodeInterface getErrorCode() {
 		return errorCodeInterface;
 	}
+
 }

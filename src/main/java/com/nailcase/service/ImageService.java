@@ -2,6 +2,7 @@ package com.nailcase.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,11 +35,14 @@ import lombok.RequiredArgsConstructor;
 public class ImageService<T extends Image> {
 
 	private final AmazonS3 amazonS3;
+	private final List<String> ALLOWED_MIME_TYPES = Arrays.asList("image/jpeg", "image/png");
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
 	public void uploadImage(MultipartFile file, String objectName) {
+		validateFile(file);
+
 		try {
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			objectMetadata.setContentLength(file.getSize());
@@ -122,5 +126,17 @@ public class ImageService<T extends Image> {
 
 	private String generateImageUrl(String objectName) {
 		return amazonS3.getUrl(bucket, objectName).toString();
+	}
+
+	private void validateFile(MultipartFile file) {
+		if (!ALLOWED_MIME_TYPES.contains(file.getContentType())) {
+			throw new BusinessException(ImageErrorCode.INVALID_FILE_TYPE);
+		}
+
+		// 5MB
+		long MAX_FILE_SIZE = 10 * 1024 * 1024;
+		if (file.getSize() > MAX_FILE_SIZE) {
+			throw new BusinessException(ImageErrorCode.FILE_TOO_LARGE);
+		}
 	}
 }
