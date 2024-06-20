@@ -74,7 +74,7 @@ services:
       POSTGRES_DB: newtips-postgresql
 
   backend:
-    image: "newtips/nail-case-server"
+    image: newtips/nail-case-server
     ports:
       - "8081:8081"
     restart: always
@@ -86,25 +86,32 @@ services:
       - redis
       - postgresql
     environment:
+      # SPRING APPLICATION
       SERVER_PORT: 8081
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_APPLICATION_NAME: newtips-server
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      cloud_aws_credentials_accessKey: minioadmin
-      cloud_aws_credentials_secretKey: minioadmin
-      cloud_aws_region_static: ap-northeast-2
-      cloud_aws_s3_endpoint: "http://nginx:9000"
-      cloud_aws_s3_bucket: newtips
-      spring_datasource_url: jdbc:postgresql://postgresql:5432/newtips-postgresql
-      spring_datasource_driverClassName: org.postgresql.Driver
-      spring_datasource_username: postgresql
-      spring_datasource_password: postgresql
-      spring_jpa_hibernate_ddl-auto: update
-      spring_jpa_open-in-view: false
-      spring_data_redis_host: redis
-      spring_data_redis_port: 6379
-      spring_jpa_database-platform:
-#      logging_level_org_springframework: DEBUG
+      # SPRING JPA
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_JPA_OPEN-IN-VIEW: false
+      # DB: PostgreSQL
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/newtips-postgresql
+      SPRING_DATASOURCE_DRIVER-CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: postgresql
+      SPRING_DATASOURCE_PASSWORD: postgresql
+      # SPRING REDIS
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      # S3 - MINIO
+      CLOUD_AWS_CREDENTIALS_ACCESS-KEY: minioadmin
+      CLOUD_AWS_CREDENTIALS_SECRET_KEY: minioadmin
+      CLOUD_AWS_REGION_STATIC: ap-northeast-2
+      CLOUD_AWS_S3_ENDPOINT: http://nginx:9000
+      CLOUD_AWS_S3_BUCKET: newtips-bucket-azxwettoqoqaaz
+      # SPRING OAUTH2 CLIENT
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT-ID: # 채워주세요
+      # H2
+      SPRING_H2_CONSOLE_ENABLED: true
+
 
 volumes:
   data1-1:
