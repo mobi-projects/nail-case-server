@@ -37,10 +37,6 @@ public class Shop extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopId;
 
-	// @Setter
-	// @Column(name = "owner_id", nullable = false, insertable = false, updatable = false)
-	// private Long ownerId;
-
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id", referencedColumnName = "member_id")
 	private Member member;
@@ -66,6 +62,9 @@ public class Shop extends BaseEntity {
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ShopHour> shopHours;
+
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<TagMapping> tags;
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
