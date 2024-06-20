@@ -1,5 +1,6 @@
 package com.nailcase.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -11,9 +12,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+	@Value("${spring.data.redis.host:localhost}")
+	private String host;
+
+	@Value("${spring.data.redis.port:6379}")
+	private int port;
+
 	@Bean
 	public LettuceConnectionFactory redisConnectionFactory() {
-		return new LettuceConnectionFactory();
+		return new LettuceConnectionFactory(host, port);
 	}
 
 	///*레디스에서 리프레시 토큰을 관리하기 위해서는 RedisConfig에서
