@@ -7,17 +7,18 @@ import org.jeasy.random.EasyRandomParameters;
 
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.Tag;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.StringGenerateFixture;
 
 public class ShopFixture {
 
-	private static final Long SHOP_ID = 1L;
+	private static final Long ID = 1L;
 
 	private static final int AVAILABLE_SEATS = 1;
 
 	public Shop getShop() {
-		return getShop(SHOP_ID);
+		return getShop(ID);
 	}
 
 	public Shop getShop(Long shopId) {
@@ -31,5 +32,17 @@ public class ShopFixture {
 			.randomize(named("address"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(50))
 			.randomize(named("availableSeats"), () -> AVAILABLE_SEATS);
 		return new EasyRandom(params).nextObject(Shop.class);
+	}
+
+	public Tag getTag() {
+		return getTag(ID);
+	}
+
+	public Tag getTag(Long tagId) {
+		EasyRandomParameters params = new EasyRandomParameters()
+			.randomize(named("tagId"), () -> tagId)
+			.randomize(named("tagName"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(5));
+
+		return new EasyRandom(params).nextObject(Tag.class);
 	}
 }

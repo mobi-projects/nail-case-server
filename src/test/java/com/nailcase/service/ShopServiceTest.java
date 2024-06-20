@@ -1,8 +1,10 @@
 package com.nailcase.service;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +26,11 @@ import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.Tag;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopRepository;
+import com.nailcase.repository.TagRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
 import com.nailcase.testUtils.StringGenerateFixture;
@@ -39,6 +43,9 @@ public class ShopServiceTest {
 
 	@Mock
 	private ShopRepository shopRepository;
+
+	@Mock
+	private TagRepository tagRepository;
 
 	@Mock
 	private ShopInfoService shopInfoService;
@@ -212,6 +219,27 @@ public class ShopServiceTest {
 
 		verify(shopRepository, times(1)).findById(shopId);
 		verify(shopRepository, times(1)).saveAndFlush(existingShop);
+	}
+
+	@Test
+	@DisplayName("getTags 성공 테스트")
+	void getTagsSuccess() throws Exception {
+		// Given
+		Tag tag1 = shopFixture.getTag();
+		Tag tag2 = shopFixture.getTag(2L);
+		List<Tag> tags = Arrays.asList(tag1, tag2);
+		List<String> expectedTagNames = Arrays.asList(tag1.getTagName(), tag2.getTagName());
+
+		when(tagRepository.findAll()).thenReturn(tags);
+
+		// When
+		List<String> result = shopService.getTags();
+
+		// Then
+		assertEquals(expectedTagNames.size(), result.size());
+		assertThat(result).containsExactlyInAnyOrderElementsOf(expectedTagNames);
+
+		verify(tagRepository, times(1)).findAll();
 	}
 
 	private boolean equals(ShopDto.Response expected, ShopDto.Response actual) {
