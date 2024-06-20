@@ -20,6 +20,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -58,11 +59,13 @@ public class Review extends BaseEntity {
 	@Column(name = "rating", nullable = false)
 	private Double rating;
 
-	@OneToMany(mappedBy = "review", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@OrderBy("reviewCommentId asc")
+	@Builder.Default
 	private List<ReviewComment> reviewComments = new ArrayList<>();
 
 	@OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<ReviewImage> reviewImages = new ArrayList<>();
 
 	public void updateContents(String contents) {
