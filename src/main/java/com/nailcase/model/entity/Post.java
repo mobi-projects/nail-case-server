@@ -75,11 +75,13 @@ public class Post extends BaseEntity {
 	@ColumnDefault("0")
 	private Long views = 0L;
 
-	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@OrderBy("commentId asc")
+	@Builder.Default
 	private List<PostComment> postComments = new ArrayList<>();
 
 	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<PostImage> postImages = new ArrayList<>();
 
 	@Version
