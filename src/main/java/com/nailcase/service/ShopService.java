@@ -1,5 +1,7 @@
 package com.nailcase.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.Tag;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopRepository;
+import com.nailcase.repository.TagRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,7 @@ public class ShopService {
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
 	private final ShopRepository shopRepository;
 	private final MemberRepository memberRepository;
+	private final TagRepository tagRepository;
 	private final ShopInfoService shopInfoService;
 	private final ShopHourService shopHourService;
 
@@ -93,6 +98,11 @@ public class ShopService {
 		Shop updatedShop = shopRepository.saveAndFlush(shop);
 
 		return shopMapper.toResponse(updatedShop);
+	}
+
+	@Transactional(readOnly = true)
+	public List<String> getTags() {
+		return tagRepository.findAll().stream().map(Tag::getTagName).toList();
 	}
 
 	private Shop getShopById(Long shopId) throws BusinessException {

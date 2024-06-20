@@ -1,5 +1,7 @@
 package com.nailcase.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,5 +68,10 @@ public class ShopController {
 	@PutMapping("/{shopId}")
 	public ShopDto.Response updateShop(@PathVariable Long shopId, @Valid @RequestBody ShopDto.Post putDto) {
 		return shopService.updateShop(shopId, putDto);
+	}
+
+	@GetMapping("/tags")
+	public List<String> getTags() {
+		return shopService.getTags();
 	}
 }
