@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
+import com.nailcase.model.dto.ShopDto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -88,5 +89,11 @@ public class Shop extends BaseEntity {
 
 	public void plusAvailableSeats() {
 		this.availableSeats++;
+	}
+
+	public void update(ShopDto.Post dto) {
+		this.shopName = dto.getShopName();
+		this.phone = dto.getPhone();
+		this.availableSeats = dto.getAvailableSeats();
 	}
 }

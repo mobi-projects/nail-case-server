@@ -80,6 +80,18 @@ public class ShopService {
 		return shopRepository.searchShop(keyword, pageable).map(shopMapper::toResponse);
 	}
 
+	@Transactional
+	public ShopDto.Response updateShop(Long shopId, ShopDto.Post putDto) throws BusinessException {
+		Shop shop = getShopById(shopId);
+
+		// TODO 권한 검사
+
+		shop.update(putDto);
+		Shop updatedShop = shopRepository.saveAndFlush(shop);
+
+		return shopMapper.toResponse(updatedShop);
+	}
+
 	private Shop getShopById(Long shopId) throws BusinessException {
 		return shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));

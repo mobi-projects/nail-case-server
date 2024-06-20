@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,10 +39,10 @@ public class ShopController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ShopDto.Response registerShop(
-		@Valid @RequestBody ShopDto.Post shopRegisterRequest,
+		@Valid @RequestBody ShopDto.Post postDto,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return shopService.registerShop(shopRegisterRequest, memberDetails.getMemberId());
+		return shopService.registerShop(postDto, memberDetails.getMemberId());
 	}
 
 	@GetMapping("/{shopId}")
@@ -60,5 +61,10 @@ public class ShopController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteShop(@PathVariable Long shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		shopService.deleteShop(shopId, memberDetails.getMemberId());
+	}
+
+	@PutMapping("/{shopId}")
+	public ShopDto.Response updateShop(@PathVariable Long shopId, @Valid @RequestBody ShopDto.Post putDto) {
+		return shopService.updateShop(shopId, putDto);
 	}
 }
