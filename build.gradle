@@ -92,11 +92,12 @@ dependencies {
 def generated = 'src/main/generated'
 
 tasks.withType(JavaCompile).configureEach {
-    options.generatedSourceOutputDirectory = file(generated)
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.generatedSourceOutputDirectory = file("build/generated/sources/annotationProcessor/java/main")
 }
 
 sourceSets {
-    main.java.srcDirs += "$projectDir/build/generated"
+    main.java.srcDirs += ["build/generated/sources/annotationProcessor/java/main", "build/generated"]
 }
 
 clean {
