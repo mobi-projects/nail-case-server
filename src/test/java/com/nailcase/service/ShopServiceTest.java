@@ -29,6 +29,7 @@ import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
+import com.nailcase.testUtils.StringGenerateFixture;
 import com.nailcase.testUtils.fixtureFactory.ShopFixture;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +59,7 @@ public class ShopServiceTest {
 		Shop shop = shopFixture.getShop();
 		Member member = shop.getMember();
 		Long memberId = member.getMemberId();
-		ShopDto.Post request = (ShopDto.Post)Reflection.createInstance(ShopDto.Post.class);
+		ShopDto.Post request = shopToPostRequest(shop);
 		ShopDto.Response response = shopMapper.toResponse(shop);
 
 		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
@@ -178,6 +179,41 @@ public class ShopServiceTest {
 		assertTrue(result.getContent().contains(shopMapper.toResponse(shop1)));
 	}
 
+	@Test
+	@DisplayName("updateShop 성공 테스트")
+	void updateShopSuccess() throws Exception {
+		// Given
+		Shop existingShop = shopFixture.getShop();
+		Long shopId = existingShop.getShopId();
+		ShopDto.Post request = shopToPostRequest(existingShop);
+
+		String updatedShopName = StringGenerateFixture.makeByNumbersAndAlphabets(10);
+		String updatedPhone = StringGenerateFixture.makeByNumbersAndAlphabets(10);
+
+		request.setShopName(updatedShopName);
+		request.setPhone(updatedPhone);
+		request.setAvailableSeats(10);
+
+		Shop updatedShop = shopFixture.getShop();
+		updatedShop.update(request);
+
+		ShopDto.Response response = shopMapper.toResponse(updatedShop);
+
+		when(shopRepository.findById(shopId)).thenReturn(Optional.of(existingShop));
+		when(shopRepository.saveAndFlush(any(Shop.class))).thenReturn(updatedShop);
+
+		// When
+		ShopDto.Response result = shopService.updateShop(shopId, request);
+
+		// Then
+		assertNotNull(result);
+
+		equals(response, result);
+
+		verify(shopRepository, times(1)).findById(shopId);
+		verify(shopRepository, times(1)).saveAndFlush(existingShop);
+	}
+
 	private boolean equals(ShopDto.Response expected, ShopDto.Response actual) {
 		return expected.getShopId().equals(actual.getShopId()) &&
 			expected.getOwnerId().equals(actual.getOwnerId()) &&
@@ -188,5 +224,13 @@ public class ShopServiceTest {
 			expected.getAvailableSeats().equals(actual.getAvailableSeats()) &&
 			expected.getCreatedAt().equals(actual.getCreatedAt()) &&
 			expected.getModifiedAt().equals(actual.getModifiedAt());
+	}
+
+	private ShopDto.Post shopToPostRequest(Shop shop) throws Exception {
+		ShopDto.Post request = (ShopDto.Post)Reflection.createInstance(ShopDto.Post.class);
+		Reflection.setField(request, "shopName", shop.getShopName());
+		Reflection.setField(request, "availableSeats", shop.getAvailableSeats());
+
+		return request;
 	}
 }
