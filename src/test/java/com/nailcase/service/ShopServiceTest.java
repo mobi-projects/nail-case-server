@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,7 +77,9 @@ public class ShopServiceTest {
 		ShopDto.Response result = shopService.registerShop(request, memberId);
 
 		// Then
-		assertTrue(equals(response, result));
+		assertThat(result)
+			.usingRecursiveComparison()
+			.isEqualTo(response);
 
 		verify(memberRepository).findById(memberId);
 		assertEquals(Role.MANAGER, member.getRole());
@@ -100,7 +103,10 @@ public class ShopServiceTest {
 		ShopDto.Response result = shopService.getShop(shopId);
 
 		// Then
-		assertTrue(equals(response, result));
+		assertThat(result)
+			.usingRecursiveComparison()
+			.isEqualTo(response);
+
 		verify(shopRepository, times(1)).findById(shopId);
 	}
 
@@ -112,9 +118,7 @@ public class ShopServiceTest {
 		when(shopRepository.findById(shopId)).thenReturn(Optional.empty());
 
 		// When
-		BusinessException exception = assertThrows(BusinessException.class, () -> {
-			shopService.getShop(shopId);
-		});
+		BusinessException exception = assertThrows(BusinessException.class, () -> shopService.getShop(shopId));
 
 		// Then
 		assertEquals(ShopErrorCode.SHOP_NOT_FOUND, exception.getErrorCode());
@@ -154,9 +158,9 @@ public class ShopServiceTest {
 		when(shopRepository.findById(shop.getShopId())).thenReturn(Optional.of(shop));
 
 		// When
-		BusinessException exception = assertThrows(BusinessException.class, () -> {
-			shopService.deleteShop(shop.getShopId(), invalidMemberId);
-		});
+		BusinessException exception = assertThrows(
+			BusinessException.class,
+			() -> shopService.deleteShop(shop.getShopId(), invalidMemberId));
 
 		// Then
 		assertEquals(ShopErrorCode.SHOP_DELETION_FORBIDDEN, exception.getErrorCode());
@@ -182,7 +186,11 @@ public class ShopServiceTest {
 		Page<ShopDto.Response> result = shopService.searchShop(keyword, pageable);
 
 		// Then
-		assertEquals(shops.size(), result.getContent().size());
+		assertThat(result.getContent())
+			.hasSize(shops.size())
+			.containsExactlyInAnyOrderElementsOf(shops.stream()
+				.map(shopMapper::toResponse)
+				.collect(Collectors.toList()));
 		assertTrue(result.getContent().contains(shopMapper.toResponse(shop1)));
 	}
 
@@ -215,7 +223,9 @@ public class ShopServiceTest {
 		// Then
 		assertNotNull(result);
 
-		equals(response, result);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.isEqualTo(response);
 
 		verify(shopRepository, times(1)).findById(shopId);
 		verify(shopRepository, times(1)).saveAndFlush(existingShop);
@@ -223,7 +233,7 @@ public class ShopServiceTest {
 
 	@Test
 	@DisplayName("getTags 성공 테스트")
-	void getTagsSuccess() throws Exception {
+	void getTagsSuccess() {
 		// Given
 		Tag tag1 = shopFixture.getTag();
 		Tag tag2 = shopFixture.getTag(2L);
@@ -240,18 +250,6 @@ public class ShopServiceTest {
 		assertThat(result).containsExactlyInAnyOrderElementsOf(expectedTagNames);
 
 		verify(tagRepository, times(1)).findAll();
-	}
-
-	private boolean equals(ShopDto.Response expected, ShopDto.Response actual) {
-		return expected.getShopId().equals(actual.getShopId()) &&
-			expected.getOwnerId().equals(actual.getOwnerId()) &&
-			expected.getShopName().equals(actual.getShopName()) &&
-			expected.getPhone().equals(actual.getPhone()) &&
-			expected.getOverview().equals(actual.getOverview()) &&
-			expected.getAddress().equals(actual.getAddress()) &&
-			expected.getAvailableSeats().equals(actual.getAvailableSeats()) &&
-			expected.getCreatedAt().equals(actual.getCreatedAt()) &&
-			expected.getModifiedAt().equals(actual.getModifiedAt());
 	}
 
 	private ShopDto.Post shopToPostRequest(Shop shop) throws Exception {
