@@ -1,5 +1,7 @@
 package com.nailcase.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +74,11 @@ public class ShopService {
 		shopRepository.delete(shop);
 
 		// TODO 사진 관련 처리
+	}
+
+	@Transactional(readOnly = true)
+	public Page<ShopDto.Response> searchShop(String keyword, Pageable pageable) throws BusinessException {
+		return shopRepository.searchShop(keyword, pageable).map(shopMapper::toResponse);
 	}
 
 	private Shop getShopById(Long shopId) throws BusinessException {

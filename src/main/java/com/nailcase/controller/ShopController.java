@@ -1,5 +1,9 @@
 package com.nailcase.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +32,9 @@ public class ShopController {
 
 	private final ShopService shopService;
 
+	@Value("${spring.data.web.pageable.default-page-size}")
+	private int pageSize;
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ShopDto.Response registerShop(
@@ -41,8 +49,11 @@ public class ShopController {
 		return shopService.getShop(shopId);
 	}
 
-	@GetMapping
-	public void searchShop() {
+	@GetMapping("/search/{keyword}")
+	public Page<ShopDto.Response> searchShop(@PathVariable String keyword, @RequestParam(defaultValue = "1") int page) {
+		Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+		return shopService.searchShop(keyword, pageable);
 	}
 
 	@DeleteMapping("/{shopId}")
