@@ -44,6 +44,7 @@ public class JwtService {
 	private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
 	private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
 	private static final String EMAIL_CLAIM = "email";
+	private static final String MEMBER_CLAIM = "memberId";
 	private static final String BEARER = "Bearer ";
 
 	private final MemberRepository memberRepository;
@@ -55,7 +56,7 @@ public class JwtService {
 			.withSubject(ACCESS_TOKEN_SUBJECT)
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
 			.withClaim(EMAIL_CLAIM, email)
-			.withClaim("memberId", memberId)
+			.withClaim(MEMBER_CLAIM, memberId)
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("{} 해당 유저에 대한 AccessToken 발급", email);
 		return token;
@@ -135,10 +136,25 @@ public class JwtService {
 	public boolean isTokenValid(String token) {
 		try {
 			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			return true;
+			// 블랙리스트에 있는지 확인
+			Boolean isBlacklisted = (Boolean)redisTemplate.opsForValue().get("blacklist:" + token);
+			return isBlacklisted == null || !isBlacklisted;
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰 : {}", token, e);
 			return false;
 		}
 	}
+
+	public void logoutUser(String email) {
+		redisTemplate.delete(email);
+		log.info("{} 유저의 세션이 종료되었습니다.", email);
+	}
+
+	public void addTokenToBlacklist(String token) {
+		// 토큰의 남은 유효 시간 계산
+		long remainingTime = JWT.decode(token).getExpiresAt().getTime() - System.currentTimeMillis();
+		// 토큰을 블랙리스트에 추가 (남은 유효 시간 동안만 블랙리스트에 유지)
+		redisTemplate.opsForValue().set("blacklist:" + token, true, remainingTime, TimeUnit.MILLISECONDS);
+	}
+
 }

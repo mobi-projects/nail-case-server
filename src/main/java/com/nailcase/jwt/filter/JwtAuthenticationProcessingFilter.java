@@ -39,6 +39,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		@NonNull FilterChain filterChain) throws ServletException, IOException {
 
 		String refreshToken = jwtService.extractRefreshToken(request).filter(jwtService::isTokenValid).orElse(null);
+
 		if (refreshToken != null) {
 			checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
 			return;
