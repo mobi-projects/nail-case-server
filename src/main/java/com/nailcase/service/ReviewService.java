@@ -1,7 +1,5 @@
 package com.nailcase.service;
 
-import static com.nailcase.exception.codes.CommonErrorCode.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +20,6 @@ import com.nailcase.model.entity.Review;
 import com.nailcase.model.entity.ReviewComment;
 import com.nailcase.model.entity.ReviewImage;
 import com.nailcase.model.entity.Shop;
-import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ReviewCommentsRepository;
 import com.nailcase.repository.ReviewImageRepository;
 import com.nailcase.repository.ReviewRepository;
@@ -40,7 +37,6 @@ public class ReviewService {
 	private final ReviewImageRepository reviewImageRepository;
 	private final ShopRepository shopRepository;
 	private final ReviewImageService reviewImageService;
-	private final MemberRepository memberRepository;
 
 	@Transactional
 	public List<ReviewImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
@@ -72,9 +68,10 @@ public class ReviewService {
 	@Transactional
 	public ReviewDto.Response registerReview(Long shopId, ReviewDto.Request request, Long memberId) {
 		Shop shop = shopRepository.findById(shopId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+		Member member = Member.builder()
+			.memberId(memberId)
+			.build();
 
 		Review review = Review.builder()
 			.shop(shop)
@@ -104,7 +101,7 @@ public class ReviewService {
 	@Transactional
 	public ReviewDto.Response updateReview(Long shopId, Long reviewId, ReviewDto.Request request, Long memberId) {
 		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 		if (!memberId.equals(review.getMember().getMemberId())) {
 			throw new BusinessException(UserErrorCode.INVALID_USER_INPUT);
 		}
@@ -158,7 +155,7 @@ public class ReviewService {
 	public void removeImageFromReview(Long reviewId, Long imageId, Long memberId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
-		if (review.getMember().getMemberId().equals(memberId)) {
+		if (!review.getMember().getMemberId().equals(memberId)) {
 			throw new BusinessException(UserErrorCode.INVALID_USER_INPUT);
 		}
 		ReviewImage reviewImage = reviewImageRepository.findByImageId(imageId)
@@ -180,14 +177,14 @@ public class ReviewService {
 
 	public ReviewDto.Response viewReview(Long shopId, Long reviewId) {
 		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 		return ReviewDto.Response.from(review);
 	}
 
 	@Transactional
 	public void deleteReview(Long shopId, Long reviewId, Long memberId) {
 		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 		if (!memberId.equals(review.getMember().getMemberId())) {
 			throw new BusinessException(UserErrorCode.INVALID_USER_INPUT);
 		}
@@ -198,7 +195,7 @@ public class ReviewService {
 	public ReviewCommentDto.Response registerReviewComment(Long shopId, Long reviewId, ReviewCommentDto.Request request,
 		Long memberId) {
 		Review review = reviewRepository.findByShop_ShopIdAndReviewId(shopId, reviewId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 
 		ReviewComment reviewComment = ReviewComment.builder()
 			.review(review)
@@ -214,7 +211,7 @@ public class ReviewService {
 		ReviewCommentDto.Request request,
 		Long memberId) {
 		ReviewComment reviewComment = reviewCommentRepository.findById(commentId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 		if (!reviewComment.getCreatedBy().equals(memberId)) {
 			throw new BusinessException(UserErrorCode.INVALID_USER_INPUT);
 		}
@@ -225,7 +222,7 @@ public class ReviewService {
 	@Transactional
 	public void deleteReviewComment(Long shopId, Long reviewId, Long commentId, Long memberId) {
 		ReviewComment reviewComment = reviewCommentRepository.findById(commentId)
-			.orElseThrow(() -> new BusinessException(NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 		if (!reviewComment.getCreatedBy().equals(memberId)) {
 			throw new BusinessException(UserErrorCode.INVALID_USER_INPUT);
 		}

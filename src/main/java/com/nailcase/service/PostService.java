@@ -263,10 +263,8 @@ public class PostService {
 
 	@Transactional
 	public void unlikePost(Long postId, Long memberId) {
-		Member currentMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 		PostLikedMember postLike = postLikedMemberRepository.findByPost_PostIdAndMember_MemberId(postId,
-				currentMember.getMemberId())
+				memberId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.LIKE_NOT_FOUND));
 
 		postLikedMemberRepository.delete(postLike);
