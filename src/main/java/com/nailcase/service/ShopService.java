@@ -59,6 +59,9 @@ public class ShopService {
 
 	@Transactional(readOnly = true)
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {
+		// TODO 이미지
+		// TODO 여기서 방문자 수 처리?
+		// TODO info hours 추가해주기
 		return shopMapper.toResponse(getShopById(shopId));
 	}
 
