@@ -49,8 +49,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
 		response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
 		// 개발 할때 토큰 복붙해서 사용하는 용도
-		log.info("Bearer {}", accessToken);
-		log.info("Bearer {}", refreshToken);
+		log.info("accessToken => Bearer {}", accessToken);
+		log.info("refreshToken => Bearer {}", refreshToken);
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 		jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
 	}
