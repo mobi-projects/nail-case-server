@@ -17,9 +17,13 @@ public class ShopFixture {
 	private static final int AVAILABLE_SEATS = 1;
 
 	public Shop getShop() {
+		return getShop(SHOP_ID);
+	}
+
+	public Shop getShop(Long shopId) {
 		Member member = FixtureFactory.memberFixture.getMember();
 		EasyRandomParameters params = new EasyRandomParameters()
-			.randomize(named("shopId"), () -> SHOP_ID)
+			.randomize(named("shopId"), () -> shopId)
 			.randomize(named("member"), () -> member)
 			.randomize(named("shopName"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(10))
 			.randomize(named("phone"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(10))

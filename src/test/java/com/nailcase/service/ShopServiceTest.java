@@ -3,6 +3,7 @@ package com.nailcase.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ShopErrorCode;
@@ -150,6 +155,27 @@ public class ShopServiceTest {
 
 		verify(shopRepository, times(1)).findById(shop.getShopId());
 		verify(shopRepository, times(0)).delete(any(Shop.class));
+	}
+
+	@Test
+	@DisplayName("searchShop 성공 테스트")
+	void searchShopSuccess() throws BusinessException {
+		// Given
+		String keyword = "test";
+		Pageable pageable = PageRequest.of(0, 2);
+		Shop shop1 = shopFixture.getShop();
+		Shop shop2 = shopFixture.getShop(2L);
+		List<Shop> shops = List.of(shop1, shop2);
+		Page<Shop> shopPage = new PageImpl<>(shops, pageable, shops.size());
+
+		when(shopRepository.searchShop(keyword, pageable)).thenReturn(shopPage);
+
+		// When
+		Page<ShopDto.Response> result = shopService.searchShop(keyword, pageable);
+
+		// Then
+		assertEquals(shops.size(), result.getContent().size());
+		assertTrue(result.getContent().contains(shopMapper.toResponse(shop1)));
 	}
 
 	private boolean equals(ShopDto.Response expected, ShopDto.Response actual) {
