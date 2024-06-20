@@ -21,11 +21,7 @@ public class ShopDto {
 		@Size(max = 16)
 		private String phone;
 
-		private String overview;
-
-		private String address;
-
-		private int availableSeats;
+		private int availableSeats = 0;
 	}
 
 	@Data

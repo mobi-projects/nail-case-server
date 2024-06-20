@@ -45,7 +45,6 @@ public class ShopService {
 		Shop shop = Shop.builder()
 			.shopName(request.getShopName())
 			.phone(request.getPhone())
-			.overview(request.getOverview())
 			.member(member)
 			.build();
 
