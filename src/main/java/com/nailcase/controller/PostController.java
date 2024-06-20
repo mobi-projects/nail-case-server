@@ -41,7 +41,7 @@ public class PostController {
 		log.info("Uploading images for shopId: {}", shopId);
 		return postService.uploadImages(files, memberId);
 	}
-
+  
 	@PostMapping("/{announcementId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
@@ -57,6 +57,7 @@ public class PostController {
 		log.info("Removing image: {} from post: {}", imageId, announcementId);
 		postService.removeImageFromPost(announcementId, imageId);
 	}
+
 
 	@PostMapping
 	public PostDto.Response registerPost(@PathVariable Long shopId, @RequestBody PostDto.Request postRequest) {
