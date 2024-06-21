@@ -95,4 +95,10 @@ public class ShopController {
 	) {
 		return shopService.uploadImage(shopId, file, memberDetails.getMemberId());
 	}
+
+	@DeleteMapping("/image/{imageId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteImage(@PathVariable Long imageId, @AuthenticationPrincipal MemberDetails memberDetails) {
+		shopService.deleteImage(imageId, memberDetails.getMemberId());
+	}
 }

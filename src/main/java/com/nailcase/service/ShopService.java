@@ -186,4 +186,18 @@ public class ShopService {
 
 		return savedImage.getUrl();
 	}
+
+	@Transactional
+	public void deleteImage(Long imageId, Long memberId) throws BusinessException {
+		ShopImage shopImage = shopImageRepository.findById(imageId)
+			.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
+
+		// TODO 샵에 속해있는 아티스트 인지 검사
+		Shop shop = shopImage.getShop();
+		log.debug(shop.toString()); // TODO remove
+		log.debug(String.valueOf(memberId)); // TODO remove
+
+		shopImageService.deleteImage(shopImage.getObjectName());
+		shopImageRepository.delete(shopImage);
+	}
 }
