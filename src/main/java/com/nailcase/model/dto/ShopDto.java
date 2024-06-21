@@ -1,5 +1,7 @@
 package com.nailcase.model.dto;
 
+import java.util.List;
+
 import com.nailcase.common.dto.BaseTimeDto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +24,15 @@ public class ShopDto {
 		private String phone;
 
 		private int availableSeats = 0;
+	}
+
+	@Data
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public static class Patch {
+		@NotBlank
+		private String overview;
+
+		private List<String> tagNames;
 	}
 
 	@Data

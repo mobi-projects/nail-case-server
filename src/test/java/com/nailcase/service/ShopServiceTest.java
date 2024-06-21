@@ -31,6 +31,7 @@ import com.nailcase.model.entity.Tag;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopRepository;
+import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
@@ -47,6 +48,9 @@ public class ShopServiceTest {
 
 	@Mock
 	private TagRepository tagRepository;
+
+	@Mock
+	private TagMappingRepository tagMappingRepository;
 
 	@Mock
 	private ShopInfoService shopInfoService;
@@ -252,10 +256,49 @@ public class ShopServiceTest {
 		verify(tagRepository, times(1)).findAll();
 	}
 
+	@Test
+	@DisplayName("updateOverview 성공 테스트")
+	void updateOverviewSuccess() throws Exception {
+		// Given
+		Shop existingShop = shopFixture.getShop();
+		Long shopId = existingShop.getShopId();
+		Long memberId = existingShop.getMember().getMemberId();
+		ShopDto.Patch patchRequest = (ShopDto.Patch)Reflection.createInstance(ShopDto.Patch.class);
+		String mockOverview = StringGenerateFixture.makeByNumbersAndAlphabets(10);
+		String mockTag1 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String mockTag2 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		patchRequest.setOverview(mockOverview);
+		patchRequest.setTagNames(List.of("Tag1", "Tag2"));
+
+		Tag tag1 = Tag.builder().tagName("Tag1").build();
+		Tag tag2 = Tag.builder().tagName("Tag2").build();
+
+		when(shopRepository.findById(shopId)).thenReturn(Optional.of(existingShop));
+		when(tagRepository.findByTagName("Tag1")).thenReturn(Optional.of(tag1));
+		when(tagRepository.findByTagName("Tag2")).thenReturn(Optional.empty());
+		when(tagRepository.save(any(Tag.class))).thenReturn(tag2);
+		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of());
+
+		// When
+		ShopDto.Response result = shopService.updateOverview(shopId, patchRequest, memberId);
+
+		// Then
+		assertNotNull(result);
+		assertEquals("Updated Overview", result.getOverview());
+		// assertThat(result.getTags()).containsExactlyInAnyOrder("Tag1", "Tag2");
+
+		verify(shopRepository, times(1)).findById(shopId);
+		verify(tagRepository, times(1)).findByTagName("Tag1");
+		verify(tagRepository, times(1)).findByTagName("Tag2");
+		verify(tagRepository, times(1)).save(any(Tag.class));
+		verify(tagMappingRepository, times(1)).saveAll(anyList());
+		verify(shopRepository, times(1)).saveAndFlush(existingShop);
+	}
+
 	private ShopDto.Post shopToPostRequest(Shop shop) throws Exception {
 		ShopDto.Post request = (ShopDto.Post)Reflection.createInstance(ShopDto.Post.class);
-		Reflection.setField(request, "shopName", shop.getShopName());
-		Reflection.setField(request, "availableSeats", shop.getAvailableSeats());
+		request.setShopName(shop.getShopName());
+		request.setAvailableSeats(shop.getAvailableSeats());
 
 		return request;
 	}

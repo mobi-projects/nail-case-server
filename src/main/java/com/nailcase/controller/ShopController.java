@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -66,12 +67,21 @@ public class ShopController {
 	}
 
 	@PutMapping("/{shopId}")
-	public ShopDto.Response updateShop(@PathVariable Long shopId, @Valid @RequestBody ShopDto.Post putDto) {
-		return shopService.updateShop(shopId, putDto);
+	public ShopDto.Response updateShop(@PathVariable Long shopId, @Valid @RequestBody ShopDto.Post putRequest) {
+		return shopService.updateShop(shopId, putRequest);
 	}
 
 	@GetMapping("/tags")
 	public List<String> getTags() {
 		return shopService.getTags();
+	}
+
+	@PatchMapping("/overview/{shopId}")
+	public ShopDto.Response updateOverview(
+		@PathVariable Long shopId,
+		@Valid @RequestBody ShopDto.Patch patchRequest,
+		@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return shopService.updateOverview(shopId, patchRequest, memberDetails.getMemberId());
 	}
 }

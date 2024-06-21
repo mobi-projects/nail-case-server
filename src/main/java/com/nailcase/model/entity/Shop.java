@@ -23,6 +23,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -47,6 +48,7 @@ public class Shop extends BaseEntity {
 	@Column(name = "phone", nullable = false, length = 16)
 	private String phone;
 
+	@Setter
 	@Column(name = "overview", length = 2048)
 	private String overview;
 
