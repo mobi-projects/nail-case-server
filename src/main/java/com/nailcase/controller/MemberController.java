@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nailcase.exception.BusinessException;
-import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.jwt.JwtService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,24 +21,13 @@ public class MemberController {
 
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken) {
-		String token = accessToken.replace("Bearer ", "");
-		if (!jwtService.isTokenValid(token)) {
-			throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
-		}
-		String email = jwtService.extractEmail(token)
-			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-		jwtService.logoutUser(email);
-		jwtService.addTokenToBlacklist(token);
+		jwtService.logoutAndBlacklistToken(accessToken);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/expire")
-	public ResponseEntity<Void> addTokenToBlacklist(@RequestHeader("Authorization") String accessToken) {
-		String token = accessToken.replace("Bearer ", "");
-		if (!jwtService.isTokenValid(token)) {
-			throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
-		}
-		jwtService.addTokenToBlacklist(token);
+	public ResponseEntity<Void> expireToken(@RequestHeader("Authorization") String accessToken) {
+		jwtService.expireToken(accessToken);
 		return ResponseEntity.ok().build();
 	}
 

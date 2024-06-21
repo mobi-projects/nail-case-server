@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.repository.MemberRepository;
 
@@ -135,8 +136,8 @@ public class JwtService {
 
 	public boolean isTokenValid(String token) {
 		try {
+			token = removeBearerInToken(token);
 			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			// 블랙리스트에 있는지 확인
 			Boolean isBlacklisted = (Boolean)redisTemplate.opsForValue().get("blacklist:" + token);
 			return isBlacklisted == null || !isBlacklisted;
 		} catch (Exception e) {
@@ -145,16 +146,32 @@ public class JwtService {
 		}
 	}
 
-	public void logoutUser(String email) {
-		redisTemplate.delete(email);
-		log.info("{} 유저의 세션이 종료되었습니다.", email);
-	}
-
 	public void addTokenToBlacklist(String token) {
-		// 토큰의 남은 유효 시간 계산
+		token = removeBearerInToken(token);
 		long remainingTime = JWT.decode(token).getExpiresAt().getTime() - System.currentTimeMillis();
 		// 토큰을 블랙리스트에 추가 (남은 유효 시간 동안만 블랙리스트에 유지)
 		redisTemplate.opsForValue().set("blacklist:" + token, true, remainingTime, TimeUnit.MILLISECONDS);
 	}
 
+	public void logoutAndBlacklistToken(String accessToken) {
+		accessToken = removeBearerInToken(accessToken);
+		if (!isTokenValid(accessToken)) {
+			throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
+		}
+		String email = extractEmail(accessToken)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+		redisTemplate.delete(email);
+		addTokenToBlacklist(accessToken);
+	}
+
+	public void expireToken(String accessToken) {
+		if (!isTokenValid(accessToken)) {
+			throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
+		}
+		addTokenToBlacklist(accessToken);
+	}
+
+	private String removeBearerInToken(String token) {
+		return token.startsWith(BEARER) ? token.substring(BEARER.length()).strip() : token;
+	}
 }
