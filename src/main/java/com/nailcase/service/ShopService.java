@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
@@ -175,6 +176,11 @@ public class ShopService {
 		log.debug(String.valueOf(memberId)); // TODO remove
 
 		Shop shop = getShopById(shopId);
+
+		if (shop.getShopImages().size() == 4) {
+			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED);
+		}
+
 		ShopImage shopImage = ShopImage.builder().shop(shop).build();
 		ImageDto savedImage = shopImageService.uploadImage(file, shopImage);
 
