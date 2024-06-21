@@ -52,5 +52,7 @@ public class ShopDto {
 		private String address;
 
 		private String availableSeats;
+
+		private List<String> tags;
 	}
 }
