@@ -268,14 +268,16 @@ public class ShopServiceTest {
 
 		ShopDto.Patch patchRequest = (ShopDto.Patch)Reflection.createInstance(ShopDto.Patch.class);
 		String mockOverview = StringGenerateFixture.makeByNumbersAndAlphabets(10);
-		String mockTag1 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
-		String mockTag2 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String newTag1 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String newTag2 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String oldTag = StringGenerateFixture.makeByNumbersAndAlphabets(5);
 
 		patchRequest.setOverview(mockOverview);
-		patchRequest.setTagNames(List.of(mockTag1, mockTag2));
+		patchRequest.setTagNames(List.of(newTag1, newTag2));
 
-		Tag tag1 = Tag.builder().tagId(1L).tagName(mockTag1).build();
-		Tag tag2 = Tag.builder().tagId(2L).tagName(mockTag2).build();
+		Tag tag1 = Tag.builder().tagId(1L).tagName(newTag1).build();
+		Tag tag2 = Tag.builder().tagId(2L).tagName(newTag2).build();
+		Tag tag3 = Tag.builder().tagId(3L).tagName(oldTag).build();
 
 		TagMapping tagMapping1 = TagMapping.builder()
 			.tagMappingId(1L)
@@ -289,14 +291,20 @@ public class ShopServiceTest {
 			.shop(existingShop)
 			.sortOrder(0)
 			.build();
+		TagMapping tagMapping3 = TagMapping.builder()
+			.tagMappingId(3L)
+			.tag(tag3)
+			.shop(existingShop)
+			.sortOrder(2)
+			.build();
 
 		Shop updatedShop = shopFixture.getShop();
 		updatedShop.setOverview(mockOverview);
-		Reflection.setField(updatedShop, "tags", Set.of(tagMapping2, tagMapping1));
+		Reflection.setField(updatedShop, "tags", Set.of(tagMapping1, tagMapping2));
 
 		when(shopRepository.findById(shopId)).thenReturn(Optional.of(existingShop));
-		when(tagRepository.findByTagName(mockTag1)).thenReturn(Optional.of(tag1));
-		when(tagRepository.findByTagName(mockTag2)).thenReturn(Optional.empty());
+		when(tagRepository.findByTagName(newTag1)).thenReturn(Optional.of(tag1));
+		when(tagRepository.findByTagName(newTag2)).thenReturn(Optional.empty());
 		when(tagRepository.save(any(Tag.class))).thenReturn(tag2);
 		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of(tagMapping1, tagMapping2));
 		when(shopRepository.saveAndFlush(any(Shop.class))).thenReturn(updatedShop);
@@ -307,12 +315,13 @@ public class ShopServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(mockOverview, result.getOverview());
-		assertThat(result.getTags()).containsExactlyInAnyOrder(mockTag2, mockTag1);
+		assertThat(result.getTags()).containsExactlyInAnyOrder(newTag2, newTag1);
 
 		verify(shopRepository, times(1)).findById(shopId);
-		verify(tagRepository, times(1)).findByTagName(mockTag1);
-		verify(tagRepository, times(1)).findByTagName(mockTag2);
+		verify(tagRepository, times(1)).findByTagName(newTag1);
+		verify(tagRepository, times(1)).findByTagName(newTag2);
 		verify(tagRepository, times(1)).save(any(Tag.class));
+		verify(tagMappingRepository, times(1)).deleteAll(List.of(tagMapping3));
 		verify(tagMappingRepository, times(1)).saveAll(anyList());
 		verify(shopRepository, times(1)).saveAndFlush(existingShop);
 	}
