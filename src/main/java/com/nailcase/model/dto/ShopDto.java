@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 public class ShopDto {
 	@Data
@@ -54,5 +55,15 @@ public class ShopDto {
 		private String availableSeats;
 
 		private List<String> tags;
+
+		private List<Image> images;
+	}
+
+	@SuperBuilder
+	@NoArgsConstructor
+	public static class Image {
+		private Long imageId;
+
+		private String imageUrl;
 	}
 }

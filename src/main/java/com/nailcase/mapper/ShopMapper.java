@@ -12,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.TagMapping;
 import com.nailcase.util.DateUtils;
 
@@ -34,6 +35,7 @@ public interface ShopMapper {
 	)
 	@Mapping(target = "ownerId", source = "member.memberId")
 	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
+	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
 	ShopDto.Response toResponse(Shop shop);
 
 	static List<String> toTagNames(Set<TagMapping> tagMappings) {
@@ -42,4 +44,14 @@ public interface ShopMapper {
 			.map(tagMapping -> tagMapping.getTag().getTagName())
 			.collect(Collectors.toList());
 	}
+
+	static List<ShopDto.Image> toImageDtos(Set<ShopImage> shopImages) {
+		return shopImages.stream()
+			.map(shopImage -> ShopDto.Image.builder()
+				.imageId(shopImage.getImageId())
+				.imageUrl(String.format("%s/%s", shopImage.getBucketName(), shopImage.getObjectName()))
+				.build())
+			.collect(Collectors.toList());
+	}
+
 }
