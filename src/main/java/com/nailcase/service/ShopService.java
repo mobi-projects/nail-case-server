@@ -1,6 +1,8 @@
 package com.nailcase.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -126,10 +128,20 @@ public class ShopService {
 		shop.setOverview(patchRequest.getOverview());
 
 		// Tag
-		List<String> tagNames = patchRequest.getTagNames();
+		Set<TagMapping> existingTagMappings = shop.getTags();
+		List<String> newTagNames = patchRequest.getTagNames();
+		Set<String> newTagNamesSet = new HashSet<>(newTagNames);
+
+		// Tags to be removed
+		List<TagMapping> tagMappingsToRemove = existingTagMappings.stream()
+			.filter(t -> !newTagNamesSet.contains(t.getTag().getTagName()))
+			.toList();
+
+		// Remove old tag mappings
+		tagMappingRepository.deleteAll(tagMappingsToRemove);
 
 		// Save only new tags in the tag table
-		List<Tag> tags = tagNames.stream()
+		List<Tag> tags = newTagNames.stream()
 			.map(tagName -> tagRepository.findByTagName(tagName)
 				.orElseGet(() -> {
 					Tag tag = Tag.builder().tagName(tagName).build();
@@ -138,7 +150,7 @@ public class ShopService {
 			.toList();
 
 		// Save the tag mappings with sort order
-		List<TagMapping> tagMappings = IntStream.range(0, tagNames.size())
+		List<TagMapping> tagMappings = IntStream.range(0, newTagNames.size())
 			.mapToObj(i -> {
 				Tag tag = tags.get(i);
 				return TagMapping.builder().shop(shop).tag(tag).sortOrder(i).build();
