@@ -68,6 +68,9 @@ public class Shop extends BaseEntity {
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<TagMapping> tags;
 
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+	private Set<ShopImage> shopImages;
+
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
 	private List<NailArtist> nailArtistList = new ArrayList<>();

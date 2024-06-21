@@ -10,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
@@ -18,10 +20,12 @@ import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.ShopImageRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
@@ -37,9 +41,11 @@ public class ShopService {
 	private final ShopRepository shopRepository;
 	private final MemberRepository memberRepository;
 	private final TagRepository tagRepository;
+	private final ShopImageRepository shopImageRepository;
 	private final TagMappingRepository tagMappingRepository;
 	private final ShopInfoService shopInfoService;
 	private final ShopHourService shopHourService;
+	private final ShopImageService shopImageService;
 
 	@Transactional
 	public ShopDto.Response registerShop(
@@ -161,5 +167,17 @@ public class ShopService {
 		Shop updatedShop = shopRepository.saveAndFlush(shop);
 
 		return shopMapper.toResponse(updatedShop);
+	}
+
+	@Transactional
+	public String uploadImage(Long shopId, MultipartFile file, Long memberId) throws BusinessException {
+		// TODO 샵에 속해있는 아티스트 인지 검사
+		log.debug(String.valueOf(memberId)); // TODO remove
+
+		Shop shop = getShopById(shopId);
+		ShopImage shopImage = ShopImage.builder().shop(shop).build();
+		ImageDto savedImage = shopImageService.uploadImage(file, shopImage);
+
+		return savedImage.getUrl();
 	}
 }

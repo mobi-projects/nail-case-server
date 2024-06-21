@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ShopDto;
@@ -76,12 +77,22 @@ public class ShopController {
 		return shopService.getTags();
 	}
 
-	@PatchMapping("/overview/{shopId}")
+	@PatchMapping("/{shopId}/overview")
 	public ShopDto.Response updateOverview(
 		@PathVariable Long shopId,
 		@Valid @RequestBody ShopDto.Patch patchRequest,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
 		return shopService.updateOverview(shopId, patchRequest, memberDetails.getMemberId());
+	}
+
+	@PostMapping("/{shopId}/image")
+	@ResponseStatus(HttpStatus.CREATED)
+	public String uploadImage(
+		@PathVariable Long shopId,
+		@RequestParam("file") MultipartFile file,
+		@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return shopService.uploadImage(shopId, file, memberDetails.getMemberId());
 	}
 }
