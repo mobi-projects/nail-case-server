@@ -106,7 +106,7 @@ docker {
         // dUsername을 입력하면 -> {{dUsername}}/nail-case:0.0.1-SNAPSHOT 형태로 이미지 생성됩니다.
         // 항상 이미지 버전 명시하지 않고 최신버전은 latest로 당겨올 수 있습니다.
         name "${dockerUsername}/${project.name}:${version}"
-        tag dockerUsername as String, "${dockerUsername}/${project.name}:latest"
+        tag 'DockerHub' as String, "${dockerUsername}/${project.name}:latest"
     } else {
         // dUsername을 입력하지 않으면 로컬 이미지가 생성됩니다.
         name "${project.name}:${version}"
