@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,7 @@ import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.Tag;
+import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopRepository;
@@ -263,33 +265,53 @@ public class ShopServiceTest {
 		Shop existingShop = shopFixture.getShop();
 		Long shopId = existingShop.getShopId();
 		Long memberId = existingShop.getMember().getMemberId();
+
 		ShopDto.Patch patchRequest = (ShopDto.Patch)Reflection.createInstance(ShopDto.Patch.class);
 		String mockOverview = StringGenerateFixture.makeByNumbersAndAlphabets(10);
 		String mockTag1 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
 		String mockTag2 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
-		patchRequest.setOverview(mockOverview);
-		patchRequest.setTagNames(List.of("Tag1", "Tag2"));
 
-		Tag tag1 = Tag.builder().tagName("Tag1").build();
-		Tag tag2 = Tag.builder().tagName("Tag2").build();
+		patchRequest.setOverview(mockOverview);
+		patchRequest.setTagNames(List.of(mockTag1, mockTag2));
+
+		Tag tag1 = Tag.builder().tagId(1L).tagName(mockTag1).build();
+		Tag tag2 = Tag.builder().tagId(2L).tagName(mockTag2).build();
+
+		TagMapping tagMapping1 = TagMapping.builder()
+			.tagMappingId(1L)
+			.tag(tag1)
+			.shop(existingShop)
+			.sortOrder(1)
+			.build();
+		TagMapping tagMapping2 = TagMapping.builder()
+			.tagMappingId(2L)
+			.tag(tag2)
+			.shop(existingShop)
+			.sortOrder(0)
+			.build();
+
+		Shop updatedShop = shopFixture.getShop();
+		updatedShop.setOverview(mockOverview);
+		Reflection.setField(updatedShop, "tags", Set.of(tagMapping2, tagMapping1));
 
 		when(shopRepository.findById(shopId)).thenReturn(Optional.of(existingShop));
-		when(tagRepository.findByTagName("Tag1")).thenReturn(Optional.of(tag1));
-		when(tagRepository.findByTagName("Tag2")).thenReturn(Optional.empty());
+		when(tagRepository.findByTagName(mockTag1)).thenReturn(Optional.of(tag1));
+		when(tagRepository.findByTagName(mockTag2)).thenReturn(Optional.empty());
 		when(tagRepository.save(any(Tag.class))).thenReturn(tag2);
-		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of());
+		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of(tagMapping1, tagMapping2));
+		when(shopRepository.saveAndFlush(any(Shop.class))).thenReturn(updatedShop);
 
 		// When
 		ShopDto.Response result = shopService.updateOverview(shopId, patchRequest, memberId);
 
 		// Then
 		assertNotNull(result);
-		assertEquals("Updated Overview", result.getOverview());
-		// assertThat(result.getTags()).containsExactlyInAnyOrder("Tag1", "Tag2");
+		assertEquals(mockOverview, result.getOverview());
+		assertThat(result.getTags()).containsExactlyInAnyOrder(mockTag2, mockTag1);
 
 		verify(shopRepository, times(1)).findById(shopId);
-		verify(tagRepository, times(1)).findByTagName("Tag1");
-		verify(tagRepository, times(1)).findByTagName("Tag2");
+		verify(tagRepository, times(1)).findByTagName(mockTag1);
+		verify(tagRepository, times(1)).findByTagName(mockTag2);
 		verify(tagRepository, times(1)).save(any(Tag.class));
 		verify(tagMappingRepository, times(1)).saveAll(anyList());
 		verify(shopRepository, times(1)).saveAndFlush(existingShop);
