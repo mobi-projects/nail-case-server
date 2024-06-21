@@ -61,6 +61,7 @@ public class ReviewController {
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public ReviewDto.Response registerReview(@PathVariable Long shopId, @RequestBody ReviewDto.Request request,
 		@AuthenticationPrincipal
 		MemberDetails memberDetails) {
@@ -79,13 +80,11 @@ public class ReviewController {
 	}
 
 	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
 	public List<ReviewDto.Response> listReviews(@PathVariable Long shopId) {
 		return reviewService.listReviews(shopId);
 	}
 
 	@GetMapping("/{reviewId}")
-	@ResponseStatus(HttpStatus.OK)
 	public ReviewDto.Response viewReview(@PathVariable Long shopId, @PathVariable Long reviewId) {
 		return reviewService.viewReview(shopId, reviewId);
 	}
@@ -99,6 +98,7 @@ public class ReviewController {
 	}
 
 	@PostMapping("/{reviewId}/comments")
+	@ResponseStatus(HttpStatus.CREATED)
 	public ReviewCommentDto.Response registerReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
 		@RequestBody ReviewCommentDto.Request request, @AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();

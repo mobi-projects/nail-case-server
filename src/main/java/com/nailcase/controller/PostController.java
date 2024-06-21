@@ -41,7 +41,7 @@ public class PostController {
 		log.info("Uploading images for shopId: {}", shopId);
 		return postService.uploadImages(files, memberId);
 	}
-  
+
 	@PostMapping("/{announcementId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
@@ -58,8 +58,8 @@ public class PostController {
 		postService.removeImageFromPost(announcementId, imageId);
 	}
 
-
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public PostDto.Response registerPost(@PathVariable Long shopId, @RequestBody PostDto.Request postRequest) {
 		log.info("Registering new post for shopId: {}", shopId);
 		return postService.registerPost(shopId, postRequest);
@@ -97,6 +97,7 @@ public class PostController {
 	}
 
 	@PostMapping("/{announcementId}/comments")
+	@ResponseStatus(HttpStatus.CREATED)
 	public PostCommentDto.Response registerComment(@PathVariable Long shopId, @PathVariable Long announcementId,
 		@RequestBody PostCommentDto.Request commentRequest, @AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();
