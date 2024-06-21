@@ -1,0 +1,46 @@
+name: Deploy Spring Boot Application using Docker
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+      - uses: actions/checkout@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Gradle Cache
+        uses: burrunan/gradle-cache-action@v1
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build and Docker Image push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          ./gradlew dockerPush -PdUsername=${{ secrets.DOCKER_USERNAME }}
+
+#      - name: Deploy to EC2
+#        uses: appleboy/ssh-action@master
+#        id: deploy-dev
+#        with:
+#          host: ${{ secrets.HOST_EC2 }} # EC2 퍼블릭 IPv4 DNS
+#          username: ${{ secrets.USERNAME }} # ubuntu
+#          port: 22
+#          key: ${{ secrets.SSH_KEY }}
+#          script: |
+#            pwd
+#            sudo docker-compose down
+#            sudo docker-compose -f ./docker-compose.yml up -d --force-recreate --build
