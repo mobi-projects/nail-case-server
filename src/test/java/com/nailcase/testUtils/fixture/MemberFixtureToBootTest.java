@@ -1,4 +1,4 @@
-package com.nailcase.testUtils.fixtureFactory;
+package com.nailcase.testUtils.fixture;
 
 import org.springframework.stereotype.Component;
 

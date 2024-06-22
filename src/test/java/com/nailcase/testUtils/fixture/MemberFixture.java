@@ -1,4 +1,4 @@
-package com.nailcase.testUtils.fixtureFactory;
+package com.nailcase.testUtils.fixture;
 
 import static org.jeasy.random.FieldPredicates.*;
 
@@ -12,7 +12,7 @@ import com.nailcase.model.enums.Role;
 import com.nailcase.testUtils.StringGenerateFixture;
 
 public class MemberFixture {
-	
+
 	private static final Long MEMBER_ID = 1L;
 
 	private static final Role ROLE = Role.GUEST;

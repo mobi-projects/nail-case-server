@@ -19,9 +19,9 @@ import com.nailcase.model.enums.ConditionOption;
 import com.nailcase.model.enums.RemoveOption;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.model.enums.TreatmentOption;
-import com.nailcase.testUtils.fixtureFactory.MemberFixture;
-import com.nailcase.testUtils.fixtureFactory.MemberFixtureToBootTest;
-import com.nailcase.testUtils.fixtureFactory.ShopFixture;
+import com.nailcase.testUtils.fixture.MemberFixture;
+import com.nailcase.testUtils.fixture.MemberFixtureToBootTest;
+import com.nailcase.testUtils.fixture.ShopFixture;
 import com.nailcase.util.DateUtils;
 
 import lombok.Getter;
@@ -48,24 +48,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FixtureFactory {
 
-	private final MemberFixtureToBootTest memberFixtureToBootTest;
-
 	public static final MemberFixture memberFixture = new MemberFixture();
 	public static final ShopFixture shopFixture = new ShopFixture();
-
 	// MEMBER
 	public static final Long FIXTURE_MEMBER_ID = 1L;
-
 	// SHOP
 	public static final Long FIXTURE_SHOP_ID = 1L;
 	public static final int FIXTURE_AVAILABLE_SEATS = 3;
-
 	// NAIL_ARTIST
 	public static final Long FIXTURE_NAIL_ARTIST_ID = 1L;
-
 	// RESERVATION
 	public static final Long FIXTURE_RESERVATION_ID = 1L;
-
 	// RESERVATION_DETAIL
 	public static final Long FIXTURE_RESERVATION_DETAIL_ID = 1L;
 	public static final Long FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME = 1718240400L;
@@ -78,16 +71,15 @@ public class FixtureFactory {
 	public static final ReservationStatus FIXTURE_RESERVATION_PATCH_STATUS = ReservationStatus.CANCELED;
 	public static final RemoveOption FIXTURE_RESERVATION_REMOVE = RemoveOption.IN_SHOP;
 	public static final Boolean FIXTURE_RESERVATION_EXTEND = true;
-
 	// CONDITION
 	public static final Long FIXTURE_CONDITION_ID = 1L;
 	public static final ConditionOption FIXTURE_CONDITION_OPTION = ConditionOption.REPAIR;
-
 	// TREATMENT
 	public static final Long FIXTURE_TREATMENT_ID = 1L;
 	public static final TreatmentOption FIXTURE_TREATMENT_OPTION = TreatmentOption.AOM;
 	public static final Long FIXTURE_IMAGE_ID = 1L;
 	public static final String FIXTURE_IMAGE_URL = "hello/imageUrl";
+	private final MemberFixtureToBootTest memberFixtureToBootTest;
 
 	public static Treatment treatment() {
 		return createTreatment(
