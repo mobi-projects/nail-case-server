@@ -42,6 +42,7 @@ public class MonthlyArtController {
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public MonthlyArtDto.Response registerMonthlyArt(@PathVariable Long shopId,
 		@RequestBody MonthlyArtDto.Request monthlyArtRequest) {
 		log.info("Registering new monthly art for shopId: {}", shopId);
