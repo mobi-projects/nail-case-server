@@ -20,7 +20,7 @@ public final class Reflection {
 	 * @throws Exception 필드를 찾지 못하거나 접근할 수 없는 경우 발생할 수 있는 예외
 	 */
 	public static void setField(Object target, String fieldName, Object value) throws Exception {
-		Field field = target.getClass().getDeclaredField(fieldName);
+		Field field = getFieldFromClass(target.getClass(), fieldName);
 		field.setAccessible(true);
 		field.set(target, value);
 	}
@@ -67,5 +67,16 @@ public final class Reflection {
 		Constructor<?> constructor = clazz.getDeclaredConstructor();
 		constructor.setAccessible(true);
 		return constructor.newInstance();
+	}
+
+	private static Field getFieldFromClass(Class<?> clazz, String fieldName) throws NoSuchFieldException {
+		while (clazz != null) {
+			try {
+				return clazz.getDeclaredField(fieldName);
+			} catch (NoSuchFieldException e) {
+				clazz = clazz.getSuperclass();
+			}
+		}
+		throw new NoSuchFieldException(fieldName);
 	}
 }
