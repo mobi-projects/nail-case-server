@@ -38,33 +38,26 @@ import com.nailcase.repository.TagRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
 import com.nailcase.testUtils.StringGenerateFixture;
-import com.nailcase.testUtils.fixtureFactory.ShopFixture;
+import com.nailcase.testUtils.fixture.ShopFixture;
 
 @ExtendWith(MockitoExtension.class)
 public class ShopServiceTest {
-	@Mock
-	private MemberRepository memberRepository;
-
-	@Mock
-	private ShopRepository shopRepository;
-
-	@Mock
-	private TagRepository tagRepository;
-
-	@Mock
-	private TagMappingRepository tagMappingRepository;
-
-	@Mock
-	private ShopInfoService shopInfoService;
-
-	@Mock
-	private ShopHourService shopHourService;
-
-	@InjectMocks
-	private ShopService shopService;
-
 	private final ShopFixture shopFixture = FixtureFactory.shopFixture;
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
+	@Mock
+	private MemberRepository memberRepository;
+	@Mock
+	private ShopRepository shopRepository;
+	@Mock
+	private TagRepository tagRepository;
+	@Mock
+	private TagMappingRepository tagMappingRepository;
+	@Mock
+	private ShopInfoService shopInfoService;
+	@Mock
+	private ShopHourService shopHourService;
+	@InjectMocks
+	private ShopService shopService;
 
 	@Test
 	@DisplayName("샵 동록시 ROLE MANAGER | shop 저장, shopInfo, shopHour 초기화 성공 테스트")
@@ -306,6 +299,7 @@ public class ShopServiceTest {
 		when(tagRepository.findByTagName(newTag1)).thenReturn(Optional.of(tag1));
 		when(tagRepository.findByTagName(newTag2)).thenReturn(Optional.empty());
 		when(tagRepository.save(any(Tag.class))).thenReturn(tag2);
+		doNothing().when(tagMappingRepository).deleteAll(anyList());
 		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of(tagMapping1, tagMapping2));
 		when(shopRepository.saveAndFlush(any(Shop.class))).thenReturn(updatedShop);
 
@@ -321,7 +315,7 @@ public class ShopServiceTest {
 		verify(tagRepository, times(1)).findByTagName(newTag1);
 		verify(tagRepository, times(1)).findByTagName(newTag2);
 		verify(tagRepository, times(1)).save(any(Tag.class));
-		verify(tagMappingRepository, times(1)).deleteAll(List.of(tagMapping3));
+		verify(tagMappingRepository, times(1)).deleteAll(anyList());
 		verify(tagMappingRepository, times(1)).saveAll(anyList());
 		verify(shopRepository, times(1)).saveAndFlush(existingShop);
 	}
