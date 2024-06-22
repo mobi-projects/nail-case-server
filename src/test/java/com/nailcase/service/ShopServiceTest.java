@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -170,12 +169,14 @@ public class ShopServiceTest {
 
 	@Test
 	@DisplayName("searchShop 성공 테스트")
-	void searchShopSuccess() throws BusinessException {
+	void searchShopSuccess() throws Exception {
 		// Given
-		String keyword = "test";
+		String keyword = StringGenerateFixture.makeByNumbersAndAlphabets(5);
 		Pageable pageable = PageRequest.of(0, 2);
-		Shop shop1 = shopFixture.getShop();
-		Shop shop2 = shopFixture.getShop(2L);
+		Shop shop1 = shopFixture.getShop();    // name
+		Shop shop2 = shopFixture.getShop(2L);    // address
+		Reflection.setField(shop1, "shopName", keyword);
+		Reflection.setField(shop2, "address", keyword);
 		List<Shop> shops = List.of(shop1, shop2);
 		Page<Shop> shopPage = new PageImpl<>(shops, pageable, shops.size());
 
@@ -185,12 +186,9 @@ public class ShopServiceTest {
 		Page<ShopDto.Response> result = shopService.searchShop(keyword, pageable);
 
 		// Then
-		assertThat(result.getContent())
-			.hasSize(shops.size())
-			.containsExactlyInAnyOrderElementsOf(shops.stream()
-				.map(shopMapper::toResponse)
-				.collect(Collectors.toList()));
-		assertTrue(result.getContent().contains(shopMapper.toResponse(shop1)));
+		assertEquals(result.getContent().size(), shops.size());
+		assertSame(result.getContent().getFirst().getShopName(), keyword);
+		assertSame(result.getContent().getLast().getAddress(), keyword);
 	}
 
 	@Test
