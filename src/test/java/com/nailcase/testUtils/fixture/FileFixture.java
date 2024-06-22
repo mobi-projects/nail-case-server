@@ -1,4 +1,4 @@
-﻿package com.nailcase.testUtils.fixture;
+package com.nailcase.testUtils.fixture;
 
 import org.springframework.mock.web.MockMultipartFile;
 
