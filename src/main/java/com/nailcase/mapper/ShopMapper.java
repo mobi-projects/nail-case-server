@@ -1,6 +1,5 @@
 package com.nailcase.mapper;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,22 +24,8 @@ public interface ShopMapper {
 
 	ShopMapper INSTANCE = Mappers.getMapper(ShopMapper.class);
 
-	@Mapping(
-		target = "createdAt",
-		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getCreatedAt()))"
-	)
-	@Mapping(
-		target = "modifiedAt",
-		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getModifiedAt()))"
-	)
-	@Mapping(target = "ownerId", source = "member.memberId")
-	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
-	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
-	ShopDto.Response toResponse(Shop shop);
-
 	static List<String> toTagNames(Set<TagMapping> tagMappings) {
 		return tagMappings.stream()
-			.sorted(Comparator.comparing(TagMapping::getSortOrder))
 			.map(tagMapping -> tagMapping.getTag().getTagName())
 			.collect(Collectors.toList());
 	}
@@ -54,4 +39,16 @@ public interface ShopMapper {
 			.collect(Collectors.toList());
 	}
 
+	@Mapping(
+		target = "createdAt",
+		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getCreatedAt()))"
+	)
+	@Mapping(
+		target = "modifiedAt",
+		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getModifiedAt()))"
+	)
+	@Mapping(target = "ownerId", source = "member.memberId")
+	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
+	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
+	ShopDto.Response toResponse(Shop shop);
 }
