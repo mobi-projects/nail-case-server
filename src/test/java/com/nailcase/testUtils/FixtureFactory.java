@@ -19,6 +19,7 @@ import com.nailcase.model.enums.ConditionOption;
 import com.nailcase.model.enums.RemoveOption;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.model.enums.TreatmentOption;
+import com.nailcase.testUtils.fixture.FileFixture;
 import com.nailcase.testUtils.fixture.MemberFixture;
 import com.nailcase.testUtils.fixture.MemberFixtureToBootTest;
 import com.nailcase.testUtils.fixture.ShopFixture;
@@ -50,6 +51,7 @@ public class FixtureFactory {
 
 	public static final MemberFixture memberFixture = new MemberFixture();
 	public static final ShopFixture shopFixture = new ShopFixture();
+	public static final FileFixture fileFixture = new FileFixture();
 	// MEMBER
 	public static final Long FIXTURE_MEMBER_ID = 1L;
 	// SHOP
