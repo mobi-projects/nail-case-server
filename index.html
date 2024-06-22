@@ -916,6 +916,13 @@
             -->
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
+                  <li class="nav-header" data-group="MemberController"><a href="#api-MemberController">API Methods - MemberController</a></li>
+                    <li data-group="MemberController" data-name="expireToken" class="">
+                      <a href="#api-MemberController-expireToken">expireToken</a>
+                    </li>
+                    <li data-group="MemberController" data-name="logout" class="">
+                      <a href="#api-MemberController-logout">logout</a>
+                    </li>
                   <li class="nav-header" data-group="MonthlyArtController"><a href="#api-MonthlyArtController">API Methods - MonthlyArtController</a></li>
                     <li data-group="MonthlyArtController" data-name="deleteMonthlyArt" class="">
                       <a href="#api-MonthlyArtController-deleteMonthlyArt">deleteMonthlyArt</a>
@@ -1081,6 +1088,547 @@
           </div>
         </div>
         <div id="sections">
+                <section id="api-MemberController">
+                  <h1>MemberController</h1>
+                    <div id="api-MemberController-expireToken">
+                      <article id="api-MemberController-expireToken-0" data-group="User" data-name="expireToken" data-version="0">
+                        <div class="pull-left">
+                          <h1>expireToken</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/member/expire</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-MemberController-expireToken-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-MemberController-expireToken-0-java">Java</a></li>
+                          <li class=""><a href="#examples-MemberController-expireToken-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-MemberController-expireToken-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-MemberController-expireToken-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-MemberController-expireToken-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-MemberController-expireToken-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-MemberController-expireToken-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-MemberController-expireToken-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-MemberController-expireToken-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-MemberController-expireToken-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-MemberController-expireToken-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/member/expire"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-MemberController-expireToken-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.MemberControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class MemberControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        MemberControllerApi apiInstance = new MemberControllerApi();
+        String authorization = authorization_example; // String | 
+        try {
+            apiInstance.expireToken(authorization);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MemberControllerApi#expireToken");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-MemberController-expireToken-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.MemberControllerApi;
+
+public class MemberControllerApiExample {
+
+    public static void main(String[] args) {
+        MemberControllerApi apiInstance = new MemberControllerApi();
+        String authorization = authorization_example; // String | 
+        try {
+            apiInstance.expireToken(authorization);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MemberControllerApi#expireToken");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-MemberController-expireToken-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-MemberController-expireToken-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+String *authorization = authorization_example; // 
+
+MemberControllerApi *apiInstance = [[MemberControllerApi alloc] init];
+
+[apiInstance expireTokenWith:authorization
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-expireToken-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.MemberControllerApi()
+var authorization = authorization_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.expireToken(authorization, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-MemberController-expireToken-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-MemberController-expireToken-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class expireTokenExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new MemberControllerApi();
+            var authorization = authorization_example;  // String | 
+
+            try
+            {
+                apiInstance.expireToken(authorization);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling MemberControllerApi.expireToken: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-expireToken-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiMemberControllerApi();
+$authorization = authorization_example; // String | 
+
+try {
+    $api_instance->expireToken($authorization);
+} catch (Exception $e) {
+    echo 'Exception when calling MemberControllerApi->expireToken: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-expireToken-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::MemberControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::MemberControllerApi->new();
+my $authorization = authorization_example; # String | 
+
+eval { 
+    $api_instance->expireToken(authorization => $authorization);
+};
+if ($@) {
+    warn "Exception when calling MemberControllerApi->expireToken: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-expireToken-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.MemberControllerApi()
+authorization = authorization_example # String | 
+
+try: 
+    api_instance.expire_token(authorization)
+except ApiException as e:
+    print("Exception when calling MemberControllerApi->expireToken: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">Authorization*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_expireToken_authorization">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-MemberController-logout">
+                      <article id="api-MemberController-logout-0" data-group="User" data-name="logout" data-version="0">
+                        <div class="pull-left">
+                          <h1>logout</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/member/logout</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-MemberController-logout-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-MemberController-logout-0-java">Java</a></li>
+                          <li class=""><a href="#examples-MemberController-logout-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-MemberController-logout-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-MemberController-logout-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-MemberController-logout-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-MemberController-logout-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-MemberController-logout-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-MemberController-logout-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-MemberController-logout-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-MemberController-logout-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-MemberController-logout-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/member/logout"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-MemberController-logout-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.MemberControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class MemberControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        MemberControllerApi apiInstance = new MemberControllerApi();
+        String authorization = authorization_example; // String | 
+        try {
+            apiInstance.logout(authorization);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MemberControllerApi#logout");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-MemberController-logout-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.MemberControllerApi;
+
+public class MemberControllerApiExample {
+
+    public static void main(String[] args) {
+        MemberControllerApi apiInstance = new MemberControllerApi();
+        String authorization = authorization_example; // String | 
+        try {
+            apiInstance.logout(authorization);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MemberControllerApi#logout");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-MemberController-logout-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-MemberController-logout-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+String *authorization = authorization_example; // 
+
+MemberControllerApi *apiInstance = [[MemberControllerApi alloc] init];
+
+[apiInstance logoutWith:authorization
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-logout-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.MemberControllerApi()
+var authorization = authorization_example; // {{String}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.logout(authorization, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-MemberController-logout-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-MemberController-logout-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class logoutExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new MemberControllerApi();
+            var authorization = authorization_example;  // String | 
+
+            try
+            {
+                apiInstance.logout(authorization);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling MemberControllerApi.logout: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-logout-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiMemberControllerApi();
+$authorization = authorization_example; // String | 
+
+try {
+    $api_instance->logout($authorization);
+} catch (Exception $e) {
+    echo 'Exception when calling MemberControllerApi->logout: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-logout-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::MemberControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::MemberControllerApi->new();
+my $authorization = authorization_example; # String | 
+
+eval { 
+    $api_instance->logout(authorization => $authorization);
+};
+if ($@) {
+    warn "Exception when calling MemberControllerApi->logout: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MemberController-logout-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.MemberControllerApi()
+authorization = authorization_example # String | 
+
+try: 
+    api_instance.logout(authorization)
+except ApiException as e:
+    print("Exception when calling MemberControllerApi->logout: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">Authorization*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_logout_authorization">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
                 <section id="api-MonthlyArtController">
                   <h1>MonthlyArtController</h1>
                     <div id="api-MonthlyArtController-deleteMonthlyArt">
