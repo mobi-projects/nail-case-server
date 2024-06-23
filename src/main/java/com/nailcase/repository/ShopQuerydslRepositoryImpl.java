@@ -25,16 +25,16 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 		QShop shop = QShop.shop;
 
 		List<Shop> shops = queryFactory.selectFrom(shop)
-			.where(shop.shopName.like("%" + keyword + "%")
-				.or(shop.address.like("%" + keyword + "%")))
+			.where(shop.shopName.contains(keyword)
+				.or(shop.address.contains(keyword)))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory.select(shop.count())
 			.from(shop)
-			.where(shop.shopName.like("%" + keyword + "%")
-				.or(shop.address.like("%" + keyword + "%")));
+			.where(shop.shopName.contains(keyword)
+				.or(shop.address.contains(keyword)));
 
 		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
 	}

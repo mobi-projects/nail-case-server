@@ -29,8 +29,8 @@ import com.nailcase.testUtils.fixture.ShopFixture;
 
 @ExtendWith(MockitoExtension.class)
 public class ShopImageServiceTest {
-	private final static FileFixture fileFixture = FixtureFactory.fileFixture;
-	private final static ShopFixture shopFixture = FixtureFactory.shopFixture;
+	private static final FileFixture fileFixture = FixtureFactory.fileFixture;
+	private static final ShopFixture shopFixture = FixtureFactory.shopFixture;
 
 	@Mock
 	private AmazonS3 amazonS3;
