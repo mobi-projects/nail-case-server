@@ -52,7 +52,7 @@ public class ShopDto {
 
 		private String address;
 
-		private String availableSeats;
+		private int availableSeats;
 
 		private List<String> tags;
 
