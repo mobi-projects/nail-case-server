@@ -1,7 +1,9 @@
 package com.nailcase.service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,4 +27,21 @@ public class ReviewImageService extends ImageService<ReviewImage> {
 	public List<ImageDto> saveImages(List<MultipartFile> files, List<ReviewImage> images) {
 		return super.saveImages(files, images, reviewImageRepository);
 	}
+
+	@Async("imageExecutor")
+	public CompletableFuture<ImageDto> saveImageAsync(MultipartFile file, ReviewImage image) {
+		return super.saveImageAsync(file, image, reviewImageRepository);
+	}
+
+	@Async("imageExecutor")
+	public CompletableFuture<List<ImageDto>> saveImagesAsync(List<MultipartFile> files,
+		List<ReviewImage> images) {
+		return super.saveImagesAsync(files, images, reviewImageRepository);
+	}
+
+	@Async("imageExecutor")
+	public CompletableFuture<Void> deleteImageAsync(String objectName) {
+		return super.deleteImageAsync(objectName);
+	}
+
 }
