@@ -1,6 +1,5 @@
 package com.nailcase.model.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,7 @@ import com.nailcase.model.enums.Category;
 import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +17,7 @@ public class PostDto {
 	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Request {
-		private List<Long> imageIds; // 이미지 ID 목록
+		private List<Long> imageIds;
 		private Long shopId;
 		private Long memberId;
 		private String title;
@@ -27,10 +26,9 @@ public class PostDto {
 	}
 
 	@Data
-	@AllArgsConstructor
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@Builder
 	public static class Response {
-		private List<Long> imageIds = new ArrayList<>();
+		private List<Long> imageIds;
 		private Long memberId;
 		private Long shopId;
 		private Long postId;
@@ -42,33 +40,42 @@ public class PostDto {
 		private Boolean liked;
 		private Long commentCount;
 		private Long createdAt;
-		private List<String> imageUrls = new ArrayList<>();
-		private List<PostCommentDto.Response> comments = new ArrayList<>();
+		private List<String> imageUrls;
+		private List<PostCommentDto.Response> comments;
 
 		public static Response from(Post post, Boolean liked) {
-			Response response = new Response();
-			response.setPostId(post.getPostId());
-			response.setTitle(post.getTitle());
-			response.setCategory(post.getCategory());
-			response.setContents(post.getContents());
-			response.setLikes(post.getLikes());
-			response.setViews(post.getViews());
-			response.setLiked(liked);
-			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()));
-			response.setMemberId(post.getCreatedBy());
+			return Response.builder()
+				.postId(post.getPostId())
+				.title(post.getTitle())
+				.category(post.getCategory())
+				.contents(post.getContents())
+				.likes(post.getLikes())
+				.views(post.getViews())
+				.liked(liked)
+				.createdAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()))
+				.memberId(post.getCreatedBy())
+				.imageUrls(getImageUrls(post))
+				.imageIds(getImageIds(post))
+				.comments(getComments(post))
+				.build();
+		}
 
-			response.setImageUrls(post.getPostImages().stream()
+		private static List<String> getImageUrls(Post post) {
+			return post.getPostImages().stream()
 				.map(postImage -> postImage.getBucketName() + "/" + postImage.getObjectName())
-				.collect(Collectors.toList()));
-			response.setImageIds(post.getPostImages().stream()
-				.map(PostImage::getImageId)
-				.collect(Collectors.toList()));
-			response.setComments(post.getPostComments().stream()
-				.map(PostCommentDto.Response::from)
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList());
+		}
 
-			return response;
+		private static List<Long> getImageIds(Post post) {
+			return post.getPostImages().stream()
+				.map(PostImage::getImageId)
+				.collect(Collectors.toList());
+		}
+
+		private static List<PostCommentDto.Response> getComments(Post post) {
+			return post.getPostComments().stream()
+				.map(PostCommentDto.Response::from)
+				.collect(Collectors.toList());
 		}
 	}
-
 }
