@@ -46,17 +46,17 @@ public class PostController {
 	@PostMapping("/{announcementId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addImageToPost(@PathVariable Long announcementId, @RequestParam("files") List<MultipartFile> files,
-		@PathVariable String shopId) {
+		@PathVariable Long shopId) {
 		log.info("Adding images to post: {} for shopId: {}", announcementId, shopId);
-		postService.addImageToPost(announcementId, files);
+		postService.addImageToPost(shopId, announcementId, files);
 	}
 
 	@DeleteMapping("/{announcementId}/images/{imageId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public CompletableFuture<Void> removeImageFromPost(@PathVariable Long announcementId, @PathVariable Long imageId,
-		@PathVariable String shopId) {
+		@PathVariable Long shopId) {
 		log.info("Removing image: {} from post: {}", imageId, announcementId);
-		return postService.removeImageFromPost(announcementId, imageId);
+		return postService.removeImageFromPost(shopId, announcementId, imageId);
 	}
 
 	@PostMapping

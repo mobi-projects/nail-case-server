@@ -23,7 +23,6 @@ public class ReviewDto {
 		private Long reviewId;
 		private Long shopId;
 		private Long memberId;
-		private Long shopMemberId;
 		private String contents;
 		private Double rating;
 	}

@@ -16,7 +16,6 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.PostErrorCode;
-import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -30,13 +29,13 @@ import com.nailcase.model.entity.QPost;
 import com.nailcase.model.entity.QPostComment;
 import com.nailcase.model.entity.QPostImage;
 import com.nailcase.model.entity.QPostLikedMember;
+import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.Shop;
-import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.PostCommentsRepository;
 import com.nailcase.repository.PostImageRepository;
 import com.nailcase.repository.PostLikedMemberRepository;
 import com.nailcase.repository.PostsRepository;
-import com.nailcase.repository.ShopRepository;
+import com.nailcase.util.ServiceUtils;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -51,21 +50,19 @@ public class PostService {
 	private final Executor imageExecutor;
 	private final EntityManager entityManager;
 	private final JPAQueryFactory queryFactory;
+	private final TransactionTemplate transactionTemplate;
 	private final PostsRepository postRepository;
 	private final PostCommentsRepository commentRepository;
 	private final PostImageRepository postImageRepository;
 	private final BitmapService bitmapService;
 	private final PostImageService postImageService;
-	private final MemberRepository memberRepository;
 	private final PostLikedMemberRepository postLikedMemberRepository;
-	private final TransactionTemplate transactionTemplate;
-	private final ShopRepository shopRepository;
 
 	@Transactional
 	@Async("imageExecutor")
 	public CompletableFuture<List<PostImageDto>> uploadImages(List<MultipartFile> files, Long memberId) {
-		if (files.size() > 4) {
-			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "리뷰당 최대 3개의 이미지만 업로드할 수 있습니다.");
+		if (files.size() > 5) {
+			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
 		}
 		List<PostImage> tempImages = files.stream()
 			.map(file -> {
@@ -89,9 +86,11 @@ public class PostService {
 
 	@Transactional
 	public PostDto.Response registerPost(Long shopId, PostDto.Request postRequest) {
-		Shop shop = shopRepository.findById(shopId).orElseThrow(() ->
-			new BusinessException(CommonErrorCode.NOT_FOUND)
-		);
+
+		Shop shop = queryFactory.selectFrom(QShop.shop)
+			.where(QShop.shop.shopId.eq(shopId)).fetchOne();
+
+		ServiceUtils.checkNullValue(shop);
 
 		Post post = Post.builder()
 			.title(postRequest.getTitle())
@@ -123,8 +122,11 @@ public class PostService {
 	public CompletableFuture<PostDto.Response> updatePost(Long shopId, Long postId, PostDto.Request postRequest,
 		Long memberId) {
 		return CompletableFuture.supplyAsync(() -> transactionTemplate.execute(status -> {
-			Post post = postRepository.findByPostId(postId)
-				.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+			Post post = queryFactory.selectFrom(QPost.post)
+				.leftJoin(QPost.post.shop).fetchJoin()
+				.where(QPost.post.shop.shopId.eq(shopId).and(QPost.post.postId.eq(postId)))
+				.fetchOne();
+			ServiceUtils.checkNullValue(post);
 
 			boolean alreadyLiked = postLikedMemberRepository.existsByPost_PostIdAndMember_MemberId(postId, memberId);
 
@@ -198,9 +200,15 @@ public class PostService {
 	}
 
 	@Transactional
-	public void addImageToPost(Long postId, List<MultipartFile> files) {
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+	public void addImageToPost(Long shopId, Long postId, List<MultipartFile> files) {
+
+		Post post = queryFactory.selectFrom(QPost.post)
+			.leftJoin(QPost.post.shop).fetchJoin()
+			.where(QPost.post.shop.shopId.eq(shopId)
+				.and(QPost.post.postId.eq(postId)))
+			.fetchOne();
+		
+		ServiceUtils.checkNullValue(post);
 
 		List<PostImage> postImages = files.stream()
 			.map(file -> {
@@ -241,11 +249,16 @@ public class PostService {
 	}
 
 	@Transactional
-	public CompletableFuture<Void> removeImageFromPost(Long postId, Long imageId) {
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-		PostImage postImage = postImageRepository.findByImageId(imageId)
-			.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
+	public CompletableFuture<Void> removeImageFromPost(Long shopId, Long postId, Long imageId) {
+		Post post = queryFactory.selectFrom(QPost.post)
+			.leftJoin(QPost.post.postImages, QPostImage.postImage).fetchJoin() // Post와 관련된 PostImage를 함께 가져오기
+			.where(QPost.post.shop.shopId.eq(shopId).and(QPost.post.postId.eq(postId)))
+			.fetchOne();
+		ServiceUtils.checkNullValue(post);
+
+		// Post와 관련된 PostImage 중 하나를 가져오기
+		PostImage postImage = post.getPostImages().stream().findFirst().orElse(null);
+		ServiceUtils.checkNullValue(postImage);
 
 		String objectName = postImage.getObjectName();
 
@@ -294,8 +307,12 @@ public class PostService {
 	}
 
 	public PostDto.Response viewShopNews(Long shopId, Long postId, Long memberId) {
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+		Post post = queryFactory.selectFrom(QPost.post)
+			.join(QPost.post.shop, QShop.shop).fetchJoin()
+			.where(QPost.post.shop.shopId.eq(shopId).and(QPost.post.postId.eq(postId)))
+			.fetchOne();
+
+		ServiceUtils.checkNullValue(post);
 
 		boolean alreadyLiked = postLikedMemberRepository.existsByPost_PostIdAndMember_MemberId(postId, memberId);
 
@@ -317,13 +334,13 @@ public class PostService {
 
 	@Transactional
 	public void deletePost(Long shopId, Long postId) {
-		Post post = queryFactory.selectFrom(QPost.post)
-			.where(QPost.post.shop.shopId.eq(shopId).and(QPost.post.postId.eq(postId)))
+		Post post = queryFactory.select(QPost.post)
+			.from(QPost.post)
+			.join(QPost.post.shop, QShop.shop).fetchJoin()
+			.where(QShop.shop.shopId.eq(shopId).and(QPost.post.postId.eq(postId)))
 			.fetchOne();
 
-		if (post == null) {
-			throw new BusinessException(CommonErrorCode.NOT_FOUND);
-		}
+		ServiceUtils.checkNullValue(post);
 
 		List<CompletableFuture<Void>> deleteImageFutures = post.getPostImages().stream()
 			.map(postImage -> postImageService.deleteImageAsync(postImage.getObjectName()))
@@ -340,12 +357,11 @@ public class PostService {
 	public PostCommentDto.Response registerPostComment(Long shopId, Long postId, PostCommentDto.Request commentRequest,
 		Long memberId) {
 		Post post = queryFactory.selectFrom(QPost.post)
-			.where(QPost.post.postId.eq(postId))
+			.join(QPost.post.shop, QShop.shop).fetchJoin()
+			.where(QPost.post.postId.eq(postId)
+				.and(QShop.shop.shopId.eq(shopId)))
 			.fetchOne();
-
-		if (post == null) {
-			throw new BusinessException(PostErrorCode.NOT_FOUND);
-		}
+		ServiceUtils.checkNullValue(post);
 
 		PostComment postComment = PostComment.builder()
 			.body(commentRequest.getBody())
@@ -362,9 +378,7 @@ public class PostService {
 			.where(QPostComment.postComment.commentId.eq(commentId))
 			.fetchOne();
 
-		if (postComment == null) {
-			throw new BusinessException(PostErrorCode.COMMENT_NOT_FOUND);
-		}
+		ServiceUtils.checkNullValue(postComment);
 
 		postComment.updateBody(commentRequest.getBody());
 		commentRepository.save(postComment); // 엔티티 저장 후 업데이트된 값을 반영
@@ -384,22 +398,13 @@ public class PostService {
 			.where(QPost.post.postId.eq(postId))
 			.fetchOne();
 
-		if (post == null) {
-			throw new BusinessException(PostErrorCode.NOT_FOUND);
-		}
+		ServiceUtils.checkNullValue(post);
 
 		Member currentMember = queryFactory.selectFrom(QMember.member)
 			.where(QMember.member.memberId.eq(memberId))
 			.fetchOne();
 
-		if (currentMember == null) {
-			throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
-		}
-
-		// boolean alreadyLiked = queryFactory.selectFrom(QPostLikedMember.postLikedMember)
-		// 	.where(QPostLikedMember.postLikedMember.post.postId.eq(postId)
-		// 		.and(QPostLikedMember.postLikedMember.member.memberId.eq(memberId)))
-		// 	.fetchCount() > 0;
+		ServiceUtils.checkNullValue(currentMember);
 
 		boolean alreadyLiked = !queryFactory.selectFrom(QPostLikedMember.postLikedMember)
 			.where(QPostLikedMember.postLikedMember.post.postId.eq(postId)
@@ -423,9 +428,7 @@ public class PostService {
 				.and(QPostLikedMember.postLikedMember.member.memberId.eq(memberId)))
 			.fetchOne();
 
-		if (postLike == null) {
-			throw new BusinessException(PostErrorCode.LIKE_NOT_FOUND);
-		}
+		ServiceUtils.checkNullValue(postLike);
 
 		postLikedMemberRepository.delete(postLike);
 
@@ -433,11 +436,10 @@ public class PostService {
 			.where(QPost.post.postId.eq(postId))
 			.fetchOne();
 
-		if (post == null) {
-			throw new BusinessException(PostErrorCode.NOT_FOUND);
-		}
+		ServiceUtils.checkNullValue(post);
 
 		post.decrementLikes();
 		postRepository.save(post);
 	}
+
 }

@@ -1,6 +1,7 @@
 package com.nailcase.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,7 +37,7 @@ public class ReviewController {
 	// 이미지만 업로드하는 API
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<ReviewImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
+	public CompletableFuture<List<ReviewImageDto>> uploadImages(@RequestParam("files") List<MultipartFile> files,
 		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
 		Long memberId = memberDetails.getMemberId();
 		log.info("Uploading images for shopId: {}", shopId);
@@ -46,18 +47,18 @@ public class ReviewController {
 	@PostMapping("/{reviewId}/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addImageToReview(@PathVariable Long reviewId, @RequestParam("files") List<MultipartFile> files,
-		@PathVariable String shopId) {
+		@PathVariable Long shopId) {
 		log.info("Adding images to post: {} for shopId: {}", reviewId, shopId);
-		reviewService.addImageToReview(reviewId, files);
+		reviewService.addImageToReview(shopId, reviewId, files);
 	}
 
 	@DeleteMapping("/{reviewId}/images/{imageId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeImageFromReview(@PathVariable Long reviewId, @PathVariable Long imageId,
-		@PathVariable String shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
+		@PathVariable Long shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();
 		log.info("Removing image: {} from post: {}", imageId, reviewId);
-		reviewService.removeImageFromReview(reviewId, imageId, memberId);
+		reviewService.removeImageFromReview(shopId, reviewId, imageId, memberId);
 	}
 
 	@PostMapping
@@ -71,7 +72,7 @@ public class ReviewController {
 	}
 
 	@PutMapping("/{reviewId}")
-	public ReviewDto.Response updateReview(@PathVariable Long shopId, @PathVariable Long reviewId,
+	public CompletableFuture<ReviewDto.Response> updateReview(@PathVariable Long shopId, @PathVariable Long reviewId,
 		@RequestBody ReviewDto.Request request, @AuthenticationPrincipal MemberDetails memberDetails
 	) {
 		log.info("Updating review: {} for shopId: {}", reviewId, shopId);
