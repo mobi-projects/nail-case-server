@@ -1,6 +1,7 @@
 package com.nailcase.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,7 +36,7 @@ public class PostController {
 	// 이미지만 업로드하는 API
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<PostImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
+	public CompletableFuture<List<PostImageDto>> uploadImages(@RequestParam("files") List<MultipartFile> files,
 		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
 		Long memberId = memberDetails.getMemberId();
 		log.info("Uploading images for shopId: {}", shopId);
@@ -52,10 +53,10 @@ public class PostController {
 
 	@DeleteMapping("/{announcementId}/images/{imageId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeImageFromPost(@PathVariable Long announcementId, @PathVariable Long imageId,
+	public CompletableFuture<Void> removeImageFromPost(@PathVariable Long announcementId, @PathVariable Long imageId,
 		@PathVariable String shopId) {
 		log.info("Removing image: {} from post: {}", imageId, announcementId);
-		postService.removeImageFromPost(announcementId, imageId);
+		return postService.removeImageFromPost(announcementId, imageId);
 	}
 
 	@PostMapping
@@ -66,7 +67,8 @@ public class PostController {
 	}
 
 	@PutMapping("/{announcementId}")
-	public PostDto.Response updatePost(@PathVariable Long announcementId, @RequestBody PostDto.Request postRequest,
+	public CompletableFuture<PostDto.Response> updatePost(@PathVariable Long announcementId,
+		@RequestBody PostDto.Request postRequest,
 		@PathVariable Long shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("Updating post: {} for shopId: {}", announcementId, shopId);
 		Long memberId = memberDetails.getMemberId();
@@ -102,7 +104,7 @@ public class PostController {
 		@RequestBody PostCommentDto.Request commentRequest, @AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();
 		log.info("Registering comment for post: {} by memberId: {}", announcementId, memberId);
-		return postService.registerComment(shopId, announcementId, commentRequest, memberId);
+		return postService.registerPostComment(shopId, announcementId, commentRequest, memberId);
 	}
 
 	@PutMapping("/{announcementId}/comments/{commentId}")

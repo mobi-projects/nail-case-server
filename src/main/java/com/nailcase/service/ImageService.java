@@ -1,10 +1,12 @@
 package com.nailcase.service;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +31,9 @@ import com.nailcase.exception.codes.ImageErrorCode;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -48,9 +53,16 @@ public class ImageService<T extends Image> {
 			objectMetadata.setContentLength(file.getSize());
 			objectMetadata.setContentType(file.getContentType());
 
-			objectMetadata.addUserMetadata("original-filename", file.getOriginalFilename());
+			// 원본 파일명을 UTF-8로 인코딩하여 메타데이터에 저장
+			String originalFilename = file.getOriginalFilename();
+			assert originalFilename != null;
+			String encodedFilename = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8);
+			objectMetadata.addUserMetadata("original-filename", encodedFilename);
 
-			amazonS3.putObject(bucket, objectName, file.getInputStream(), objectMetadata);
+			// UUID를 사용하여 고유한 objectName 생성
+			String uniqueFileName = UUID.randomUUID() + "_" + encodedFilename;
+
+			amazonS3.putObject(bucket, uniqueFileName, file.getInputStream(), objectMetadata);
 		} catch (Exception e) {
 			throw new BusinessException(ImageErrorCode.UPLOAD_FAILURE, e);
 		}
@@ -138,5 +150,43 @@ public class ImageService<T extends Image> {
 		if (file.getSize() > MAX_FILE_SIZE) {
 			throw new BusinessException(ImageErrorCode.FILE_TOO_LARGE);
 		}
+	}
+
+	@Async("imageExecutor")
+	public CompletableFuture<Void> deleteImageAsync(String objectName) {
+		return CompletableFuture.runAsync(() -> {
+			try {
+				deleteImage(objectName);
+			} catch (Exception e) {
+				log.error("비동기 이미지 삭제 실패: {}", e.getMessage());
+				throw e;
+			}
+		});
+	}
+
+	@Async("imageExecutor")
+	public <T extends Image> CompletableFuture<ImageDto> saveImageAsync(MultipartFile file, T image,
+		JpaRepository<T, Long> imageRepository) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				return saveImage(file, image, imageRepository);
+			} catch (Exception e) {
+				log.error("비동기 이미지 저장 실패: {}", e.getMessage());
+				throw e;
+			}
+		});
+	}
+
+	@Async("imageExecutor")
+	public <T extends Image> CompletableFuture<List<ImageDto>> saveImagesAsync(List<MultipartFile> files,
+		List<T> images, JpaRepository<T, Long> imageRepository) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				return saveImages(files, images, imageRepository);
+			} catch (Exception e) {
+				log.error("비동기 이미지들 저장 실패: {}", e.getMessage());
+				throw e;
+			}
+		});
 	}
 }

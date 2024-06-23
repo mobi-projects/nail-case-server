@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.nailcase.model.entity.Post;
-import com.nailcase.model.entity.PostComment;
 import com.nailcase.model.entity.PostImage;
 import com.nailcase.model.enums.Category;
 import com.nailcase.util.DateUtils;
@@ -31,7 +30,7 @@ public class PostDto {
 	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Response {
-		private List<Long> imageIds;
+		private List<Long> imageIds = new ArrayList<>();
 		private Long memberId;
 		private Long shopId;
 		private Long postId;
@@ -43,8 +42,8 @@ public class PostDto {
 		private Boolean liked;
 		private Long commentCount;
 		private Long createdAt;
-		private List<String> imageUrls;
-		private List<PostCommentDto.Response> comments;
+		private List<String> imageUrls = new ArrayList<>();
+		private List<PostCommentDto.Response> comments = new ArrayList<>();
 
 		public static Response from(Post post, Boolean liked) {
 			Response response = new Response();
@@ -56,36 +55,20 @@ public class PostDto {
 			response.setViews(post.getViews());
 			response.setLiked(liked);
 			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()));
-
 			response.setMemberId(post.getCreatedBy());
 
-			List<PostImage> postImages = post.getPostImages();
-			if (postImages != null) {
-				List<String> imageUrls = postImages.stream()
-					.map(postImage -> postImage.getBucketName() + "/" + postImage.getObjectName())
-					.collect(Collectors.toList());
-				response.setImageUrls(imageUrls);
-				List<Long> imageIds = postImages.stream()
-					.map(PostImage::getImageId)
-					.collect(Collectors.toList());
-				response.setImageIds(imageIds);
-			} else {
-				response.setImageUrls(new ArrayList<>());
-				response.setImageIds(new ArrayList<>());
-			}
-
-			List<PostComment> comments = post.getPostComments();
-			if (comments == null) {
-				comments = new ArrayList<>(); // null일 경우 빈 리스트 할당
-			}
-
-			List<PostCommentDto.Response> commentResponses = comments.stream()
+			response.setImageUrls(post.getPostImages().stream()
+				.map(postImage -> postImage.getBucketName() + "/" + postImage.getObjectName())
+				.collect(Collectors.toList()));
+			response.setImageIds(post.getPostImages().stream()
+				.map(PostImage::getImageId)
+				.collect(Collectors.toList()));
+			response.setComments(post.getPostComments().stream()
 				.map(PostCommentDto.Response::from)
-				.collect(Collectors.toList());
-			response.setComments(commentResponses);
+				.collect(Collectors.toList()));
 
 			return response;
 		}
-
 	}
+
 }
