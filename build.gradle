@@ -88,6 +88,22 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
+// querydsl
+def generated = 'src/main/generated'
+
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.generatedSourceOutputDirectory = file("build/generated/sources/annotationProcessor/java/main")
+}
+
+sourceSets {
+    main.java.srcDirs += ["build/generated/sources/annotationProcessor/java/main", "build/generated"]
+}
+
+clean {
+    delete file(generated)
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }

@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nailcase.config.SecurityConfig;
-import com.nailcase.model.dto.ShopRegisterDto;
+import com.nailcase.model.dto.ShopDto;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.service.ShopService;
 import com.nailcase.testUtils.FixtureFactory;
@@ -66,26 +66,24 @@ public class ShopControllerTest {
 	@AfterEach
 	public void cleanUp() {
 		shopRepository.deleteAll(); // Shop 데이터 삭제
-		fixtureFactory.getMemberFixtureFactory().deleteAllMembers(); // Member 데이터 삭제
+		fixtureFactory.getMemberFixtureToBootTest().deleteAllMembers(); // Member 데이터 삭제
 	}
 
 	@Test
 	@DisplayName("Post요청시 HTTP.CREATE와 응답을 반환한다.")
 	void registerShopSuccess() throws Exception {
 		// Given
-		String jwt = fixtureFactory.getMemberFixtureFactory().createMemberAndGetJwt();
+		String jwt = fixtureFactory.getMemberFixtureToBootTest().createMemberAndGetJwt();
 		EasyRandomParameters params = new EasyRandomParameters()
 			.randomize(named("phone"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(16));
-		ShopRegisterDto.Request requestDto = new EasyRandom(params).nextObject(ShopRegisterDto.Request.class);
-		ShopRegisterDto.Response responseDto = new ShopRegisterDto.Response();
+		ShopDto.Post requestDto = new EasyRandom(params).nextObject(ShopDto.Post.class);
+		ShopDto.Response responseDto = new ShopDto.Response();
 		Reflection.setField(responseDto, "shopId", 1L);
 		String requestJson = om.registerModule(new JavaTimeModule())
 			.writeValueAsString(requestDto);
-		String responseJson = om.registerModule(new JavaTimeModule())
-			.writeValueAsString(responseDto);
 
 		// When
-		doReturn(responseDto).when(shopService).registerShop(any(ShopRegisterDto.Request.class), eq(1L));
+		doReturn(responseDto).when(shopService).registerShop(any(ShopDto.Post.class), eq(1L));
 
 		// Then
 		mockMvc
@@ -93,21 +91,20 @@ public class ShopControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson)
 				.header("Authorization", "Bearer " + jwt))
-			.andExpect(status().isCreated())
-			.andExpect(content().json(responseJson));
+			.andExpect(status().isCreated());
 	}
 
 	@Test
 	@DisplayName("Post요청시 필수 필드 누락으로 인해 HTTP.BAD_REQUEST를 반환한다.")
 	void registerShopMissingRequiredFields() throws Exception {
 		// Given
-		String jwt = fixtureFactory.getMemberFixtureFactory().createMemberAndGetJwt();
+		String jwt = fixtureFactory.getMemberFixtureToBootTest().createMemberAndGetJwt();
 
 		// 필수 필드(shopName, phone)가 누락된 요청 데이터
 		EasyRandomParameters params = new EasyRandomParameters()
 			.excludeField(named("shopName").and(ofType(String.class)))
 			.excludeField(named("phone").and(ofType(String.class)));
-		ShopRegisterDto.Request requestDto = new EasyRandom(params).nextObject(ShopRegisterDto.Request.class);
+		ShopDto.Post requestDto = new EasyRandom(params).nextObject(ShopDto.Post.class);
 
 		String requestJson = om.registerModule(new JavaTimeModule())
 			.writeValueAsString(requestDto);

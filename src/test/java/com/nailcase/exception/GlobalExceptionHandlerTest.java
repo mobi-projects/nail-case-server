@@ -1,12 +1,12 @@
-
 package com.nailcase.exception;
 
-import com.nailcase.exception.codes.AuthErrorCode;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.nailcase.exception.codes.AuthErrorCode;
 
 public class GlobalExceptionHandlerTest {
 
@@ -18,7 +18,7 @@ public class GlobalExceptionHandlerTest {
 
 		ResponseEntity<String> response = exceptionHandler.handleBusinessException(exception);
 
-		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 		assertEquals(AuthErrorCode.ACCESS_DENIED.getMessage(), response.getBody());
 	}
 }

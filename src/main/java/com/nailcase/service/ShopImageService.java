@@ -1,8 +1,10 @@
 package com.nailcase.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.nailcase.common.dto.ImageDto;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.repository.ShopImageRepository;
 
@@ -18,4 +20,7 @@ public class ShopImageService extends ImageService<ShopImage> {
 		this.shopImageRepository = shopImageRepository;
 	}
 
+	public ImageDto uploadImage(MultipartFile file, ShopImage shopImage) {
+		return super.saveImage(file, shopImage, shopImageRepository);
+	}
 }
