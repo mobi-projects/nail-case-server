@@ -66,6 +66,8 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
+				.requestMatchers("/demo-login/**") // 데모 테스트용
+				.permitAll()
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
 			.oauth2Login(oauth2 -> oauth2
