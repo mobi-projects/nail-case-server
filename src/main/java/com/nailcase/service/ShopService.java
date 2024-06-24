@@ -3,11 +3,13 @@ package com.nailcase.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,9 +94,15 @@ public class ShopService {
 			throw new BusinessException(ShopErrorCode.SHOP_DELETION_FORBIDDEN);
 		}
 
-		shopRepository.delete(shop);
+		List<CompletableFuture<Void>> deleteImageFutures = shop.getShopImages().stream()
+			.map(postImage -> shopImageService.deleteImageAsync(postImage.getObjectName()))
+			.toList();
 
-		// TODO 사진 관련 처리
+		CompletableFuture.allOf(deleteImageFutures.toArray(new CompletableFuture[0]))
+			.thenRun(() -> {
+				shop.getShopImages().clear();
+				shopRepository.delete(shop);
+			});
 	}
 
 	@Transactional(readOnly = true)
@@ -171,7 +179,9 @@ public class ShopService {
 	}
 
 	@Transactional
-	public String uploadImage(Long shopId, MultipartFile file, Long memberId) throws BusinessException {
+	@Async("imageExecutor")
+	public CompletableFuture<List<ImageDto>> uploadImages(Long shopId, List<MultipartFile> files, Long memberId) throws
+		BusinessException {
 		// TODO 샵에 속해있는 아티스트 인지 검사
 		log.debug(String.valueOf(memberId)); // TODO remove
 
@@ -181,10 +191,21 @@ public class ShopService {
 			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED);
 		}
 
-		ShopImage shopImage = ShopImage.builder().shop(shop).build();
-		ImageDto savedImage = shopImageService.uploadImage(file, shopImage);
+		List<ShopImage> tempImages = files.stream()
+			.map(file -> ShopImage.builder().shop(shop)
+				.build())
+			.collect(Collectors.toList());
 
-		return savedImage.getUrl();
+		return shopImageService.saveImagesAsync(files, tempImages)
+			.thenApply(savedImageDtos -> savedImageDtos.stream()
+				.map(savedImageDto -> ImageDto.builder()
+					.id(savedImageDto.getId())
+					.bucketName(savedImageDto.getBucketName())
+					.objectName(savedImageDto.getObjectName())
+					.url(savedImageDto.getUrl())
+					.createdBy(savedImageDto.getCreatedBy())
+					.build())
+				.collect(Collectors.toList()));
 	}
 
 	@Transactional

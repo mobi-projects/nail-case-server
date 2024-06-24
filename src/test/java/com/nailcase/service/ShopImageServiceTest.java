@@ -5,11 +5,14 @@ import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -71,4 +74,50 @@ public class ShopImageServiceTest {
 			.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class));
 		verify(amazonS3, times(1)).getUrl(anyString(), anyString());
 	}
+
+	@Test
+	@DisplayName("uploadImageAsync 성공 테스트")
+	void uploadImageAsyncSuccess() throws ExecutionException, InterruptedException {
+		// Given
+		MockMultipartFile file = fileFixture.getImageFile();
+		Shop shop = shopFixture.getShop();
+		ShopImage shopImage = ShopImage.builder().shop(shop).build();
+
+		when(shopImageRepository.save(any(ShopImage.class))).thenReturn(shopImage);
+		when(amazonS3.getUrl(anyString(), anyString())).thenReturn(mock(URL.class));
+
+		// When
+		CompletableFuture<ImageDto> futureResult = shopImageService.saveImageAsync(file, shopImage);
+
+		// Then
+		ImageDto result = futureResult.get(); // 비동기 작업이 완료될 때까지 대기
+
+		assertNotNull(result);
+		assertEquals(shopImage.getBucketName(), result.getBucketName());
+		assertEquals(shopImage.getObjectName(), result.getObjectName());
+		// 비동기 메서드 호출 확인
+		verify(shopImageRepository, times(1)).save(any(ShopImage.class));
+
+		ArgumentCaptor<String> bucketCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
+		ArgumentCaptor<ObjectMetadata> metadataCaptor = ArgumentCaptor.forClass(ObjectMetadata.class);
+
+		verify(amazonS3, times(1)).putObject(
+			bucketCaptor.capture(),
+			keyCaptor.capture(),
+			inputStreamCaptor.capture(),
+			metadataCaptor.capture()
+		);
+
+		// S3 업로드 파라미터 검증
+		assertEquals(shopImage.getBucketName(), bucketCaptor.getValue());
+		assertTrue(keyCaptor.getValue().contains(file.getOriginalFilename()));
+		assertNotNull(inputStreamCaptor.getValue());
+		assertEquals(file.getSize(), metadataCaptor.getValue().getContentLength());
+		assertEquals(file.getContentType(), metadataCaptor.getValue().getContentType());
+
+		verify(amazonS3, times(1)).getUrl(anyString(), anyString());
+	}
+
 }
