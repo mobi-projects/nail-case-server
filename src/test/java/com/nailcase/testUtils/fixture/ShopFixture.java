@@ -2,11 +2,15 @@ package com.nailcase.testUtils.fixture;
 
 import static org.jeasy.random.FieldPredicates.*;
 
+import java.util.List;
+import java.util.Set;
+
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.StringGenerateFixture;
@@ -30,7 +34,14 @@ public class ShopFixture {
 			.randomize(named("phone"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(10))
 			.randomize(named("overview"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(1000))
 			.randomize(named("address"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(50))
-			.randomize(named("availableSeats"), () -> AVAILABLE_SEATS);
+			.randomize(named("availableSeats"), () -> AVAILABLE_SEATS)
+			.excludeField(named("shopInfo").and(ofType(ShopInfo.class)))
+			.excludeField(named("workHours").and(ofType(Set.class)))
+			.excludeField(named("tags").and(ofType(Set.class)))
+			.excludeField(named("shopImages").and(ofType(Set.class)))
+			.excludeField(named("nailArtistList").and(ofType(List.class)))
+			.excludeField(named("reservationList").and(ofType(List.class)))
+			.excludeField(named("reservationDetailList").and(ofType(List.class)));
 		return new EasyRandom(params).nextObject(Shop.class);
 	}
 
