@@ -23,14 +23,14 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @SuperBuilder
-@Table(name = "shop_hours")
+@Table(name = "work_hours")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ShopHour extends BaseEntity {
+public class WorkHour extends BaseEntity {
 
 	@Id
-	@Column(name = "shop_hours_id")
+	@Column(name = "work_hour_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long shopHoursId;
+	private Long workHourId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id", nullable = false)
