@@ -27,13 +27,17 @@ import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
+import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
+import com.nailcase.repository.WorkHourRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
 import com.nailcase.testUtils.StringGenerateFixture;
@@ -52,14 +56,14 @@ public class ShopServiceTest {
 	@Mock
 	private TagMappingRepository tagMappingRepository;
 	@Mock
-	private ShopInfoService shopInfoService;
+	private ShopInfoRepository shopInfoRepository;
 	@Mock
-	private ShopHourService shopHourService;
+	private WorkHourRepository workHourRepository;
 	@InjectMocks
 	private ShopService shopService;
 
 	@Test
-	@DisplayName("샵 동록시 ROLE MANAGER | shop 저장, shopInfo, shopHour 초기화 성공 테스트")
+	@DisplayName("샵 동록시 ROLE MANAGER | shop 저장, shopInfo, workHour 초기화 성공 테스트")
 	void registerShopSuccess() throws Exception {
 		// Given
 		Shop shop = shopFixture.getShop();
@@ -83,8 +87,8 @@ public class ShopServiceTest {
 		assertEquals(Role.MANAGER, member.getRole());
 
 		verify(shopRepository, times(1)).save(any(Shop.class));
-		verify(shopInfoService, times(1)).initShopInfo(any(Shop.class));
-		verify(shopHourService, times(1)).initShopHour(any(Shop.class));
+		verify(shopInfoRepository, times(1)).save(any(ShopInfo.class));
+		verify(workHourRepository, times(7)).save(any(WorkHour.class));
 	}
 
 	@Test
