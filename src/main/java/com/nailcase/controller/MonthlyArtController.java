@@ -1,6 +1,7 @@
 package com.nailcase.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +35,7 @@ public class MonthlyArtController {
 	// 이미지만 업로드하는 API
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<MonthlyArtImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
+	public CompletableFuture<List<MonthlyArtImageDto>> uploadImages(@RequestParam("files") List<MultipartFile> files,
 		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
 		Long memberId = memberDetails.getMemberId();
 		log.info("Uploading images for shopId: {}", shopId);
@@ -50,7 +51,8 @@ public class MonthlyArtController {
 	}
 
 	@PutMapping("/{monthlyArtId}")
-	public MonthlyArtDto.Response updateMonthlyArt(@PathVariable Long shopId, @PathVariable Long monthlyArtId,
+	public CompletableFuture<MonthlyArtDto.Response> updateMonthlyArt(@PathVariable Long shopId,
+		@PathVariable Long monthlyArtId,
 		@RequestBody MonthlyArtDto.Request monthlyArtRequest, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("Updating monthly art: {} for shopId: {}", monthlyArtId, shopId);
 		Long memberId = memberDetails.getMemberId();

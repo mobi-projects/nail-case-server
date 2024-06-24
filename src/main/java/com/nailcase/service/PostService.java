@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
-import com.nailcase.exception.codes.PostErrorCode;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -86,7 +85,6 @@ public class PostService {
 
 	@Transactional
 	public PostDto.Response registerPost(Long shopId, PostDto.Request postRequest) {
-
 		Shop shop = queryFactory.selectFrom(QShop.shop)
 			.where(QShop.shop.shopId.eq(shopId)).fetchOne();
 
@@ -98,6 +96,7 @@ public class PostService {
 			.shop(shop)
 			.contents(postRequest.getContents())
 			.build();
+
 		Post savedPost = postRepository.save(post);
 
 		if (postRequest.getImageIds() != null && !postRequest.getImageIds().isEmpty()) {
@@ -191,9 +190,7 @@ public class PostService {
 				.where(QPost.post.postId.eq(postId))
 				.fetchOne();
 
-			if (refreshedPost == null) {
-				throw new BusinessException(PostErrorCode.NOT_FOUND);
-			}
+			ServiceUtils.checkNullValue(refreshedPost);
 
 			return PostDto.Response.from(refreshedPost, alreadyLiked);
 		}), imageExecutor);
@@ -201,13 +198,12 @@ public class PostService {
 
 	@Transactional
 	public void addImageToPost(Long shopId, Long postId, List<MultipartFile> files) {
-
 		Post post = queryFactory.selectFrom(QPost.post)
 			.leftJoin(QPost.post.shop).fetchJoin()
 			.where(QPost.post.shop.shopId.eq(shopId)
 				.and(QPost.post.postId.eq(postId)))
 			.fetchOne();
-		
+
 		ServiceUtils.checkNullValue(post);
 
 		List<PostImage> postImages = files.stream()
