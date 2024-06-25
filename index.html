@@ -726,6 +726,35 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.MemberDto"] = {
+  "type" : "object",
+  "properties" : {
+    "memberId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "profileImgUrl" : {
+      "type" : "string"
+    },
+    "role" : {
+      "type" : "string",
+      "enum" : [ "OWNER", "MANAGER", "USER" ]
+    },
+    "socialId" : {
+      "type" : "string"
+    },
+    "socialType" : {
+      "type" : "string",
+      "enum" : [ "KAKAO" ]
+    }
+  }
+};
             defs["com.nailcase.model.dto.MonthlyArtCommentDto$Response"] = {
   "type" : "object",
   "properties" : {
@@ -1518,6 +1547,12 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
+    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -1537,12 +1572,6 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
-    },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
@@ -1608,6 +1637,13 @@
             -->
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
+                  <li class="nav-header" data-group="DemoLoginController"><a href="#api-DemoLoginController">API Methods - DemoLoginController</a></li>
+                    <li data-group="DemoLoginController" data-name="loginAdmin" class="">
+                      <a href="#api-DemoLoginController-loginAdmin">loginAdmin</a>
+                    </li>
+                    <li data-group="DemoLoginController" data-name="loginUser" class="">
+                      <a href="#api-DemoLoginController-loginUser">loginUser</a>
+                    </li>
                   <li class="nav-header" data-group="MemberController"><a href="#api-MemberController">API Methods - MemberController</a></li>
                     <li data-group="MemberController" data-name="expireToken" class="">
                       <a href="#api-MemberController-expireToken">expireToken</a>
@@ -1795,6 +1831,577 @@
           </div>
         </div>
         <div id="sections">
+                <section id="api-DemoLoginController">
+                  <h1>DemoLoginController</h1>
+                    <div id="api-DemoLoginController-loginAdmin">
+                      <article id="api-DemoLoginController-loginAdmin-0" data-group="User" data-name="loginAdmin" data-version="0">
+                        <div class="pull-left">
+                          <h1>loginAdmin</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/demo-login/admin</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-DemoLoginController-loginAdmin-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-java">Java</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-DemoLoginController-loginAdmin-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-DemoLoginController-loginAdmin-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginAdmin-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-DemoLoginController-loginAdmin-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: application/json"\
+"http://localhost:8081/api/v1/demo-login/admin"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DemoLoginControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DemoLoginControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        DemoLoginControllerApi apiInstance = new DemoLoginControllerApi();
+        try {
+            com.nailcase.model.dto.MemberDto result = apiInstance.loginAdmin();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DemoLoginControllerApi#loginAdmin");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DemoLoginControllerApi;
+
+public class DemoLoginControllerApiExample {
+
+    public static void main(String[] args) {
+        DemoLoginControllerApi apiInstance = new DemoLoginControllerApi();
+        try {
+            com.nailcase.model.dto.MemberDto result = apiInstance.loginAdmin();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DemoLoginControllerApi#loginAdmin");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+DemoLoginControllerApi *apiInstance = [[DemoLoginControllerApi alloc] init];
+
+[apiInstance loginAdminWithCompletionHandler: 
+              ^(com.nailcase.model.dto.MemberDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.DemoLoginControllerApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.loginAdmin(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class loginAdminExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new DemoLoginControllerApi();
+
+            try
+            {
+                com.nailcase.model.dto.MemberDto result = apiInstance.loginAdmin();
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DemoLoginControllerApi.loginAdmin: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiDemoLoginControllerApi();
+
+try {
+    $result = $api_instance->loginAdmin();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DemoLoginControllerApi->loginAdmin: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DemoLoginControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::DemoLoginControllerApi->new();
+
+eval { 
+    my $result = $api_instance->loginAdmin();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DemoLoginControllerApi->loginAdmin: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.DemoLoginControllerApi()
+
+try: 
+    api_response = api_instance.login_admin()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DemoLoginControllerApi->loginAdmin: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-loginAdmin-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-loginAdmin-200-schema">
+                                  <div id='responses-loginAdmin-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.MemberDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-loginAdmin-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-loginAdmin-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-loginAdmin-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-DemoLoginController-loginUser">
+                      <article id="api-DemoLoginController-loginUser-0" data-group="User" data-name="loginUser" data-version="0">
+                        <div class="pull-left">
+                          <h1>loginUser</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/demo-login/member</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-DemoLoginController-loginUser-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-java">Java</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-DemoLoginController-loginUser-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-DemoLoginController-loginUser-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-DemoLoginController-loginUser-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-DemoLoginController-loginUser-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: application/json"\
+"http://localhost:8081/api/v1/demo-login/member"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DemoLoginControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DemoLoginControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        DemoLoginControllerApi apiInstance = new DemoLoginControllerApi();
+        try {
+            com.nailcase.model.dto.MemberDto result = apiInstance.loginUser();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DemoLoginControllerApi#loginUser");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DemoLoginControllerApi;
+
+public class DemoLoginControllerApiExample {
+
+    public static void main(String[] args) {
+        DemoLoginControllerApi apiInstance = new DemoLoginControllerApi();
+        try {
+            com.nailcase.model.dto.MemberDto result = apiInstance.loginUser();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DemoLoginControllerApi#loginUser");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+DemoLoginControllerApi *apiInstance = [[DemoLoginControllerApi alloc] init];
+
+[apiInstance loginUserWithCompletionHandler: 
+              ^(com.nailcase.model.dto.MemberDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.DemoLoginControllerApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.loginUser(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-DemoLoginController-loginUser-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class loginUserExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new DemoLoginControllerApi();
+
+            try
+            {
+                com.nailcase.model.dto.MemberDto result = apiInstance.loginUser();
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DemoLoginControllerApi.loginUser: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiDemoLoginControllerApi();
+
+try {
+    $result = $api_instance->loginUser();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DemoLoginControllerApi->loginUser: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DemoLoginControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::DemoLoginControllerApi->new();
+
+eval { 
+    my $result = $api_instance->loginUser();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DemoLoginControllerApi->loginUser: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-DemoLoginController-loginUser-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.DemoLoginControllerApi()
+
+try: 
+    api_response = api_instance.login_user()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DemoLoginControllerApi->loginUser: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-loginUser-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-loginUser-200-schema">
+                                  <div id='responses-loginUser-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.MemberDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-loginUser-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-loginUser-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-loginUser-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
                 <section id="api-MemberController">
                   <h1>MemberController</h1>
                     <div id="api-MemberController-expireToken">
