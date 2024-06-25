@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.nailcase.customer.repository.CustomerRepository;
 import com.nailcase.testUtils.StringGenerateFixture;
 
 @SpringBootTest
@@ -21,9 +20,6 @@ class JwtTest {
 
 	@Autowired
 	private JwtService jwtService;
-
-	@Autowired
-	private CustomerRepository customerRepository;
 
 	@Test
 	public void testTokenExpiration() {
