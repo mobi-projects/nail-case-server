@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 import com.nailcase.common.BaseEntity;
 import com.nailcase.converter.LocalDateTimeToLocalTimeConverter;
+import com.nailcase.util.DateUtils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -18,9 +19,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+@Getter
 @Entity
 @SuperBuilder
 @Table(name = "work_hours")
@@ -52,4 +55,16 @@ public class WorkHour extends BaseEntity {
 	@Column(name = "close_time", nullable = false, columnDefinition = "TIME")
 	@Convert(converter = LocalDateTimeToLocalTimeConverter.class)
 	private LocalDateTime closeTime = LocalDateTime.now().with(LocalTime.of(18, 0));
+
+	public void update(Boolean isOpen, Long openTimestamp, Long closeTimestamp) {
+		if (isOpen != null) {
+			this.isOpen = isOpen;
+		}
+		if (openTimestamp != null) {
+			this.openTime = DateUtils.unixTimeStampToLocalDateTime(openTimestamp);
+		}
+		if (closeTimestamp != null) {
+			this.closeTime = DateUtils.unixTimeStampToLocalDateTime(closeTimestamp);
+		}
+	}
 }
