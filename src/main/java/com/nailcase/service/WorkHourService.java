@@ -34,6 +34,8 @@ public class WorkHourService {
 
 		workHour.update(putRequest.getIsOpen(), putRequest.getOpenTime(), putRequest.getCloseTime());
 
+		workHourRepository.save(workHour);
+
 		return workHourMapper.toPutResponse(workHour);
 	}
 }
