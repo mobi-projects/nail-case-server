@@ -64,7 +64,7 @@ public class Shop extends BaseEntity {
 	private ShopInfo shopInfo;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ShopHour> shopHours;
+	private Set<WorkHour> workHours;
 
 	@OrderBy("sortOrder asc")
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -22,14 +22,18 @@ import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
+import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
+import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopImageRepository;
+import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
+import com.nailcase.repository.WorkHourRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +48,8 @@ public class ShopService {
 	private final TagRepository tagRepository;
 	private final ShopImageRepository shopImageRepository;
 	private final TagMappingRepository tagMappingRepository;
-	private final ShopInfoService shopInfoService;
-	private final ShopHourService shopHourService;
+	private final ShopInfoRepository shopInfoRepository;
+	private final WorkHourRepository workHourRepository;
 	private final ShopImageService shopImageService;
 
 	@Transactional
@@ -70,17 +74,15 @@ public class ShopService {
 		Shop savedShop = shopRepository.save(shop);
 
 		// Create shop info, shop hour init
-		shopInfoService.initShopInfo(savedShop);
-		shopHourService.initShopHour(savedShop);
+		initShopInfo(savedShop);
+		initWorkHour(savedShop);
 
 		return shopMapper.toResponse(savedShop);
 	}
 
 	@Transactional(readOnly = true)
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {
-		// TODO 이미지
 		// TODO 여기서 방문자 수 처리?
-		// TODO info hours 추가해주기
 		return shopMapper.toResponse(getShopById(shopId));
 	}
 
@@ -119,7 +121,8 @@ public class ShopService {
 		return tagRepository.findAll().stream().map(Tag::getTagName).toList();
 	}
 
-	private Shop getShopById(Long shopId) throws BusinessException {
+	@Transactional(readOnly = true)
+	public Shop getShopById(Long shopId) throws BusinessException {
 		return shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
 	}
@@ -199,5 +202,18 @@ public class ShopService {
 
 		shopImageService.deleteImage(shopImage.getObjectName());
 		shopImageRepository.delete(shopImage);
+	}
+
+	@Transactional
+	protected void initShopInfo(Shop shop) {
+		ShopInfo initShopInfo = ShopInfo.builder().shop(shop).build();
+		shopInfoRepository.save(initShopInfo);
+	}
+
+	@Transactional
+	protected void initWorkHour(Shop shop) {
+		IntStream.range(0, 7)
+			.mapToObj(i -> WorkHour.builder().shop(shop).dayOfWeek(i).build())
+			.forEach(workHourRepository::save);
 	}
 }

@@ -25,12 +25,20 @@ public interface ShopMapper {
 	ShopMapper INSTANCE = Mappers.getMapper(ShopMapper.class);
 
 	static List<String> toTagNames(Set<TagMapping> tagMappings) {
+		if (tagMappings == null || tagMappings.isEmpty()) {
+			return null;
+		}
+
 		return tagMappings.stream()
 			.map(tagMapping -> tagMapping.getTag().getTagName())
 			.collect(Collectors.toList());
 	}
 
 	static List<ShopDto.Image> toImageDtos(Set<ShopImage> shopImages) {
+		if (shopImages == null || shopImages.isEmpty()) {
+			return null;
+		}
+		
 		return shopImages.stream()
 			.map(shopImage -> ShopDto.Image.builder()
 				.imageId(shopImage.getImageId())

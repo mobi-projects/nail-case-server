@@ -27,13 +27,17 @@ import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
+import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
+import com.nailcase.repository.WorkHourRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
 import com.nailcase.testUtils.StringGenerateFixture;
@@ -52,14 +56,14 @@ public class ShopServiceTest {
 	@Mock
 	private TagMappingRepository tagMappingRepository;
 	@Mock
-	private ShopInfoService shopInfoService;
+	private ShopInfoRepository shopInfoRepository;
 	@Mock
-	private ShopHourService shopHourService;
+	private WorkHourRepository workHourRepository;
 	@InjectMocks
 	private ShopService shopService;
 
 	@Test
-	@DisplayName("샵 동록시 ROLE MANAGER | shop 저장, shopInfo, shopHour 초기화 성공 테스트")
+	@DisplayName("샵 동록시 ROLE MANAGER | shop 저장, shopInfo, workHour 초기화 성공 테스트")
 	void registerShopSuccess() throws Exception {
 		// Given
 		Shop shop = shopFixture.getShop();
@@ -83,8 +87,8 @@ public class ShopServiceTest {
 		assertEquals(Role.MANAGER, member.getRole());
 
 		verify(shopRepository, times(1)).save(any(Shop.class));
-		verify(shopInfoService, times(1)).initShopInfo(any(Shop.class));
-		verify(shopHourService, times(1)).initShopHour(any(Shop.class));
+		verify(shopInfoRepository, times(1)).save(any(ShopInfo.class));
+		verify(workHourRepository, times(7)).save(any(WorkHour.class));
 	}
 
 	@Test
@@ -259,46 +263,48 @@ public class ShopServiceTest {
 
 		ShopDto.Patch patchRequest = (ShopDto.Patch)Reflection.createInstance(ShopDto.Patch.class);
 		String mockOverview = StringGenerateFixture.makeByNumbersAndAlphabets(10);
-		String newTag1 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
-		String newTag2 = StringGenerateFixture.makeByNumbersAndAlphabets(5);
-		String oldTag = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String tagStr = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String newTagStr = StringGenerateFixture.makeByNumbersAndAlphabets(5);
+		String oldTagStr = StringGenerateFixture.makeByNumbersAndAlphabets(5);
 
 		patchRequest.setOverview(mockOverview);
-		patchRequest.setTagNames(List.of(newTag1, newTag2));
+		patchRequest.setTagNames(List.of(tagStr, newTagStr));
 
-		Tag tag1 = Tag.builder().tagId(1L).tagName(newTag1).build();
-		Tag tag2 = Tag.builder().tagId(2L).tagName(newTag2).build();
-		Tag tag3 = Tag.builder().tagId(3L).tagName(oldTag).build();
+		Tag tag = Tag.builder().tagId(1L).tagName(tagStr).build();
+		Tag newTag = Tag.builder().tagId(2L).tagName(newTagStr).build();
+		Tag oldTag = Tag.builder().tagId(3L).tagName(oldTagStr).build();
 
-		TagMapping tagMapping1 = TagMapping.builder()
+		TagMapping tagMapping = TagMapping.builder()
 			.tagMappingId(1L)
-			.tag(tag1)
+			.tag(tag)
 			.shop(existingShop)
 			.sortOrder(1)
 			.build();
-		TagMapping tagMapping2 = TagMapping.builder()
+		TagMapping newTagMapping = TagMapping.builder()
 			.tagMappingId(2L)
-			.tag(tag2)
+			.tag(newTag)
 			.shop(existingShop)
 			.sortOrder(0)
 			.build();
-		TagMapping tagMapping3 = TagMapping.builder()
+		TagMapping oldTagMapping = TagMapping.builder()
 			.tagMappingId(3L)
-			.tag(tag3)
+			.tag(oldTag)
 			.shop(existingShop)
 			.sortOrder(2)
 			.build();
 
+		Reflection.setField(existingShop, "tags", Set.of(oldTagMapping));
+
 		Shop updatedShop = shopFixture.getShop();
 		updatedShop.setOverview(mockOverview);
-		Reflection.setField(updatedShop, "tags", Set.of(tagMapping1, tagMapping2));
+		Reflection.setField(updatedShop, "tags", Set.of(tagMapping, newTagMapping));
 
 		when(shopRepository.findById(shopId)).thenReturn(Optional.of(existingShop));
-		when(tagRepository.findByTagName(newTag1)).thenReturn(Optional.of(tag1));
-		when(tagRepository.findByTagName(newTag2)).thenReturn(Optional.empty());
-		when(tagRepository.save(any(Tag.class))).thenReturn(tag2);
+		when(tagRepository.findByTagName(tagStr)).thenReturn(Optional.of(tag));
+		when(tagRepository.findByTagName(newTagStr)).thenReturn(Optional.empty());
+		when(tagRepository.save(any(Tag.class))).thenReturn(newTag);
 		doNothing().when(tagMappingRepository).deleteAll(anyList());
-		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of(tagMapping1, tagMapping2));
+		when(tagMappingRepository.saveAll(anyList())).thenReturn(List.of(tagMapping, newTagMapping));
 		when(shopRepository.saveAndFlush(any(Shop.class))).thenReturn(updatedShop);
 
 		// When
@@ -307,13 +313,17 @@ public class ShopServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(mockOverview, result.getOverview());
-		assertThat(result.getTags()).containsExactlyInAnyOrder(newTag2, newTag1);
+		assertThat(result.getTags()).containsExactlyInAnyOrder(newTagStr, tagStr);
 
 		verify(shopRepository, times(1)).findById(shopId);
-		verify(tagRepository, times(1)).findByTagName(newTag1);
-		verify(tagRepository, times(1)).findByTagName(newTag2);
+		verify(tagRepository, times(1)).findByTagName(tagStr);
+		verify(tagRepository, times(1)).findByTagName(newTagStr);
 		verify(tagRepository, times(1)).save(any(Tag.class));
-		verify(tagMappingRepository, times(1)).deleteAll(anyList());
+		verify(tagMappingRepository, times(1)).deleteAll(argThat(argument -> {
+			@SuppressWarnings("unchecked")
+			List<TagMapping> mappingsToDelete = (List<TagMapping>)argument;
+			return mappingsToDelete.contains(oldTagMapping);
+		}));
 		verify(tagMappingRepository, times(1)).saveAll(anyList());
 		verify(shopRepository, times(1)).saveAndFlush(existingShop);
 	}
