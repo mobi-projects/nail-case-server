@@ -12,6 +12,7 @@ import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
+import com.nailcase.model.entity.WorkHour;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.StringGenerateFixture;
 
@@ -27,6 +28,7 @@ public class ShopFixture {
 
 	public Shop getShop(Long shopId) {
 		Member member = FixtureFactory.memberFixture.getMember();
+		Set<WorkHour> workHours = FixtureFactory.workHourFixture.getWorkHours();
 		EasyRandomParameters params = new EasyRandomParameters()
 			.randomize(named("shopId"), () -> shopId)
 			.randomize(named("member"), () -> member)
@@ -35,8 +37,8 @@ public class ShopFixture {
 			.randomize(named("overview"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(1000))
 			.randomize(named("address"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(50))
 			.randomize(named("availableSeats"), () -> AVAILABLE_SEATS)
+			.randomize(named("workHours"), () -> workHours)
 			.excludeField(named("shopInfo").and(ofType(ShopInfo.class)))
-			.excludeField(named("workHours").and(ofType(Set.class)))
 			.excludeField(named("tags").and(ofType(Set.class)))
 			.excludeField(named("shopImages").and(ofType(Set.class)))
 			.excludeField(named("nailArtistList").and(ofType(List.class)))
