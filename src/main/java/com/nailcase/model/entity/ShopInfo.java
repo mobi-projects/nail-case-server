@@ -29,4 +29,24 @@ public class ShopInfo extends BaseEntity {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id", nullable = false)
 	private Shop shop;
+
+	// TODO geometry 추가하고 geometry로 바꾸기
+	@Column(name = "geometry")
+	private String geometry;
+
+	@Column(name = "parking_lot_cnt")
+	private Integer parkingLotCnt;
+
+	@Column(name = "accompany_cnt")
+	private Integer accompanyCnt;
+
+	@Column(name = "info")
+	private String info;
+
+	@Column(name = "price")
+	private String price;
+
+	// TODO img
+	@Column(name = "img")
+	private String img;
 }
