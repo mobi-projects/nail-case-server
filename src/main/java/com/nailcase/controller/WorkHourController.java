@@ -1,5 +1,7 @@
 package com.nailcase.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,7 @@ public class WorkHourController {
 	}
 
 	@GetMapping
-	public void viewWorkHour(@PathVariable Long shopId) {
+	public List<WorkHourDto> getWorkHours(@PathVariable Long shopId) {
+		return workHourService.getWorkHours(shopId);
 	}
 }

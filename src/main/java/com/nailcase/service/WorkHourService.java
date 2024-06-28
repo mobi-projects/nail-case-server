@@ -1,5 +1,9 @@
 package com.nailcase.service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +41,16 @@ public class WorkHourService {
 		workHourRepository.save(workHour);
 
 		return workHourMapper.toResponse(workHour);
+	}
+
+	@Transactional(readOnly = true)
+	public List<WorkHourDto> getWorkHours(Long shopId) {
+		return shopService
+			.getShopById(shopId)
+			.getWorkHours()
+			.stream()
+			.sorted(Comparator.comparingInt(WorkHour::getDayOfWeek))
+			.map(workHourMapper::toResponse)
+			.collect(Collectors.toList());
 	}
 }
