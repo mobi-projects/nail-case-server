@@ -26,5 +26,5 @@ public interface WorkHourMapper {
 		target = "closeTime",
 		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(workHour.getCloseTime()))"
 	)
-	WorkHourDto.Put toPutResponse(WorkHour workHour);
+	WorkHourDto toResponse(WorkHour workHour);
 }

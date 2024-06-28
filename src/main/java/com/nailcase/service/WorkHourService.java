@@ -23,7 +23,7 @@ public class WorkHourService {
 	private final ShopService shopService;
 
 	@Transactional
-	public WorkHourDto.Put updateWorkHour(Long shopId, WorkHourDto.Put putRequest, Long memberId) {
+	public WorkHourDto updateWorkHour(Long shopId, WorkHourDto putRequest, Long memberId) {
 		Shop shop = shopService.getShopById(shopId);
 
 		// TODO 샵에 속해있는 아티스트 인지 권한 검사
@@ -36,6 +36,6 @@ public class WorkHourService {
 
 		workHourRepository.save(workHour);
 
-		return workHourMapper.toPutResponse(workHour);
+		return workHourMapper.toResponse(workHour);
 	}
 }

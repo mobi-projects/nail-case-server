@@ -25,9 +25,9 @@ public class WorkHourController {
 	private final WorkHourService workHourService;
 
 	@PutMapping
-	public WorkHourDto.Put updateWorkHour(
+	public WorkHourDto updateWorkHour(
 		@PathVariable Long shopId,
-		@Valid @RequestBody WorkHourDto.Put putRequest,
+		@Valid @RequestBody WorkHourDto putRequest,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
 		if (putRequest.getIsOpen() == null && putRequest.getOpenTime() == null && putRequest.getCloseTime() == null) {

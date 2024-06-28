@@ -40,7 +40,7 @@ class WorkHourServiceTest {
 		Shop shop = shopFixture.getShop();
 		Long memberId = shop.getMember().getMemberId();
 		WorkHour newWorkHour = workHourFixture.getWorkHour();
-		WorkHourDto.Put putRequest = (WorkHourDto.Put)Reflection.createInstance(WorkHourDto.Put.class);
+		WorkHourDto putRequest = (WorkHourDto)Reflection.createInstance(WorkHourDto.class);
 		putRequest.setWorkHourId(newWorkHour.getWorkHourId());
 		putRequest.setIsOpen(newWorkHour.getIsOpen());
 		putRequest.setOpenTime(DateUtils.localDateTimeToUnixTimeStamp(newWorkHour.getOpenTime()));
@@ -51,7 +51,7 @@ class WorkHourServiceTest {
 			Optional.of(newWorkHour));
 
 		// When
-		WorkHourDto.Put result = workHourService.updateWorkHour(shop.getShopId(), putRequest, memberId);
+		WorkHourDto result = workHourService.updateWorkHour(shop.getShopId(), putRequest, memberId);
 
 		// Then
 		assertNotNull(result);
