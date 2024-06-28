@@ -1568,12 +1568,6 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
-    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -1593,6 +1587,12 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
+    },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
