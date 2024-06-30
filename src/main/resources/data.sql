@@ -12,21 +12,32 @@ FROM members m WHERE m.email = 'owner@example.com' AND NOT EXISTS (SELECT 1 FROM
 INSERT INTO shop_info (shop_id, created_at, modified_at)
 VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+-- 월요일부터 일요일까지의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+VALUES
+    (1, 1, true, '09:00:00', '18:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 2, true, '09:00:00', '18:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 3, true, '09:00:00', '18:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 4, true, '09:00:00', '18:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 5, true, '09:00:00', '18:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 6, true, '10:00:00', '16:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 7, false, '00:00:00', '00:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 -- 예약(reservations) 데이터 삽입
 INSERT INTO reservations (reservation_id, shop_id, member_id, created_at, modified_at)
 VALUES
-(1, 1, 1, '2024-06-27 11:00:00', '2024-06-27 11:00:00'),
-(2, 1, 1, '2024-06-27 12:00:00', '2024-06-27 12:00:00'),
-(3, 1, 1, '2024-06-27 15:00:00', '2024-06-27 15:00:00'),
-(4, 1, 1, '2024-06-27 15:00:00', '2024-06-27 15:00:00'),
-(5, 1, 1, '2024-06-27 16:00:00', '2024-06-27 16:00:00'),
-(6, 1, 1, '2024-06-27 17:00:00', '2024-06-27 17:00:00'),
-(7, 1, 1, '2024-06-27 18:00:00', '2024-06-27 18:00:00'),
-(8, 1, 1, '2024-06-27 19:00:00', '2024-06-27 19:00:00'),
-(9, 1, 1, '2024-06-28 20:00:00', '2024-06-28 20:00:00'),
-(10, 1, 1, '2024-06-28 20:00:00', '2024-06-28 20:00:00'),
-(11, 1, 1, '2024-06-28 22:00:00', '2024-06-28 22:00:00'),
-(12, 1, 1, '2024-06-29 20:00:00', '2024-06-29 20:00:00');
+(1, 1, 1, '2024-06-27 11:00:00'::timestamp, '2024-06-27 11:00:00'::timestamp),
+(2, 1, 1, '2024-06-27 12:00:00'::timestamp, '2024-06-27 12:00:00'::timestamp),
+(3, 1, 1, '2024-06-27 15:00:00'::timestamp, '2024-06-27 15:00:00'::timestamp),
+(4, 1, 1, '2024-06-27 15:00:00'::timestamp, '2024-06-27 15:00:00'::timestamp),
+(5, 1, 1, '2024-06-27 16:00:00'::timestamp, '2024-06-27 16:00:00'::timestamp),
+(6, 1, 1, '2024-06-27 17:00:00'::timestamp, '2024-06-27 17:00:00'::timestamp),
+(7, 1, 1, '2024-06-27 18:00:00'::timestamp, '2024-06-27 18:00:00'::timestamp),
+(8, 1, 1, '2024-06-27 19:00:00'::timestamp, '2024-06-27 19:00:00'::timestamp),
+(9, 1, 1, '2024-06-28 20:00:00'::timestamp, '2024-06-28 20:00:00'::timestamp),
+(10, 1, 1, '2024-06-28 20:00:00'::timestamp, '2024-06-28 20:00:00'::timestamp),
+(11, 1, 1, '2024-06-28 22:00:00'::timestamp, '2024-06-28 22:00:00'::timestamp),
+(12, 1, 1, '2024-06-29 20:00:00'::timestamp, '2024-06-29 20:00:00'::timestamp);
 
 -- 예약 상세 정보 삽입
 INSERT INTO reservation_details (reservation_id, status, remove, start_time, end_time, created_at, modified_at, extend) VALUES
