@@ -2,12 +2,15 @@ INSERT INTO members (name, email, role, profile_img_url, social_type, social_id,
 SELECT 'User', 'user@example.com', 'USER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'user@example.com');
 
 INSERT INTO members (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT 'Admin', 'admin@example.com', 'OWNER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+SELECT 'Owner', 'owner@example.com', 'OWNER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
 
-INSERT INTO shops (shop_name, phone, available_seat, created_at, modified_at, owner_id)
-SELECT '영록', '01050114190', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, m.member_id
-FROM members m WHERE m.email = 'admin@example.com' AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '영록');
+INSERT INTO shops (shop_name, phone, available_seat,address,overview, created_at, modified_at, owner_id)
+SELECT '모비네일 강남점', '01012341234', 8,'서울 강남구 봉은사로6길 29 1층 102호','매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 \n
+현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, m.member_id
+FROM members m WHERE m.email = 'owner@example.com' AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '영록');
 
+INSERT INTO shop_info (shop_id, created_at, modified_at)
+VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 예약(reservations) 데이터 삽입
 INSERT INTO reservations (reservation_id, shop_id, member_id, created_at, modified_at)
