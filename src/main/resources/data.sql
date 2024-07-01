@@ -13,7 +13,7 @@ FROM members m WHERE m.email = 'owner@example.com' AND NOT EXISTS (SELECT 1 FROM
 
 INSERT INTO shop_info (shop_id, created_at, modified_at)
 SELECT 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+    WHERE NOT EXISTS (SELECT 1 FROM shop_info WHERE shop_id = 1);
 
 -- 월요일부터 일요일까지의 WorkHour 데이터 삽입
 INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
@@ -27,7 +27,10 @@ SELECT * FROM (
                       (1, 6, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
                       (1, 7, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
               ) AS temp
-WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+WHERE NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = 1 AND day_of_week IN (1, 2, 3, 4, 5, 6, 7)
+);
 
 -- 예약(reservations) 데이터 삽입
 INSERT INTO reservations (shop_id, member_id, created_at, modified_at)
@@ -152,7 +155,14 @@ SELECT * FROM (
 ( 1, 1, '2024-07-10 14:00:00'::timestamp, '2024-07-10 14:00:00'::timestamp),
 ( 1, 1, '2024-07-10 15:00:00'::timestamp, '2024-07-10 15:00:00'::timestamp),
 ( 1, 1, '2024-07-10 16:00:00'::timestamp, '2024-07-10 16:00:00'::timestamp),
-( 1, 1, '2024-07-10 17:00:00'::timestamp, '2024-07-10 17:00:00'::timestamp) ) AS temp WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+( 1, 1, '2024-07-10 17:00:00'::timestamp, '2024-07-10 17:00:00'::timestamp) ) AS temp
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM reservations
+    WHERE shop_id = 1
+      AND created_at >= '2024-06-27 11:00:00'::timestamp
+        AND created_at <= '2024-07-10 17:00:00'::timestamp
+);
 
 
 -- 처리 정보 삽입
@@ -456,7 +466,12 @@ SELECT * FROM (VALUES
 (119, 'REPAIR', '2024-07-07 10:00:00'::timestamp, '2024-07-07 10:00:00'::timestamp),
 (120, 'WOUND_CARE', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp),
 (120, 'CORRECTION', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
-WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM conditions
+    WHERE created_at >= '2024-06-25 11:00:00'::timestamp
+        AND created_at <= '2024-07-07 11:00:00'::timestamp
+);
 
 
 
@@ -587,4 +602,9 @@ SELECT * FROM (VALUES
 (118, 'AOM', 118, '', '2024-07-07 09:00:00'::timestamp, '2024-07-07 09:00:00'::timestamp),
 (119, 'CARE', 119, '', '2024-07-07 10:00:00'::timestamp, '2024-07-07 10:00:00'::timestamp),
 (120, 'ONE', 120, '', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
-WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM treatments
+    WHERE created_at >= '2024-06-25 11:00:00'::timestamp
+        AND created_at <= '2024-07-07 11:00:00'::timestamp
+);
