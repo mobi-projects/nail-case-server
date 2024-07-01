@@ -27,7 +27,6 @@ VALUES
 
 
 -- 예약(reservations) 데이터 삽입
--- 예약(reservations) 데이터 삽입
 INSERT INTO reservations (reservation_id, shop_id, member_id, created_at, modified_at)
 VALUES
 (1, 1, 1, '2024-06-27 11:00:00'::timestamp, '2024-06-27 11:00:00'::timestamp),
