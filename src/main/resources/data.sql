@@ -12,23 +12,27 @@ SELECT '모비네일 강남점', '01012341234', 8,'서울 강남구 봉은사로
 FROM members m WHERE m.email = 'owner@example.com' AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '모비네일 강남점');
 
 INSERT INTO shop_info (shop_id, created_at, modified_at)
-VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+SELECT 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
 
 -- 월요일부터 일요일까지의 WorkHour 데이터 삽입
 INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
-VALUES
-(1, 1, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 2, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 3, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 4, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 5, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 6, true, '10:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 7, false, '10:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
+SELECT * FROM (
+                  VALUES
+                      (1, 1, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 2, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 3, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 4, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 5, true, '09:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 6, true, '10:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 7, true, '10:00:00', '22:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+              ) AS temp
+WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
 
 -- 예약(reservations) 데이터 삽입
 INSERT INTO reservations (shop_id, member_id, created_at, modified_at)
-VALUES
+SELECT * FROM (
+                  VALUES
 (1, 1, '2024-06-27 11:00:00'::timestamp, '2024-06-27 11:00:00'::timestamp),
 (1, 1, '2024-06-27 12:00:00'::timestamp, '2024-06-27 12:00:00'::timestamp),
 (1, 1, '2024-06-27 15:00:00'::timestamp, '2024-06-27 15:00:00'::timestamp),
@@ -148,11 +152,12 @@ VALUES
 ( 1, 1, '2024-07-10 14:00:00'::timestamp, '2024-07-10 14:00:00'::timestamp),
 ( 1, 1, '2024-07-10 15:00:00'::timestamp, '2024-07-10 15:00:00'::timestamp),
 ( 1, 1, '2024-07-10 16:00:00'::timestamp, '2024-07-10 16:00:00'::timestamp),
-( 1, 1, '2024-07-10 17:00:00'::timestamp, '2024-07-10 17:00:00'::timestamp);
+( 1, 1, '2024-07-10 17:00:00'::timestamp, '2024-07-10 17:00:00'::timestamp) ) AS temp WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
 
 
 -- 처리 정보 삽입
-INSERT INTO reservation_details (reservation_id, status, remove, start_time, end_time, created_at, modified_at, extend) VALUES
+INSERT INTO reservation_details (reservation_id, status, remove, start_time, end_time, created_at, modified_at, extend)
+SELECT * FROM (VALUES
 (1,'CONFIRMED', 'IN_SHOP', '2024-06-26 11:00:00'::timestamp, '2024-06-26 13:00:00'::timestamp, '2024-06-25 11:00:00'::timestamp, '2024-06-25 11:00:00'::timestamp, false),
 (2,'CONFIRMED', 'ELSE_WHERE', '2024-06-26 14:00:00'::timestamp, '2024-06-26 16:00:00'::timestamp, '2024-06-25 12:00:00'::timestamp, '2024-06-25 12:00:00'::timestamp, false),
 (3,'PENDING', 'ELSE_WHERE', '2024-06-27 09:00:00'::timestamp, '2024-06-27 11:00:00'::timestamp, '2024-06-26 15:00:00'::timestamp, '2024-06-26 15:00:00'::timestamp, false),
@@ -272,12 +277,13 @@ INSERT INTO reservation_details (reservation_id, status, remove, start_time, end
 (117, 'PENDING', 'ELSE_WHERE', '2024-07-31 10:00:00'::timestamp, '2024-07-31 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false),
 (118, 'CONFIRMED', 'ELSE_WHERE', '2024-07-31 13:00:00'::timestamp, '2024-07-31 14:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false),
 (119, 'PENDING', 'ELSE_WHERE', '2024-07-31 16:00:00'::timestamp, '2024-07-31 17:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, true),
-(120, 'CONFIRMED', 'IN_SHOP', '2024-07-01 10:00:00'::timestamp, '2024-07-01 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false);
+(120, 'CONFIRMED', 'IN_SHOP', '2024-07-01 10:00:00'::timestamp, '2024-07-01 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false) ) AS temp
+WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
 
 -- 조건 정보 삽입
 -- Insert condition information
 INSERT INTO conditions (reservation_detail_id, option, created_at, modified_at)
-VALUES
+SELECT * FROM (VALUES
 (1, 'REPAIR', '2024-06-25 11:00:00'::timestamp, '2024-06-25 11:00:00'::timestamp),
 (1, 'AS', '2024-06-25 11:00:00'::timestamp, '2024-06-25 11:00:00'::timestamp),
 (1, 'WOUND_CARE', '2024-06-25 11:00:00'::timestamp, '2024-06-25 11:00:00'::timestamp),
@@ -449,7 +455,9 @@ VALUES
 (118, 'AS', '2024-07-07 09:00:00'::timestamp, '2024-07-07 09:00:00'::timestamp),
 (119, 'REPAIR', '2024-07-07 10:00:00'::timestamp, '2024-07-07 10:00:00'::timestamp),
 (120, 'WOUND_CARE', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp),
-(120, 'CORRECTION', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp);
+(120, 'CORRECTION', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
+WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
+
 
 
 
@@ -457,7 +465,8 @@ VALUES
 
 
 -- 처리 정보 삽입
-INSERT INTO treatments (reservation_detail_id, option, image_id, image_url, created_at, modified_at) VALUES
+INSERT INTO treatments (reservation_detail_id, option, image_id, image_url, created_at, modified_at)
+SELECT * FROM (VALUES
 (1, 'AOM', 1, '', '2024-06-25 11:00:00'::timestamp, '2024-06-25 11:00:00'::timestamp),
 (2, 'CARE', 2, '', '2024-06-25 12:00:00'::timestamp, '2024-06-25 12:00:00'::timestamp),
 (3, 'ONE', 3, '', '2024-06-26 15:00:00'::timestamp, '2024-06-26 15:00:00'::timestamp),
@@ -577,4 +586,5 @@ INSERT INTO treatments (reservation_detail_id, option, image_id, image_url, crea
 (117, 'ONE', 117, '', '2024-07-06 23:00:00'::timestamp, '2024-07-06 23:00:00'::timestamp),
 (118, 'AOM', 118, '', '2024-07-07 09:00:00'::timestamp, '2024-07-07 09:00:00'::timestamp),
 (119, 'CARE', 119, '', '2024-07-07 10:00:00'::timestamp, '2024-07-07 10:00:00'::timestamp),
-(120, 'ONE', 120, '', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp);
+(120, 'ONE', 120, '', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
+WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');

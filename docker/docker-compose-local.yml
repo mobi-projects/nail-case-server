@@ -26,7 +26,9 @@ services:
       POSTGRES_USER: postgresql
       POSTGRES_PASSWORD: postgresql
       POSTGRES_DB: newtips-postgresql
-
+      TZ: Asia/Seoul
+      PGTZ: Asia/Seoul
+  
   backend:
     image: newtips/nail-case-server
     ports:
