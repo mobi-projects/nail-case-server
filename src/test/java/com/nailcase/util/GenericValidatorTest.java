@@ -94,29 +94,29 @@ public class GenericValidatorTest {
 	@Test
 	@DisplayName("서울 위경도 성공 테스트")
 	public void validPoint() {
-		assertTrue(genericValidator.isValid("37.5665,126.9780", context));
+		assertTrue(genericValidator.isValid("126.9780,37.5665", context));
 	}
 
 	@Test
 	@DisplayName("잘못된 형식의 위경도 테스트")
 	public void invalidPointFormat() {
-		assertFalse(genericValidator.isValid("37.7749-122.4194", context));     // 쉼표없음
-		assertFalse(genericValidator.isValid("37.5665,126.9780,123", context)); // 쉼표많음
+		assertFalse(genericValidator.isValid("122.4194-37.7749", context));     // 쉼표없음
+		assertFalse(genericValidator.isValid("126.9780,37.5665,123", context)); // 쉼표많음
 	}
 
 	@Test
 	@DisplayName("잘못된 경도 테스트")
 	public void invalidLatitude() {
-		assertFalse(genericValidator.isValid("invalid,126.9780", context)); // 숫자가 아닌 경도
-		assertFalse(genericValidator.isValid("100,126.9780", context));     // 잘못된 경도
-		assertFalse(genericValidator.isValid("40.0000,126.9780", context)); // 한국을 벗어난 경도
+		assertFalse(genericValidator.isValid("126.9780,invalid", context)); // 숫자가 아닌 경도
+		assertFalse(genericValidator.isValid("126.9780,100", context));     // 잘못된 경도
+		assertFalse(genericValidator.isValid("126.9780,40.0000", context)); // 한국을 벗어난 경도
 	}
 
 	@Test
 	@DisplayName("잘못된 위도 테스트")
 	public void invalidLongitude() {
-		assertFalse(genericValidator.isValid("37.5665,invalid", context));  // 숫자가 아닌 위도
-		assertFalse(genericValidator.isValid("37.5665,200", context));      // 잘못된 위도
-		assertFalse(genericValidator.isValid("37.5665,140.0000", context)); // 한국을 벗어난 위도
+		assertFalse(genericValidator.isValid("invalid,37.5665", context));  // 숫자가 아닌 위도
+		assertFalse(genericValidator.isValid("200,37.5665", context));      // 잘못된 위도
+		assertFalse(genericValidator.isValid("140.0000,37.5665", context)); // 한국을 벗어난 위도
 	}
 }

@@ -50,8 +50,8 @@ public class GenericValidator implements ConstraintValidator<Validation, String>
 			return false;
 		}
 
-		String latStr = points[0].trim();
-		String lonStr = points[1].trim();
+		String lonStr = points[0].trim();
+		String latStr = points[1].trim();
 
 		return isValidCoordinate(latStr, "lat", context) && isValidCoordinate(lonStr, "lon", context);
 	}
