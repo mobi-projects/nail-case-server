@@ -41,6 +41,8 @@ jobs:
           port: 22
           key: ${{ secrets.SSH_KEY }}
           script: |
+            pwd
+            whoami
             ./deploy.sh \
             ${{ secrets.DATABASE_URL }} \
             ${{ secrets.DATABASE_USERNAME }} \
