@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
@@ -21,11 +22,15 @@ public class S3Config {
 		@Value("${cloud.aws.s3.endpoint}") String endpoint,
 		@Value("${cloud.aws.s3.bucket}") String bucketName
 	) {
+		//S3Config에서는 V4 서명을 사용하도록 설정하여 최신 S3 API와의 호환성을 개선
+		ClientConfiguration clientConfig = new ClientConfiguration();
+		clientConfig.setSignerOverride("AWSS3V4SignerType");
 
 		AmazonS3 amazonS3 = AmazonS3ClientBuilder
 			.standard()
 			.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
 			.withPathStyleAccessEnabled(true)
+			.withClientConfiguration(clientConfig)
 			.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
 			.build();
 

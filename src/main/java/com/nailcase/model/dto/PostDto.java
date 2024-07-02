@@ -1,17 +1,15 @@
 package com.nailcase.model.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.nailcase.model.entity.Post;
-import com.nailcase.model.entity.PostComment;
 import com.nailcase.model.entity.PostImage;
 import com.nailcase.model.enums.Category;
 import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +17,7 @@ public class PostDto {
 	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Request {
-		private List<Long> imageIds; // 이미지 ID 목록
+		private List<Long> imageIds;
 		private Long shopId;
 		private Long memberId;
 		private String title;
@@ -28,8 +26,7 @@ public class PostDto {
 	}
 
 	@Data
-	@AllArgsConstructor
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@Builder
 	public static class Response {
 		private List<Long> imageIds;
 		private Long memberId;
@@ -47,45 +44,38 @@ public class PostDto {
 		private List<PostCommentDto.Response> comments;
 
 		public static Response from(Post post, Boolean liked) {
-			Response response = new Response();
-			response.setPostId(post.getPostId());
-			response.setTitle(post.getTitle());
-			response.setCategory(post.getCategory());
-			response.setContents(post.getContents());
-			response.setLikes(post.getLikes());
-			response.setViews(post.getViews());
-			response.setLiked(liked);
-			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()));
-
-			response.setMemberId(post.getCreatedBy());
-
-			List<PostImage> postImages = post.getPostImages();
-			if (postImages != null) {
-				List<String> imageUrls = postImages.stream()
-					.map(postImage -> postImage.getBucketName() + "/" + postImage.getObjectName())
-					.collect(Collectors.toList());
-				response.setImageUrls(imageUrls);
-				List<Long> imageIds = postImages.stream()
-					.map(PostImage::getImageId)
-					.collect(Collectors.toList());
-				response.setImageIds(imageIds);
-			} else {
-				response.setImageUrls(new ArrayList<>());
-				response.setImageIds(new ArrayList<>());
-			}
-
-			List<PostComment> comments = post.getPostComments();
-			if (comments == null) {
-				comments = new ArrayList<>(); // null일 경우 빈 리스트 할당
-			}
-
-			List<PostCommentDto.Response> commentResponses = comments.stream()
-				.map(PostCommentDto.Response::from)
-				.collect(Collectors.toList());
-			response.setComments(commentResponses);
-
-			return response;
+			return Response.builder()
+				.postId(post.getPostId())
+				.title(post.getTitle())
+				.category(post.getCategory())
+				.contents(post.getContents())
+				.likes(post.getLikes())
+				.views(post.getViews())
+				.liked(liked)
+				.createdAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()))
+				.memberId(post.getCreatedBy())
+				.imageUrls(getImageUrls(post))
+				.imageIds(getImageIds(post))
+				.comments(getComments(post))
+				.build();
 		}
 
+		private static List<String> getImageUrls(Post post) {
+			return post.getPostImages().stream()
+				.map(postImage -> postImage.getBucketName() + "/" + postImage.getObjectName())
+				.collect(Collectors.toList());
+		}
+
+		private static List<Long> getImageIds(Post post) {
+			return post.getPostImages().stream()
+				.map(PostImage::getImageId)
+				.collect(Collectors.toList());
+		}
+
+		private static List<PostCommentDto.Response> getComments(Post post) {
+			return post.getPostComments().stream()
+				.map(PostCommentDto.Response::from)
+				.collect(Collectors.toList());
+		}
 	}
 }

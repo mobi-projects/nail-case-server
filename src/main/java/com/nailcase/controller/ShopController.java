@@ -1,6 +1,7 @@
 package com.nailcase.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nailcase.common.dto.ImageDto;
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.service.ShopService;
@@ -88,12 +90,11 @@ public class ShopController {
 
 	@PostMapping("/{shopId}/image")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String uploadImage(
+	public CompletableFuture<List<ImageDto>> uploadImages(
 		@PathVariable Long shopId,
-		@RequestParam("file") MultipartFile file,
-		@AuthenticationPrincipal MemberDetails memberDetails
-	) {
-		return shopService.uploadImage(shopId, file, memberDetails.getMemberId());
+		@RequestParam("files") List<MultipartFile> files,
+		@AuthenticationPrincipal MemberDetails memberDetails) {
+		return shopService.uploadImages(shopId, files, memberDetails.getMemberId());
 	}
 
 	@DeleteMapping("/image/{imageId}")
