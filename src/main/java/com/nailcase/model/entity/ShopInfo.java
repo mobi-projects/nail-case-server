@@ -2,6 +2,7 @@ package com.nailcase.model.entity;
 
 import com.nailcase.common.BaseEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,15 +31,14 @@ public class ShopInfo extends BaseEntity {
 	@JoinColumn(name = "shop_id", nullable = false)
 	private Shop shop;
 
-	// TODO geometry 추가하고 geometry로 바꾸기
-	@Column(name = "geometry")
-	private String geometry;
+	@Column(name = "point")
+	private String point;
 
 	@Column(name = "parking_lot_cnt")
 	private Integer parkingLotCnt;
 
-	@Column(name = "accompany_cnt")
-	private Integer accompanyCnt;
+	@Column(name = "available_cnt")
+	private Integer availableCnt;
 
 	@Column(name = "info")
 	private String info;
@@ -46,7 +46,6 @@ public class ShopInfo extends BaseEntity {
 	@Column(name = "price")
 	private String price;
 
-	// TODO img
-	@Column(name = "img")
-	private String img;
+	@OneToOne(mappedBy = "shop_info", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private PriceImage priceImage;
 }
