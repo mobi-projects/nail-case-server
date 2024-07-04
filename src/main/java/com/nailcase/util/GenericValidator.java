@@ -65,11 +65,11 @@ public class GenericValidator implements ConstraintValidator<Validation, String>
 
 		try {
 			double coordinate = Double.parseDouble(value);
-			if (ruleName.equals("lat") && (coordinate < 33 || coordinate > 38)) {
+			if (ruleName.equals("lat") && (coordinate < 33 || coordinate > 39)) {
 				setConstraintViolation(context, "한국을 벗어난 위도");
 				return false;
 			}
-			if (ruleName.equals("lon") && (coordinate < 124 || coordinate > 132)) {
+			if (ruleName.equals("lon") && (coordinate < 123 || coordinate > 132)) {
 				setConstraintViolation(context, "한국을 벗어난 경도");
 				return false;
 			}
