@@ -53,6 +53,7 @@ public class Shop extends BaseEntity {
 	@Column(name = "overview", length = 2048)
 	private String overview;
 
+	@Setter
 	@Column(name = "address", length = 128)
 	private String address;
 

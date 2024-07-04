@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ShopInfoDto;
+import com.nailcase.service.ShopInfoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/shops/{shopId}/info")
 @RequiredArgsConstructor
 public class ShopInfoController {
+
+	private final ShopInfoService shopInfoService;
 
 	@GetMapping
 	@Operation(summary = "샵의 상세 정보를 제공합니다.", description = "주소, 안내, 가격 ")
@@ -33,7 +36,7 @@ public class ShopInfoController {
 		@Valid @RequestBody ShopInfoDto.Address requestAddress,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return new ShopInfoDto.Address();
+		return shopInfoService.updateAddress(shopId, requestAddress, memberDetails.getMemberId());
 	}
 
 	@PatchMapping("/info")
