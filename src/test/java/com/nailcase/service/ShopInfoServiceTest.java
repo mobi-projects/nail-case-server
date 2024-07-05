@@ -47,13 +47,9 @@ class ShopInfoServiceTest {
 		String updatedAddress = StringGenerateFixture.makeByNumbersAndAlphabets(10);
 		String updatedPoint = StringGenerateFixture.makePoint();
 
-		ShopInfoDto.Address request = new ShopInfoDto.Address();
-		request.setAddress(updatedAddress);
-		request.setPoint(updatedPoint);
-
-		ShopInfoDto.Address response = new ShopInfoDto.Address();
-		response.setAddress(updatedAddress);
-		response.setPoint(updatedPoint);
+		ShopInfoDto.Address address = ShopInfoDto.Address.builder()
+			.address(updatedAddress)
+			.point(updatedPoint).build();
 
 		when(shopService.getShopById(shopId)).thenReturn(shop);
 		when(shopInfoRepository.findByShopId(shopInfoId)).thenReturn(Optional.of(shopInfo));
@@ -65,13 +61,13 @@ class ShopInfoServiceTest {
 		when(shopInfoRepository.saveAndFlush(any(ShopInfo.class))).thenReturn(shopInfo);
 
 		// When
-		ShopInfoDto.Address result = shopInfoService.updateAddress(shopId, request, memberId);
+		ShopInfoDto.Address result = shopInfoService.updateAddress(shopId, address, memberId);
 
 		// Then
 		assertNotNull(result);
 		assertThat(result)
 			.usingRecursiveComparison()
-			.isEqualTo(response);
+			.isEqualTo(address);
 
 		verify(shopService, times(1)).getShopById(shopId);
 		verify(shopInfoRepository, times(1)).findByShopId(shopId);
