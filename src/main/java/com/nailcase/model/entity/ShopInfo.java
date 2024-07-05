@@ -41,18 +41,23 @@ public class ShopInfo extends BaseEntity {
 	@Column(name = "point")
 	private String point;
 
+	@Setter
 	@Column(name = "parking_lot_cnt")
 	private Integer parkingLotCnt;
 
+	@Setter
 	@Column(name = "available_cnt")
 	private Integer availableCnt;
 
+	@Setter
 	@Column(name = "info")
 	private String info;
 
+	@Setter
 	@Column(name = "price")
 	private String price;
 
+	@Setter
 	@OneToOne(mappedBy = "shopInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private PriceImage priceImage;
 }

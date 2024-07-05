@@ -52,4 +52,25 @@ public class ShopInfoService {
 
 		return shopInfoMapper.toAddressResponse(updatedShop.getAddress(), updatedShopInfo.getPoint());
 	}
+
+	@Transactional
+	public ShopInfoDto.Info updateInfo(
+		Long shopId,
+		ShopInfoDto.Info requestInfo,
+		Long memberId
+	) throws BusinessException {
+
+		// TODO 권한 검사
+		log.debug(String.valueOf(memberId));
+
+		ShopInfo shopInfo = getShopInfoByShopId(shopId);
+
+		shopInfo.setParkingLotCnt(requestInfo.getParkingLotCnt());
+		shopInfo.setAvailableCnt(requestInfo.getAvailableCnt());
+		shopInfo.setInfo(requestInfo.getInfo());
+
+		ShopInfo updatedShopInfo = shopInfoRepository.saveAndFlush(shopInfo);
+
+		return shopInfoMapper.toInfoResponse(updatedShopInfo);
+	}
 }

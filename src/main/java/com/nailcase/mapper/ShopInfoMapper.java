@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.nailcase.model.dto.ShopInfoDto;
+import com.nailcase.model.entity.ShopInfo;
 
 @Mapper(
 	componentModel = "spring",
@@ -15,4 +16,6 @@ public interface ShopInfoMapper {
 	ShopInfoMapper INSTANCE = Mappers.getMapper(ShopInfoMapper.class);
 
 	ShopInfoDto.Address toAddressResponse(String address, String point);
+
+	ShopInfoDto.Info toInfoResponse(ShopInfo shopInfo);
 }

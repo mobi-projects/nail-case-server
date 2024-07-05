@@ -7,13 +7,17 @@ import com.nailcase.util.Validation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class ShopInfoDto {
 
 	@Data
+	@Builder
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class Address {
 		@NotBlank
 		@Schema(description = "주소", example = "서울시 종로구")
@@ -26,7 +30,9 @@ public class ShopInfoDto {
 	}
 
 	@Data
+	@Builder
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class Info {
 		@Min(0)
 		@Schema(description = "주차 가능 대수", example = "1")
@@ -41,7 +47,9 @@ public class ShopInfoDto {
 	}
 
 	@Data
+	@Builder
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class Price {
 		@Schema(description = "가격", example = "손젤 손 케어 + 원컬러 40,000원")
 		private String price;
@@ -52,6 +60,7 @@ public class ShopInfoDto {
 
 	@Data
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class Response {
 		@Schema(description = "샵 아이디", example = "1")
 		private Long shopId;

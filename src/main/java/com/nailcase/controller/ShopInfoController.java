@@ -46,7 +46,7 @@ public class ShopInfoController {
 		@Valid @RequestBody ShopInfoDto.Info requestInfo,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return new ShopInfoDto.Info();
+		return shopInfoService.updateInfo(shopId, requestInfo, memberDetails.getMemberId());
 	}
 
 	@PatchMapping("/price")
