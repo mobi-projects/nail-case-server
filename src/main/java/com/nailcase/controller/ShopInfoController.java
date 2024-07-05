@@ -26,7 +26,7 @@ public class ShopInfoController {
 	@GetMapping
 	@Operation(summary = "샵의 상세 정보를 제공합니다.", description = "주소, 안내, 가격 ")
 	public ShopInfoDto.Response getShopInfo(@PathVariable Long shopId) {
-		return new ShopInfoDto.Response();
+		return shopInfoService.getShopInfo(shopId);
 	}
 
 	@PatchMapping("/address")

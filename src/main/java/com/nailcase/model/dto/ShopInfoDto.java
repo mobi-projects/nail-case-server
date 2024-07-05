@@ -2,6 +2,7 @@ package com.nailcase.model.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nailcase.common.dto.BaseTimeDto;
 import com.nailcase.util.Validation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 public class ShopInfoDto {
@@ -71,7 +73,8 @@ public class ShopInfoDto {
 	@Data
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class Response {
+	@EqualsAndHashCode(callSuper = true)
+	public static class Response extends BaseTimeDto {
 		@Schema(description = "샵 아이디", example = "1")
 		private Long shopId;
 
@@ -93,7 +96,7 @@ public class ShopInfoDto {
 		@Schema(description = "가격", example = "손젤 손 케어 + 원컬러 40,000원")
 		private String price;
 
-		@Schema(description = "가격표 이미지", example = "image/jpeg | image/png")
-		private MultipartFile priceImg;
+		@Schema(description = "이미지 url", example = "일단은 없습니다.")
+		private String imageUrl;
 	}
 }

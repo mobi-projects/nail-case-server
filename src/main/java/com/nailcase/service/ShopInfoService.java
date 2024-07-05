@@ -31,6 +31,11 @@ public class ShopInfoService {
 			.orElseThrow(() -> new BusinessException(ShopInfoErrorCode.SHOP_INFO_NOT_FOUND));
 	}
 
+	@Transactional(readOnly = true)
+	public ShopInfoDto.Response getShopInfo(Long shopId) throws BusinessException {
+		return shopInfoMapper.toResponse(getShopInfoByShopId(shopId));
+	}
+
 	@Transactional
 	public ShopInfoDto.Address updateAddress(
 		Long shopId,
