@@ -73,4 +73,28 @@ public class ShopInfoService {
 
 		return shopInfoMapper.toInfoResponse(updatedShopInfo);
 	}
+
+	@Transactional
+	public ShopInfoDto.PriceResponse updatePrice(
+		Long shopId,
+		ShopInfoDto.Price requestPrice,
+		Long memberId
+	) throws BusinessException {
+
+		// TODO 권한 검사
+		log.debug(String.valueOf(memberId));
+
+		ShopInfo shopInfo = getShopInfoByShopId(shopId);
+
+		shopInfo.setPrice(requestPrice.getPrice());
+
+		/* TODO 사진로직 확인 필요
+		 * 기존 사진이 있으면 삭제
+		 * 사진 업로드
+		 */
+
+		ShopInfo updatedShopInfo = shopInfoRepository.saveAndFlush(shopInfo);
+
+		return shopInfoMapper.toPriceResponse(updatedShopInfo);
+	}
 }

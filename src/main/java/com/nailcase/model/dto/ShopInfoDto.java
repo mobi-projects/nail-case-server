@@ -60,6 +60,16 @@ public class ShopInfoDto {
 
 	@Data
 	@NoArgsConstructor
+	public static class PriceResponse {
+		@Schema(description = "가격", example = "손젤 손 케어 + 원컬러 40,000원")
+		private String price;
+
+		@Schema(description = "이미지 url", example = "일단은 없습니다.")
+		private String imageUrl;
+	}
+
+	@Data
+	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class Response {
 		@Schema(description = "샵 아이디", example = "1")

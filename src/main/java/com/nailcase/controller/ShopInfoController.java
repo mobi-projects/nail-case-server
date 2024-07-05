@@ -51,12 +51,12 @@ public class ShopInfoController {
 
 	@PatchMapping("/price")
 	@Operation(summary = "샵의 가격 정보를 수정합니다.")
-	public ShopInfoDto.Price updatePrice(
+	public ShopInfoDto.PriceResponse updatePrice(
 		@PathVariable Long shopId,
 		@Valid @RequestBody ShopInfoDto.Price requestPrice,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return new ShopInfoDto.Price();
+		return shopInfoService.updatePrice(shopId, requestPrice, memberDetails.getMemberId());
 	}
 
 }
