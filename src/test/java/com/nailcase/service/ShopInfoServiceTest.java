@@ -19,6 +19,7 @@ import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.testUtils.FixtureFactory;
+import com.nailcase.testUtils.Reflection;
 import com.nailcase.testUtils.StringGenerateFixture;
 import com.nailcase.testUtils.fixture.ShopInfoFixture;
 
@@ -108,6 +109,42 @@ class ShopInfoServiceTest {
 		assertThat(result)
 			.usingRecursiveComparison()
 			.isEqualTo(info);
+
+		verify(shopInfoRepository, times(1)).findByShopId(shopId);
+		verify(shopInfoRepository, times(1)).saveAndFlush(shopInfo);
+	}
+
+	@Test
+	@DisplayName("updatePrice 성공 테스트")
+	void updatePriceSuccess() throws Exception {
+		// Given
+		ShopInfo shopInfo = shopInfoFixture.getShopInfo();
+		Long shopId = shopInfo.getShopId();
+		Long memberId = shopInfo.getShop().getMember().getMemberId();
+
+		String updatedPrice = StringGenerateFixture.makeByNumbersAndAlphabets(10);
+
+		ShopInfoDto.Price request = (ShopInfoDto.Price)Reflection.createInstance(ShopInfoDto.Price.class);
+		request.setPrice(updatedPrice);
+		// TODO img
+
+		ShopInfoDto.PriceResponse response = (ShopInfoDto.PriceResponse)Reflection
+			.createInstance(ShopInfoDto.PriceResponse.class);
+		response.setPrice(updatedPrice);
+		response.setImageUrl("임시");
+
+		when(shopInfoRepository.findByShopId(shopId)).thenReturn(Optional.of(shopInfo));
+		shopInfo.setPrice(updatedPrice);
+		when(shopInfoRepository.saveAndFlush(any(ShopInfo.class))).thenReturn(shopInfo);
+
+		// When
+		ShopInfoDto.PriceResponse result = shopInfoService.updatePrice(shopId, request, memberId);
+
+		// Then
+		assertNotNull(result);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.isEqualTo(response);
 
 		verify(shopInfoRepository, times(1)).findByShopId(shopId);
 		verify(shopInfoRepository, times(1)).saveAndFlush(shopInfo);
