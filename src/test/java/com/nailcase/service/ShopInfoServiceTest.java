@@ -74,4 +74,42 @@ class ShopInfoServiceTest {
 		verify(shopRepository, times(1)).saveAndFlush(shop);
 		verify(shopInfoRepository, times(1)).saveAndFlush(shopInfo);
 	}
+
+	@Test
+	@DisplayName("updateInfo 성공 테스트")
+	void updateInfoSuccess() {
+		// Given
+		ShopInfo shopInfo = shopInfoFixture.getShopInfo();
+		Long shopId = shopInfo.getShopId();
+		Long memberId = shopInfo.getShop().getMember().getMemberId();
+
+		int updatedParkingLotCnt = 10;
+		int updatedAvailableCnt = 10;
+		String updatedInfo = StringGenerateFixture.makeByNumbersAndAlphabets(10);
+
+		ShopInfoDto.Info info = ShopInfoDto.Info.builder()
+			.parkingLotCnt(updatedParkingLotCnt)
+			.availableCnt(updatedAvailableCnt)
+			.info(updatedInfo).build();
+
+		when(shopInfoRepository.findByShopId(shopId)).thenReturn(Optional.of(shopInfo));
+
+		shopInfo.setParkingLotCnt(updatedParkingLotCnt);
+		shopInfo.setAvailableCnt(updatedAvailableCnt);
+		shopInfo.setInfo(updatedInfo);
+
+		when(shopInfoRepository.saveAndFlush(any(ShopInfo.class))).thenReturn(shopInfo);
+
+		// When
+		ShopInfoDto.Info result = shopInfoService.updateInfo(shopId, info, memberId);
+
+		// Then
+		assertNotNull(result);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.isEqualTo(info);
+
+		verify(shopInfoRepository, times(1)).findByShopId(shopId);
+		verify(shopInfoRepository, times(1)).saveAndFlush(shopInfo);
+	}
 }
