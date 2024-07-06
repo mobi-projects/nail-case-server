@@ -78,9 +78,6 @@ public class ShopInfoDto {
 		@Schema(description = "샵 아이디", example = "1")
 		private Long shopId;
 
-		@Schema(description = "주소", example = "서울시 종로구")
-		private String address;
-
 		@Schema(description = "위경도", example = "127.123456,38.123456")
 		private String point;
 
@@ -91,7 +88,7 @@ public class ShopInfoDto {
 		private Integer availableCnt;
 
 		@Schema(description = "안내사항", example = "예약은 마감 1시간 전까지 가능합니다.")
-		private String information;
+		private String info;
 
 		@Schema(description = "가격", example = "손젤 손 케어 + 원컬러 40,000원")
 		private String price;
