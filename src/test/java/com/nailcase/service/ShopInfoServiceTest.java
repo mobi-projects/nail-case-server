@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.nailcase.mapper.ShopInfoMapper;
 import com.nailcase.model.dto.ShopInfoDto;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopInfo;
@@ -26,6 +27,7 @@ import com.nailcase.testUtils.fixture.ShopInfoFixture;
 @ExtendWith(MockitoExtension.class)
 class ShopInfoServiceTest {
 	private final ShopInfoFixture shopInfoFixture = FixtureFactory.shopInfoFixture;
+	private final ShopInfoMapper shopInfoMapper = ShopInfoMapper.INSTANCE;
 	@Mock
 	private ShopRepository shopRepository;
 	@Mock
@@ -128,14 +130,11 @@ class ShopInfoServiceTest {
 		request.setPrice(updatedPrice);
 		// TODO img
 
-		ShopInfoDto.PriceResponse response = (ShopInfoDto.PriceResponse)Reflection
-			.createInstance(ShopInfoDto.PriceResponse.class);
-		response.setPrice(updatedPrice);
-		response.setImageUrl("임시");
-
 		when(shopInfoRepository.findByShopId(shopId)).thenReturn(Optional.of(shopInfo));
 		shopInfo.setPrice(updatedPrice);
 		when(shopInfoRepository.saveAndFlush(any(ShopInfo.class))).thenReturn(shopInfo);
+
+		ShopInfoDto.PriceResponse response = shopInfoMapper.toPriceResponse(shopInfo);
 
 		// When
 		ShopInfoDto.PriceResponse result = shopInfoService.updatePrice(shopId, request, memberId);
