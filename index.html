@@ -1466,6 +1466,126 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.ShopInfoDto$Address"] = {
+  "required" : [ "address", "point" ],
+  "type" : "object",
+  "properties" : {
+    "address" : {
+      "type" : "string",
+      "description" : "주소",
+      "example" : "서울시 종로구"
+    },
+    "point" : {
+      "type" : "string",
+      "description" : "위경도",
+      "example" : "127.123456,38.123456"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ShopInfoDto$Info"] = {
+  "type" : "object",
+  "properties" : {
+    "parkingLotCnt" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "description" : "주차 가능 대수",
+      "format" : "int32",
+      "example" : 1
+    },
+    "availableCnt" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "description" : "동시 예약 가능 자리",
+      "format" : "int32",
+      "example" : 5
+    },
+    "info" : {
+      "type" : "string",
+      "description" : "안내사항",
+      "example" : "예약은 마감 1시간 전까지 가능합니다."
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ShopInfoDto$Price"] = {
+  "type" : "object",
+  "properties" : {
+    "price" : {
+      "type" : "string",
+      "description" : "가격",
+      "example" : "손젤 손 케어 + 원컬러 40,000원"
+    },
+    "priceImg" : {
+      "type" : "string",
+      "format" : "binary"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ShopInfoDto$PriceResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "price" : {
+      "type" : "string",
+      "description" : "가격",
+      "example" : "손젤 손 케어 + 원컬러 40,000원"
+    },
+    "imageUrl" : {
+      "type" : "string",
+      "description" : "이미지 url",
+      "example" : "일단은 없습니다."
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ShopInfoDto$Response"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedAt" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shopId" : {
+      "type" : "integer",
+      "description" : "샵 아이디",
+      "format" : "int64",
+      "example" : 1
+    },
+    "point" : {
+      "type" : "string",
+      "description" : "위경도",
+      "example" : "127.123456,38.123456"
+    },
+    "parkingLotCnt" : {
+      "type" : "integer",
+      "description" : "주차 가능 대수",
+      "format" : "int32",
+      "example" : 1
+    },
+    "availableCnt" : {
+      "type" : "integer",
+      "description" : "동시 예약 가능 자리",
+      "format" : "int32",
+      "example" : 5
+    },
+    "info" : {
+      "type" : "string",
+      "description" : "안내사항",
+      "example" : "예약은 마감 1시간 전까지 가능합니다."
+    },
+    "price" : {
+      "type" : "string",
+      "description" : "가격",
+      "example" : "손젤 손 케어 + 원컬러 40,000원"
+    },
+    "imageUrl" : {
+      "type" : "string",
+      "description" : "이미지 url",
+      "example" : "일단은 없습니다."
+    }
+  }
+};
             defs["com.nailcase.model.dto.TreatmentDto$Post"] = {
   "required" : [ "option" ],
   "type" : "object",
@@ -1568,6 +1688,12 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
+    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -1587,12 +1713,6 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
-    },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
@@ -1817,14 +1937,17 @@
                       <a href="#api-ShopController-uploadImage">uploadImage</a>
                     </li>
                   <li class="nav-header" data-group="ShopInfoController"><a href="#api-ShopInfoController">API Methods - ShopInfoController</a></li>
-                    <li data-group="ShopInfoController" data-name="listCovers" class="">
-                      <a href="#api-ShopInfoController-listCovers">listCovers</a>
+                    <li data-group="ShopInfoController" data-name="getShopInfo" class="">
+                      <a href="#api-ShopInfoController-getShopInfo">getShopInfo</a>
                     </li>
-                    <li data-group="ShopInfoController" data-name="updateCover" class="">
-                      <a href="#api-ShopInfoController-updateCover">updateCover</a>
+                    <li data-group="ShopInfoController" data-name="updateAddress" class="">
+                      <a href="#api-ShopInfoController-updateAddress">updateAddress</a>
                     </li>
-                    <li data-group="ShopInfoController" data-name="viewInfo" class="">
-                      <a href="#api-ShopInfoController-viewInfo">viewInfo</a>
+                    <li data-group="ShopInfoController" data-name="updateInfo" class="">
+                      <a href="#api-ShopInfoController-updateInfo">updateInfo</a>
+                    </li>
+                    <li data-group="ShopInfoController" data-name="updatePrice" class="">
+                      <a href="#api-ShopInfoController-updatePrice">updatePrice</a>
                     </li>
                   <li class="nav-header" data-group="WorkHourController"><a href="#api-WorkHourController">API Methods - WorkHourController</a></li>
                     <li data-group="WorkHourController" data-name="getWorkHours" class="">
@@ -19039,591 +19162,16 @@ except ApiException as e:
                   </section>
                 <section id="api-ShopInfoController">
                   <h1>ShopInfoController</h1>
-                    <div id="api-ShopInfoController-listCovers">
-                      <article id="api-ShopInfoController-listCovers-0" data-group="User" data-name="listCovers" data-version="0">
+                    <div id="api-ShopInfoController-getShopInfo">
+                      <article id="api-ShopInfoController-getShopInfo-0" data-group="User" data-name="getShopInfo" data-version="0">
                         <div class="pull-left">
-                          <h1>listCovers</h1>
-                          <p></p>
+                          <h1>getShopInfo</h1>
+                          <p>샵의 상세 정보를 제공합니다.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}/covers</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-ShopInfoController-listCovers-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-java">Java</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-ShopInfoController-listCovers-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-ShopInfoController-listCovers-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-listCovers-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-ShopInfoController-listCovers-0-curl">
-                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
- -H "Authorization: Bearer [[accessToken]]"\
-\
-"http://localhost:8081/api/v1/shops/{shopId}/covers"</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.ShopInfoControllerApi;
-
-import java.io.File;
-import java.util.*;
-
-public class ShopInfoControllerApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-
-        // Configure OAuth2 access token for authorization: oauth2-key
-        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
-        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
-
-        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
-        Long shopId = 789; // Long | 
-        try {
-            apiInstance.listCovers(shopId);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling ShopInfoControllerApi#listCovers");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopInfoControllerApi;
-
-public class ShopInfoControllerApiExample {
-
-    public static void main(String[] args) {
-        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
-        Long shopId = 789; // Long | 
-        try {
-            apiInstance.listCovers(shopId);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling ShopInfoControllerApi#listCovers");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
-[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-Long *shopId = 789; // 
-
-ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
-
-[apiInstance listCoversWith:shopId
-              completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
-var defaultClient = NailCaseApi.ApiClient.instance;
-
-
-// Configure OAuth2 access token for authorization: oauth2-key
-var oauth2-key = defaultClient.authentications['oauth2-key'];
-oauth2-key.accessToken = "YOUR ACCESS TOKEN"
-
-var api = new NailCaseApi.ShopInfoControllerApi()
-var shopId = 789; // {{Long}} 
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
-};
-api.listCovers(shopId, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-ShopInfoController-listCovers-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class listCoversExample
-    {
-        public void main()
-        {
-
-            // Configure OAuth2 access token for authorization: oauth2-key
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-
-            var apiInstance = new ShopInfoControllerApi();
-            var shopId = 789;  // Long | 
-
-            try
-            {
-                apiInstance.listCovers(shopId);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling ShopInfoControllerApi.listCovers: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Configure OAuth2 access token for authorization: oauth2-key
-Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
-
-$api_instance = new Swagger\Client\ApiShopInfoControllerApi();
-$shopId = 789; // Long | 
-
-try {
-    $api_instance->listCovers($shopId);
-} catch (Exception $e) {
-    echo 'Exception when calling ShopInfoControllerApi->listCovers: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::ShopInfoControllerApi;
-
-# Configure OAuth2 access token for authorization: oauth2-key
-$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
-
-my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
-my $shopId = 789; # Long | 
-
-eval { 
-    $api_instance->listCovers(shopId => $shopId);
-};
-if ($@) {
-    warn "Exception when calling ShopInfoControllerApi->listCovers: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-listCovers-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-# Configure OAuth2 access token for authorization: oauth2-key
-swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
-
-# create an instance of the API class
-api_instance = swagger_client.ShopInfoControllerApi()
-shopId = 789 # Long | 
-
-try: 
-    api_instance.list_covers(shopId)
-except ApiException as e:
-    print("Exception when calling ShopInfoControllerApi->listCovers: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">shopId*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_listCovers_shopId">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      Long
-                                                  </span>
-                                                      <span class="format">
-                                                          (int64)
-                                                      </span>
-                                  
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                            </table>
-
-
-
-
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-ShopInfoController-updateCover">
-                      <article id="api-ShopInfoController-updateCover-0" data-group="User" data-name="updateCover" data-version="0">
-                        <div class="pull-left">
-                          <h1>updateCover</h1>
-                          <p></p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/shops/{shopId}/covers/{coverId}</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-ShopInfoController-updateCover-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-java">Java</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-ShopInfoController-updateCover-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-ShopInfoController-updateCover-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-updateCover-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-ShopInfoController-updateCover-0-curl">
-                           <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
- -H "Authorization: Bearer [[accessToken]]"\
-\
-"http://localhost:8081/api/v1/shops/{shopId}/covers/{coverId}"</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.ShopInfoControllerApi;
-
-import java.io.File;
-import java.util.*;
-
-public class ShopInfoControllerApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-
-        // Configure OAuth2 access token for authorization: oauth2-key
-        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
-        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
-
-        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
-        Long shopId = 789; // Long | 
-        Long coverId = 789; // Long | 
-        try {
-            apiInstance.updateCover(shopId, coverId);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling ShopInfoControllerApi#updateCover");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopInfoControllerApi;
-
-public class ShopInfoControllerApiExample {
-
-    public static void main(String[] args) {
-        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
-        Long shopId = 789; // Long | 
-        Long coverId = 789; // Long | 
-        try {
-            apiInstance.updateCover(shopId, coverId);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling ShopInfoControllerApi#updateCover");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
-[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-Long *shopId = 789; // 
-Long *coverId = 789; // 
-
-ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
-
-[apiInstance updateCoverWith:shopId
-    coverId:coverId
-              completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
-var defaultClient = NailCaseApi.ApiClient.instance;
-
-
-// Configure OAuth2 access token for authorization: oauth2-key
-var oauth2-key = defaultClient.authentications['oauth2-key'];
-oauth2-key.accessToken = "YOUR ACCESS TOKEN"
-
-var api = new NailCaseApi.ShopInfoControllerApi()
-var shopId = 789; // {{Long}} 
-var coverId = 789; // {{Long}} 
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
-};
-api.updateCover(shopId, coverId, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-ShopInfoController-updateCover-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class updateCoverExample
-    {
-        public void main()
-        {
-
-            // Configure OAuth2 access token for authorization: oauth2-key
-            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
-
-            var apiInstance = new ShopInfoControllerApi();
-            var shopId = 789;  // Long | 
-            var coverId = 789;  // Long | 
-
-            try
-            {
-                apiInstance.updateCover(shopId, coverId);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling ShopInfoControllerApi.updateCover: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Configure OAuth2 access token for authorization: oauth2-key
-Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
-
-$api_instance = new Swagger\Client\ApiShopInfoControllerApi();
-$shopId = 789; // Long | 
-$coverId = 789; // Long | 
-
-try {
-    $api_instance->updateCover($shopId, $coverId);
-} catch (Exception $e) {
-    echo 'Exception when calling ShopInfoControllerApi->updateCover: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::ShopInfoControllerApi;
-
-# Configure OAuth2 access token for authorization: oauth2-key
-$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
-
-my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
-my $shopId = 789; # Long | 
-my $coverId = 789; # Long | 
-
-eval { 
-    $api_instance->updateCover(shopId => $shopId, coverId => $coverId);
-};
-if ($@) {
-    warn "Exception when calling ShopInfoControllerApi->updateCover: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-ShopInfoController-updateCover-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-# Configure OAuth2 access token for authorization: oauth2-key
-swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
-
-# create an instance of the API class
-api_instance = swagger_client.ShopInfoControllerApi()
-shopId = 789 # Long | 
-coverId = 789 # Long | 
-
-try: 
-    api_instance.update_cover(shopId, coverId)
-except ApiException as e:
-    print("Exception when calling ShopInfoControllerApi->updateCover: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">shopId*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_updateCover_shopId">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      Long
-                                                  </span>
-                                                      <span class="format">
-                                                          (int64)
-                                                      </span>
-                                  
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                                  <tr><td style="width:150px;">coverId*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_updateCover_coverId">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      Long
-                                                  </span>
-                                                      <span class="format">
-                                                          (int64)
-                                                      </span>
-                                  
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                            </table>
-
-
-
-
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-ShopInfoController-viewInfo">
-                      <article id="api-ShopInfoController-viewInfo-0" data-group="User" data-name="viewInfo" data-version="0">
-                        <div class="pull-left">
-                          <h1>viewInfo</h1>
-                          <p></p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
+                        <p class="marked">주소, 안내, 가격 </p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/shops/{shopId}/info</span></code></pre>
@@ -19631,27 +19179,28 @@ except ApiException as e:
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-ShopInfoController-viewInfo-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-java">Java</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-ShopInfoController-viewInfo-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-ShopInfoController-viewInfo-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-ShopInfoController-viewInfo-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-ShopInfoController-getShopInfo-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-getShopInfo-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-getShopInfo-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-getShopInfo-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-ShopInfoController-viewInfo-0-curl">
+                          <div class="tab-pane active" id="examples-ShopInfoController-getShopInfo-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 \
+-H "Accept: */*"\
 "http://localhost:8081/api/v1/shops/{shopId}/info"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-java">
+                          <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -19673,16 +19222,17 @@ public class ShopInfoControllerApiExample {
         ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
         Long shopId = 789; // Long | 
         try {
-            apiInstance.viewInfo(shopId);
+            com.nailcase.model.dto.ShopInfoDto$Response result = apiInstance.getShopInfo(shopId);
+            System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling ShopInfoControllerApi#viewInfo");
+            System.err.println("Exception when calling ShopInfoControllerApi#getShopInfo");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-android">
+                          <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopInfoControllerApi;
 
 public class ShopInfoControllerApiExample {
@@ -19691,19 +19241,20 @@ public class ShopInfoControllerApiExample {
         ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
         Long shopId = 789; // Long | 
         try {
-            apiInstance.viewInfo(shopId);
+            com.nailcase.model.dto.ShopInfoDto$Response result = apiInstance.getShopInfo(shopId);
+            System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling ShopInfoControllerApi#viewInfo");
+            System.err.println("Exception when calling ShopInfoControllerApi#getShopInfo");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-groovy">
+  <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-objc">
+                            <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
@@ -19711,8 +19262,12 @@ Long *shopId = 789; //
 
 ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 
-[apiInstance viewInfoWith:shopId
-              completionHandler: ^(NSError* error) {
+// 샵의 상세 정보를 제공합니다.
+[apiInstance getShopInfoWith:shopId
+              completionHandler: ^(com.nailcase.model.dto.ShopInfoDto$Response output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -19720,7 +19275,7 @@ ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-javascript">
+                            <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 var defaultClient = NailCaseApi.ApiClient.instance;
 
@@ -19736,17 +19291,17 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.viewInfo(shopId, callback);
+api.getShopInfo(shopId, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-angular">
+                            <!--<div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-csharp">
+                            <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -19755,7 +19310,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class viewInfoExample
+    public class getShopInfoExample
     {
         public void main()
         {
@@ -19768,11 +19323,13 @@ namespace Example
 
             try
             {
-                apiInstance.viewInfo(shopId);
+                // 샵의 상세 정보를 제공합니다.
+                com.nailcase.model.dto.ShopInfoDto$Response result = apiInstance.getShopInfo(shopId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling ShopInfoControllerApi.viewInfo: " + e.Message );
+                Debug.Print("Exception when calling ShopInfoControllerApi.getShopInfo: " + e.Message );
             }
         }
     }
@@ -19780,7 +19337,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-php">
+                            <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -19791,14 +19348,15 @@ $api_instance = new Swagger\Client\ApiShopInfoControllerApi();
 $shopId = 789; // Long | 
 
 try {
-    $api_instance->viewInfo($shopId);
+    $result = $api_instance->getShopInfo($shopId);
+    print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ShopInfoControllerApi->viewInfo: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ShopInfoControllerApi->getShopInfo: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-perl">
+                            <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ShopInfoControllerApi;
@@ -19810,14 +19368,15 @@ my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
 my $shopId = 789; # Long | 
 
 eval { 
-    $api_instance->viewInfo(shopId => $shopId);
+    my $result = $api_instance->getShopInfo(shopId => $shopId);
+    print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling ShopInfoControllerApi->viewInfo: $@\n";
+    warn "Exception when calling ShopInfoControllerApi->getShopInfo: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ShopInfoController-viewInfo-0-python">
+                            <div class="tab-pane" id="examples-ShopInfoController-getShopInfo-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -19832,9 +19391,11 @@ api_instance = swagger_client.ShopInfoControllerApi()
 shopId = 789 # Long | 
 
 try: 
-    api_instance.view_info(shopId)
+    # 샵의 상세 정보를 제공합니다.
+    api_response = api_instance.get_shop_info(shopId)
+    pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ShopInfoControllerApi->viewInfo: %s\n" % e)</code></pre>
+    print("Exception when calling ShopInfoControllerApi->getShopInfo: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -19850,7 +19411,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_viewInfo_shopId">
+                                      <div id="d2e199_getShopInfo_shopId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -19878,9 +19439,1183 @@ except ApiException as e:
                             <h3> Status: 200 - OK </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getShopInfo-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getShopInfo-200-schema">
+                                  <div id='responses-getShopInfo-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$Response"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getShopInfo-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getShopInfo-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getShopInfo-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ShopInfoController-updateAddress">
+                      <article id="api-ShopInfoController-updateAddress-0" data-group="User" data-name="updateAddress" data-version="0">
+                        <div class="pull-left">
+                          <h1>updateAddress</h1>
+                          <p>샵의 주소 정보를 수정합니다.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">&#x27;시도 시군구&#x27; | &#x27;경도,위도&#x27; 주의해주세요.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/shops/{shopId}/info/address</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ShopInfoController-updateAddress-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-updateAddress-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-updateAddress-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateAddress-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ShopInfoController-updateAddress-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/info/address"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ShopInfoControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ShopInfoControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
+        Com.nailcase.model.dto.ShopInfoDto$Address body = ; // Com.nailcase.model.dto.ShopInfoDto$Address | 
+        Long shopId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.ShopInfoDto$Address result = apiInstance.updateAddress(body, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopInfoControllerApi#updateAddress");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopInfoControllerApi;
+
+public class ShopInfoControllerApiExample {
+
+    public static void main(String[] args) {
+        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
+        Com.nailcase.model.dto.ShopInfoDto$Address body = ; // Com.nailcase.model.dto.ShopInfoDto$Address | 
+        Long shopId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.ShopInfoDto$Address result = apiInstance.updateAddress(body, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopInfoControllerApi#updateAddress");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Com.nailcase.model.dto.ShopInfoDto$Address *body = ; // 
+Long *shopId = 789; // 
+
+ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
+
+// 샵의 주소 정보를 수정합니다.
+[apiInstance updateAddressWith:body
+    shopId:shopId
+              completionHandler: ^(com.nailcase.model.dto.ShopInfoDto$Address output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ShopInfoControllerApi()
+var body = ; // {{Com.nailcase.model.dto.ShopInfoDto$Address}} 
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.updateAddress(bodyshopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class updateAddressExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ShopInfoControllerApi();
+            var body = new Com.nailcase.model.dto.ShopInfoDto$Address(); // Com.nailcase.model.dto.ShopInfoDto$Address | 
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                // 샵의 주소 정보를 수정합니다.
+                com.nailcase.model.dto.ShopInfoDto$Address result = apiInstance.updateAddress(body, shopId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ShopInfoControllerApi.updateAddress: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiShopInfoControllerApi();
+$body = ; // Com.nailcase.model.dto.ShopInfoDto$Address | 
+$shopId = 789; // Long | 
+
+try {
+    $result = $api_instance->updateAddress($body, $shopId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ShopInfoControllerApi->updateAddress: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ShopInfoControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ShopInfoDto$Address->new(); # Com.nailcase.model.dto.ShopInfoDto$Address | 
+my $shopId = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->updateAddress(body => $body, shopId => $shopId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ShopInfoControllerApi->updateAddress: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateAddress-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ShopInfoControllerApi()
+body =  # Com.nailcase.model.dto.ShopInfoDto$Address | 
+shopId = 789 # Long | 
+
+try: 
+    # 샵의 주소 정보를 수정합니다.
+    api_response = api_instance.update_address(body, shopId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ShopInfoControllerApi->updateAddress: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_updateAddress_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$Address"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updateAddress_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updateAddress_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateAddress-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateAddress-200-schema">
+                                  <div id='responses-updateAddress-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$Address"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateAddress-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateAddress-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateAddress-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ShopInfoController-updateInfo">
+                      <article id="api-ShopInfoController-updateInfo-0" data-group="User" data-name="updateInfo" data-version="0">
+                        <div class="pull-left">
+                          <h1>updateInfo</h1>
+                          <p>샵의 가격 정보를 수정합니다.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/shops/{shopId}/info/info</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ShopInfoController-updateInfo-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-updateInfo-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-updateInfo-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updateInfo-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ShopInfoController-updateInfo-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/info/info"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ShopInfoControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ShopInfoControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
+        Com.nailcase.model.dto.ShopInfoDto$Info body = ; // Com.nailcase.model.dto.ShopInfoDto$Info | 
+        Long shopId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.ShopInfoDto$Info result = apiInstance.updateInfo(body, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopInfoControllerApi#updateInfo");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopInfoControllerApi;
+
+public class ShopInfoControllerApiExample {
+
+    public static void main(String[] args) {
+        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
+        Com.nailcase.model.dto.ShopInfoDto$Info body = ; // Com.nailcase.model.dto.ShopInfoDto$Info | 
+        Long shopId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.ShopInfoDto$Info result = apiInstance.updateInfo(body, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopInfoControllerApi#updateInfo");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Com.nailcase.model.dto.ShopInfoDto$Info *body = ; // 
+Long *shopId = 789; // 
+
+ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
+
+// 샵의 가격 정보를 수정합니다.
+[apiInstance updateInfoWith:body
+    shopId:shopId
+              completionHandler: ^(com.nailcase.model.dto.ShopInfoDto$Info output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ShopInfoControllerApi()
+var body = ; // {{Com.nailcase.model.dto.ShopInfoDto$Info}} 
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.updateInfo(bodyshopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class updateInfoExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ShopInfoControllerApi();
+            var body = new Com.nailcase.model.dto.ShopInfoDto$Info(); // Com.nailcase.model.dto.ShopInfoDto$Info | 
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                // 샵의 가격 정보를 수정합니다.
+                com.nailcase.model.dto.ShopInfoDto$Info result = apiInstance.updateInfo(body, shopId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ShopInfoControllerApi.updateInfo: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiShopInfoControllerApi();
+$body = ; // Com.nailcase.model.dto.ShopInfoDto$Info | 
+$shopId = 789; // Long | 
+
+try {
+    $result = $api_instance->updateInfo($body, $shopId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ShopInfoControllerApi->updateInfo: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ShopInfoControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ShopInfoDto$Info->new(); # Com.nailcase.model.dto.ShopInfoDto$Info | 
+my $shopId = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->updateInfo(body => $body, shopId => $shopId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ShopInfoControllerApi->updateInfo: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ShopInfoControllerApi()
+body =  # Com.nailcase.model.dto.ShopInfoDto$Info | 
+shopId = 789 # Long | 
+
+try: 
+    # 샵의 가격 정보를 수정합니다.
+    api_response = api_instance.update_info(body, shopId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ShopInfoControllerApi->updateInfo: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_updateInfo_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$Info"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updateInfo_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updateInfo_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateInfo-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateInfo-200-schema">
+                                  <div id='responses-updateInfo-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$Info"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateInfo-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateInfo-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateInfo-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ShopInfoController-updatePrice">
+                      <article id="api-ShopInfoController-updatePrice-0" data-group="User" data-name="updatePrice" data-version="0">
+                        <div class="pull-left">
+                          <h1>updatePrice</h1>
+                          <p>샵의 가격 정보를 수정합니다.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/shops/{shopId}/info/price</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ShopInfoController-updatePrice-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-updatePrice-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopInfoController-updatePrice-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopInfoController-updatePrice-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ShopInfoController-updatePrice-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X PATCH\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+-H "Content-Type: application/json"\
+"http://localhost:8081/api/v1/shops/{shopId}/info/price"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ShopInfoControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ShopInfoControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
+        Com.nailcase.model.dto.ShopInfoDto$Price body = ; // Com.nailcase.model.dto.ShopInfoDto$Price | 
+        Long shopId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.ShopInfoDto$PriceResponse result = apiInstance.updatePrice(body, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopInfoControllerApi#updatePrice");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopInfoControllerApi;
+
+public class ShopInfoControllerApiExample {
+
+    public static void main(String[] args) {
+        ShopInfoControllerApi apiInstance = new ShopInfoControllerApi();
+        Com.nailcase.model.dto.ShopInfoDto$Price body = ; // Com.nailcase.model.dto.ShopInfoDto$Price | 
+        Long shopId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.ShopInfoDto$PriceResponse result = apiInstance.updatePrice(body, shopId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopInfoControllerApi#updatePrice");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Com.nailcase.model.dto.ShopInfoDto$Price *body = ; // 
+Long *shopId = 789; // 
+
+ShopInfoControllerApi *apiInstance = [[ShopInfoControllerApi alloc] init];
+
+// 샵의 가격 정보를 수정합니다.
+[apiInstance updatePriceWith:body
+    shopId:shopId
+              completionHandler: ^(com.nailcase.model.dto.ShopInfoDto$PriceResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ShopInfoControllerApi()
+var body = ; // {{Com.nailcase.model.dto.ShopInfoDto$Price}} 
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.updatePrice(bodyshopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class updatePriceExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ShopInfoControllerApi();
+            var body = new Com.nailcase.model.dto.ShopInfoDto$Price(); // Com.nailcase.model.dto.ShopInfoDto$Price | 
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                // 샵의 가격 정보를 수정합니다.
+                com.nailcase.model.dto.ShopInfoDto$PriceResponse result = apiInstance.updatePrice(body, shopId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ShopInfoControllerApi.updatePrice: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiShopInfoControllerApi();
+$body = ; // Com.nailcase.model.dto.ShopInfoDto$Price | 
+$shopId = 789; // Long | 
+
+try {
+    $result = $api_instance->updatePrice($body, $shopId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ShopInfoControllerApi->updatePrice: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ShopInfoControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ShopInfoControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ShopInfoDto$Price->new(); # Com.nailcase.model.dto.ShopInfoDto$Price | 
+my $shopId = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->updatePrice(body => $body, shopId => $shopId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling ShopInfoControllerApi->updatePrice: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopInfoController-updatePrice-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ShopInfoControllerApi()
+body =  # Com.nailcase.model.dto.ShopInfoDto$Price | 
+shopId = 789 # Long | 
+
+try: 
+    # 샵의 가격 정보를 수정합니다.
+    api_response = api_instance.update_price(body, shopId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ShopInfoControllerApi->updatePrice: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_updatePrice_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$Price"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_updatePrice_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_updatePrice_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updatePrice-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updatePrice-200-schema">
+                                  <div id='responses-updatePrice-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopInfoDto$PriceResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updatePrice-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updatePrice-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updatePrice-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
