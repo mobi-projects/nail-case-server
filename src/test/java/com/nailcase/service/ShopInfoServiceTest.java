@@ -38,6 +38,28 @@ class ShopInfoServiceTest {
 	private ShopInfoService shopInfoService;
 
 	@Test
+	@DisplayName("getShopInfo 성공 테스트")
+	void getShopInfoSuccess() {
+		// Given
+		ShopInfo shopInfo = shopInfoFixture.getShopInfo();
+		Long shopId = shopInfo.getShopId();
+		ShopInfoDto.Response response = shopInfoMapper.toResponse(shopInfo);
+
+		when(shopInfoRepository.findByShopId(shopId)).thenReturn(Optional.of(shopInfo));
+
+		// When
+		ShopInfoDto.Response result = shopInfoService.getShopInfo(shopId);
+
+		// Then
+		assertNotNull(result);
+		assertThat(result)
+			.usingRecursiveComparison()
+			.isEqualTo(response);
+
+		verify(shopInfoRepository, times(1)).findByShopId(shopId);
+	}
+
+	@Test
 	@DisplayName("updateAddress 성공 테스트")
 	void updateAddressSuccess() {
 		// Given
