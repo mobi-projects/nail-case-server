@@ -90,6 +90,13 @@ public class KakaoLoginService implements SocialLoginService {
 		params.add(CODE_NUMBER, code);
 		params.add(CLIENT_SECRET, kakaoClientSecret);
 
+		System.out.println("URL: " + url);
+		System.out.println("Client ID: " + kakaoClientId);
+		System.out.println("Redirect URI: " + kakaoRedirectUri);
+		System.out.println("Authorization Code: " + authorizationCode);
+		System.out.println("Code: " + code);
+		System.out.println("Client Secret: " + kakaoClientSecret);
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
