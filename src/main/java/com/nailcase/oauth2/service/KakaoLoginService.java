@@ -42,6 +42,12 @@ public class KakaoLoginService implements SocialLoginService {
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String kakaoUserInfoUri;
 
+	@Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
+	private String authorizationCode;
+
+	@Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
+	private String tokenUri;
+
 	private final String GRANT_TYPE = "grant_type";
 	private final String CLIENT_ID = "client_id";
 	private final String REDIRECT_URI = "redirect_uri";
@@ -72,9 +78,9 @@ public class KakaoLoginService implements SocialLoginService {
 	}
 
 	private String getKakaoAccessToken(String code) {
-		String url = "https://kauth.kakao.com/oauth/token";
+		String url = tokenUri;
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add(GRANT_TYPE, "authorization_code");
+		params.add(GRANT_TYPE, authorizationCode);
 		params.add(CLIENT_ID, kakaoClientId);
 		params.add(REDIRECT_URI, kakaoRedirectUri);
 		params.add(CODE_NUMBER, code);
