@@ -48,10 +48,14 @@ public class KakaoLoginService implements SocialLoginService {
 	@Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
 	private String tokenUri;
 
+	@Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+	private String kakaoClientSecret;
+
 	private final String GRANT_TYPE = "grant_type";
 	private final String CLIENT_ID = "client_id";
 	private final String REDIRECT_URI = "redirect_uri";
 	private final String CODE_NUMBER = "code";
+	private final String CLIENT_SECRET = "client_secret";
 
 	@Value("${jwt.access.name}")
 	private String accessToken;
@@ -84,6 +88,7 @@ public class KakaoLoginService implements SocialLoginService {
 		params.add(CLIENT_ID, kakaoClientId);
 		params.add(REDIRECT_URI, kakaoRedirectUri);
 		params.add(CODE_NUMBER, code);
+		params.add(CLIENT_SECRET, kakaoClientSecret);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
