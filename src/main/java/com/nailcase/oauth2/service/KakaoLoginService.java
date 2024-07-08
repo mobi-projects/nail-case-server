@@ -1,6 +1,5 @@
 package com.nailcase.oauth2.service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +19,7 @@ import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.enums.SocialType;
+import com.nailcase.oauth2.dto.LoginResponseDto;
 import com.nailcase.oauth2.dto.OAuthAttributes;
 import com.nailcase.repository.MemberRepository;
 
@@ -61,7 +61,7 @@ public class KakaoLoginService implements SocialLoginService {
 	private String accessToken;
 
 	@Override
-	public Map<String, String> processLogin(String code) {
+	public LoginResponseDto processLogin(String code) {
 		String accessToken = getKakaoAccessToken(code);
 		Map<String, Object> userAttributes = getKakaoUserAttributes(accessToken);
 		OAuthAttributes attributes = OAuthAttributes.of("kakao", "id", userAttributes);
@@ -70,12 +70,14 @@ public class KakaoLoginService implements SocialLoginService {
 		String refreshToken = jwtService.createRefreshToken(member.getEmail());
 		jwtService.updateRefreshToken(member.getEmail(), refreshToken);
 
-		Map<String, String> tokens = new HashMap<>();
-		tokens.put("accessToken", accessTokenJwt);
-		tokens.put("refreshToken", refreshToken);
-		tokens.put("userName", member.getName());
-		tokens.put("userEmail", member.getEmail());
-		return tokens;
+		LoginResponseDto response = new LoginResponseDto();
+		response.setLoginSuccess(true);
+		response.setAccessToken(accessTokenJwt);
+		response.setRefreshToken(refreshToken);
+		response.setUserName(member.getName());
+		response.setUserEmail(member.getEmail());
+
+		return response;
 	}
 
 	public Member getOrCreateMember(OAuthAttributes attributes, SocialType socialType) {
@@ -102,7 +104,7 @@ public class KakaoLoginService implements SocialLoginService {
 			Map<String, Object> responseBody = response.getBody();
 			return responseBody.get(accessToken).toString();
 		} else {
-			throw new RuntimeException("Failed to retrieve access token");
+			throw new BusinessException(AuthErrorCode.ACCESS_RETRIEVE);
 		}
 	}
 
@@ -119,8 +121,7 @@ public class KakaoLoginService implements SocialLoginService {
 		if (response.getStatusCode() == HttpStatus.OK) {
 			return response.getBody();  // Map<String, Object>를 직접 반환
 		} else {
-			throw new BusinessException(AuthErrorCode.AUTH_UNEXPECTED,
-				"Failed to retrieve user information from Kakao");
+			throw new BusinessException(AuthErrorCode.ACCESS_RETRIEVE);
 		}
 	}
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.oauth2.dto.LoginResponseDto;
 import com.nailcase.oauth2.service.SocialLoginService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class OAuth2Controller {
 	private final Map<String, SocialLoginService> loginServices;
 
 	@GetMapping("/{service}")
-	public Map<String, String> socialLogin(@PathVariable String service, @RequestParam String code) {
+	public LoginResponseDto socialLogin(@PathVariable String service, @RequestParam String code) {
 		SocialLoginService loginService = loginServices.get(service + "LoginService");
 		if (loginService == null) {
 			throw new BusinessException(AuthErrorCode.AUTH_UNSUPPORTED);
