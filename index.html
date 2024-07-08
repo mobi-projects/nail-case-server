@@ -1654,6 +1654,26 @@
     }
   }
 };
+            defs["com.nailcase.oauth2.dto.LoginResponseDto"] = {
+  "type" : "object",
+  "properties" : {
+    "loginSuccess" : {
+      "type" : "boolean"
+    },
+    "accessToken" : {
+      "type" : "string"
+    },
+    "refreshToken" : {
+      "type" : "string"
+    },
+    "userName" : {
+      "type" : "string"
+    },
+    "userEmail" : {
+      "type" : "string"
+    }
+  }
+};
             defs["org.springdoc.core.converters.models.SortObject"] = {
   "type" : "object",
   "properties" : {
@@ -5890,7 +5910,7 @@ public class OAuth2ControllerApiExample {
         String service = service_example; // String | 
         String code = code_example; // String | 
         try {
-            map['String', 'String'] result = apiInstance.socialLogin(service, code);
+            com.nailcase.oauth2.dto.LoginResponseDto result = apiInstance.socialLogin(service, code);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling OAuth2ControllerApi#socialLogin");
@@ -5910,7 +5930,7 @@ public class OAuth2ControllerApiExample {
         String service = service_example; // String | 
         String code = code_example; // String | 
         try {
-            map['String', 'String'] result = apiInstance.socialLogin(service, code);
+            com.nailcase.oauth2.dto.LoginResponseDto result = apiInstance.socialLogin(service, code);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling OAuth2ControllerApi#socialLogin");
@@ -5934,7 +5954,7 @@ OAuth2ControllerApi *apiInstance = [[OAuth2ControllerApi alloc] init];
 
 [apiInstance socialLoginWith:service
     code:code
-              completionHandler: ^(map['String', 'String'] output, NSError* error) {
+              completionHandler: ^(com.nailcase.oauth2.dto.LoginResponseDto output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -5995,7 +6015,7 @@ namespace Example
 
             try
             {
-                map['String', 'String'] result = apiInstance.socialLogin(service, code);
+                com.nailcase.oauth2.dto.LoginResponseDto result = apiInstance.socialLogin(service, code);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -6151,11 +6171,7 @@ except ApiException as e:
   "content" : {
     "*/*" : {
       "schema" : {
-        "type" : "object",
-        "additionalProperties" : {
-          "type" : "string"
-        },
-        "x-content-type" : "*/*"
+        "$ref" : "#/components/schemas/com.nailcase.oauth2.dto.LoginResponseDto"
       }
     }
   }
