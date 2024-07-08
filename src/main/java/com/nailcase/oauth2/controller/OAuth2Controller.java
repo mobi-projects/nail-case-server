@@ -29,4 +29,5 @@ public class OAuth2Controller {
 		}
 		return loginService.processLogin(code);
 	}
+
 }

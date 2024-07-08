@@ -52,4 +52,8 @@ jobs:
             ${{ secrets.AWS_REGION }} \
             ${{ secrets.S3_ENDPOINT }} \
             ${{ secrets.S3_BUCKET }} \
-            ${{ secrets.KAKAO_CLIENT_ID }}
+            ${{ secrets.KAKAO_CLIENT_ID }} \
+            ${{ secrets.KAKAO_REDIRECT_URI }} \
+            ${{ secrets.KAKAO_CLIENT_SECRET }} \
+            ${{ secrets.JWT_SECRET_KEY }} \
+            
