@@ -1,7 +1,7 @@
 package com.nailcase.oauth2.service;
 
-import java.util.Map;
+import com.nailcase.oauth2.dto.LoginResponseDto;
 
 public interface SocialLoginService {
-	Map<String, String> processLogin(String code);
+	LoginResponseDto processLogin(String code);
 }
