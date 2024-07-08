@@ -73,6 +73,8 @@ public class KakaoLoginService implements SocialLoginService {
 		Map<String, String> tokens = new HashMap<>();
 		tokens.put("accessToken", accessTokenJwt);
 		tokens.put("refreshToken", refreshToken);
+		tokens.put("userName", member.getName());
+		tokens.put("userEmail", member.getEmail());
 		return tokens;
 	}
 
@@ -89,13 +91,6 @@ public class KakaoLoginService implements SocialLoginService {
 		params.add(REDIRECT_URI, kakaoRedirectUri);
 		params.add(CODE_NUMBER, code);
 		params.add(CLIENT_SECRET, kakaoClientSecret);
-
-		System.out.println("URL: " + url);
-		System.out.println("Client ID: " + kakaoClientId);
-		System.out.println("Redirect URI: " + kakaoRedirectUri);
-		System.out.println("Authorization Code: " + authorizationCode);
-		System.out.println("Code: " + code);
-		System.out.println("Client Secret: " + kakaoClientSecret);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
