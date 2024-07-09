@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class LoginResponseDto {
-	private boolean loginSuccess;
 	private String accessToken;
 	private String refreshToken;
 }

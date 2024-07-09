@@ -71,7 +71,6 @@ public class KakaoLoginService implements SocialLoginService {
 		jwtService.updateRefreshToken(member.getEmail(), refreshToken);
 
 		LoginResponseDto response = new LoginResponseDto();
-		response.setLoginSuccess(true);
 		response.setAccessToken(accessTokenJwt);
 		response.setRefreshToken(refreshToken);
 		return response;
