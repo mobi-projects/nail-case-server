@@ -25,7 +25,7 @@ public class DemoLoginController {
 
 	@GetMapping(value = "/member", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MemberDto> loginUser() {
-		Member member = memberRepository.findByEmail("user@example.com")
+		Member member = memberRepository.findByEmail("member@example.com")
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
 		MemberDto memberDto = MemberDto.fromEntity(member);
@@ -41,7 +41,7 @@ public class DemoLoginController {
 
 	@GetMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MemberDto> loginAdmin() {
-		Member admin = memberRepository.findByEmail("owner@example.com")
+		Member admin = memberRepository.findByEmail("manager@example.com")
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
 		MemberDto adminDto = MemberDto.fromEntity(admin);
