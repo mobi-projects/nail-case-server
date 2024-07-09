@@ -13,6 +13,7 @@ import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.mapper.ReservationMapper;
 import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
+import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
@@ -141,5 +142,9 @@ public class ReservationService {
 	private boolean isUpdatable(ReservationDto.Patch dto, Reservation reservation) {
 		return reservation.getReservationDetailList().stream()
 			.anyMatch(reservationDetail -> reservationDetail.isStatusUpdatable(dto.getStatus()));
+	}
+
+	public List<Reservation> findReservationsByCustomer(Member member) {
+		return reservationRepository.findByCustomer(member);
 	}
 }

@@ -7,4 +7,5 @@ import com.nailcase.model.entity.Shop;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long>, ShopQuerydslRepository {
+
 }

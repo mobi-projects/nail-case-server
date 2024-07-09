@@ -3,10 +3,13 @@ package com.nailcase.repository;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.QMemberLikedShop;
 import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.Shop;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -37,5 +40,60 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 				.or(shop.address.contains(keyword)));
 
 		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
+	}
+
+	@Override
+	public Page<Shop> findTopShopsByPopularityCriteria(Pageable pageable) {
+		QShop qShop = QShop.shop;
+		List<Shop> shops = queryFactory.selectFrom(qShop)
+			.orderBy(qShop.likes.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		// 좋아요 수 기반의 총 매장 수를 계산하여 효율적으로 페이지네이션 처리
+		JPAQuery<Long> countQuery = queryFactory
+			.select(qShop.count())
+			.from(qShop);
+
+		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
+	}
+
+	@Override
+	public Page<Shop> findLikedShopsByMember(Member member, Pageable pageable) {
+		QShop qShop = QShop.shop;
+		QMemberLikedShop qMemberLikedShop = QMemberLikedShop.memberLikedShop;
+
+		List<Shop> shops = queryFactory
+			.select(qMemberLikedShop.shop)
+			.from(qMemberLikedShop)
+			.where(qMemberLikedShop.member.eq(member))
+			.join(qMemberLikedShop.shop, qShop)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		long total = queryFactory
+			.selectFrom(qMemberLikedShop)
+			.where(qMemberLikedShop.member.eq(member))
+			.fetch().size();
+
+		return new PageImpl<>(shops, pageable, total);
+	}
+
+	@Override
+	public Page<Shop> findShopsByIds(List<Long> ids, Pageable pageable) {
+		QShop qShop = QShop.shop;
+		List<Shop> shops = queryFactory.selectFrom(qShop)
+			.where(qShop.shopId.in(ids))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		long total = queryFactory.selectFrom(qShop)
+			.where(qShop.shopId.in(ids))
+			.fetch().size();
+
+		return PageableExecutionUtils.getPage(shops, pageable, () -> total);
 	}
 }

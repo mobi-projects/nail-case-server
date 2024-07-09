@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.MemberLikedShop;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.ShopInfo;
@@ -27,6 +29,7 @@ import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
+import com.nailcase.repository.MemberLikedShopRepository;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopImageRepository;
 import com.nailcase.repository.ShopInfoRepository;
@@ -51,6 +54,7 @@ public class ShopService {
 	private final ShopInfoRepository shopInfoRepository;
 	private final WorkHourRepository workHourRepository;
 	private final ShopImageService shopImageService;
+	private final MemberLikedShopRepository memberLikedShopRepository;
 
 	@Transactional
 	public ShopDto.Response registerShop(
@@ -215,5 +219,37 @@ public class ShopService {
 		IntStream.range(0, 7)
 			.mapToObj(i -> WorkHour.builder().shop(shop).dayOfWeek(i).build())
 			.forEach(workHourRepository::save);
+	}
+
+	public Page<Shop> findTopPopularShops(Pageable pageable) {
+		return shopRepository.findTopShopsByPopularityCriteria(pageable);
+	}
+
+	public void likeShop(Long shopId) {
+		Shop shop = shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+		shop.incrementLikes();
+		shopRepository.save(shop);
+	}
+
+	public void unlikeShop(Long shopId) {
+		Shop shop = shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+		shop.decrementLikes();
+		shopRepository.save(shop);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Shop> findLikedShopsByMemberInMainPage(Long memberId, Pageable pageable) {
+		Page<MemberLikedShop> likedShopsPage = memberLikedShopRepository.findByMember_MemberId(memberId, pageable);
+		List<Long> shopIds = likedShopsPage.getContent().stream()
+			.map(likedShop -> likedShop.getShop().getShopId())
+			.collect(Collectors.toList());
+
+		if (shopIds.isEmpty()) {
+			return Page.empty(pageable);
+		}
+		List<Shop> shops = shopRepository.findAllById(shopIds);
+		return new PageImpl<>(shops, pageable, shops.size());
 	}
 }
