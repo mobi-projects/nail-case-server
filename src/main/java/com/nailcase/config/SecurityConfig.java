@@ -56,7 +56,7 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
-					"/static/**")
+					"/static/**", "/auth/**")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
 				.requestMatchers("/shops/**")
 				.permitAll()
@@ -66,19 +66,21 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
+				.requestMatchers("/demo-login/**") // 데모 테스트용
+				.permitAll()
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
-			.oauth2Login(oauth2 -> oauth2
-					// TODO: OAuth2 로그인을 하면 session을 사용하게 되어 이 부분을 수정해야함.
-					.loginPage("/oauth2/authorization/kakao")
-					.userInfoEndpoint(userInfo -> userInfo
-						.userService(customOAuth2UserService))
-					.successHandler(oAuth2LoginSuccessHandler)
-					.failureHandler(oAuth2LoginFailureHandler)
-				// .defaultSuccessUrl("/swagger-ui/index.html", false)
-			)
-			.logout(logout -> logout
-				.logoutSuccessUrl("/"))
+			// .oauth2Login(oauth2 -> oauth2
+			// 		// TODO: OAuth2 로그인을 하면 session을 사용하게 되어 이 부분을 수정해야함.
+			// 		.loginPage("/oauth2/authorization/kakao")
+			// 		.userInfoEndpoint(userInfo -> userInfo
+			// 			.userService(customOAuth2UserService))
+			// 		.successHandler(oAuth2LoginSuccessHandler)
+			// 		.failureHandler(oAuth2LoginFailureHandler)
+			// 	// .defaultSuccessUrl("/swagger-ui/index.html", false)
+			// )
+			// .logout(logout -> logout
+			// 	.logoutSuccessUrl("/"))
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

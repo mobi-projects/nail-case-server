@@ -65,10 +65,12 @@ public class MonthlyArt extends BaseEntity {
 	@ColumnDefault("0")
 	private Long likes = 0L;
 
+	@Builder.Default
 	@Setter
 	@OneToMany(mappedBy = "monthlyArt", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MonthlyArtImage> monthlyArtImages = new ArrayList<>();
 
+	@Builder.Default
 	@OneToMany(mappedBy = "monthlyArt", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@OrderBy("commentId asc")
 	private List<MonthlyArtComment> monthlyArtComments = new ArrayList<>();

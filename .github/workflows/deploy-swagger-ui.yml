@@ -28,6 +28,10 @@ jobs:
           CLOUD_AWS_CREDENTIALS_ACCESS_KEY=${{ secrets.AWS_BACKEND_ACCESS_KEY }} \
           CLOUD_AWS_CREDENTIALS_SECRET_KEY=${{ secrets.AWS_BACKEND_SECRET_KEY }} \
           CLOUD_AWS_S3_ENDPOINT=https://s3.ap-northeast-2.amazonaws.com \
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+          KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
+          KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
+          KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
           nohup ./gradlew bootRun &
           sleep 30
 

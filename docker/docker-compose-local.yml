@@ -26,7 +26,9 @@ services:
       POSTGRES_USER: postgresql
       POSTGRES_PASSWORD: postgresql
       POSTGRES_DB: newtips-postgresql
-
+      TZ: Asia/Seoul
+      PGTZ: Asia/Seoul
+  
   backend:
     image: newtips/nail-case-server
     ports:
@@ -60,11 +62,17 @@ services:
       CLOUD_AWS_S3_BUCKET: newtips-bucket-azxwettoqoqaaz
       # SPRING OAUTH2 CLIENT
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT-ID: # 채워주세요
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT-SECRET: # 채워주세요
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT-URI: #채워주세요
+      JWT_SECRET_KEY: #채워주세요
       # H2
       SPRING_H2_CONSOLE_ENABLED: true
       # JWT
       JWT_ACCESS_EXPIRATION: 923372036854775807
       JWT_REFRESH_EXPIRATION: 923372036854775807
+
+      SPRING_JPA_SHOW-SQL: true
+      LOGGING_LEVEL_ORG_HIBERNATE_ORM_JDBC_BIND: trace
 
 volumes:
   minio-data:

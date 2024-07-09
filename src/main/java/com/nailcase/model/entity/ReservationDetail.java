@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+
 import com.nailcase.common.BaseEntity;
 import com.nailcase.model.enums.RemoveOption;
 import com.nailcase.model.enums.ReservationStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -62,9 +65,11 @@ public class ReservationDetail extends BaseEntity {
 	private List<Condition> conditionList = new ArrayList<>();
 
 	@Column(name = "start_time", nullable = false)
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime startTime;
 
 	@Column(name = "end_time", nullable = false)
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime endTime;
 
 	@Builder.Default

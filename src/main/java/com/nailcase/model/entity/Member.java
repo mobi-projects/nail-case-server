@@ -67,7 +67,7 @@ public class Member extends BaseEntity {
 	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;
 
-	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private Set<Shop> shops;
 
 	@Builder.Default

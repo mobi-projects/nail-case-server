@@ -53,6 +53,7 @@ public class Shop extends BaseEntity {
 	@Column(name = "overview", length = 2048)
 	private String overview;
 
+	@Setter
 	@Column(name = "address", length = 128)
 	private String address;
 
@@ -64,7 +65,7 @@ public class Shop extends BaseEntity {
 	private ShopInfo shopInfo;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ShopHour> shopHours;
+	private Set<WorkHour> workHours;
 
 	@OrderBy("sortOrder asc")
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

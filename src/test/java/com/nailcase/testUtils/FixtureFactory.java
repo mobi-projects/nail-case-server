@@ -23,6 +23,8 @@ import com.nailcase.testUtils.fixture.FileFixture;
 import com.nailcase.testUtils.fixture.MemberFixture;
 import com.nailcase.testUtils.fixture.MemberFixtureToBootTest;
 import com.nailcase.testUtils.fixture.ShopFixture;
+import com.nailcase.testUtils.fixture.ShopInfoFixture;
+import com.nailcase.testUtils.fixture.WorkHourFixture;
 import com.nailcase.util.DateUtils;
 
 import lombok.Getter;
@@ -52,6 +54,8 @@ public class FixtureFactory {
 	public static final MemberFixture memberFixture = new MemberFixture();
 	public static final ShopFixture shopFixture = new ShopFixture();
 	public static final FileFixture fileFixture = new FileFixture();
+	public static final WorkHourFixture workHourFixture = new WorkHourFixture();
+	public static final ShopInfoFixture shopInfoFixture = new ShopInfoFixture();
 	// MEMBER
 	public static final Long FIXTURE_MEMBER_ID = 1L;
 	// SHOP
