@@ -1,4 +1,4 @@
-package com.nailcase.oauth2.handler;
+package com.nailcase.oauth.handler;
 
 import java.io.IOException;
 

@@ -1,8 +1,10 @@
-package com.nailcase.oauth2.dto;
+package com.nailcase.oauth.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Builder
+@Getter
 public class LoginResponseDto {
 	private String accessToken;
 	private String refreshToken;

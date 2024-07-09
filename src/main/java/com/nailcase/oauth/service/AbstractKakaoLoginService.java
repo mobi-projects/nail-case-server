@@ -1,4 +1,4 @@
-package com.nailcase.oauth2.service;
+package com.nailcase.oauth.service;
 
 import java.util.Map;
 
@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -17,73 +16,59 @@ import org.springframework.web.client.RestTemplate;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.jwt.JwtService;
-import com.nailcase.model.entity.Member;
-import com.nailcase.model.enums.SocialType;
-import com.nailcase.oauth2.dto.LoginResponseDto;
-import com.nailcase.oauth2.dto.OAuthAttributes;
-import com.nailcase.repository.MemberRepository;
+import com.nailcase.oauth.dto.LoginResponseDto;
+import com.nailcase.oauth.dto.OAuthAttributes;
 
-import lombok.RequiredArgsConstructor;
+public abstract class AbstractKakaoLoginService implements SocialLoginService {
 
-@Service("kakaoLoginService")
-@RequiredArgsConstructor
-public class KakaoLoginService implements SocialLoginService {
-
-	private final MemberRepository memberRepository;
-	private final RestTemplate restTemplate;
-	private final JwtService jwtService;
+	protected final RestTemplate restTemplate;
+	protected final JwtService jwtService;
 
 	@Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-	private String kakaoClientId;
+	protected String kakaoClientId;
 
 	@Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-	private String kakaoRedirectUri;
+	protected String kakaoRedirectUri;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
-	private String kakaoUserInfoUri;
+	protected String kakaoUserInfoUri;
 
 	@Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
-	private String authorizationCode;
+	protected String authorizationCode;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
-	private String tokenUri;
+	protected String tokenUri;
 
 	@Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-	private String kakaoClientSecret;
-
-	private final String GRANT_TYPE = "grant_type";
-	private final String CLIENT_ID = "client_id";
-	private final String REDIRECT_URI = "redirect_uri";
-	private final String CODE_NUMBER = "code";
-	private final String CLIENT_SECRET = "client_secret";
+	protected String kakaoClientSecret;
 
 	@Value("${jwt.access.name}")
-	private String accessToken;
+	protected String accessTokenName;
+
+	protected final String GRANT_TYPE = "grant_type";
+	protected final String CLIENT_ID = "client_id";
+	protected final String REDIRECT_URI = "redirect_uri";
+	protected final String CODE_NUMBER = "code";
+	protected final String CLIENT_SECRET = "client_secret";
+
+	public AbstractKakaoLoginService(RestTemplate restTemplate, JwtService jwtService) {
+		this.restTemplate = restTemplate;
+		this.jwtService = jwtService;
+	}
 
 	@Override
 	public LoginResponseDto processLogin(String code) {
 		String accessToken = getKakaoAccessToken(code);
 		Map<String, Object> userAttributes = getKakaoUserAttributes(accessToken);
 		OAuthAttributes attributes = OAuthAttributes.of("kakao", "id", userAttributes);
-		Member member = getOrCreateMember(attributes, SocialType.KAKAO);
-		String accessTokenJwt = jwtService.createAccessToken(member.getEmail(), member.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail());
-		jwtService.updateRefreshToken(member.getEmail(), refreshToken);
-
-		LoginResponseDto response = new LoginResponseDto();
-		response.setAccessToken(accessTokenJwt);
-		response.setRefreshToken(refreshToken);
-		return response;
+		return processUserLogin(attributes);
 	}
 
-	public Member getOrCreateMember(OAuthAttributes attributes, SocialType socialType) {
-		return memberRepository.findBySocialTypeAndSocialId(socialType, attributes.getOauth2UserInfo().getId())
-			.orElseGet(() -> memberRepository.save(attributes.toEntity(socialType, attributes.getOauth2UserInfo())));
-	}
+	protected abstract LoginResponseDto processUserLogin(OAuthAttributes attributes);
 
-	private String getKakaoAccessToken(String code) {
+	protected String getKakaoAccessToken(String code) {
 		String url = tokenUri;
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add(GRANT_TYPE, authorizationCode);
 		params.add(CLIENT_ID, kakaoClientId);
 		params.add(REDIRECT_URI, kakaoRedirectUri);
@@ -98,13 +83,13 @@ public class KakaoLoginService implements SocialLoginService {
 
 		if (response.getStatusCode() == HttpStatus.OK) {
 			Map<String, Object> responseBody = response.getBody();
-			return responseBody.get(accessToken).toString();
+			return responseBody.get(accessTokenName).toString();
 		} else {
 			throw new BusinessException(AuthErrorCode.ACCESS_RETRIEVE);
 		}
 	}
 
-	private Map<String, Object> getKakaoUserAttributes(String accessToken) {
+	protected Map<String, Object> getKakaoUserAttributes(String accessToken) {
 		String url = kakaoUserInfoUri;
 
 		HttpHeaders headers = new HttpHeaders();
@@ -115,10 +100,9 @@ public class KakaoLoginService implements SocialLoginService {
 		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
 
 		if (response.getStatusCode() == HttpStatus.OK) {
-			return response.getBody();  // Map<String, Object>를 직접 반환
+			return response.getBody();
 		} else {
 			throw new BusinessException(AuthErrorCode.ACCESS_RETRIEVE);
 		}
 	}
-
 }

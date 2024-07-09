@@ -1,13 +1,15 @@
-package com.nailcase.oauth2.dto;
+package com.nailcase.oauth.dto;
 
 import java.util.Map;
 import java.util.UUID;
 
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.enums.ManagerRole;
 import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.SocialType;
-import com.nailcase.oauth2.userInfo.KakaoOAuth2UserInfo;
-import com.nailcase.oauth2.userInfo.OAuth2UserInfo;
+import com.nailcase.oauth.userInfo.KakaoOAuth2UserInfo;
+import com.nailcase.oauth.userInfo.OAuth2UserInfo;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -49,13 +51,23 @@ public class OAuthAttributes {
 			.build();
 	}
 
-	public Member toEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
+	public Member toMemberEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
 		return Member.builder()
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
 			.email(UUID.randomUUID() + "@socialUser.com")
 			.name(oauth2UserInfo.getName())
 			.role(Role.USER)
+			.build();
+	}
+
+	public NailArtist toManagerEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
+		return NailArtist.builder()
+			.socialType(socialType)
+			.socialId(oauth2UserInfo.getId())
+			.email(UUID.randomUUID() + "@socialUser.com")
+			.name(oauth2UserInfo.getName())
+			.managerRole(ManagerRole.MANAGER)
 			.build();
 	}
 }

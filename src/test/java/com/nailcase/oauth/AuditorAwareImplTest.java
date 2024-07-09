@@ -1,4 +1,4 @@
-package com.nailcase.oauth2;
+package com.nailcase.oauth;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
