@@ -40,13 +40,26 @@ INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, socia
 SELECT '알루미늄쌤', 'mobi8@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 9 FROM nail_artists WHERE email = 'mobi8@example.com');
 
--- shops 테이블에 데이터 삽입
+-- 모비네일 강남점 데이터 삽입
 INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
 SELECT '모비네일 강남점', '01012341234', 8, '서울 강남구 봉은사로6길 29 1층 102호', '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 \n현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
 FROM nail_artists n
 WHERE n.email = 'manager@example.com'
   AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '모비네일 강남점');
 
+-- 나의네일 데이터 삽입
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '나의네일', '01087872938', 8, '경기 광주시 태재로 102 대진프라자 108호', '매달 네일 오마카세를 제공하는 디자인 맛집 나의네일 \n현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'mobi3@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '나의네일');
+
+-- 유네일 데이터 삽입
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '유네일', '01087872938', 8, '서울 동작구 장승배기로10길 100', '매달 네일 오마카세를 제공하는 디자인 맛집 유네일 \n현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'mobi4@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '유네일');
 -- shop_info 테이블에 데이터 삽입
 INSERT INTO shop_info (shop_id, created_at, modified_at)
 SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM shops s WHERE s.shop_name = '모비네일 강남점' AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);

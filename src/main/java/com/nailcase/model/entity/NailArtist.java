@@ -16,8 +16,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -49,7 +47,7 @@ public class NailArtist extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "social_type")
-	private SocialType socialType; // KAKAO, NAVER, FACEBOOK*/
+	private SocialType socialType; // KAKAO, NAVER, FACEBOOK
 
 	@Column(name = "social_id")
 	private String socialId;
@@ -62,9 +60,8 @@ public class NailArtist extends BaseEntity {
 	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shop_id")
-	private Shop shop;
+	@OneToMany(mappedBy = "nailArtist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Shop> shops = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "nailArtist")
@@ -74,9 +71,8 @@ public class NailArtist extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "nailArtist")
 	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
 
-	public void associateDown(Shop shop) {
-		if (shop != null) {
-			this.shop = shop;
-		}
+	public void addShop(Shop shop) {
+		this.shops.add(shop);
+		shop.setNailArtist(this);
 	}
 }
