@@ -1,4 +1,4 @@
-package com.nailcase.oauth2;
+package com.nailcase.oauth;
 
 import java.util.Optional;
 

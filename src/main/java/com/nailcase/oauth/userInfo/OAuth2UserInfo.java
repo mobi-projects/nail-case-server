@@ -1,4 +1,4 @@
-package com.nailcase.oauth2.userInfo;
+package com.nailcase.oauth.userInfo;
 
 import java.util.Map;
 

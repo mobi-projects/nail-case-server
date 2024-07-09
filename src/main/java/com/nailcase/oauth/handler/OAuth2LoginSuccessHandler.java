@@ -1,4 +1,4 @@
-package com.nailcase.oauth2.handler;
+package com.nailcase.oauth.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.jwt.JwtService;
-import com.nailcase.oauth2.CustomOAuth2User;
+import com.nailcase.oauth.CustomOAuth2User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

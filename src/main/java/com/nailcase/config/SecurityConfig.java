@@ -24,10 +24,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
-import com.nailcase.oauth2.AuditorAwareImpl;
-import com.nailcase.oauth2.CustomOAuth2UserService;
-import com.nailcase.oauth2.handler.OAuth2LoginFailureHandler;
-import com.nailcase.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.nailcase.oauth.AuditorAwareImpl;
+import com.nailcase.oauth.CustomOAuth2UserService;
+import com.nailcase.oauth.handler.OAuth2LoginFailureHandler;
+import com.nailcase.oauth.handler.OAuth2LoginSuccessHandler;
 import com.nailcase.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;

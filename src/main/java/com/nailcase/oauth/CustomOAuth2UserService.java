@@ -1,4 +1,4 @@
-package com.nailcase.oauth2;
+package com.nailcase.oauth;
 
 import java.util.Collections;
 
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.enums.SocialType;
-import com.nailcase.oauth2.dto.OAuthAttributes;
+import com.nailcase.oauth.dto.OAuthAttributes;
 import com.nailcase.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		/*Member member = memberRepository.findByEmail(attributes.getOauth2UserInfo().getEmail())
 			.map(entity -> entity.update(attributes.getOauth2UserInfo().getName()))
 			.orElse(attributes.toEntity(SocialType.KAKAO, attributes.getOauth2UserInfo()));*/
-		Member member = attributes.toEntity(SocialType.KAKAO, attributes.getOauth2UserInfo());
+		Member member = attributes.toMemberEntity(SocialType.KAKAO, attributes.getOauth2UserInfo());
 		return memberRepository.save(member);
 	}
 }
