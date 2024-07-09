@@ -726,6 +726,29 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.MainPageDto"] = {
+  "type" : "object",
+  "properties" : {
+    "recentReservations" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
+      }
+    },
+    "topPopularShops" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Response"
+      }
+    },
+    "likedShops" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+      }
+    }
+  }
+};
             defs["com.nailcase.model.dto.MemberDto"] = {
   "type" : "object",
   "properties" : {
@@ -1683,6 +1706,658 @@
     }
   }
 };
+            defs["com.nailcase.model.entity.Condition"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "conditionId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationDetail" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
+    },
+    "option" : {
+      "type" : "string",
+      "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
+    }
+  }
+};
+            defs["com.nailcase.model.entity.Member"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "memberId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "socialType" : {
+      "type" : "string",
+      "enum" : [ "KAKAO" ]
+    },
+    "socialId" : {
+      "type" : "string"
+    },
+    "role" : {
+      "type" : "string",
+      "enum" : [ "OWNER", "MANAGER", "MEMBER" ]
+    },
+    "profileImgUrl" : {
+      "type" : "string"
+    },
+    "shops" : {
+      "uniqueItems" : true,
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+      }
+    },
+    "reservations" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
+      }
+    },
+    "roleKey" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.NailArtist"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "nailArtistId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "socialType" : {
+      "type" : "string",
+      "enum" : [ "KAKAO" ]
+    },
+    "socialId" : {
+      "type" : "string"
+    },
+    "role" : {
+      "type" : "string",
+      "enum" : [ "OWNER", "MANAGER", "MEMBER" ]
+    },
+    "profileImgUrl" : {
+      "type" : "string"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    },
+    "timeTableList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
+      }
+    },
+    "reservationDetailList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
+      }
+    }
+  }
+};
+            defs["com.nailcase.model.entity.PriceImage"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "imageId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "bucketName" : {
+      "type" : "string"
+    },
+    "objectName" : {
+      "type" : "string"
+    },
+    "shopInfo" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopInfo"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.Reservation"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    },
+    "customer" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Member"
+    },
+    "nailArtist" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
+    },
+    "reservationDetailList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
+      }
+    }
+  }
+};
+            defs["com.nailcase.model.entity.ReservationDetail"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationDetailId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    },
+    "nailArtist" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
+    },
+    "reservation" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
+    },
+    "treatmentList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Treatment"
+      }
+    },
+    "conditionList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Condition"
+      }
+    },
+    "startTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "endTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "status" : {
+      "type" : "string",
+      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED" ]
+    },
+    "remove" : {
+      "type" : "string",
+      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
+    },
+    "extend" : {
+      "type" : "boolean"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.Shop"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "member" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Member"
+    },
+    "shopName" : {
+      "type" : "string"
+    },
+    "phone" : {
+      "type" : "string"
+    },
+    "overview" : {
+      "type" : "string"
+    },
+    "address" : {
+      "type" : "string"
+    },
+    "availableSeats" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "shopInfo" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopInfo"
+    },
+    "workHours" : {
+      "uniqueItems" : true,
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.WorkHour"
+      }
+    },
+    "tags" : {
+      "uniqueItems" : true,
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.TagMapping"
+      }
+    },
+    "shopImages" : {
+      "uniqueItems" : true,
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopImage"
+      }
+    },
+    "nailArtistList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
+      }
+    },
+    "reservationList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
+      }
+    },
+    "reservationDetailList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
+      }
+    },
+    "likes" : {
+      "type" : "integer",
+      "format" : "int64"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.ShopImage"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "imageId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "bucketName" : {
+      "type" : "string"
+    },
+    "objectName" : {
+      "type" : "string"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.ShopInfo"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shopInfoId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    },
+    "point" : {
+      "type" : "string"
+    },
+    "parkingLotCnt" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "availableCnt" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "info" : {
+      "type" : "string"
+    },
+    "price" : {
+      "type" : "string"
+    },
+    "priceImage" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.PriceImage"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.Tag"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "tagId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "tagName" : {
+      "type" : "string"
+    },
+    "tagMappings" : {
+      "uniqueItems" : true,
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.TagMapping"
+      }
+    }
+  }
+};
+            defs["com.nailcase.model.entity.TagMapping"] = {
+  "type" : "object",
+  "properties" : {
+    "tagMappingId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "sortOrder" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    },
+    "tag" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Tag"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.Treatment"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "treatmentId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationDetail" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
+    },
+    "option" : {
+      "type" : "string",
+      "enum" : [ "AOM", "CARE", "ONE", "MEMBER_IMAGE" ]
+    },
+    "imageId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "imageUrl" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["com.nailcase.model.entity.WorkHour"] = {
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "title" : "생성시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "title" : "수정시간",
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdBy" : {
+      "title" : "생성자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedBy" : {
+      "title" : "수정자",
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "workHourId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    },
+    "dayOfWeek" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "isOpen" : {
+      "type" : "boolean"
+    },
+    "openTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "closeTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    }
+  }
+};
             defs["com.nailcase.oauth.dto.LoginResponseDto"] = {
   "type" : "object",
   "properties" : {
@@ -1691,6 +2366,27 @@
     },
     "refreshToken" : {
       "type" : "string"
+    }
+  }
+};
+            defs["org.springdoc.core.converters.models.Pageable"] = {
+  "type" : "object",
+  "properties" : {
+    "page" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "size" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "sort" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
     }
   }
 };
@@ -1828,6 +2524,10 @@
                     </li>
                     <li data-group="DemoLoginController" data-name="loginUser" class="">
                       <a href="#api-DemoLoginController-loginUser">loginUser</a>
+                    </li>
+                  <li class="nav-header" data-group="MainPageController"><a href="#api-MainPageController">API Methods - MainPageController</a></li>
+                    <li data-group="MainPageController" data-name="getMainPageData" class="">
+                      <a href="#api-MainPageController-getMainPageData">getMainPageData</a>
                     </li>
                   <li class="nav-header" data-group="MemberController"><a href="#api-MemberController">API Methods - MemberController</a></li>
                     <li data-group="MemberController" data-name="expireToken" class="">
@@ -2968,6 +3668,357 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-loginUser-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-MainPageController">
+                  <h1>MainPageController</h1>
+                    <div id="api-MainPageController-getMainPageData">
+                      <article id="api-MainPageController-getMainPageData-0" data-group="User" data-name="getMainPageData" data-version="0">
+                        <div class="pull-left">
+                          <h1>getMainPageData</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/main</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-MainPageController-getMainPageData-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-java">Java</a></li>
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-MainPageController-getMainPageData-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-MainPageController-getMainPageData-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-MainPageController-getMainPageData-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-MainPageController-getMainPageData-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/main?memberId=&pageable="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.MainPageControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class MainPageControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        MainPageControllerApi apiInstance = new MainPageControllerApi();
+        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
+        Long memberId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(pageable, memberId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MainPageControllerApi#getMainPageData");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.MainPageControllerApi;
+
+public class MainPageControllerApiExample {
+
+    public static void main(String[] args) {
+        MainPageControllerApi apiInstance = new MainPageControllerApi();
+        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
+        Long memberId = 789; // Long | 
+        try {
+            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(pageable, memberId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MainPageControllerApi#getMainPageData");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+org.springdoc.core.converters.models.Pageable *pageable = ; // 
+Long *memberId = 789; //  (optional)
+
+MainPageControllerApi *apiInstance = [[MainPageControllerApi alloc] init];
+
+[apiInstance getMainPageDataWith:pageable
+    memberId:memberId
+              completionHandler: ^(com.nailcase.model.dto.MainPageDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.MainPageControllerApi()
+var pageable = ; // {{org.springdoc.core.converters.models.Pageable}} 
+var opts = { 
+  'memberId': 789 // {{Long}} 
+};
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getMainPageData(pageable, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-MainPageController-getMainPageData-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getMainPageDataExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new MainPageControllerApi();
+            var pageable = new org.springdoc.core.converters.models.Pageable(); // org.springdoc.core.converters.models.Pageable | 
+            var memberId = 789;  // Long |  (optional) 
+
+            try
+            {
+                com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(pageable, memberId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling MainPageControllerApi.getMainPageData: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiMainPageControllerApi();
+$pageable = ; // org.springdoc.core.converters.models.Pageable | 
+$memberId = 789; // Long | 
+
+try {
+    $result = $api_instance->getMainPageData($pageable, $memberId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling MainPageControllerApi->getMainPageData: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::MainPageControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::MainPageControllerApi->new();
+my $pageable = ; # org.springdoc.core.converters.models.Pageable | 
+my $memberId = 789; # Long | 
+
+eval { 
+    my $result = $api_instance->getMainPageData(pageable => $pageable, memberId => $memberId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling MainPageControllerApi->getMainPageData: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.MainPageControllerApi()
+pageable =  # org.springdoc.core.converters.models.Pageable | 
+memberId = 789 # Long |  (optional)
+
+try: 
+    api_response = api_instance.get_main_page_data(pageable, memberId=memberId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling MainPageControllerApi->getMainPageData: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">memberId</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_getMainPageData_memberId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">pageable*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_getMainPageData_pageable">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    org.springdoc.core.converters.models.Pageable
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getMainPageData-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getMainPageData-200-schema">
+                                  <div id='responses-getMainPageData-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.MainPageDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getMainPageData-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getMainPageData-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getMainPageData-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
