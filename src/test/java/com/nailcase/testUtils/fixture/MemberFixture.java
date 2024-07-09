@@ -15,7 +15,7 @@ public class MemberFixture {
 
 	private static final Long MEMBER_ID = 1L;
 
-	private static final Role ROLE = Role.USER;
+	private static final Role ROLE = Role.MEMBER;
 
 	public Member getMember() {
 		EasyRandomParameters params = new EasyRandomParameters()

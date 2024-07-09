@@ -29,6 +29,7 @@ import com.nailcase.oauth.CustomOAuth2UserService;
 import com.nailcase.oauth.handler.OAuth2LoginFailureHandler;
 import com.nailcase.oauth.handler.OAuth2LoginSuccessHandler;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.NailArtistRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +40,7 @@ public class SecurityConfig {
 
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
+	private final NailArtistRepository nailArtistRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 
 	private final CustomOAuth2UserService customOAuth2UserService;
@@ -88,7 +90,8 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, redisTemplate); // RedisTemplate 전달
+		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, nailArtistRepository,
+			redisTemplate); // RedisTemplate 전달
 	}
 
 	@Bean

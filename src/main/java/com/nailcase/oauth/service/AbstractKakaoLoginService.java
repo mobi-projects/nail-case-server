@@ -11,14 +11,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.codes.KakaoLoginErrorCode;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.OAuthAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class AbstractKakaoLoginService implements SocialLoginService {
 
 	protected final RestTemplate restTemplate;
@@ -79,13 +85,31 @@ public abstract class AbstractKakaoLoginService implements SocialLoginService {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-		ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
-		if (response.getStatusCode() == HttpStatus.OK) {
-			Map<String, Object> responseBody = response.getBody();
-			return responseBody.get(accessTokenName).toString();
-		} else {
-			throw new BusinessException(AuthErrorCode.ACCESS_RETRIEVE);
+		try {
+			ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+
+			if (response.getStatusCode() == HttpStatus.OK) {
+				Map<String, Object> responseBody = response.getBody();
+				if (responseBody != null && responseBody.containsKey(accessTokenName)) {
+					return responseBody.get(accessTokenName).toString();
+				} else {
+					log.error("카카오 응답에 액세스 토큰이 없습니다.");
+					throw new BusinessException(KakaoLoginErrorCode.KAKAO_TOKEN_NOT_FOUND);
+				}
+			} else {
+				log.error("카카오 액세스 토큰 요청 실패. 상태 코드: {}", response.getStatusCode());
+				throw new BusinessException(KakaoLoginErrorCode.KAKAO_TOKEN_REQUEST_FAILED);
+			}
+		} catch (HttpClientErrorException e) {
+			log.error("카카오 액세스 토큰 요청 중 클라이언트 오류 발생: {}", e.getResponseBodyAsString());
+			throw new BusinessException(KakaoLoginErrorCode.KAKAO_TOKEN_REQUEST_FAILED);
+		} catch (HttpServerErrorException e) {
+			log.error("카카오 서버 오류 발생: {}", e.getResponseBodyAsString());
+			throw new BusinessException(KakaoLoginErrorCode.KAKAO_SERVER_ERROR);
+		} catch (Exception e) {
+			log.error("카카오 액세스 토큰 요청 중 예상치 못한 오류 발생", e);
+			throw new BusinessException(KakaoLoginErrorCode.UNEXPECTED_ERROR);
 		}
 	}
 

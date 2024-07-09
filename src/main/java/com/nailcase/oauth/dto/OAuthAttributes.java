@@ -1,11 +1,9 @@
 package com.nailcase.oauth.dto;
 
 import java.util.Map;
-import java.util.UUID;
 
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
-import com.nailcase.model.enums.ManagerRole;
 import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.SocialType;
 import com.nailcase.oauth.userInfo.KakaoOAuth2UserInfo;
@@ -55,9 +53,10 @@ public class OAuthAttributes {
 		return Member.builder()
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
-			.email(UUID.randomUUID() + "@socialUser.com")
+			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
+				oauth2UserInfo.getId() + "@socialuser.com")
 			.name(oauth2UserInfo.getName())
-			.role(Role.USER)
+			.role(Role.MEMBER)
 			.build();
 	}
 
@@ -65,9 +64,10 @@ public class OAuthAttributes {
 		return NailArtist.builder()
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
-			.email(UUID.randomUUID() + "@socialUser.com")
+			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
+				oauth2UserInfo.getId() + "@socialuser.com")
 			.name(oauth2UserInfo.getName())
-			.managerRole(ManagerRole.MANAGER)
+			.role(Role.MANAGER)
 			.build();
 	}
 }

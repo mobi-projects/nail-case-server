@@ -18,7 +18,7 @@ public class GlobalExceptionHandlerTest {
 
 		ResponseEntity<String> response = exceptionHandler.handleBusinessException(exception);
 
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+		assertEquals(HttpStatus.PAYMENT_REQUIRED, response.getStatusCode());
 		assertEquals(AuthErrorCode.ACCESS_DENIED.getMessage(), response.getBody());
 	}
 }

@@ -12,7 +12,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
-import com.nailcase.exception.codes.UserErrorCode;
+import com.nailcase.model.enums.UserType;
 import com.nailcase.repository.MemberRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,29 +45,32 @@ public class JwtService {
 	private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
 	private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
 	private static final String EMAIL_CLAIM = "email";
-	private static final String MEMBER_CLAIM = "memberId";
+	private static final String ID_CLAIM = "sequenceId";
+	private static final String USERTYPE_CLAIM = "userType";
 	private static final String BEARER = "Bearer ";
 
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	public String createAccessToken(String email, Long memberId) {
+	public String createAccessToken(String email, Long sequenceId, String userType) {
 		Date now = new Date();
 		String token = JWT.create()
 			.withSubject(ACCESS_TOKEN_SUBJECT)
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
 			.withClaim(EMAIL_CLAIM, email)
-			.withClaim(MEMBER_CLAIM, memberId)
+			.withClaim(USERTYPE_CLAIM, userType)
+			.withClaim(ID_CLAIM, sequenceId)
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("{} 해당 유저에 대한 AccessToken 발급", email);
 		return token;
 	}
 
-	public String createRefreshToken(String email) {
+	public String createRefreshToken(String email, String userType) {
 		Date now = new Date();
 		String token = JWT.create()
 			.withSubject(REFRESH_TOKEN_SUBJECT)
 			.withClaim(EMAIL_CLAIM, email)
+			.withClaim(USERTYPE_CLAIM, userType)
 			.withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("{} 해당 유저에 대한 RefreshToken 발급", email);
@@ -120,18 +123,22 @@ public class JwtService {
 		response.setHeader(refreshHeader, refreshToken);
 	}
 
-	public void updateRefreshToken(String email, String refreshToken) {
-		memberRepository.findByEmail(email).ifPresentOrElse(
-			user -> {
-				redisTemplate.opsForValue()
-					.set(email, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
-				log.info("레디스에 refreshToken이 업데이트 되었습니다. {}", email);
-			},
-			() -> {
-				log.error("찾지 못한 유저 {}", email);
-				throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
-			}
-		);
+	// public void updateRefreshToken(String email, String refreshToken) {
+	// 	memberRepository.findByEmail(email).ifPresentOrElse(
+	// 		user -> {
+	// 			redisTemplate.opsForValue()
+	// 				.set(email, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
+	// 			log.info("레디스에 refreshToken이 업데이트 되었습니다. {}", email);
+	// 		},
+	// 		() -> {
+	// 			log.error("찾지 못한 유저 {}", email);
+	// 			throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
+	// 		}
+	// 	);
+	// }
+	public void updateRefreshToken(String email, String refreshToken, String userType) {
+		String key = userType + ":" + email;
+		redisTemplate.opsForValue().set(key, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
 	}
 
 	public boolean isTokenValid(String token) {
@@ -173,5 +180,19 @@ public class JwtService {
 
 	private String removeBearerInToken(String token) {
 		return token.startsWith(BEARER) ? token.substring(BEARER.length()).strip() : token;
+	}
+
+	public Optional<UserType> extractUserType(String token) {
+		try {
+			String userTypeString = JWT.require(Algorithm.HMAC512(secretKey))
+				.build()
+				.verify(token)
+				.getClaim(USERTYPE_CLAIM)
+				.asString();
+			return Optional.of(UserType.valueOf(userTypeString.toUpperCase()));
+		} catch (Exception e) {
+			log.error("유효하지 않은 토큰입니다 : {}", token, e);
+			return Optional.empty();
+		}
 	}
 }

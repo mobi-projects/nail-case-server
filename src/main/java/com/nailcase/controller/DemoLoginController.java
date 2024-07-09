@@ -11,6 +11,7 @@ import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.dto.MemberDto;
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.enums.UserType;
 import com.nailcase.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,9 @@ public class DemoLoginController {
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
 		MemberDto memberDto = MemberDto.fromEntity(member);
-		String accessToken = jwtService.createAccessToken(member.getEmail(), member.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail());
+		String accessToken = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
+			UserType.MEMBER.getValue());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), UserType.MEMBER.getValue());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)
@@ -43,8 +45,9 @@ public class DemoLoginController {
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
 		MemberDto adminDto = MemberDto.fromEntity(admin);
-		String accessToken = jwtService.createAccessToken(admin.getEmail(), admin.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(admin.getEmail());
+		String accessToken = jwtService.createAccessToken(admin.getEmail(), admin.getMemberId(),
+			UserType.MANAGER.getValue());
+		String refreshToken = jwtService.createRefreshToken(admin.getEmail(), UserType.MANAGER.getValue());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)
