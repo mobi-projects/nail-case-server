@@ -1,19 +1,55 @@
 
+-- 먼저 members와 nail_artists 테이블에 데이터 삽입
 INSERT INTO members (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT 'User', 'user@example.com', 'USER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'user@example.com');
+SELECT 'Member', 'member@example.com', 'MEMBER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'member@example.com');
 
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT 'Manager', 'manager@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'manager@example.com');
 
-INSERT INTO members (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT 'Owner', 'owner@example.com', 'OWNER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'owner@example.com');
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '모비쌤', 'mobi1@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 2 FROM nail_artists WHERE email = 'mobi1@example.com');
 
-INSERT INTO shops (shop_name, phone, available_seat,address,overview, created_at, modified_at, owner_id)
-SELECT '모비네일 강남점', '01012341234', 8,'서울 강남구 봉은사로6길 29 1층 102호','매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 \n
-현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, m.member_id
-FROM members m WHERE m.email = 'owner@example.com' AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '모비네일 강남점');
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '비모쌤', 'mobi2@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 3 FROM nail_artists WHERE email = 'mobi2@example.com');
 
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '피넛쌤', 'mobi3@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 4 FROM nail_artists WHERE email = 'mobi3@example.com');
+
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '케이쌤', 'mobi4@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 5 FROM nail_artists WHERE email = 'mobi4@example.com');
+
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '제로쌤', 'mobi5@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 6 FROM nail_artists WHERE email = 'mobi5@example.com');
+
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '조이쌤', 'mobi6@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 7 FROM nail_artists WHERE email = 'mobi6@example.com');
+
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '제인쌤', 'mobi7@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 8 FROM nail_artists WHERE email = 'mobi7@example.com');
+
+INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '알루미늄쌤', 'mobi8@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 9 FROM nail_artists WHERE email = 'mobi8@example.com');
+
+-- shops 테이블에 데이터 삽입
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '모비네일 강남점', '01012341234', 8, '서울 강남구 봉은사로6길 29 1층 102호', '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 \n현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'manager@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '모비네일 강남점');
+
+-- shop_info 테이블에 데이터 삽입
 INSERT INTO shop_info (shop_id, created_at, modified_at)
-SELECT 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 1 FROM shop_info WHERE shop_id = 1);
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM shops s WHERE s.shop_name = '모비네일 강남점' AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
 
 -- 월요일부터 일요일까지의 WorkHour 데이터 삽입
 INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)

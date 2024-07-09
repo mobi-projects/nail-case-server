@@ -3,7 +3,8 @@ package com.nailcase.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nailcase.model.enums.ManagerRole;
+import com.nailcase.common.BaseEntity;
+import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.SocialType;
 
 import jakarta.persistence.CascadeType;
@@ -33,7 +34,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class NailArtist {
+public class NailArtist extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,8 +56,8 @@ public class NailArtist {
 
 	@Setter
 	@Enumerated(EnumType.STRING)
-	@Column(name = "manager_role", nullable = false)
-	private ManagerRole managerRole;
+	@Column(name = "role", nullable = false)
+	private Role role;
 
 	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;

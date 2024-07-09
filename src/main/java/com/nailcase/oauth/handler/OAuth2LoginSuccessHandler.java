@@ -1,11 +1,15 @@
 package com.nailcase.oauth.handler;
 
+import java.util.Map;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.jwt.JwtService;
+import com.nailcase.model.enums.Role;
+import com.nailcase.model.enums.UserType;
 import com.nailcase.oauth.CustomOAuth2User;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,14 +48,35 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	// TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
 	private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws BusinessException {
-		String accessToken = jwtService.createAccessToken(oAuth2User.getEmail(), oAuth2User.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(oAuth2User.getEmail());
+		UserType userType = determineUserType(oAuth2User);
+		String accessToken = jwtService.createAccessToken(oAuth2User.getEmail(), oAuth2User.getMemberId(),
+			userType.getValue());
+		String refreshToken = jwtService.createRefreshToken(oAuth2User.getEmail(), userType.getValue());
+
 		response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
 		response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
-		// 개발 할때 토큰 복붙해서 사용하는 용도
+
 		log.info("accessToken => Bearer {}", accessToken);
 		log.info("refreshToken => Bearer {}", refreshToken);
+
 		jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-		jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+		jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken, userType.getValue());
+	}
+
+	private UserType determineUserType(CustomOAuth2User oAuth2User) {
+		Role userRole = oAuth2User.getRole();
+
+		if (userRole == Role.MANAGER) {
+			return UserType.MANAGER;
+		} else if (userRole == Role.MEMBER) {
+			// 추가적인 속성을 확인하여 NAIL_ARTIST인지 결정할 수 있습니다.
+			Map<String, Object> attributes = oAuth2User.getAttributes();
+			if (attributes.containsKey("is_nail_artist") && (boolean)attributes.get("is_nail_artist")) {
+				return UserType.MANAGER;
+			}
+		}
+
+		// 기본적으로 MEMBER를 반환
+		return UserType.MEMBER;
 	}
 }

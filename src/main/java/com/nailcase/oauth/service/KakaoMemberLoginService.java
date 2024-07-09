@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.enums.SocialType;
+import com.nailcase.model.enums.UserType;
 import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.OAuthAttributes;
 import com.nailcase.repository.MemberRepository;
@@ -24,9 +25,10 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 	@Override
 	protected LoginResponseDto processUserLogin(OAuthAttributes attributes) {
 		Member member = getOrCreateMember(attributes, SocialType.KAKAO);
-		String accessTokenJwt = jwtService.createAccessToken(member.getEmail(), member.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail());
-		jwtService.updateRefreshToken(member.getEmail(), refreshToken);
+		String accessTokenJwt = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
+			UserType.MEMBER.getValue());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), UserType.MEMBER.getValue());
+		jwtService.updateRefreshToken(member.getEmail(), refreshToken, UserType.MEMBER.getValue());
 
 		return LoginResponseDto.builder()
 			.accessToken(accessTokenJwt)

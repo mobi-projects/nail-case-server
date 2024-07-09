@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,7 +13,10 @@ import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.enums.UserType;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.NailArtistRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,8 +32,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
+	private final NailArtistRepository nailArtistRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 추가
-	private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -50,23 +51,35 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	private void checkRefreshTokenAndReIssueAccessToken(@NonNull HttpServletResponse response,
 		@NonNull String refreshToken) {
 		jwtService.extractEmail(refreshToken).ifPresent(email -> {
-			String savedRefreshToken = (String)redisTemplate.opsForValue().get(email);
-			if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-				String reIssuedRefreshToken = reIssueRefreshToken(email);
-				Member member = memberRepository.findByEmail(email)
-					.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-				jwtService.sendAccessAndRefreshToken(response,
-					jwtService.createAccessToken(email, member.getMemberId()),
-					reIssuedRefreshToken);
-			} else {
-				throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
-			}
+			jwtService.extractUserType(refreshToken).ifPresent(userType -> {
+				String savedRefreshToken = (String)redisTemplate.opsForValue().get(userType.getValue() + ":" + email);
+				if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
+					String reIssuedRefreshToken = reIssueRefreshToken(email, userType);
+					if (userType == UserType.MEMBER) {
+						Member member = memberRepository.findByEmail(email)
+							.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+						jwtService.sendAccessAndRefreshToken(response,
+							jwtService.createAccessToken(email, member.getMemberId(), userType.getValue()),
+							reIssuedRefreshToken);
+					} else if (userType == UserType.MANAGER) {
+						NailArtist nailArtist = nailArtistRepository.findByEmail(email)
+							.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+						jwtService.sendAccessAndRefreshToken(response,
+							jwtService.createAccessToken(email, nailArtist.getNailArtistId(), userType.getValue()),
+							reIssuedRefreshToken);
+					} else {
+						throw new BusinessException(AuthErrorCode.INVALID_USER_TYPE);
+					}
+				} else {
+					throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
+				}
+			});
 		});
 	}
 
-	private String reIssueRefreshToken(String email) {
-		String reIssuedRefreshToken = jwtService.createRefreshToken(email);
-		jwtService.updateRefreshToken(email, reIssuedRefreshToken);
+	private String reIssueRefreshToken(String email, UserType userType) {
+		String reIssuedRefreshToken = jwtService.createRefreshToken(email, userType.getValue());
+		jwtService.updateRefreshToken(email, reIssuedRefreshToken, userType.getValue());
 		return reIssuedRefreshToken;
 	}
 
