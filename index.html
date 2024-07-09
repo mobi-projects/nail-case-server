@@ -893,6 +893,35 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.NailArtistDto"] = {
+  "type" : "object",
+  "properties" : {
+    "memberId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "profileImgUrl" : {
+      "type" : "string"
+    },
+    "role" : {
+      "type" : "string",
+      "enum" : [ "OWNER", "MANAGER", "MEMBER" ]
+    },
+    "socialId" : {
+      "type" : "string"
+    },
+    "socialType" : {
+      "type" : "string",
+      "enum" : [ "KAKAO" ]
+    }
+  }
+};
             defs["com.nailcase.model.dto.PostCommentDto$Request"] = {
   "type" : "object",
   "properties" : {
@@ -2436,7 +2465,7 @@ public class DemoLoginControllerApiExample {
 
         DemoLoginControllerApi apiInstance = new DemoLoginControllerApi();
         try {
-            com.nailcase.model.dto.MemberDto result = apiInstance.loginAdmin();
+            com.nailcase.model.dto.NailArtistDto result = apiInstance.loginAdmin();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DemoLoginControllerApi#loginAdmin");
@@ -2454,7 +2483,7 @@ public class DemoLoginControllerApiExample {
     public static void main(String[] args) {
         DemoLoginControllerApi apiInstance = new DemoLoginControllerApi();
         try {
-            com.nailcase.model.dto.MemberDto result = apiInstance.loginAdmin();
+            com.nailcase.model.dto.NailArtistDto result = apiInstance.loginAdmin();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DemoLoginControllerApi#loginAdmin");
@@ -2475,7 +2504,7 @@ public class DemoLoginControllerApiExample {
 DemoLoginControllerApi *apiInstance = [[DemoLoginControllerApi alloc] init];
 
 [apiInstance loginAdminWithCompletionHandler: 
-              ^(com.nailcase.model.dto.MemberDto output, NSError* error) {
+              ^(com.nailcase.model.dto.NailArtistDto output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -2531,7 +2560,7 @@ namespace Example
 
             try
             {
-                com.nailcase.model.dto.MemberDto result = apiInstance.loginAdmin();
+                com.nailcase.model.dto.NailArtistDto result = apiInstance.loginAdmin();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -2629,7 +2658,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.MemberDto"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.NailArtistDto"
       }
     }
   }
