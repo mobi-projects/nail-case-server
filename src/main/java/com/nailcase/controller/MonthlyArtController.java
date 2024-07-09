@@ -3,7 +3,6 @@ package com.nailcase.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.annotation.AuthenticatedManagerUser;
+import com.nailcase.annotation.AuthenticatedUser;
 import com.nailcase.model.dto.MonthlyArtDto;
 import com.nailcase.model.dto.MonthlyArtImageDto;
 import com.nailcase.service.MonthlyArtService;
@@ -34,11 +34,12 @@ public class MonthlyArtController {
 	// 이미지만 업로드하는 API
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<MonthlyArtImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
-		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
-		Long memberId = memberDetails.getMemberId();
+	public List<MonthlyArtImageDto> uploadImages(
+		@RequestParam("files") List<MultipartFile> files,
+		@AuthenticatedManagerUser Long managerId,
+		@PathVariable Long shopId) {
 		log.info("Uploading images for shopId: {}", shopId);
-		return monthlyArtService.uploadImages(files, memberId);
+		return monthlyArtService.uploadImages(files, managerId);
 	}
 
 	@PostMapping
@@ -50,51 +51,59 @@ public class MonthlyArtController {
 	}
 
 	@PutMapping("/{monthlyArtId}")
-	public MonthlyArtDto.Response updateMonthlyArt(@PathVariable Long shopId, @PathVariable Long monthlyArtId,
-		@RequestBody MonthlyArtDto.Request monthlyArtRequest, @AuthenticationPrincipal MemberDetails memberDetails) {
+	public MonthlyArtDto.Response updateMonthlyArt(
+		@PathVariable Long shopId,
+		@PathVariable Long monthlyArtId,
+		@RequestBody MonthlyArtDto.Request monthlyArtRequest,
+		@AuthenticatedManagerUser Long managerId) {
 		log.info("Updating monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		Long memberId = memberDetails.getMemberId();
-		return monthlyArtService.updateMonthlyArt(shopId, monthlyArtId, monthlyArtRequest, memberId);
+		return monthlyArtService.updateMonthlyArt(shopId, monthlyArtId, monthlyArtRequest, managerId);
 	}
 
 	@GetMapping
-	public List<MonthlyArtDto.Response> listMonthlyArt(@PathVariable Long shopId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
+	public List<MonthlyArtDto.Response> listMonthlyArt(
+		@PathVariable Long shopId,
+		@AuthenticatedUser Long userId) {
 		log.info("Listing all monthly arts for shopId: {}", shopId);
-		Long memberId = memberDetails.getMemberId();
-		return monthlyArtService.listMonthlyArts(shopId, memberId);
+		return monthlyArtService.listMonthlyArts(shopId, userId);
 	}
 
 	@GetMapping("/{monthlyArtId}")
-	public MonthlyArtDto.Response viewMonthlyArt(@PathVariable Long shopId, @PathVariable Long monthlyArtId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
+	public MonthlyArtDto.Response viewMonthlyArt(
+		@PathVariable Long shopId,
+		@PathVariable Long monthlyArtId,
+		@AuthenticatedUser Long userId) {
 		log.info("Viewing monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		Long memberId = memberDetails.getMemberId();
-		return monthlyArtService.viewMonthlyArt(shopId, monthlyArtId, memberId);
+		return monthlyArtService.viewMonthlyArt(shopId, monthlyArtId, userId);
 	}
 
 	@DeleteMapping("/{monthlyArtId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteMonthlyArt(@PathVariable Long shopId, @PathVariable Long monthlyArtId) {
+	public void deleteMonthlyArt(
+		@PathVariable Long shopId,
+		@PathVariable Long monthlyArtId,
+		@AuthenticatedManagerUser Long managerId) {
 		log.info("Deleting monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		monthlyArtService.deleteMonthlyArt(shopId, monthlyArtId);
+		monthlyArtService.deleteMonthlyArt(shopId, monthlyArtId, managerId);
 	}
 
 	@PostMapping("/{monthlyArtId}/like")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void likeMonthlyArt(@PathVariable Long shopId, @PathVariable Long monthlyArtId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
+	public void likeMonthlyArt(
+		@PathVariable Long shopId,
+		@PathVariable Long monthlyArtId,
+		@AuthenticatedUser Long userId) {
 		log.info("Liking monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		Long memberId = memberDetails.getMemberId();
-		monthlyArtService.likeMonthlyArt(monthlyArtId, memberId);
+		monthlyArtService.likeMonthlyArt(monthlyArtId, userId);
 	}
 
 	@PostMapping("/{monthlyArtId}/unlike")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void unlikeMonthlyArt(@PathVariable Long shopId, @PathVariable Long monthlyArtId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
+	public void unlikeMonthlyArt(
+		@PathVariable Long shopId,
+		@PathVariable Long monthlyArtId,
+		@AuthenticatedUser Long userId) {
 		log.info("Unliking monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		Long memberId = memberDetails.getMemberId();
-		monthlyArtService.unlikeMonthlyArt(monthlyArtId, memberId);
+		monthlyArtService.unlikeMonthlyArt(monthlyArtId, userId);
 	}
 }

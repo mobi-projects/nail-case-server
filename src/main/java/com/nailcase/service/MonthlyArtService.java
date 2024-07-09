@@ -25,6 +25,7 @@ import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.MonthlyArtImageRepository;
 import com.nailcase.repository.MonthlyArtLikedMemberRepository;
 import com.nailcase.repository.MonthlyArtRepository;
+import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class MonthlyArtService {
 	private final MonthlyArtImageRepository monthlyArtImageRepository;
 	private final MonthlyArtImageService monthlyArtImageService;
 	private final MemberRepository memberRepository;
+	private final NailArtistRepository nailArtistRepository;
 	private final ShopRepository shopRepository;
 	private final MonthlyArtLikedMemberRepository monthlyArtLikedMemberRepository;
 	private final BitmapService bitmapService;
@@ -203,7 +205,7 @@ public class MonthlyArtService {
 		return MonthlyArtDto.Response.from(monthlyArt, alreadyLiked);
 	}
 
-	public void deleteMonthlyArt(Long shopId, Long monthlyArtId) {
+	public void deleteMonthlyArt(Long shopId, Long monthlyArtId, Long managerId) {
 		monthlyArtRepository.deleteById(monthlyArtId);
 	}
 
