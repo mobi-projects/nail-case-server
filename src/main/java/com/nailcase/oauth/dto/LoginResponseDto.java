@@ -14,5 +14,7 @@ public class LoginResponseDto {
 	private String refreshToken;
 	private List<Long> shopIds;
 	private boolean hasShop;
-	private UserType userType;  // 사용자 타입 추가
+	private UserType userType;
+	private long accessTokenExpirationTime;
+	private long refreshTokenExpirationTime;
 }
