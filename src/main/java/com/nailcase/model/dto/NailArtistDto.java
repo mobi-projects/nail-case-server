@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NailArtistDto {
-	private Long memberId;
+	private Long nailArtistId;
 	private String name;
 	private String email;
 	private String profileImgUrl;
@@ -25,7 +25,7 @@ public class NailArtistDto {
 
 	public static NailArtistDto fromEntity(NailArtist nailArtist) {
 		NailArtistDto dto = new NailArtistDto();
-		dto.setMemberId(nailArtist.getNailArtistId());
+		dto.setNailArtistId(nailArtist.getNailArtistId());
 		dto.setName(nailArtist.getName());
 		dto.setEmail(nailArtist.getEmail());
 		dto.setProfileImgUrl(nailArtist.getProfileImgUrl());
@@ -57,6 +57,13 @@ public class NailArtistDto {
 		public Response setNear(Long near) {
 			this.near = near;
 			return this;
+		}
+
+		public static Response listEntity(NailArtist nailArtist) {
+			Response response = new Response();
+			response.setId(nailArtist.getNailArtistId());
+			response.setNickname(nailArtist.getName());
+			return response;
 		}
 	}
 }
