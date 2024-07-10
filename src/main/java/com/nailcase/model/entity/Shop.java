@@ -1,6 +1,7 @@
 package com.nailcase.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,8 +47,9 @@ public class Shop extends BaseEntity {
 	@JoinColumn(name = "owner_id", referencedColumnName = "nail_artist_id")
 	private NailArtist nailArtist;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
-	private Set<NailArtist> nailArtists;
+	private Set<NailArtist> nailArtists = new HashSet<>();
 
 	@Column(name = "shop_name", nullable = false, length = 128)
 	private String shopName;
