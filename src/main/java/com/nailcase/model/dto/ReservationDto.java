@@ -50,4 +50,14 @@ public class ReservationDto {
 
 		private Long modifiedAt;
 	}
+
+	@Data
+	public static class Available {
+
+		private Long startTime;
+
+		private int availableSeats;
+
+		private List<NailArtistDto.Response> artists;
+	}
 }
