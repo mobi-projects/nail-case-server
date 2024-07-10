@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.jwt.JwtService;
+import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.service.ShopService;
 
@@ -111,4 +112,13 @@ public class ShopController {
 	) {
 		shopService.deleteImage(imageId, userId);
 	}
+
+	@GetMapping("/{shopId}/manager/list")
+	public List<NailArtistDto.Response> listShopNailArtist(
+		@PathVariable Long shopId,
+		@AuthenticationPrincipal Long userId
+	) {
+		return shopService.listShopNailArtist(shopId, userId);
+	}
+
 }
