@@ -6,12 +6,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.enums.UserType;
@@ -88,29 +91,53 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		log.info("checkAccessTokenAndAuthentication() 호출");
 		jwtService.extractAccessToken(request)
 			.filter(jwtService::isTokenValid)
-			.flatMap(jwtService::extractEmail)
-			.flatMap(memberRepository::findByEmail)
 			.ifPresent(this::saveAuthentication);
 
 		filterChain.doFilter(request, response);
 	}
 
-	private void saveAuthentication(Member myMember) {
-		// 혹시 싶어서 남겨두었습니다.
-		// UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-		// 	.username(String.valueOf(myMember.getMemberId()))
-		// 	.password("")
-		// 	.roles(myMember.getRole().name())
-		// 	.build();
+	// private void saveAuthentication(Member myMember) {
+	// 	// 혹시 싶어서 남겨두었습니다.
+	// 	// UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
+	// 	// 	.username(String.valueOf(myMember.getMemberId()))
+	// 	// 	.password("")
+	// 	// 	.roles(myMember.getRole().name())
+	// 	// 	.build();
+	//
+	// 	// Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+	// 	// 	authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+	//
+	// 	MemberDetails memberDetails = MemberDetails.withMember(myMember);
+	//
+	// 	Authentication authentication = new UsernamePasswordAuthenticationToken(
+	// 		memberDetails, memberDetails.getPassword(), memberDetails.getAuthorities());
+	//
+	// 	SecurityContextHolder.getContext().setAuthentication(authentication);
+	// }
 
-		// Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-		// 	authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+	private void saveAuthentication(String token) {
+		UserType userType = jwtService.extractUserType(token)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+		Long userId = jwtService.extractUserId(token)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+		jwtService.extractEmail(token)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
 
-		MemberDetails memberDetails = MemberDetails.withMember(myMember);
+		UserDetails userDetails;
+		if (userType == UserType.MEMBER) {
+			Member member = memberRepository.findById(userId)
+				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+			userDetails = MemberDetails.withMember(member);
+		} else if (userType == UserType.MANAGER) {
+			NailArtist nailArtist = nailArtistRepository.findById(userId)
+				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+			userDetails = NailArtistDetails.withNailArtist(nailArtist);
+		} else {
+			throw new BusinessException(AuthErrorCode.INVALID_USER_TYPE);
+		}
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
-			memberDetails, memberDetails.getPassword(), memberDetails.getAuthorities());
-
+			userDetails, null, userDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 }

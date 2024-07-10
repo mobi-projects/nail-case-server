@@ -25,9 +25,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.nailcase.oauth.AuditorAwareImpl;
-import com.nailcase.oauth.CustomOAuth2UserService;
-import com.nailcase.oauth.handler.OAuth2LoginFailureHandler;
-import com.nailcase.oauth.handler.OAuth2LoginSuccessHandler;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 
@@ -43,9 +40,9 @@ public class SecurityConfig {
 	private final NailArtistRepository nailArtistRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 
-	private final CustomOAuth2UserService customOAuth2UserService;
-	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+	// private final CustomOAuth2UserService customOAuth2UserService;
+	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	// private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

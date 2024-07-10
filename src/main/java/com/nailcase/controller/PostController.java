@@ -3,6 +3,7 @@ package com.nailcase.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.annotation.AuthenticatedManagerUser;
-import com.nailcase.annotation.AuthenticatedUser;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -36,10 +35,10 @@ public class PostController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<PostImageDto> uploadImages(
 		@RequestParam("files") List<MultipartFile> files,
-		@AuthenticatedManagerUser Long managerId,
+		@AuthenticationPrincipal Long userId,
 		@PathVariable Long shopId) {
 		log.info("Uploading images for shopId: {}", shopId);
-		return postService.uploadImages(files, managerId);
+		return postService.uploadImages(files, userId);
 	}
 
 	@PostMapping("/{announcementId}/images")
@@ -48,7 +47,7 @@ public class PostController {
 		@PathVariable Long announcementId,
 		@RequestParam("files") List<MultipartFile> files,
 		@PathVariable Long shopId,
-		@AuthenticatedManagerUser Long managerId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Adding images to post: {} for shopId: {}", announcementId, shopId);
 		postService.addImageToPost(announcementId, files);
 	}
@@ -59,7 +58,7 @@ public class PostController {
 		@PathVariable Long announcementId,
 		@PathVariable Long imageId,
 		@PathVariable Long shopId,
-		@AuthenticatedManagerUser Long managerId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Removing image: {} from post: {}", imageId, announcementId);
 		postService.removeImageFromPost(announcementId, imageId);
 	}
@@ -69,7 +68,7 @@ public class PostController {
 	public PostDto.Response registerPost(
 		@PathVariable Long shopId,
 		@RequestBody PostDto.Request postRequest,
-		@AuthenticatedManagerUser Long managerId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Registering new post for shopId: {}", shopId);
 		return postService.registerPost(shopId, postRequest);
 	}
@@ -79,15 +78,15 @@ public class PostController {
 		@PathVariable Long announcementId,
 		@RequestBody PostDto.Request postRequest,
 		@PathVariable Long shopId,
-		@AuthenticatedManagerUser Long managerId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Updating post: {} for shopId: {}", announcementId, shopId);
-		return postService.updatePost(shopId, announcementId, postRequest, managerId);
+		return postService.updatePost(shopId, announcementId, postRequest, userId);
 	}
 
 	@GetMapping
 	public List<PostDto.Response> listShopNews(
 		@PathVariable Long shopId,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Listing all posts for shopId: {}", shopId);
 		return postService.listShopNews(shopId, userId);
 	}
@@ -96,7 +95,7 @@ public class PostController {
 	public PostDto.Response viewShopNews(
 		@PathVariable Long announcementId,
 		@PathVariable Long shopId,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Viewing post: {} for shopId: {}", announcementId, shopId);
 		return postService.viewShopNews(shopId, announcementId, userId);
 	}
@@ -106,7 +105,7 @@ public class PostController {
 	public void deletePost(
 		@PathVariable Long shopId,
 		@PathVariable Long announcementId,
-		@AuthenticatedManagerUser Long managerId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Deleting post: {} for shopId: {}", announcementId, shopId);
 		postService.deletePost(shopId, announcementId);
 	}
@@ -117,7 +116,7 @@ public class PostController {
 		@PathVariable Long shopId,
 		@PathVariable Long announcementId,
 		@RequestBody PostCommentDto.Request commentRequest,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Registering comment for post: {} by userId: {}", announcementId, userId);
 		return postService.registerComment(shopId, announcementId, commentRequest, userId);
 	}
@@ -128,7 +127,7 @@ public class PostController {
 		@PathVariable Long announcementId,
 		@PathVariable Long commentId,
 		@RequestBody PostCommentDto.Request commentRequest,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Updating comment: {} for post: {}", commentId, announcementId);
 		return postService.updateComment(commentId, commentRequest);
 	}
@@ -139,7 +138,7 @@ public class PostController {
 		@PathVariable Long shopId,
 		@PathVariable Long announcementId,
 		@PathVariable Long commentId,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Deleting comment: {} from post: {}", commentId, announcementId);
 		postService.deleteComment(shopId, announcementId, commentId);
 	}
@@ -149,7 +148,7 @@ public class PostController {
 	public void likePost(
 		@PathVariable Long announcementId,
 		@PathVariable Long shopId,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Liking post: {} for shopId: {}", announcementId, shopId);
 		postService.likePost(announcementId, userId);
 	}
@@ -159,7 +158,7 @@ public class PostController {
 	public void unLikePost(
 		@PathVariable Long announcementId,
 		@PathVariable Long shopId,
-		@AuthenticatedUser Long userId) {
+		@AuthenticationPrincipal Long userId) {
 		log.info("Unliking post: {} for shopId: {}", announcementId, shopId);
 		postService.unlikePost(announcementId, userId);
 	}
