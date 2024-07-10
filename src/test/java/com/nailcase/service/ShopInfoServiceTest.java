@@ -67,7 +67,7 @@ class ShopInfoServiceTest {
 		Shop shop = shopInfo.getShop();
 		Long shopId = shop.getShopId();
 		Long shopInfoId = shopInfo.getShopInfoId();
-		Long memberId = shop.getMember().getMemberId();
+		Long nailArtistId = shop.getNailArtist().getNailArtistId();
 
 		String updatedAddress = StringGenerateFixture.makeByNumbersAndAlphabets(10);
 		String updatedPoint = StringGenerateFixture.makePoint();
@@ -86,7 +86,7 @@ class ShopInfoServiceTest {
 		when(shopInfoRepository.saveAndFlush(any(ShopInfo.class))).thenReturn(shopInfo);
 
 		// When
-		ShopInfoDto.Address result = shopInfoService.updateAddress(shopId, address, memberId);
+		ShopInfoDto.Address result = shopInfoService.updateAddress(shopId, address, nailArtistId);
 
 		// Then
 		assertNotNull(result);
@@ -106,7 +106,7 @@ class ShopInfoServiceTest {
 		// Given
 		ShopInfo shopInfo = shopInfoFixture.getShopInfo();
 		Long shopId = shopInfo.getShopId();
-		Long memberId = shopInfo.getShop().getMember().getMemberId();
+		Long nailArtistId = shopInfo.getShop().getNailArtist().getNailArtistId();
 
 		int updatedParkingLotCnt = 10;
 		int updatedAvailableCnt = 10;
@@ -126,7 +126,7 @@ class ShopInfoServiceTest {
 		when(shopInfoRepository.saveAndFlush(any(ShopInfo.class))).thenReturn(shopInfo);
 
 		// When
-		ShopInfoDto.Info result = shopInfoService.updateInfo(shopId, info, memberId);
+		ShopInfoDto.Info result = shopInfoService.updateInfo(shopId, info, nailArtistId);
 
 		// Then
 		assertNotNull(result);
@@ -144,7 +144,7 @@ class ShopInfoServiceTest {
 		// Given
 		ShopInfo shopInfo = shopInfoFixture.getShopInfo();
 		Long shopId = shopInfo.getShopId();
-		Long memberId = shopInfo.getShop().getMember().getMemberId();
+		Long nailArtistId = shopInfo.getShop().getNailArtist().getNailArtistId();
 
 		String updatedPrice = StringGenerateFixture.makeByNumbersAndAlphabets(10);
 
@@ -159,7 +159,7 @@ class ShopInfoServiceTest {
 		ShopInfoDto.PriceResponse response = shopInfoMapper.toPriceResponse(shopInfo);
 
 		// When
-		ShopInfoDto.PriceResponse result = shopInfoService.updatePrice(shopId, request, memberId);
+		ShopInfoDto.PriceResponse result = shopInfoService.updatePrice(shopId, request, nailArtistId);
 
 		// Then
 		assertNotNull(result);

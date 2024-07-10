@@ -41,9 +41,10 @@ public class Shop extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopId;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "owner_id", referencedColumnName = "member_id")
-	private Member member;
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id", referencedColumnName = "nail_artist_id")
+	private NailArtist nailArtist;
 
 	@Column(name = "shop_name", nullable = false, length = 128)
 	private String shopName;
@@ -78,10 +79,6 @@ public class Shop extends BaseEntity {
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
-	private List<NailArtist> nailArtistList = new ArrayList<>();
-
-	@Builder.Default
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
 	private List<Reservation> reservationList = new ArrayList<>();
 
 	@Builder.Default
@@ -93,20 +90,14 @@ public class Shop extends BaseEntity {
 	@ColumnDefault("0")
 	private Long likes = 0L;
 
-	// 메서드: 좋아요 증가
 	public void incrementLikes() {
 		this.likes += 1;
 	}
 
-	// 메서드: 좋아요 감소
 	public void decrementLikes() {
 		if (this.likes > 0) {
 			this.likes -= 1;
 		}
-	}
-
-	public void associateDown() {
-		this.nailArtistList.forEach(nailArtist -> nailArtist.associateDown(this));
 	}
 
 	public void minusAvailableSeats() {

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.jwt.JwtService;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.service.ShopService;
 
@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopController {
 
 	private final ShopService shopService;
+	private final JwtService jwtService;
 
 	@Value("${spring.data.web.pageable.default-page-size}")
 	private int pageSize;
@@ -44,9 +45,9 @@ public class ShopController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ShopDto.Response registerShop(
 		@Valid @RequestBody ShopDto.Post postDto,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return shopService.registerShop(postDto, memberDetails.getMemberId());
+		return shopService.registerShop(postDto, userId);
 	}
 
 	@GetMapping("/{shopId}")
@@ -57,18 +58,24 @@ public class ShopController {
 	@GetMapping("/search/{keyword}")
 	public Page<ShopDto.Response> searchShop(@PathVariable String keyword, @RequestParam(defaultValue = "1") int page) {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-
 		return shopService.searchShop(keyword, pageable);
 	}
 
 	@DeleteMapping("/{shopId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteShop(@PathVariable Long shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
-		shopService.deleteShop(shopId, memberDetails.getMemberId());
+	public void deleteShop(
+		@PathVariable Long shopId,
+		@AuthenticationPrincipal Long userId
+	) {
+		shopService.deleteShop(shopId, userId);
 	}
 
 	@PutMapping("/{shopId}")
-	public ShopDto.Response updateShop(@PathVariable Long shopId, @Valid @RequestBody ShopDto.Post putRequest) {
+	public ShopDto.Response updateShop(
+		@PathVariable Long shopId,
+		@Valid @RequestBody ShopDto.Post putRequest,
+		@AuthenticationPrincipal Long userId
+	) {
 		return shopService.updateShop(shopId, putRequest);
 	}
 
@@ -81,9 +88,9 @@ public class ShopController {
 	public ShopDto.Response updateOverview(
 		@PathVariable Long shopId,
 		@Valid @RequestBody ShopDto.Patch patchRequest,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return shopService.updateOverview(shopId, patchRequest, memberDetails.getMemberId());
+		return shopService.updateOverview(shopId, patchRequest, userId);
 	}
 
 	@PostMapping("/{shopId}/image")
@@ -91,14 +98,17 @@ public class ShopController {
 	public String uploadImage(
 		@PathVariable Long shopId,
 		@RequestParam("file") MultipartFile file,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return shopService.uploadImage(shopId, file, memberDetails.getMemberId());
+		return shopService.uploadImage(shopId, file, userId);
 	}
 
 	@DeleteMapping("/image/{imageId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteImage(@PathVariable Long imageId, @AuthenticationPrincipal MemberDetails memberDetails) {
-		shopService.deleteImage(imageId, memberDetails.getMemberId());
+	public void deleteImage(
+		@PathVariable Long imageId,
+		@AuthenticationPrincipal Long userId
+	) {
+		shopService.deleteImage(imageId, userId);
 	}
 }

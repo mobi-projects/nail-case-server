@@ -25,6 +25,7 @@ import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.MonthlyArtImageRepository;
 import com.nailcase.repository.MonthlyArtLikedMemberRepository;
 import com.nailcase.repository.MonthlyArtRepository;
+import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,13 @@ public class MonthlyArtService {
 	private final MonthlyArtImageRepository monthlyArtImageRepository;
 	private final MonthlyArtImageService monthlyArtImageService;
 	private final MemberRepository memberRepository;
+	private final NailArtistRepository nailArtistRepository;
 	private final ShopRepository shopRepository;
 	private final MonthlyArtLikedMemberRepository monthlyArtLikedMemberRepository;
 	private final BitmapService bitmapService;
 
 	@Transactional
-	public List<MonthlyArtImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
+	public List<MonthlyArtImageDto> uploadImages(List<MultipartFile> files, Long managerId) {
 		if (files.size() > 6) {
 			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "이달의 아트 게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
 		}
@@ -50,7 +52,7 @@ public class MonthlyArtService {
 		List<MonthlyArtImage> tempImages = files.stream()
 			.map(file -> {
 				MonthlyArtImage tempImage = new MonthlyArtImage();
-				tempImage.setCreatedBy(memberId);
+				tempImage.setCreatedBy(managerId);
 				return tempImage;
 			})
 			.collect(Collectors.toList());
@@ -97,11 +99,11 @@ public class MonthlyArtService {
 	}
 
 	public MonthlyArtDto.Response updateMonthlyArt(Long shopId, Long monthlyArtId,
-		MonthlyArtDto.Request monthlyArtRequest, Long memberId) {
+		MonthlyArtDto.Request monthlyArtRequest, Long managerId) {
 		MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		boolean alreadyLiked = monthlyArtLikedMemberRepository.existsByMonthlyArt_MonthlyArtIdAndMember_MemberId(
-			monthlyArtId, memberId);
+			monthlyArtId, managerId);
 
 		monthlyArt.updateTitle(monthlyArtRequest.getTitle());
 		// 기존 이미지 삭제
@@ -203,7 +205,7 @@ public class MonthlyArtService {
 		return MonthlyArtDto.Response.from(monthlyArt, alreadyLiked);
 	}
 
-	public void deleteMonthlyArt(Long shopId, Long monthlyArtId) {
+	public void deleteMonthlyArt(Long shopId, Long monthlyArtId, Long managerId) {
 		monthlyArtRepository.deleteById(monthlyArtId);
 	}
 
