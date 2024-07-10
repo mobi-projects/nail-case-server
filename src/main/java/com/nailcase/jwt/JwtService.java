@@ -231,10 +231,10 @@ public class JwtService {
 	}
 
 	public long getAccessTokenExpirationPeriod() {
-		return accessTokenExpirationPeriod / 1000;  // 밀리초를 초로 변환
+		return accessTokenExpirationPeriod / 1000;
 	}
 
 	public long getRefreshTokenExpirationPeriod() {
-		return refreshTokenExpirationPeriod / 1000;  // 밀리초를 초로 변환
+		return refreshTokenExpirationPeriod / 1000;
 	}
 }
