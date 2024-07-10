@@ -46,6 +46,9 @@ public class Shop extends BaseEntity {
 	@JoinColumn(name = "owner_id", referencedColumnName = "nail_artist_id")
 	private NailArtist nailArtist;
 
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+	private Set<NailArtist> nailArtists;
+
 	@Column(name = "shop_name", nullable = false, length = 128)
 	private String shopName;
 
