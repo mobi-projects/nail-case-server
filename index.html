@@ -2356,6 +2356,20 @@
     },
     "refreshToken" : {
       "type" : "string"
+    },
+    "shopIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
+    },
+    "hasShop" : {
+      "type" : "boolean"
+    },
+    "userType" : {
+      "type" : "string",
+      "enum" : [ "MEMBER", "MANAGER" ]
     }
   }
 };
