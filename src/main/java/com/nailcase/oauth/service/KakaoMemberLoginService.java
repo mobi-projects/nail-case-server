@@ -26,7 +26,7 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 
 	@Override
 	protected LoginResponseDto processUserLogin(OAuthAttributes attributes) {
-		Member member = getOrCreateMember(attributes, SocialType.KAKAO);
+		Member member = getOrCreateMember(attributes);
 		String accessTokenJwt = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
 			UserType.MEMBER.getValue());
 		String refreshToken = jwtService.createRefreshToken(member.getEmail(), UserType.MEMBER.getValue());
@@ -41,9 +41,10 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 			.build();
 	}
 
-	private Member getOrCreateMember(OAuthAttributes attributes, SocialType socialType) {
-		return memberRepository.findBySocialTypeAndSocialId(socialType, attributes.getOauth2UserInfo().getId())
+	private Member getOrCreateMember(OAuthAttributes attributes) {
+		return memberRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, attributes.getOauth2UserInfo().getId())
 			.orElseGet(
-				() -> memberRepository.save(attributes.toMemberEntity(socialType, attributes.getOauth2UserInfo())));
+				() -> memberRepository.save(
+					attributes.toMemberEntity(SocialType.KAKAO, attributes.getOauth2UserInfo())));
 	}
 }

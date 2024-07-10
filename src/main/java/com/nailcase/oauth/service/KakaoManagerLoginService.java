@@ -15,6 +15,8 @@ import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.OAuthAttributes;
 import com.nailcase.repository.NailArtistRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service("kakaoManagerLoginService")
 public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 
@@ -26,9 +28,10 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 		this.nailArtistRepository = nailArtistRepository;
 	}
 
+	@Transactional
 	@Override
 	protected LoginResponseDto processUserLogin(OAuthAttributes attributes) {
-		NailArtist nailArtist = getOrCreateManager(attributes, SocialType.KAKAO);
+		NailArtist nailArtist = getOrCreateManager(attributes);
 		String accessTokenJwt = jwtService.createAccessToken(nailArtist.getEmail(), nailArtist.getNailArtistId(),
 			UserType.MANAGER.getValue());
 		String refreshToken = jwtService.createRefreshToken(nailArtist.getEmail(), UserType.MANAGER.getValue());
@@ -45,14 +48,15 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 			.refreshToken(refreshToken)
 			.shopIds(shopIds)
 			.hasShop(hasShop)
-			.userType(UserType.MANAGER)  // 네일 아티스트(매니저) 타입 지정
+			.userType(UserType.MANAGER)
 			.build();
 	}
 
-	private NailArtist getOrCreateManager(OAuthAttributes attributes, SocialType socialType) {
-		return nailArtistRepository.findBySocialTypeAndSocialId(socialType, attributes.getOauth2UserInfo().getId())
+	private NailArtist getOrCreateManager(OAuthAttributes attributes) {
+		return nailArtistRepository.findBySocialTypeAndSocialIdWithShops(
+				SocialType.KAKAO, attributes.getOauth2UserInfo().getId())
 			.orElseGet(
 				() -> nailArtistRepository.save(
-					attributes.toManagerEntity(socialType, attributes.getOauth2UserInfo())));
+					attributes.toManagerEntity(SocialType.KAKAO, attributes.getOauth2UserInfo())));
 	}
 }
