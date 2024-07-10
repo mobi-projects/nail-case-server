@@ -38,7 +38,7 @@ class WorkHourServiceTest {
 	void updateWorkHourSuccess() throws Exception {
 		// Given
 		Shop shop = shopFixture.getShop();
-		Long memberId = shop.getMember().getMemberId();
+		Long nailArtistId = shop.getNailArtist().getNailArtistId();
 		WorkHour newWorkHour = workHourFixture.getWorkHour();
 		WorkHourDto putRequest = (WorkHourDto)Reflection.createInstance(WorkHourDto.class);
 		putRequest.setWorkHourId(newWorkHour.getWorkHourId());
@@ -51,7 +51,7 @@ class WorkHourServiceTest {
 			Optional.of(newWorkHour));
 
 		// When
-		WorkHourDto result = workHourService.updateWorkHour(shop.getShopId(), putRequest, memberId);
+		WorkHourDto result = workHourService.updateWorkHour(shop.getShopId(), putRequest, nailArtistId);
 
 		// Then
 		assertNotNull(result);

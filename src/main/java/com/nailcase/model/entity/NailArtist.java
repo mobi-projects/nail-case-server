@@ -60,6 +60,7 @@ public class NailArtist extends BaseEntity {
 	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "nailArtist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Shop> shops = new ArrayList<>();
 

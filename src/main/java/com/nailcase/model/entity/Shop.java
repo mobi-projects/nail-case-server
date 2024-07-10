@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.nailcase.common.BaseEntity;
 import com.nailcase.model.dto.ShopDto;
 
@@ -82,6 +84,21 @@ public class Shop extends BaseEntity {
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
 	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
+
+	@Builder.Default
+	@Column(name = "likes", nullable = false)
+	@ColumnDefault("0")
+	private Long likes = 0L;
+
+	public void incrementLikes() {
+		this.likes += 1;
+	}
+
+	public void decrementLikes() {
+		if (this.likes > 0) {
+			this.likes -= 1;
+		}
+	}
 
 	public void minusAvailableSeats() {
 		this.availableSeats--;

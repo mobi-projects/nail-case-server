@@ -25,7 +25,7 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
@@ -33,6 +33,7 @@ import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
@@ -49,6 +50,9 @@ public class ShopServiceTest {
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
 	@Mock
 	private MemberRepository memberRepository;
+
+	@Mock
+	private NailArtistRepository nailArtistRepository;
 	@Mock
 	private ShopRepository shopRepository;
 	@Mock
@@ -67,24 +71,24 @@ public class ShopServiceTest {
 	void registerShopSuccess() throws Exception {
 		// Given
 		Shop shop = shopFixture.getShop();
-		Member member = shop.getMember();
-		Long memberId = member.getMemberId();
+		NailArtist nailArtist = shop.getNailArtist();
+		Long nailArtistId = nailArtist.getNailArtistId();
 		ShopDto.Post request = shopToPostRequest(shop);
 		ShopDto.Response response = shopMapper.toResponse(shop);
 
-		when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+		when(nailArtistRepository.findById(nailArtistId)).thenReturn(Optional.of(nailArtist));
 		when(shopRepository.save(any(Shop.class))).thenReturn(shop);
 
 		// When
-		ShopDto.Response result = shopService.registerShop(request, memberId);
+		ShopDto.Response result = shopService.registerShop(request, nailArtistId);
 
 		// Then
 		assertThat(result)
 			.usingRecursiveComparison()
 			.isEqualTo(response);
 
-		verify(memberRepository).findById(memberId);
-		assertEquals(Role.MANAGER, member.getRole());
+		verify(nailArtistRepository).findById(nailArtistId);
+		assertEquals(Role.MANAGER, nailArtist.getRole());
 
 		verify(shopRepository, times(1)).save(any(Shop.class));
 		verify(shopInfoRepository, times(1)).save(any(ShopInfo.class));
@@ -133,12 +137,12 @@ public class ShopServiceTest {
 		// Given
 		Shop shop = shopFixture.getShop();
 		Long shopId = shop.getShopId();
-		Long memberId = shop.getMember().getMemberId();
+		Long nailArtistId = shop.getNailArtist().getNailArtistId();
 
 		when(shopRepository.findById(shopId)).thenReturn(Optional.of(shop));
 
 		// When
-		shopService.deleteShop(shopId, memberId);
+		shopService.deleteShop(shopId, nailArtistId);
 
 		// Then
 		verify(shopRepository, times(1)).findById(shopId);
@@ -259,7 +263,7 @@ public class ShopServiceTest {
 		// Given
 		Shop existingShop = shopFixture.getShop();
 		Long shopId = existingShop.getShopId();
-		Long memberId = existingShop.getMember().getMemberId();
+		Long nailArtistId = existingShop.getNailArtist().getNailArtistId();
 
 		ShopDto.Patch patchRequest = (ShopDto.Patch)Reflection.createInstance(ShopDto.Patch.class);
 		String mockOverview = StringGenerateFixture.makeByNumbersAndAlphabets(10);
@@ -308,7 +312,7 @@ public class ShopServiceTest {
 		when(shopRepository.saveAndFlush(any(Shop.class))).thenReturn(updatedShop);
 
 		// When
-		ShopDto.Response result = shopService.updateOverview(shopId, patchRequest, memberId);
+		ShopDto.Response result = shopService.updateOverview(shopId, patchRequest, nailArtistId);
 
 		// Then
 		assertNotNull(result);

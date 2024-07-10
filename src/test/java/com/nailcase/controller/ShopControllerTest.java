@@ -66,14 +66,14 @@ public class ShopControllerTest {
 	@AfterEach
 	public void cleanUp() {
 		shopRepository.deleteAll(); // Shop 데이터 삭제
-		fixtureFactory.getMemberFixtureToBootTest().deleteAllMembers(); // Member 데이터 삭제
+		fixtureFactory.getNailArtistFixtureToBootTest().deleteAllNailArtist(); // Member 데이터 삭제
 	}
 
 	@Test
 	@DisplayName("Post요청시 HTTP.CREATE와 응답을 반환한다.")
 	void registerShopSuccess() throws Exception {
 		// Given
-		String jwt = fixtureFactory.getMemberFixtureToBootTest().createMemberAndGetJwt();
+		String jwt = fixtureFactory.getNailArtistFixtureToBootTest().createNailArtistAndGetJwt();
 		EasyRandomParameters params = new EasyRandomParameters()
 			.randomize(named("phone"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(16));
 		ShopDto.Post requestDto = new EasyRandom(params).nextObject(ShopDto.Post.class);

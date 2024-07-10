@@ -27,11 +27,11 @@ public class WorkHourService {
 	private final ShopService shopService;
 
 	@Transactional
-	public WorkHourDto updateWorkHour(Long shopId, WorkHourDto putRequest, Long memberId) {
+	public WorkHourDto updateWorkHour(Long shopId, WorkHourDto putRequest, Long nailArtistId) {
 		Shop shop = shopService.getShopById(shopId);
 
 		// TODO 샵에 속해있는 아티스트 인지 권한 검사
-		log.debug(String.valueOf(memberId));
+		log.debug(String.valueOf(nailArtistId));
 
 		WorkHour workHour = workHourRepository.findByWorkHourIdAndShop(putRequest.getWorkHourId(), shop)
 			.orElseThrow(() -> new BusinessException(WorkHourErrorCode.WORK_HOUR_NOT_FOUND));
