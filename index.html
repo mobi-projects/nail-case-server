@@ -1789,13 +1789,6 @@
     "profileImgUrl" : {
       "type" : "string"
     },
-    "shops" : {
-      "uniqueItems" : true,
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-      }
-    },
     "reservations" : {
       "type" : "array",
       "items" : {
@@ -1854,8 +1847,11 @@
     "profileImgUrl" : {
       "type" : "string"
     },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+    "shops" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+      }
     },
     "timeTableList" : {
       "type" : "array",
@@ -2049,8 +2045,8 @@
       "type" : "integer",
       "format" : "int64"
     },
-    "member" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Member"
+    "nailArtist" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
     },
     "shopName" : {
       "type" : "string"
@@ -2090,12 +2086,6 @@
       "type" : "array",
       "items" : {
         "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopImage"
-      }
-    },
-    "nailArtistList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
       }
     },
     "reservationList" : {
@@ -4604,7 +4594,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-deleteMonthlyArt-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -4628,8 +4618,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.deleteMonthlyArt(shopId, monthlyArtId);
+            apiInstance.deleteMonthlyArt(shopId, monthlyArtId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#deleteMonthlyArt");
             e.printStackTrace();
@@ -4647,8 +4638,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.deleteMonthlyArt(shopId, monthlyArtId);
+            apiInstance.deleteMonthlyArt(shopId, monthlyArtId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#deleteMonthlyArt");
             e.printStackTrace();
@@ -4666,11 +4658,13 @@ public class MonthlyArtControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *monthlyArtId = 789; // 
+Long *managerId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance deleteMonthlyArtWith:shopId
     monthlyArtId:monthlyArtId
+    managerId:managerId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -4691,6 +4685,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
 var monthlyArtId = 789; // {{Long}} 
+var managerId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -4699,7 +4694,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deleteMonthlyArt(shopId, monthlyArtId, callback);
+api.deleteMonthlyArt(shopId, monthlyArtId, managerId, callback);
 </code></pre>
                             </div>
 
@@ -4726,10 +4721,11 @@ namespace Example
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
             var monthlyArtId = 789;  // Long | 
+            var managerId = 789;  // Long | 
 
             try
             {
-                apiInstance.deleteMonthlyArt(shopId, monthlyArtId);
+                apiInstance.deleteMonthlyArt(shopId, monthlyArtId, managerId);
             }
             catch (Exception e)
             {
@@ -4751,9 +4747,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 $monthlyArtId = 789; // Long | 
+$managerId = 789; // Long | 
 
 try {
-    $api_instance->deleteMonthlyArt($shopId, $monthlyArtId);
+    $api_instance->deleteMonthlyArt($shopId, $monthlyArtId, $managerId);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->deleteMonthlyArt: ', $e->getMessage(), PHP_EOL;
 }
@@ -4771,9 +4768,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
 my $monthlyArtId = 789; # Long | 
+my $managerId = 789; # Long | 
 
 eval { 
-    $api_instance->deleteMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId);
+    $api_instance->deleteMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId, managerId => $managerId);
 };
 if ($@) {
     warn "Exception when calling MonthlyArtControllerApi->deleteMonthlyArt: $@\n";
@@ -4794,9 +4792,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.MonthlyArtControllerApi()
 shopId = 789 # Long | 
 monthlyArtId = 789 # Long | 
+managerId = 789 # Long | 
 
 try: 
-    api_instance.delete_monthly_art(shopId, monthlyArtId)
+    api_instance.delete_monthly_art(shopId, monthlyArtId, managerId)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->deleteMonthlyArt: %s\n" % e)</code></pre>
                             </div>
@@ -4859,6 +4858,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_deleteMonthlyArt_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -4907,7 +4935,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}/like"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}/like?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-likeMonthlyArt-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -4931,8 +4959,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.likeMonthlyArt(shopId, monthlyArtId);
+            apiInstance.likeMonthlyArt(shopId, monthlyArtId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#likeMonthlyArt");
             e.printStackTrace();
@@ -4950,8 +4979,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.likeMonthlyArt(shopId, monthlyArtId);
+            apiInstance.likeMonthlyArt(shopId, monthlyArtId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#likeMonthlyArt");
             e.printStackTrace();
@@ -4969,11 +4999,13 @@ public class MonthlyArtControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *monthlyArtId = 789; // 
+Long *userId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance likeMonthlyArtWith:shopId
     monthlyArtId:monthlyArtId
+    userId:userId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -4994,6 +5026,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
 var monthlyArtId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -5002,7 +5035,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.likeMonthlyArt(shopId, monthlyArtId, callback);
+api.likeMonthlyArt(shopId, monthlyArtId, userId, callback);
 </code></pre>
                             </div>
 
@@ -5029,10 +5062,11 @@ namespace Example
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
             var monthlyArtId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                apiInstance.likeMonthlyArt(shopId, monthlyArtId);
+                apiInstance.likeMonthlyArt(shopId, monthlyArtId, userId);
             }
             catch (Exception e)
             {
@@ -5054,9 +5088,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 $monthlyArtId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $api_instance->likeMonthlyArt($shopId, $monthlyArtId);
+    $api_instance->likeMonthlyArt($shopId, $monthlyArtId, $userId);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->likeMonthlyArt: ', $e->getMessage(), PHP_EOL;
 }
@@ -5074,9 +5109,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
 my $monthlyArtId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    $api_instance->likeMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId);
+    $api_instance->likeMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId, userId => $userId);
 };
 if ($@) {
     warn "Exception when calling MonthlyArtControllerApi->likeMonthlyArt: $@\n";
@@ -5097,9 +5133,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.MonthlyArtControllerApi()
 shopId = 789 # Long | 
 monthlyArtId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_instance.like_monthly_art(shopId, monthlyArtId)
+    api_instance.like_monthly_art(shopId, monthlyArtId, userId)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->likeMonthlyArt: %s\n" % e)</code></pre>
                             </div>
@@ -5162,6 +5199,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_likeMonthlyArt_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -5211,7 +5277,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-listMonthlyArt-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -5234,8 +5300,9 @@ public class MonthlyArtControllerApiExample {
 
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.MonthlyArtDto$Response] result = apiInstance.listMonthlyArt(shopId);
+            array[com.nailcase.model.dto.MonthlyArtDto$Response] result = apiInstance.listMonthlyArt(shopId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#listMonthlyArt");
@@ -5253,8 +5320,9 @@ public class MonthlyArtControllerApiExample {
     public static void main(String[] args) {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.MonthlyArtDto$Response] result = apiInstance.listMonthlyArt(shopId);
+            array[com.nailcase.model.dto.MonthlyArtDto$Response] result = apiInstance.listMonthlyArt(shopId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#listMonthlyArt");
@@ -5272,10 +5340,12 @@ public class MonthlyArtControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
+Long *userId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance listMonthlyArtWith:shopId
+    userId:userId
               completionHandler: ^(array[com.nailcase.model.dto.MonthlyArtDto$Response] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -5298,6 +5368,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -5306,7 +5377,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listMonthlyArt(shopId, callback);
+api.listMonthlyArt(shopId, userId, callback);
 </code></pre>
                             </div>
 
@@ -5332,10 +5403,11 @@ namespace Example
 
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                array[com.nailcase.model.dto.MonthlyArtDto$Response] result = apiInstance.listMonthlyArt(shopId);
+                array[com.nailcase.model.dto.MonthlyArtDto$Response] result = apiInstance.listMonthlyArt(shopId, userId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -5357,9 +5429,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $result = $api_instance->listMonthlyArt($shopId);
+    $result = $api_instance->listMonthlyArt($shopId, $userId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->listMonthlyArt: ', $e->getMessage(), PHP_EOL;
@@ -5377,9 +5450,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->listMonthlyArt(shopId => $shopId);
+    my $result = $api_instance->listMonthlyArt(shopId => $shopId, userId => $userId);
     print Dumper($result);
 };
 if ($@) {
@@ -5400,9 +5474,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.MonthlyArtControllerApi()
 shopId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_response = api_instance.list_monthly_art(shopId)
+    api_response = api_instance.list_monthly_art(shopId, userId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->listMonthlyArt: %s\n" % e)</code></pre>
@@ -5444,6 +5519,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listMonthlyArt_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -5911,7 +6015,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}/unlike"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}/unlike?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-unlikeMonthlyArt-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -5935,8 +6039,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.unlikeMonthlyArt(shopId, monthlyArtId);
+            apiInstance.unlikeMonthlyArt(shopId, monthlyArtId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#unlikeMonthlyArt");
             e.printStackTrace();
@@ -5954,8 +6059,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.unlikeMonthlyArt(shopId, monthlyArtId);
+            apiInstance.unlikeMonthlyArt(shopId, monthlyArtId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#unlikeMonthlyArt");
             e.printStackTrace();
@@ -5973,11 +6079,13 @@ public class MonthlyArtControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *monthlyArtId = 789; // 
+Long *userId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance unlikeMonthlyArtWith:shopId
     monthlyArtId:monthlyArtId
+    userId:userId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -5998,6 +6106,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
 var monthlyArtId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -6006,7 +6115,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.unlikeMonthlyArt(shopId, monthlyArtId, callback);
+api.unlikeMonthlyArt(shopId, monthlyArtId, userId, callback);
 </code></pre>
                             </div>
 
@@ -6033,10 +6142,11 @@ namespace Example
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
             var monthlyArtId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                apiInstance.unlikeMonthlyArt(shopId, monthlyArtId);
+                apiInstance.unlikeMonthlyArt(shopId, monthlyArtId, userId);
             }
             catch (Exception e)
             {
@@ -6058,9 +6168,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 $monthlyArtId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $api_instance->unlikeMonthlyArt($shopId, $monthlyArtId);
+    $api_instance->unlikeMonthlyArt($shopId, $monthlyArtId, $userId);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->unlikeMonthlyArt: ', $e->getMessage(), PHP_EOL;
 }
@@ -6078,9 +6189,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
 my $monthlyArtId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    $api_instance->unlikeMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId);
+    $api_instance->unlikeMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId, userId => $userId);
 };
 if ($@) {
     warn "Exception when calling MonthlyArtControllerApi->unlikeMonthlyArt: $@\n";
@@ -6101,9 +6213,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.MonthlyArtControllerApi()
 shopId = 789 # Long | 
 monthlyArtId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_instance.unlike_monthly_art(shopId, monthlyArtId)
+    api_instance.unlike_monthly_art(shopId, monthlyArtId, userId)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->unlikeMonthlyArt: %s\n" % e)</code></pre>
                             </div>
@@ -6166,6 +6279,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_unlikeMonthlyArt_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -6216,7 +6358,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-updateMonthlyArt-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -6239,10 +6381,11 @@ public class MonthlyArtControllerApiExample {
 
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Com.nailcase.model.dto.MonthlyArtDto$Request body = ; // Com.nailcase.model.dto.MonthlyArtDto$Request | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.updateMonthlyArt(body, shopId, monthlyArtId);
+            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.updateMonthlyArt(body, managerId, shopId, monthlyArtId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#updateMonthlyArt");
@@ -6260,10 +6403,11 @@ public class MonthlyArtControllerApiExample {
     public static void main(String[] args) {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Com.nailcase.model.dto.MonthlyArtDto$Request body = ; // Com.nailcase.model.dto.MonthlyArtDto$Request | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.updateMonthlyArt(body, shopId, monthlyArtId);
+            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.updateMonthlyArt(body, managerId, shopId, monthlyArtId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#updateMonthlyArt");
@@ -6281,12 +6425,14 @@ public class MonthlyArtControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.MonthlyArtDto$Request *body = ; // 
+Long *managerId = 789; // 
 Long *shopId = 789; // 
 Long *monthlyArtId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance updateMonthlyArtWith:body
+    managerId:managerId
     shopId:shopId
     monthlyArtId:monthlyArtId
               completionHandler: ^(com.nailcase.model.dto.MonthlyArtDto$Response output, NSError* error) {
@@ -6311,6 +6457,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var body = ; // {{Com.nailcase.model.dto.MonthlyArtDto$Request}} 
+var managerId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 var monthlyArtId = 789; // {{Long}} 
 
@@ -6321,7 +6468,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateMonthlyArt(bodyshopIdmonthlyArtId, callback);
+api.updateMonthlyArt(bodymanagerIdshopIdmonthlyArtId, callback);
 </code></pre>
                             </div>
 
@@ -6347,12 +6494,13 @@ namespace Example
 
             var apiInstance = new MonthlyArtControllerApi();
             var body = new Com.nailcase.model.dto.MonthlyArtDto$Request(); // Com.nailcase.model.dto.MonthlyArtDto$Request | 
+            var managerId = 789;  // Long | 
             var shopId = 789;  // Long | 
             var monthlyArtId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.updateMonthlyArt(body, shopId, monthlyArtId);
+                com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.updateMonthlyArt(body, managerId, shopId, monthlyArtId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -6374,11 +6522,12 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $body = ; // Com.nailcase.model.dto.MonthlyArtDto$Request | 
+$managerId = 789; // Long | 
 $shopId = 789; // Long | 
 $monthlyArtId = 789; // Long | 
 
 try {
-    $result = $api_instance->updateMonthlyArt($body, $shopId, $monthlyArtId);
+    $result = $api_instance->updateMonthlyArt($body, $managerId, $shopId, $monthlyArtId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->updateMonthlyArt: ', $e->getMessage(), PHP_EOL;
@@ -6396,11 +6545,12 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.MonthlyArtDto$Request->new(); # Com.nailcase.model.dto.MonthlyArtDto$Request | 
+my $managerId = 789; # Long | 
 my $shopId = 789; # Long | 
 my $monthlyArtId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->updateMonthlyArt(body => $body, shopId => $shopId, monthlyArtId => $monthlyArtId);
+    my $result = $api_instance->updateMonthlyArt(body => $body, managerId => $managerId, shopId => $shopId, monthlyArtId => $monthlyArtId);
     print Dumper($result);
 };
 if ($@) {
@@ -6421,11 +6571,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.MonthlyArtControllerApi()
 body =  # Com.nailcase.model.dto.MonthlyArtDto$Request | 
+managerId = 789 # Long | 
 shopId = 789 # Long | 
 monthlyArtId = 789 # Long | 
 
 try: 
-    api_response = api_instance.update_monthly_art(body, shopId, monthlyArtId)
+    api_response = api_instance.update_monthly_art(body, managerId, shopId, monthlyArtId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->updateMonthlyArt: %s\n" % e)</code></pre>
@@ -6532,6 +6683,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_updateMonthlyArt_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -6621,7 +6801,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/images?files="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/images?files=&managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-uploadImages1-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -6644,9 +6824,10 @@ public class MonthlyArtControllerApiExample {
 
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         array[byte[]] files = ; // array[byte[]] | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.MonthlyArtImageDto] result = apiInstance.uploadImages1(files, shopId);
+            array[com.nailcase.model.dto.MonthlyArtImageDto] result = apiInstance.uploadImages1(files, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#uploadImages1");
@@ -6664,9 +6845,10 @@ public class MonthlyArtControllerApiExample {
     public static void main(String[] args) {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         array[byte[]] files = ; // array[byte[]] | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.MonthlyArtImageDto] result = apiInstance.uploadImages1(files, shopId);
+            array[com.nailcase.model.dto.MonthlyArtImageDto] result = apiInstance.uploadImages1(files, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#uploadImages1");
@@ -6684,11 +6866,13 @@ public class MonthlyArtControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 array[byte[]] *files = ; // 
+Long *managerId = 789; // 
 Long *shopId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance uploadImages1With:files
+    managerId:managerId
     shopId:shopId
               completionHandler: ^(array[com.nailcase.model.dto.MonthlyArtImageDto] output, NSError* error) {
                             if (output) {
@@ -6712,6 +6896,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var files = ; // {{array[byte[]]}} 
+var managerId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
@@ -6721,7 +6906,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.uploadImages1(files, shopId, callback);
+api.uploadImages1(files, managerId, shopId, callback);
 </code></pre>
                             </div>
 
@@ -6747,11 +6932,12 @@ namespace Example
 
             var apiInstance = new MonthlyArtControllerApi();
             var files = new array[byte[]](); // array[byte[]] | 
+            var managerId = 789;  // Long | 
             var shopId = 789;  // Long | 
 
             try
             {
-                array[com.nailcase.model.dto.MonthlyArtImageDto] result = apiInstance.uploadImages1(files, shopId);
+                array[com.nailcase.model.dto.MonthlyArtImageDto] result = apiInstance.uploadImages1(files, managerId, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -6773,10 +6959,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $files = ; // array[byte[]] | 
+$managerId = 789; // Long | 
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->uploadImages1($files, $shopId);
+    $result = $api_instance->uploadImages1($files, $managerId, $shopId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->uploadImages1: ', $e->getMessage(), PHP_EOL;
@@ -6794,10 +6981,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $files = []; # array[byte[]] | 
+my $managerId = 789; # Long | 
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->uploadImages1(files => $files, shopId => $shopId);
+    my $result = $api_instance->uploadImages1(files => $files, managerId => $managerId, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
@@ -6818,10 +7006,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.MonthlyArtControllerApi()
 files =  # array[byte[]] | 
+managerId = 789 # Long | 
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.upload_images1(files, shopId)
+    api_response = api_instance.upload_images1(files, managerId, shopId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->uploadImages1: %s\n" % e)</code></pre>
@@ -6881,6 +7070,28 @@ except ApiException as e:
                                                 </span>
                                                     <span class="format">
                                                         (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_uploadImages1_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
                                                     </span>
                                 
                                             </div>
@@ -6985,7 +7196,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/monthly-art/{monthlyArtId}?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MonthlyArtController-viewMonthlyArt-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -7009,8 +7220,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.viewMonthlyArt(shopId, monthlyArtId);
+            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.viewMonthlyArt(shopId, monthlyArtId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#viewMonthlyArt");
@@ -7029,8 +7241,9 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         Long monthlyArtId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.viewMonthlyArt(shopId, monthlyArtId);
+            com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.viewMonthlyArt(shopId, monthlyArtId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MonthlyArtControllerApi#viewMonthlyArt");
@@ -7049,11 +7262,13 @@ public class MonthlyArtControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *monthlyArtId = 789; // 
+Long *userId = 789; // 
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
 [apiInstance viewMonthlyArtWith:shopId
     monthlyArtId:monthlyArtId
+    userId:userId
               completionHandler: ^(com.nailcase.model.dto.MonthlyArtDto$Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -7077,6 +7292,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
 var monthlyArtId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -7085,7 +7301,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.viewMonthlyArt(shopId, monthlyArtId, callback);
+api.viewMonthlyArt(shopId, monthlyArtId, userId, callback);
 </code></pre>
                             </div>
 
@@ -7112,10 +7328,11 @@ namespace Example
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
             var monthlyArtId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.viewMonthlyArt(shopId, monthlyArtId);
+                com.nailcase.model.dto.MonthlyArtDto$Response result = apiInstance.viewMonthlyArt(shopId, monthlyArtId, userId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -7138,9 +7355,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 $monthlyArtId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $result = $api_instance->viewMonthlyArt($shopId, $monthlyArtId);
+    $result = $api_instance->viewMonthlyArt($shopId, $monthlyArtId, $userId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MonthlyArtControllerApi->viewMonthlyArt: ', $e->getMessage(), PHP_EOL;
@@ -7159,9 +7377,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
 my $monthlyArtId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->viewMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId);
+    my $result = $api_instance->viewMonthlyArt(shopId => $shopId, monthlyArtId => $monthlyArtId, userId => $userId);
     print Dumper($result);
 };
 if ($@) {
@@ -7183,9 +7402,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.MonthlyArtControllerApi()
 shopId = 789 # Long | 
 monthlyArtId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_response = api_instance.view_monthly_art(shopId, monthlyArtId)
+    api_response = api_instance.view_monthly_art(shopId, monthlyArtId, userId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling MonthlyArtControllerApi->viewMonthlyArt: %s\n" % e)</code></pre>
@@ -7249,6 +7469,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_viewMonthlyArt_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -7340,7 +7589,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images?files="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images?files=&managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-addImageToPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -7364,9 +7613,10 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         array[byte[]] files = ; // array[byte[]] | 
-        String shopId = shopId_example; // String | 
+        Long shopId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.addImageToPost(announcementId, files, shopId);
+            apiInstance.addImageToPost(announcementId, files, shopId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#addImageToPost");
             e.printStackTrace();
@@ -7384,9 +7634,10 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         array[byte[]] files = ; // array[byte[]] | 
-        String shopId = shopId_example; // String | 
+        Long shopId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.addImageToPost(announcementId, files, shopId);
+            apiInstance.addImageToPost(announcementId, files, shopId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#addImageToPost");
             e.printStackTrace();
@@ -7404,13 +7655,15 @@ public class PostControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *announcementId = 789; // 
 array[byte[]] *files = ; // 
-String *shopId = shopId_example; // 
+Long *shopId = 789; // 
+Long *managerId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance addImageToPostWith:announcementId
     files:files
     shopId:shopId
+    managerId:managerId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -7431,7 +7684,8 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
 var files = ; // {{array[byte[]]}} 
-var shopId = shopId_example; // {{String}} 
+var shopId = 789; // {{Long}} 
+var managerId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -7440,7 +7694,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.addImageToPost(announcementId, files, shopId, callback);
+api.addImageToPost(announcementId, files, shopId, managerId, callback);
 </code></pre>
                             </div>
 
@@ -7467,11 +7721,12 @@ namespace Example
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var files = new array[byte[]](); // array[byte[]] | 
-            var shopId = shopId_example;  // String | 
+            var shopId = 789;  // Long | 
+            var managerId = 789;  // Long | 
 
             try
             {
-                apiInstance.addImageToPost(announcementId, files, shopId);
+                apiInstance.addImageToPost(announcementId, files, shopId, managerId);
             }
             catch (Exception e)
             {
@@ -7493,10 +7748,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $files = ; // array[byte[]] | 
-$shopId = shopId_example; // String | 
+$shopId = 789; // Long | 
+$managerId = 789; // Long | 
 
 try {
-    $api_instance->addImageToPost($announcementId, $files, $shopId);
+    $api_instance->addImageToPost($announcementId, $files, $shopId, $managerId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->addImageToPost: ', $e->getMessage(), PHP_EOL;
 }
@@ -7514,10 +7770,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
 my $files = []; # array[byte[]] | 
-my $shopId = shopId_example; # String | 
+my $shopId = 789; # Long | 
+my $managerId = 789; # Long | 
 
 eval { 
-    $api_instance->addImageToPost(announcementId => $announcementId, files => $files, shopId => $shopId);
+    $api_instance->addImageToPost(announcementId => $announcementId, files => $files, shopId => $shopId, managerId => $managerId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->addImageToPost: $@\n";
@@ -7538,10 +7795,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.PostControllerApi()
 announcementId = 789 # Long | 
 files =  # array[byte[]] | 
-shopId = shopId_example # String | 
+shopId = 789 # Long | 
+managerId = 789 # Long | 
 
 try: 
-    api_instance.add_image_to_post(announcementId, files, shopId)
+    api_instance.add_image_to_post(announcementId, files, shopId, managerId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->addImageToPost: %s\n" % e)</code></pre>
                             </div>
@@ -7585,8 +7843,11 @@ except ApiException as e:
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      String
+                                                      Long
                                                   </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
                                   
                                               </div>
                                                   <div class="inner required">
@@ -7619,6 +7880,28 @@ except ApiException as e:
                                                 </span>
                                                     <span class="format">
                                                         (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_addImageToPost_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
                                                     </span>
                                 
                                             </div>
@@ -7678,7 +7961,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-deleteComment-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -7703,8 +7986,9 @@ public class PostControllerApiExample {
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.deleteComment(shopId, announcementId, commentId);
+            apiInstance.deleteComment(shopId, announcementId, commentId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deleteComment");
             e.printStackTrace();
@@ -7723,8 +8007,9 @@ public class PostControllerApiExample {
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.deleteComment(shopId, announcementId, commentId);
+            apiInstance.deleteComment(shopId, announcementId, commentId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deleteComment");
             e.printStackTrace();
@@ -7743,12 +8028,14 @@ public class PostControllerApiExample {
 Long *shopId = 789; // 
 Long *announcementId = 789; // 
 Long *commentId = 789; // 
+Long *userId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance deleteCommentWith:shopId
     announcementId:announcementId
     commentId:commentId
+    userId:userId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -7770,6 +8057,7 @@ var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
 var announcementId = 789; // {{Long}} 
 var commentId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -7778,7 +8066,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deleteComment(shopId, announcementId, commentId, callback);
+api.deleteComment(shopId, announcementId, commentId, userId, callback);
 </code></pre>
                             </div>
 
@@ -7806,10 +8094,11 @@ namespace Example
             var shopId = 789;  // Long | 
             var announcementId = 789;  // Long | 
             var commentId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                apiInstance.deleteComment(shopId, announcementId, commentId);
+                apiInstance.deleteComment(shopId, announcementId, commentId, userId);
             }
             catch (Exception e)
             {
@@ -7832,9 +8121,10 @@ $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
 $announcementId = 789; // Long | 
 $commentId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $api_instance->deleteComment($shopId, $announcementId, $commentId);
+    $api_instance->deleteComment($shopId, $announcementId, $commentId, $userId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->deleteComment: ', $e->getMessage(), PHP_EOL;
 }
@@ -7853,9 +8143,10 @@ my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
 my $announcementId = 789; # Long | 
 my $commentId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    $api_instance->deleteComment(shopId => $shopId, announcementId => $announcementId, commentId => $commentId);
+    $api_instance->deleteComment(shopId => $shopId, announcementId => $announcementId, commentId => $commentId, userId => $userId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->deleteComment: $@\n";
@@ -7877,9 +8168,10 @@ api_instance = swagger_client.PostControllerApi()
 shopId = 789 # Long | 
 announcementId = 789 # Long | 
 commentId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_instance.delete_comment(shopId, announcementId, commentId)
+    api_instance.delete_comment(shopId, announcementId, commentId, userId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->deleteComment: %s\n" % e)</code></pre>
                             </div>
@@ -7964,6 +8256,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_deleteComment_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -8012,7 +8333,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-deletePost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -8036,8 +8357,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.deletePost(shopId, announcementId);
+            apiInstance.deletePost(shopId, announcementId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deletePost");
             e.printStackTrace();
@@ -8055,8 +8377,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.deletePost(shopId, announcementId);
+            apiInstance.deletePost(shopId, announcementId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#deletePost");
             e.printStackTrace();
@@ -8074,11 +8397,13 @@ public class PostControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *announcementId = 789; // 
+Long *managerId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance deletePostWith:shopId
     announcementId:announcementId
+    managerId:managerId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -8099,6 +8424,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
 var announcementId = 789; // {{Long}} 
+var managerId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -8107,7 +8433,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deletePost(shopId, announcementId, callback);
+api.deletePost(shopId, announcementId, managerId, callback);
 </code></pre>
                             </div>
 
@@ -8134,10 +8460,11 @@ namespace Example
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
             var announcementId = 789;  // Long | 
+            var managerId = 789;  // Long | 
 
             try
             {
-                apiInstance.deletePost(shopId, announcementId);
+                apiInstance.deletePost(shopId, announcementId, managerId);
             }
             catch (Exception e)
             {
@@ -8159,9 +8486,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
 $announcementId = 789; // Long | 
+$managerId = 789; // Long | 
 
 try {
-    $api_instance->deletePost($shopId, $announcementId);
+    $api_instance->deletePost($shopId, $announcementId, $managerId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->deletePost: ', $e->getMessage(), PHP_EOL;
 }
@@ -8179,9 +8507,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
 my $announcementId = 789; # Long | 
+my $managerId = 789; # Long | 
 
 eval { 
-    $api_instance->deletePost(shopId => $shopId, announcementId => $announcementId);
+    $api_instance->deletePost(shopId => $shopId, announcementId => $announcementId, managerId => $managerId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->deletePost: $@\n";
@@ -8202,9 +8531,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.PostControllerApi()
 shopId = 789 # Long | 
 announcementId = 789 # Long | 
+managerId = 789 # Long | 
 
 try: 
-    api_instance.delete_post(shopId, announcementId)
+    api_instance.delete_post(shopId, announcementId, managerId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->deletePost: %s\n" % e)</code></pre>
                             </div>
@@ -8267,6 +8597,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_deletePost_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -8315,7 +8674,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/like"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/like?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-likePost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -8339,8 +8698,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.likePost(announcementId, shopId);
+            apiInstance.likePost(announcementId, shopId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#likePost");
             e.printStackTrace();
@@ -8358,8 +8718,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.likePost(announcementId, shopId);
+            apiInstance.likePost(announcementId, shopId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#likePost");
             e.printStackTrace();
@@ -8377,11 +8738,13 @@ public class PostControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *announcementId = 789; // 
 Long *shopId = 789; // 
+Long *userId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance likePostWith:announcementId
     shopId:shopId
+    userId:userId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -8402,6 +8765,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -8410,7 +8774,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.likePost(announcementId, shopId, callback);
+api.likePost(announcementId, shopId, userId, callback);
 </code></pre>
                             </div>
 
@@ -8437,10 +8801,11 @@ namespace Example
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                apiInstance.likePost(announcementId, shopId);
+                apiInstance.likePost(announcementId, shopId, userId);
             }
             catch (Exception e)
             {
@@ -8462,9 +8827,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $shopId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $api_instance->likePost($announcementId, $shopId);
+    $api_instance->likePost($announcementId, $shopId, $userId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->likePost: ', $e->getMessage(), PHP_EOL;
 }
@@ -8482,9 +8848,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
 my $shopId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    $api_instance->likePost(announcementId => $announcementId, shopId => $shopId);
+    $api_instance->likePost(announcementId => $announcementId, shopId => $shopId, userId => $userId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->likePost: $@\n";
@@ -8505,9 +8872,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.PostControllerApi()
 announcementId = 789 # Long | 
 shopId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_instance.like_post(announcementId, shopId)
+    api_instance.like_post(announcementId, shopId, userId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->likePost: %s\n" % e)</code></pre>
                             </div>
@@ -8570,6 +8938,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_likePost_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -8619,7 +9016,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-listShopNews-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -8642,8 +9039,9 @@ public class PostControllerApiExample {
 
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.PostDto$Response] result = apiInstance.listShopNews(shopId);
+            array[com.nailcase.model.dto.PostDto$Response] result = apiInstance.listShopNews(shopId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#listShopNews");
@@ -8661,8 +9059,9 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.PostDto$Response] result = apiInstance.listShopNews(shopId);
+            array[com.nailcase.model.dto.PostDto$Response] result = apiInstance.listShopNews(shopId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#listShopNews");
@@ -8680,10 +9079,12 @@ public class PostControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
+Long *userId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance listShopNewsWith:shopId
+    userId:userId
               completionHandler: ^(array[com.nailcase.model.dto.PostDto$Response] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -8706,6 +9107,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var shopId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -8714,7 +9116,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listShopNews(shopId, callback);
+api.listShopNews(shopId, userId, callback);
 </code></pre>
                             </div>
 
@@ -8740,10 +9142,11 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var shopId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                array[com.nailcase.model.dto.PostDto$Response] result = apiInstance.listShopNews(shopId);
+                array[com.nailcase.model.dto.PostDto$Response] result = apiInstance.listShopNews(shopId, userId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -8765,9 +9168,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $shopId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $result = $api_instance->listShopNews($shopId);
+    $result = $api_instance->listShopNews($shopId, $userId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->listShopNews: ', $e->getMessage(), PHP_EOL;
@@ -8785,9 +9189,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $shopId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->listShopNews(shopId => $shopId);
+    my $result = $api_instance->listShopNews(shopId => $shopId, userId => $userId);
     print Dumper($result);
 };
 if ($@) {
@@ -8808,9 +9213,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 shopId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_response = api_instance.list_shop_news(shopId)
+    api_response = api_instance.list_shop_news(shopId, userId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->listShopNews: %s\n" % e)</code></pre>
@@ -8852,6 +9258,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listShopNews_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -8946,7 +9381,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-registerComment-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -8969,10 +9404,11 @@ public class PostControllerApiExample {
 
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostCommentDto$Request body = ; // Com.nailcase.model.dto.PostCommentDto$Request | 
+        Long userId = 789; // Long | 
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.registerComment(body, shopId, announcementId);
+            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.registerComment(body, userId, shopId, announcementId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerComment");
@@ -8990,10 +9426,11 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostCommentDto$Request body = ; // Com.nailcase.model.dto.PostCommentDto$Request | 
+        Long userId = 789; // Long | 
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.registerComment(body, shopId, announcementId);
+            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.registerComment(body, userId, shopId, announcementId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerComment");
@@ -9011,12 +9448,14 @@ public class PostControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.PostCommentDto$Request *body = ; // 
+Long *userId = 789; // 
 Long *shopId = 789; // 
 Long *announcementId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance registerCommentWith:body
+    userId:userId
     shopId:shopId
     announcementId:announcementId
               completionHandler: ^(com.nailcase.model.dto.PostCommentDto$Response output, NSError* error) {
@@ -9041,6 +9480,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Com.nailcase.model.dto.PostCommentDto$Request}} 
+var userId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 var announcementId = 789; // {{Long}} 
 
@@ -9051,7 +9491,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerComment(bodyshopIdannouncementId, callback);
+api.registerComment(bodyuserIdshopIdannouncementId, callback);
 </code></pre>
                             </div>
 
@@ -9077,12 +9517,13 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var body = new Com.nailcase.model.dto.PostCommentDto$Request(); // Com.nailcase.model.dto.PostCommentDto$Request | 
+            var userId = 789;  // Long | 
             var shopId = 789;  // Long | 
             var announcementId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.registerComment(body, shopId, announcementId);
+                com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.registerComment(body, userId, shopId, announcementId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -9104,11 +9545,12 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Com.nailcase.model.dto.PostCommentDto$Request | 
+$userId = 789; // Long | 
 $shopId = 789; // Long | 
 $announcementId = 789; // Long | 
 
 try {
-    $result = $api_instance->registerComment($body, $shopId, $announcementId);
+    $result = $api_instance->registerComment($body, $userId, $shopId, $announcementId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->registerComment: ', $e->getMessage(), PHP_EOL;
@@ -9126,11 +9568,12 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.PostCommentDto$Request->new(); # Com.nailcase.model.dto.PostCommentDto$Request | 
+my $userId = 789; # Long | 
 my $shopId = 789; # Long | 
 my $announcementId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->registerComment(body => $body, shopId => $shopId, announcementId => $announcementId);
+    my $result = $api_instance->registerComment(body => $body, userId => $userId, shopId => $shopId, announcementId => $announcementId);
     print Dumper($result);
 };
 if ($@) {
@@ -9151,11 +9594,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 body =  # Com.nailcase.model.dto.PostCommentDto$Request | 
+userId = 789 # Long | 
 shopId = 789 # Long | 
 announcementId = 789 # Long | 
 
 try: 
-    api_response = api_instance.register_comment(body, shopId, announcementId)
+    api_response = api_instance.register_comment(body, userId, shopId, announcementId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->registerComment: %s\n" % e)</code></pre>
@@ -9262,6 +9706,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_registerComment_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 201 - Created </h3>
@@ -9352,7 +9825,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-registerPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -9375,9 +9848,10 @@ public class PostControllerApiExample {
 
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostDto$Request body = ; // Com.nailcase.model.dto.PostDto$Request | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostDto$Response result = apiInstance.registerPost(body, shopId);
+            com.nailcase.model.dto.PostDto$Response result = apiInstance.registerPost(body, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerPost");
@@ -9395,9 +9869,10 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostDto$Request body = ; // Com.nailcase.model.dto.PostDto$Request | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostDto$Response result = apiInstance.registerPost(body, shopId);
+            com.nailcase.model.dto.PostDto$Response result = apiInstance.registerPost(body, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#registerPost");
@@ -9415,11 +9890,13 @@ public class PostControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.PostDto$Request *body = ; // 
+Long *managerId = 789; // 
 Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance registerPostWith:body
+    managerId:managerId
     shopId:shopId
               completionHandler: ^(com.nailcase.model.dto.PostDto$Response output, NSError* error) {
                             if (output) {
@@ -9443,6 +9920,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Com.nailcase.model.dto.PostDto$Request}} 
+var managerId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
@@ -9452,7 +9930,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerPost(bodyshopId, callback);
+api.registerPost(bodymanagerIdshopId, callback);
 </code></pre>
                             </div>
 
@@ -9478,11 +9956,12 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var body = new Com.nailcase.model.dto.PostDto$Request(); // Com.nailcase.model.dto.PostDto$Request | 
+            var managerId = 789;  // Long | 
             var shopId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.PostDto$Response result = apiInstance.registerPost(body, shopId);
+                com.nailcase.model.dto.PostDto$Response result = apiInstance.registerPost(body, managerId, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -9504,10 +9983,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Com.nailcase.model.dto.PostDto$Request | 
+$managerId = 789; // Long | 
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->registerPost($body, $shopId);
+    $result = $api_instance->registerPost($body, $managerId, $shopId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->registerPost: ', $e->getMessage(), PHP_EOL;
@@ -9525,10 +10005,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.PostDto$Request->new(); # Com.nailcase.model.dto.PostDto$Request | 
+my $managerId = 789; # Long | 
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->registerPost(body => $body, shopId => $shopId);
+    my $result = $api_instance->registerPost(body => $body, managerId => $managerId, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
@@ -9549,10 +10030,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 body =  # Com.nailcase.model.dto.PostDto$Request | 
+managerId = 789 # Long | 
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.register_post(body, shopId)
+    api_response = api_instance.register_post(body, managerId, shopId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->registerPost: %s\n" % e)</code></pre>
@@ -9637,6 +10119,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_registerPost_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 201 - Created </h3>
@@ -9725,7 +10236,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images/{imageId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/images/{imageId}?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-removeImageFromPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -9749,9 +10260,10 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long imageId = 789; // Long | 
-        String shopId = shopId_example; // String | 
+        Long shopId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.removeImageFromPost(announcementId, imageId, shopId);
+            apiInstance.removeImageFromPost(announcementId, imageId, shopId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#removeImageFromPost");
             e.printStackTrace();
@@ -9769,9 +10281,10 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long imageId = 789; // Long | 
-        String shopId = shopId_example; // String | 
+        Long shopId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.removeImageFromPost(announcementId, imageId, shopId);
+            apiInstance.removeImageFromPost(announcementId, imageId, shopId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#removeImageFromPost");
             e.printStackTrace();
@@ -9789,13 +10302,15 @@ public class PostControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *announcementId = 789; // 
 Long *imageId = 789; // 
-String *shopId = shopId_example; // 
+Long *shopId = 789; // 
+Long *managerId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance removeImageFromPostWith:announcementId
     imageId:imageId
     shopId:shopId
+    managerId:managerId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -9816,7 +10331,8 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
 var imageId = 789; // {{Long}} 
-var shopId = shopId_example; // {{String}} 
+var shopId = 789; // {{Long}} 
+var managerId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -9825,7 +10341,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.removeImageFromPost(announcementId, imageId, shopId, callback);
+api.removeImageFromPost(announcementId, imageId, shopId, managerId, callback);
 </code></pre>
                             </div>
 
@@ -9852,11 +10368,12 @@ namespace Example
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var imageId = 789;  // Long | 
-            var shopId = shopId_example;  // String | 
+            var shopId = 789;  // Long | 
+            var managerId = 789;  // Long | 
 
             try
             {
-                apiInstance.removeImageFromPost(announcementId, imageId, shopId);
+                apiInstance.removeImageFromPost(announcementId, imageId, shopId, managerId);
             }
             catch (Exception e)
             {
@@ -9878,10 +10395,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $imageId = 789; // Long | 
-$shopId = shopId_example; // String | 
+$shopId = 789; // Long | 
+$managerId = 789; // Long | 
 
 try {
-    $api_instance->removeImageFromPost($announcementId, $imageId, $shopId);
+    $api_instance->removeImageFromPost($announcementId, $imageId, $shopId, $managerId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->removeImageFromPost: ', $e->getMessage(), PHP_EOL;
 }
@@ -9899,10 +10417,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
 my $imageId = 789; # Long | 
-my $shopId = shopId_example; # String | 
+my $shopId = 789; # Long | 
+my $managerId = 789; # Long | 
 
 eval { 
-    $api_instance->removeImageFromPost(announcementId => $announcementId, imageId => $imageId, shopId => $shopId);
+    $api_instance->removeImageFromPost(announcementId => $announcementId, imageId => $imageId, shopId => $shopId, managerId => $managerId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->removeImageFromPost: $@\n";
@@ -9923,10 +10442,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.PostControllerApi()
 announcementId = 789 # Long | 
 imageId = 789 # Long | 
-shopId = shopId_example # String | 
+shopId = 789 # Long | 
+managerId = 789 # Long | 
 
 try: 
-    api_instance.remove_image_from_post(announcementId, imageId, shopId)
+    api_instance.remove_image_from_post(announcementId, imageId, shopId, managerId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->removeImageFromPost: %s\n" % e)</code></pre>
                             </div>
@@ -9992,8 +10512,11 @@ except ApiException as e:
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      String
+                                                      Long
                                                   </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
                                   
                                               </div>
                                                   <div class="inner required">
@@ -10008,6 +10531,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_removeImageFromPost_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -10056,7 +10608,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/unlike"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/unlike?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-unLikePost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -10080,8 +10632,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.unLikePost(announcementId, shopId);
+            apiInstance.unLikePost(announcementId, shopId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#unLikePost");
             e.printStackTrace();
@@ -10099,8 +10652,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            apiInstance.unLikePost(announcementId, shopId);
+            apiInstance.unLikePost(announcementId, shopId, userId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#unLikePost");
             e.printStackTrace();
@@ -10118,11 +10672,13 @@ public class PostControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *announcementId = 789; // 
 Long *shopId = 789; // 
+Long *userId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance unLikePostWith:announcementId
     shopId:shopId
+    userId:userId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -10143,6 +10699,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -10151,7 +10708,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.unLikePost(announcementId, shopId, callback);
+api.unLikePost(announcementId, shopId, userId, callback);
 </code></pre>
                             </div>
 
@@ -10178,10 +10735,11 @@ namespace Example
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                apiInstance.unLikePost(announcementId, shopId);
+                apiInstance.unLikePost(announcementId, shopId, userId);
             }
             catch (Exception e)
             {
@@ -10203,9 +10761,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $shopId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $api_instance->unLikePost($announcementId, $shopId);
+    $api_instance->unLikePost($announcementId, $shopId, $userId);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->unLikePost: ', $e->getMessage(), PHP_EOL;
 }
@@ -10223,9 +10782,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
 my $shopId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    $api_instance->unLikePost(announcementId => $announcementId, shopId => $shopId);
+    $api_instance->unLikePost(announcementId => $announcementId, shopId => $shopId, userId => $userId);
 };
 if ($@) {
     warn "Exception when calling PostControllerApi->unLikePost: $@\n";
@@ -10246,9 +10806,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.PostControllerApi()
 announcementId = 789 # Long | 
 shopId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_instance.un_like_post(announcementId, shopId)
+    api_instance.un_like_post(announcementId, shopId, userId)
 except ApiException as e:
     print("Exception when calling PostControllerApi->unLikePost: %s\n" % e)</code></pre>
                             </div>
@@ -10311,6 +10872,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_unLikePost_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -10361,7 +10951,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/comments/{commentId}?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-updateComment-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -10384,11 +10974,12 @@ public class PostControllerApiExample {
 
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostCommentDto$Request body = ; // Com.nailcase.model.dto.PostCommentDto$Request | 
+        Long userId = 789; // Long | 
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.updateComment(body, shopId, announcementId, commentId);
+            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.updateComment(body, userId, shopId, announcementId, commentId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updateComment");
@@ -10406,11 +10997,12 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostCommentDto$Request body = ; // Com.nailcase.model.dto.PostCommentDto$Request | 
+        Long userId = 789; // Long | 
         Long shopId = 789; // Long | 
         Long announcementId = 789; // Long | 
         Long commentId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.updateComment(body, shopId, announcementId, commentId);
+            com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.updateComment(body, userId, shopId, announcementId, commentId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updateComment");
@@ -10428,6 +11020,7 @@ public class PostControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.PostCommentDto$Request *body = ; // 
+Long *userId = 789; // 
 Long *shopId = 789; // 
 Long *announcementId = 789; // 
 Long *commentId = 789; // 
@@ -10435,6 +11028,7 @@ Long *commentId = 789; //
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance updateCommentWith:body
+    userId:userId
     shopId:shopId
     announcementId:announcementId
     commentId:commentId
@@ -10460,6 +11054,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Com.nailcase.model.dto.PostCommentDto$Request}} 
+var userId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 var announcementId = 789; // {{Long}} 
 var commentId = 789; // {{Long}} 
@@ -10471,7 +11066,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateComment(bodyshopIdannouncementIdcommentId, callback);
+api.updateComment(bodyuserIdshopIdannouncementIdcommentId, callback);
 </code></pre>
                             </div>
 
@@ -10497,13 +11092,14 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var body = new Com.nailcase.model.dto.PostCommentDto$Request(); // Com.nailcase.model.dto.PostCommentDto$Request | 
+            var userId = 789;  // Long | 
             var shopId = 789;  // Long | 
             var announcementId = 789;  // Long | 
             var commentId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.updateComment(body, shopId, announcementId, commentId);
+                com.nailcase.model.dto.PostCommentDto$Response result = apiInstance.updateComment(body, userId, shopId, announcementId, commentId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -10525,12 +11121,13 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Com.nailcase.model.dto.PostCommentDto$Request | 
+$userId = 789; // Long | 
 $shopId = 789; // Long | 
 $announcementId = 789; // Long | 
 $commentId = 789; // Long | 
 
 try {
-    $result = $api_instance->updateComment($body, $shopId, $announcementId, $commentId);
+    $result = $api_instance->updateComment($body, $userId, $shopId, $announcementId, $commentId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->updateComment: ', $e->getMessage(), PHP_EOL;
@@ -10548,12 +11145,13 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.PostCommentDto$Request->new(); # Com.nailcase.model.dto.PostCommentDto$Request | 
+my $userId = 789; # Long | 
 my $shopId = 789; # Long | 
 my $announcementId = 789; # Long | 
 my $commentId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->updateComment(body => $body, shopId => $shopId, announcementId => $announcementId, commentId => $commentId);
+    my $result = $api_instance->updateComment(body => $body, userId => $userId, shopId => $shopId, announcementId => $announcementId, commentId => $commentId);
     print Dumper($result);
 };
 if ($@) {
@@ -10574,12 +11172,13 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 body =  # Com.nailcase.model.dto.PostCommentDto$Request | 
+userId = 789 # Long | 
 shopId = 789 # Long | 
 announcementId = 789 # Long | 
 commentId = 789 # Long | 
 
 try: 
-    api_response = api_instance.update_comment(body, shopId, announcementId, commentId)
+    api_response = api_instance.update_comment(body, userId, shopId, announcementId, commentId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->updateComment: %s\n" % e)</code></pre>
@@ -10708,6 +11307,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_updateComment_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -10798,7 +11426,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-updatePost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -10821,10 +11449,11 @@ public class PostControllerApiExample {
 
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostDto$Request body = ; // Com.nailcase.model.dto.PostDto$Request | 
+        Long managerId = 789; // Long | 
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostDto$Response result = apiInstance.updatePost(body, announcementId, shopId);
+            com.nailcase.model.dto.PostDto$Response result = apiInstance.updatePost(body, managerId, announcementId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updatePost");
@@ -10842,10 +11471,11 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         Com.nailcase.model.dto.PostDto$Request body = ; // Com.nailcase.model.dto.PostDto$Request | 
+        Long managerId = 789; // Long | 
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostDto$Response result = apiInstance.updatePost(body, announcementId, shopId);
+            com.nailcase.model.dto.PostDto$Response result = apiInstance.updatePost(body, managerId, announcementId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#updatePost");
@@ -10863,12 +11493,14 @@ public class PostControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.PostDto$Request *body = ; // 
+Long *managerId = 789; // 
 Long *announcementId = 789; // 
 Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance updatePostWith:body
+    managerId:managerId
     announcementId:announcementId
     shopId:shopId
               completionHandler: ^(com.nailcase.model.dto.PostDto$Response output, NSError* error) {
@@ -10893,6 +11525,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var body = ; // {{Com.nailcase.model.dto.PostDto$Request}} 
+var managerId = 789; // {{Long}} 
 var announcementId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 
@@ -10903,7 +11536,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updatePost(bodyannouncementIdshopId, callback);
+api.updatePost(bodymanagerIdannouncementIdshopId, callback);
 </code></pre>
                             </div>
 
@@ -10929,12 +11562,13 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var body = new Com.nailcase.model.dto.PostDto$Request(); // Com.nailcase.model.dto.PostDto$Request | 
+            var managerId = 789;  // Long | 
             var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.PostDto$Response result = apiInstance.updatePost(body, announcementId, shopId);
+                com.nailcase.model.dto.PostDto$Response result = apiInstance.updatePost(body, managerId, announcementId, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -10956,11 +11590,12 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $body = ; // Com.nailcase.model.dto.PostDto$Request | 
+$managerId = 789; // Long | 
 $announcementId = 789; // Long | 
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->updatePost($body, $announcementId, $shopId);
+    $result = $api_instance->updatePost($body, $managerId, $announcementId, $shopId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->updatePost: ', $e->getMessage(), PHP_EOL;
@@ -10978,11 +11613,12 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.PostDto$Request->new(); # Com.nailcase.model.dto.PostDto$Request | 
+my $managerId = 789; # Long | 
 my $announcementId = 789; # Long | 
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->updatePost(body => $body, announcementId => $announcementId, shopId => $shopId);
+    my $result = $api_instance->updatePost(body => $body, managerId => $managerId, announcementId => $announcementId, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
@@ -11003,11 +11639,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 body =  # Com.nailcase.model.dto.PostDto$Request | 
+managerId = 789 # Long | 
 announcementId = 789 # Long | 
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.update_post(body, announcementId, shopId)
+    api_response = api_instance.update_post(body, managerId, announcementId, shopId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->updatePost: %s\n" % e)</code></pre>
@@ -11114,6 +11751,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_updatePost_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -11203,7 +11869,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/images?files="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/images?files=&managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-uploadImages2-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -11226,9 +11892,10 @@ public class PostControllerApiExample {
 
         PostControllerApi apiInstance = new PostControllerApi();
         array[byte[]] files = ; // array[byte[]] | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.PostImageDto] result = apiInstance.uploadImages2(files, shopId);
+            array[com.nailcase.model.dto.PostImageDto] result = apiInstance.uploadImages2(files, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#uploadImages2");
@@ -11246,9 +11913,10 @@ public class PostControllerApiExample {
     public static void main(String[] args) {
         PostControllerApi apiInstance = new PostControllerApi();
         array[byte[]] files = ; // array[byte[]] | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.PostImageDto] result = apiInstance.uploadImages2(files, shopId);
+            array[com.nailcase.model.dto.PostImageDto] result = apiInstance.uploadImages2(files, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#uploadImages2");
@@ -11266,11 +11934,13 @@ public class PostControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 array[byte[]] *files = ; // 
+Long *managerId = 789; // 
 Long *shopId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance uploadImages2With:files
+    managerId:managerId
     shopId:shopId
               completionHandler: ^(array[com.nailcase.model.dto.PostImageDto] output, NSError* error) {
                             if (output) {
@@ -11294,6 +11964,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.PostControllerApi()
 var files = ; // {{array[byte[]]}} 
+var managerId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
@@ -11303,7 +11974,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.uploadImages2(files, shopId, callback);
+api.uploadImages2(files, managerId, shopId, callback);
 </code></pre>
                             </div>
 
@@ -11329,11 +12000,12 @@ namespace Example
 
             var apiInstance = new PostControllerApi();
             var files = new array[byte[]](); // array[byte[]] | 
+            var managerId = 789;  // Long | 
             var shopId = 789;  // Long | 
 
             try
             {
-                array[com.nailcase.model.dto.PostImageDto] result = apiInstance.uploadImages2(files, shopId);
+                array[com.nailcase.model.dto.PostImageDto] result = apiInstance.uploadImages2(files, managerId, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -11355,10 +12027,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $files = ; // array[byte[]] | 
+$managerId = 789; // Long | 
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->uploadImages2($files, $shopId);
+    $result = $api_instance->uploadImages2($files, $managerId, $shopId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->uploadImages2: ', $e->getMessage(), PHP_EOL;
@@ -11376,10 +12049,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $files = []; # array[byte[]] | 
+my $managerId = 789; # Long | 
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->uploadImages2(files => $files, shopId => $shopId);
+    my $result = $api_instance->uploadImages2(files => $files, managerId => $managerId, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
@@ -11400,10 +12074,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.PostControllerApi()
 files =  # array[byte[]] | 
+managerId = 789 # Long | 
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.upload_images2(files, shopId)
+    api_response = api_instance.upload_images2(files, managerId, shopId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->uploadImages2: %s\n" % e)</code></pre>
@@ -11463,6 +12138,28 @@ except ApiException as e:
                                                 </span>
                                                     <span class="format">
                                                         (binary)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_uploadImages2_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
                                                     </span>
                                 
                                             </div>
@@ -11567,7 +12264,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-PostController-viewShopNews-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -11591,8 +12288,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostDto$Response result = apiInstance.viewShopNews(announcementId, shopId);
+            com.nailcase.model.dto.PostDto$Response result = apiInstance.viewShopNews(announcementId, shopId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#viewShopNews");
@@ -11611,8 +12309,9 @@ public class PostControllerApiExample {
         PostControllerApi apiInstance = new PostControllerApi();
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
+        Long userId = 789; // Long | 
         try {
-            com.nailcase.model.dto.PostDto$Response result = apiInstance.viewShopNews(announcementId, shopId);
+            com.nailcase.model.dto.PostDto$Response result = apiInstance.viewShopNews(announcementId, shopId, userId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling PostControllerApi#viewShopNews");
@@ -11631,11 +12330,13 @@ public class PostControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *announcementId = 789; // 
 Long *shopId = 789; // 
+Long *userId = 789; // 
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
 [apiInstance viewShopNewsWith:announcementId
     shopId:shopId
+    userId:userId
               completionHandler: ^(com.nailcase.model.dto.PostDto$Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -11659,6 +12360,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.PostControllerApi()
 var announcementId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
+var userId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -11667,7 +12369,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.viewShopNews(announcementId, shopId, callback);
+api.viewShopNews(announcementId, shopId, userId, callback);
 </code></pre>
                             </div>
 
@@ -11694,10 +12396,11 @@ namespace Example
             var apiInstance = new PostControllerApi();
             var announcementId = 789;  // Long | 
             var shopId = 789;  // Long | 
+            var userId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.PostDto$Response result = apiInstance.viewShopNews(announcementId, shopId);
+                com.nailcase.model.dto.PostDto$Response result = apiInstance.viewShopNews(announcementId, shopId, userId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -11720,9 +12423,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiPostControllerApi();
 $announcementId = 789; // Long | 
 $shopId = 789; // Long | 
+$userId = 789; // Long | 
 
 try {
-    $result = $api_instance->viewShopNews($announcementId, $shopId);
+    $result = $api_instance->viewShopNews($announcementId, $shopId, $userId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PostControllerApi->viewShopNews: ', $e->getMessage(), PHP_EOL;
@@ -11741,9 +12445,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::PostControllerApi->new();
 my $announcementId = 789; # Long | 
 my $shopId = 789; # Long | 
+my $userId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->viewShopNews(announcementId => $announcementId, shopId => $shopId);
+    my $result = $api_instance->viewShopNews(announcementId => $announcementId, shopId => $shopId, userId => $userId);
     print Dumper($result);
 };
 if ($@) {
@@ -11765,9 +12470,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.PostControllerApi()
 announcementId = 789 # Long | 
 shopId = 789 # Long | 
+userId = 789 # Long | 
 
 try: 
-    api_response = api_instance.view_shop_news(announcementId, shopId)
+    api_response = api_instance.view_shop_news(announcementId, shopId, userId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PostControllerApi->viewShopNews: %s\n" % e)</code></pre>
@@ -11831,6 +12537,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">userId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_viewShopNews_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -17725,8 +18460,9 @@ public class ShopControllerApiExample {
 
         ShopControllerApi apiInstance = new ShopControllerApi();
         Long imageId = 789; // Long | 
+        String authorization = authorization_example; // String | 
         try {
-            apiInstance.deleteImage(imageId);
+            apiInstance.deleteImage(imageId, authorization);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#deleteImage");
             e.printStackTrace();
@@ -17743,8 +18479,9 @@ public class ShopControllerApiExample {
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
         Long imageId = 789; // Long | 
+        String authorization = authorization_example; // String | 
         try {
-            apiInstance.deleteImage(imageId);
+            apiInstance.deleteImage(imageId, authorization);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#deleteImage");
             e.printStackTrace();
@@ -17761,10 +18498,12 @@ public class ShopControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *imageId = 789; // 
+String *authorization = authorization_example; // 
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
 [apiInstance deleteImageWith:imageId
+    authorization:authorization
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -17784,6 +18523,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var imageId = 789; // {{Long}} 
+var authorization = authorization_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -17792,7 +18532,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deleteImage(imageId, callback);
+api.deleteImage(imageId, authorization, callback);
 </code></pre>
                             </div>
 
@@ -17818,10 +18558,11 @@ namespace Example
 
             var apiInstance = new ShopControllerApi();
             var imageId = 789;  // Long | 
+            var authorization = authorization_example;  // String | 
 
             try
             {
-                apiInstance.deleteImage(imageId);
+                apiInstance.deleteImage(imageId, authorization);
             }
             catch (Exception e)
             {
@@ -17842,9 +18583,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
 $imageId = 789; // Long | 
+$authorization = authorization_example; // String | 
 
 try {
-    $api_instance->deleteImage($imageId);
+    $api_instance->deleteImage($imageId, $authorization);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->deleteImage: ', $e->getMessage(), PHP_EOL;
 }
@@ -17861,9 +18603,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
 my $imageId = 789; # Long | 
+my $authorization = authorization_example; # String | 
 
 eval { 
-    $api_instance->deleteImage(imageId => $imageId);
+    $api_instance->deleteImage(imageId => $imageId, authorization => $authorization);
 };
 if ($@) {
     warn "Exception when calling ShopControllerApi->deleteImage: $@\n";
@@ -17883,9 +18626,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
 imageId = 789 # Long | 
+authorization = authorization_example # String | 
 
 try: 
-    api_instance.delete_image(imageId)
+    api_instance.delete_image(imageId, authorization)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->deleteImage: %s\n" % e)</code></pre>
                             </div>
@@ -17923,6 +18667,32 @@ except ApiException as e:
                                   </tr>
                             </table>
 
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">Authorization*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_deleteImage_authorization">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
 
 
 
@@ -17974,7 +18744,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
  -H "Authorization: Bearer [[accessToken]]"\
 \
-"http://localhost:8081/api/v1/shops/{shopId}"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-deleteShop-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -17997,8 +18767,9 @@ public class ShopControllerApiExample {
 
         ShopControllerApi apiInstance = new ShopControllerApi();
         Long shopId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.deleteShop(shopId);
+            apiInstance.deleteShop(shopId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#deleteShop");
             e.printStackTrace();
@@ -18015,8 +18786,9 @@ public class ShopControllerApiExample {
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
         Long shopId = 789; // Long | 
+        Long managerId = 789; // Long | 
         try {
-            apiInstance.deleteShop(shopId);
+            apiInstance.deleteShop(shopId, managerId);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#deleteShop");
             e.printStackTrace();
@@ -18033,10 +18805,12 @@ public class ShopControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
+Long *managerId = 789; // 
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
 [apiInstance deleteShopWith:shopId
+    managerId:managerId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -18056,6 +18830,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var shopId = 789; // {{Long}} 
+var managerId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -18064,7 +18839,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deleteShop(shopId, callback);
+api.deleteShop(shopId, managerId, callback);
 </code></pre>
                             </div>
 
@@ -18090,10 +18865,11 @@ namespace Example
 
             var apiInstance = new ShopControllerApi();
             var shopId = 789;  // Long | 
+            var managerId = 789;  // Long | 
 
             try
             {
-                apiInstance.deleteShop(shopId);
+                apiInstance.deleteShop(shopId, managerId);
             }
             catch (Exception e)
             {
@@ -18114,9 +18890,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
 $shopId = 789; // Long | 
+$managerId = 789; // Long | 
 
 try {
-    $api_instance->deleteShop($shopId);
+    $api_instance->deleteShop($shopId, $managerId);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->deleteShop: ', $e->getMessage(), PHP_EOL;
 }
@@ -18133,9 +18910,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
 my $shopId = 789; # Long | 
+my $managerId = 789; # Long | 
 
 eval { 
-    $api_instance->deleteShop(shopId => $shopId);
+    $api_instance->deleteShop(shopId => $shopId, managerId => $managerId);
 };
 if ($@) {
     warn "Exception when calling ShopControllerApi->deleteShop: $@\n";
@@ -18155,9 +18933,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
 shopId = 789 # Long | 
+managerId = 789 # Long | 
 
 try: 
-    api_instance.delete_shop(shopId)
+    api_instance.delete_shop(shopId, managerId)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->deleteShop: %s\n" % e)</code></pre>
                             </div>
@@ -18198,6 +18977,35 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_deleteShop_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 204 - No Content </h3>
@@ -18858,7 +19666,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops"</code></pre>
+"http://localhost:8081/api/v1/shops?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-registerShop-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -18881,8 +19689,9 @@ public class ShopControllerApiExample {
 
         ShopControllerApi apiInstance = new ShopControllerApi();
         Com.nailcase.model.dto.ShopDto$Post body = ; // Com.nailcase.model.dto.ShopDto$Post | 
+        Long managerId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body);
+            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body, managerId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
@@ -18900,8 +19709,9 @@ public class ShopControllerApiExample {
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
         Com.nailcase.model.dto.ShopDto$Post body = ; // Com.nailcase.model.dto.ShopDto$Post | 
+        Long managerId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body);
+            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body, managerId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
@@ -18919,10 +19729,12 @@ public class ShopControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.ShopDto$Post *body = ; // 
+Long *managerId = 789; // 
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
 [apiInstance registerShopWith:body
+    managerId:managerId
               completionHandler: ^(com.nailcase.model.dto.ShopDto$Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -18945,6 +19757,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var body = ; // {{Com.nailcase.model.dto.ShopDto$Post}} 
+var managerId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -18953,7 +19766,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerShop(body, callback);
+api.registerShop(bodymanagerId, callback);
 </code></pre>
                             </div>
 
@@ -18979,10 +19792,11 @@ namespace Example
 
             var apiInstance = new ShopControllerApi();
             var body = new Com.nailcase.model.dto.ShopDto$Post(); // Com.nailcase.model.dto.ShopDto$Post | 
+            var managerId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body);
+                com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body, managerId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -19004,9 +19818,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
 $body = ; // Com.nailcase.model.dto.ShopDto$Post | 
+$managerId = 789; // Long | 
 
 try {
-    $result = $api_instance->registerShop($body);
+    $result = $api_instance->registerShop($body, $managerId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->registerShop: ', $e->getMessage(), PHP_EOL;
@@ -19024,9 +19839,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ShopDto$Post->new(); # Com.nailcase.model.dto.ShopDto$Post | 
+my $managerId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->registerShop(body => $body);
+    my $result = $api_instance->registerShop(body => $body, managerId => $managerId);
     print Dumper($result);
 };
 if ($@) {
@@ -19047,9 +19863,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
 body =  # Com.nailcase.model.dto.ShopDto$Post | 
+managerId = 789 # Long | 
 
 try: 
-    api_response = api_instance.register_shop(body)
+    api_response = api_instance.register_shop(body, managerId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->registerShop: %s\n" % e)</code></pre>
@@ -19105,6 +19922,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_registerShop_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 201 - Created </h3>
@@ -19550,7 +20396,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/overview"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/overview?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-updateOverview-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -19573,9 +20419,10 @@ public class ShopControllerApiExample {
 
         ShopControllerApi apiInstance = new ShopControllerApi();
         Com.nailcase.model.dto.ShopDto$Patch body = ; // Com.nailcase.model.dto.ShopDto$Patch | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.updateOverview(body, shopId);
+            com.nailcase.model.dto.ShopDto$Response result = apiInstance.updateOverview(body, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#updateOverview");
@@ -19593,9 +20440,10 @@ public class ShopControllerApiExample {
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
         Com.nailcase.model.dto.ShopDto$Patch body = ; // Com.nailcase.model.dto.ShopDto$Patch | 
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.updateOverview(body, shopId);
+            com.nailcase.model.dto.ShopDto$Response result = apiInstance.updateOverview(body, managerId, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#updateOverview");
@@ -19613,11 +20461,13 @@ public class ShopControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Com.nailcase.model.dto.ShopDto$Patch *body = ; // 
+Long *managerId = 789; // 
 Long *shopId = 789; // 
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
 [apiInstance updateOverviewWith:body
+    managerId:managerId
     shopId:shopId
               completionHandler: ^(com.nailcase.model.dto.ShopDto$Response output, NSError* error) {
                             if (output) {
@@ -19641,6 +20491,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var body = ; // {{Com.nailcase.model.dto.ShopDto$Patch}} 
+var managerId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 
 var callback = function(error, data, response) {
@@ -19650,7 +20501,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateOverview(bodyshopId, callback);
+api.updateOverview(bodymanagerIdshopId, callback);
 </code></pre>
                             </div>
 
@@ -19676,11 +20527,12 @@ namespace Example
 
             var apiInstance = new ShopControllerApi();
             var body = new Com.nailcase.model.dto.ShopDto$Patch(); // Com.nailcase.model.dto.ShopDto$Patch | 
+            var managerId = 789;  // Long | 
             var shopId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.ShopDto$Response result = apiInstance.updateOverview(body, shopId);
+                com.nailcase.model.dto.ShopDto$Response result = apiInstance.updateOverview(body, managerId, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -19702,10 +20554,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
 $body = ; // Com.nailcase.model.dto.ShopDto$Patch | 
+$managerId = 789; // Long | 
 $shopId = 789; // Long | 
 
 try {
-    $result = $api_instance->updateOverview($body, $shopId);
+    $result = $api_instance->updateOverview($body, $managerId, $shopId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->updateOverview: ', $e->getMessage(), PHP_EOL;
@@ -19723,10 +20576,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
 my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ShopDto$Patch->new(); # Com.nailcase.model.dto.ShopDto$Patch | 
+my $managerId = 789; # Long | 
 my $shopId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->updateOverview(body => $body, shopId => $shopId);
+    my $result = $api_instance->updateOverview(body => $body, managerId => $managerId, shopId => $shopId);
     print Dumper($result);
 };
 if ($@) {
@@ -19747,10 +20601,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
 body =  # Com.nailcase.model.dto.ShopDto$Patch | 
+managerId = 789 # Long | 
 shopId = 789 # Long | 
 
 try: 
-    api_response = api_instance.update_overview(body, shopId)
+    api_response = api_instance.update_overview(body, managerId, shopId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->updateOverview: %s\n" % e)</code></pre>
@@ -19835,6 +20690,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_updateOverview_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -20300,7 +21184,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/image"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/image?managerId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-uploadImage-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -20322,10 +21206,11 @@ public class ShopControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         ShopControllerApi apiInstance = new ShopControllerApi();
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         ShopId_image_body body = ; // ShopId_image_body | 
         try {
-            'String' result = apiInstance.uploadImage(shopId, body);
+            'String' result = apiInstance.uploadImage(managerId, shopId, body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#uploadImage");
@@ -20342,10 +21227,11 @@ public class ShopControllerApiExample {
 
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
+        Long managerId = 789; // Long | 
         Long shopId = 789; // Long | 
         ShopId_image_body body = ; // ShopId_image_body | 
         try {
-            'String' result = apiInstance.uploadImage(shopId, body);
+            'String' result = apiInstance.uploadImage(managerId, shopId, body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#uploadImage");
@@ -20362,12 +21248,14 @@ public class ShopControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *managerId = 789; // 
 Long *shopId = 789; // 
 ShopId_image_body *body = ; //  (optional)
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
-[apiInstance uploadImageWith:shopId
+[apiInstance uploadImageWith:managerId
+    shopId:shopId
     body:body
               completionHandler: ^('String' output, NSError* error) {
                             if (output) {
@@ -20390,6 +21278,7 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
+var managerId = 789; // {{Long}} 
 var shopId = 789; // {{Long}} 
 var opts = { 
   'body':  // {{ShopId_image_body}} 
@@ -20401,7 +21290,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.uploadImage(shopId, opts, callback);
+api.uploadImage(managerIdshopId, opts, callback);
 </code></pre>
                             </div>
 
@@ -20426,12 +21315,13 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new ShopControllerApi();
+            var managerId = 789;  // Long | 
             var shopId = 789;  // Long | 
             var body = new ShopId_image_body(); // ShopId_image_body |  (optional) 
 
             try
             {
-                'String' result = apiInstance.uploadImage(shopId, body);
+                'String' result = apiInstance.uploadImage(managerId, shopId, body);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -20452,11 +21342,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
+$managerId = 789; // Long | 
 $shopId = 789; // Long | 
 $body = ; // ShopId_image_body | 
 
 try {
-    $result = $api_instance->uploadImage($shopId, $body);
+    $result = $api_instance->uploadImage($managerId, $shopId, $body);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->uploadImage: ', $e->getMessage(), PHP_EOL;
@@ -20473,11 +21364,12 @@ use WWW::SwaggerClient::ShopControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
+my $managerId = 789; # Long | 
 my $shopId = 789; # Long | 
 my $body = WWW::SwaggerClient::Object::ShopId_image_body->new(); # ShopId_image_body | 
 
 eval { 
-    my $result = $api_instance->uploadImage(shopId => $shopId, body => $body);
+    my $result = $api_instance->uploadImage(managerId => $managerId, shopId => $shopId, body => $body);
     print Dumper($result);
 };
 if ($@) {
@@ -20497,11 +21389,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
+managerId = 789 # Long | 
 shopId = 789 # Long | 
 body =  # ShopId_image_body |  (optional)
 
 try: 
-    api_response = api_instance.upload_image(shopId, body=body)
+    api_response = api_instance.upload_image(managerId, shopId, body=body)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->uploadImage: %s\n" % e)</code></pre>
@@ -20585,6 +21478,35 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">managerId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_uploadImage_managerId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Long
+                                                </span>
+                                                    <span class="format">
+                                                        (int64)
+                                                    </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 201 - Created </h3>
