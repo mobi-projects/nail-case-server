@@ -1,5 +1,7 @@
 package com.nailcase.oauth.service;
 
+import java.util.Collections;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,6 +35,9 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 		return LoginResponseDto.builder()
 			.accessToken(accessTokenJwt)
 			.refreshToken(refreshToken)
+			.shopIds(Collections.emptyList())
+			.hasShop(false)
+			.userType(UserType.MEMBER)
 			.build();
 	}
 
