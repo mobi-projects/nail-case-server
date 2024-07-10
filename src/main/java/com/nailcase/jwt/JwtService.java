@@ -111,8 +111,8 @@ public class JwtService {
 				.getClaim(EMAIL_CLAIM)
 				.asString());
 		} catch (Exception e) {
-			log.error("유효하지 않은 토큰입니다 : {}", accessToken, e);
-			return Optional.empty();
+			log.error("유효하지 않은 토큰으로 이메일 추출 시도: {}", accessToken, e);
+			throw new BusinessException(AuthErrorCode.TOKEN_INVALID, "토큰이 유효하지 않습니다.");
 		}
 	}
 
@@ -124,19 +124,6 @@ public class JwtService {
 		response.setHeader(refreshHeader, refreshToken);
 	}
 
-	// public void updateRefreshToken(String email, String refreshToken) {
-	// 	memberRepository.findByEmail(email).ifPresentOrElse(
-	// 		user -> {
-	// 			redisTemplate.opsForValue()
-	// 				.set(email, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
-	// 			log.info("레디스에 refreshToken이 업데이트 되었습니다. {}", email);
-	// 		},
-	// 		() -> {
-	// 			log.error("찾지 못한 유저 {}", email);
-	// 			throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
-	// 		}
-	// 	);
-	// }
 	public void updateRefreshToken(String email, String refreshToken, String userType) {
 		String key = userType + ":" + email;
 		redisTemplate.opsForValue().set(key, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
@@ -145,9 +132,10 @@ public class JwtService {
 	public boolean isTokenValid(String token) {
 		try {
 			token = removeBearerInToken(token);
-			JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-			Boolean isBlacklisted = (Boolean)redisTemplate.opsForValue().get("blacklist:" + token);
-			return isBlacklisted == null || !isBlacklisted;
+			DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+			String jti = decodedJWT.getId();
+			Boolean isBlacklisted = (Boolean)redisTemplate.opsForValue().get("blacklist:" + jti);
+			return isBlacklisted == null && decodedJWT.getExpiresAt().after(new Date());
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰 : {}", token, e);
 			return false;
@@ -156,9 +144,10 @@ public class JwtService {
 
 	public void addTokenToBlacklist(String token) {
 		token = removeBearerInToken(token);
-		long remainingTime = JWT.decode(token).getExpiresAt().getTime() - System.currentTimeMillis();
-		// 토큰을 블랙리스트에 추가 (남은 유효 시간 동안만 블랙리스트에 유지)
-		redisTemplate.opsForValue().set("blacklist:" + token, true, remainingTime, TimeUnit.MILLISECONDS);
+		DecodedJWT decoded = verifyToken(token);
+		long remainingTime = decoded.getExpiresAt().getTime() - System.currentTimeMillis();
+		redisTemplate.opsForValue().set("blacklist:" + decoded.getId(), true, remainingTime, TimeUnit.MILLISECONDS);
+		log.info("토큰 블랙리스트에 추가: JWT ID {}", decoded.getId());
 	}
 
 	public void logoutAndBlacklistToken(String accessToken) {
@@ -166,10 +155,29 @@ public class JwtService {
 		if (!isTokenValid(accessToken)) {
 			throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
 		}
+
 		String email = extractEmail(accessToken)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-		redisTemplate.delete(email);
+
+		UserType userType = extractUserType(accessToken)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+
+		String redisKey = userType.getValue() + ":" + email;
+		redisTemplate.delete(redisKey);
+
 		addTokenToBlacklist(accessToken);
+	}
+
+	public void removeRefreshToken(String refreshToken) {
+		String email = extractEmail(refreshToken)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+		UserType userType = extractUserType(refreshToken)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
+		String key = userType.getValue() + ":" + email;
+		Boolean deleted = redisTemplate.delete(key);
+		if (Boolean.FALSE.equals(deleted)) {
+			log.warn("해당 계정의 refresh 토큰이 레디스에 없습니다: {}", email);
+		}
 	}
 
 	public void expireToken(String accessToken) {

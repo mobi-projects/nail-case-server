@@ -1,6 +1,7 @@
 package com.nailcase.jwt.filter;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
+	private static final String LOGOUT_URL = "/auth/logout";
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
 	private final NailArtistRepository nailArtistRepository;
@@ -41,6 +43,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
 		@NonNull FilterChain filterChain) throws ServletException, IOException {
+
+		if (request.getRequestURI().equals(LOGOUT_URL)) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
 		String refreshToken = jwtService.extractRefreshToken(request).filter(jwtService::isTokenValid).orElse(null);
 
@@ -80,10 +87,24 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		});
 	}
 
-	private String reIssueRefreshToken(String email, UserType userType) {
-		String reIssuedRefreshToken = jwtService.createRefreshToken(email, userType.getValue());
-		jwtService.updateRefreshToken(email, reIssuedRefreshToken, userType.getValue());
-		return reIssuedRefreshToken;
+	public String reIssueRefreshToken(String email, UserType userType) {
+		String newRefreshToken = jwtService.createRefreshToken(email, userType.getValue());
+		String key = userType.getValue() + ":" + email;
+
+		// 기존 토큰 제거
+		redisTemplate.delete(key);
+
+		// 새 토큰 저장
+		boolean isSet = Boolean.TRUE.equals(redisTemplate.opsForValue()
+			.setIfAbsent(key, newRefreshToken, jwtService.getRefreshTokenExpirationPeriod(), TimeUnit.MILLISECONDS));
+
+		if (!isSet) {
+			log.error("리프레시 토큰 저장 실패: {}", email);
+			throw new BusinessException(AuthErrorCode.REFRESH_TOKEN_SAVE_FAILED);
+		}
+
+		log.info("리프레시 토큰 재발급 및 저장 성공: {}", email);
+		return newRefreshToken;
 	}
 
 	private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
@@ -95,25 +116,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 		filterChain.doFilter(request, response);
 	}
-
-	// private void saveAuthentication(Member myMember) {
-	// 	// 혹시 싶어서 남겨두었습니다.
-	// 	// UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-	// 	// 	.username(String.valueOf(myMember.getMemberId()))
-	// 	// 	.password("")
-	// 	// 	.roles(myMember.getRole().name())
-	// 	// 	.build();
-	//
-	// 	// Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-	// 	// 	authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-	//
-	// 	MemberDetails memberDetails = MemberDetails.withMember(myMember);
-	//
-	// 	Authentication authentication = new UsernamePasswordAuthenticationToken(
-	// 		memberDetails, memberDetails.getPassword(), memberDetails.getAuthorities());
-	//
-	// 	SecurityContextHolder.getContext().setAuthentication(authentication);
-	// }
 
 	private void saveAuthentication(String token) {
 		UserType userType = jwtService.extractUserType(token)
