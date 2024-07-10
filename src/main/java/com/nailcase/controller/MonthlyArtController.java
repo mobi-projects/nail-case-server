@@ -3,6 +3,7 @@ package com.nailcase.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.annotation.AuthenticatedManagerUser;
-import com.nailcase.annotation.AuthenticatedUser;
 import com.nailcase.model.dto.MonthlyArtDto;
 import com.nailcase.model.dto.MonthlyArtImageDto;
 import com.nailcase.service.MonthlyArtService;
@@ -31,22 +30,23 @@ import lombok.extern.slf4j.Slf4j;
 public class MonthlyArtController {
 	private final MonthlyArtService monthlyArtService;
 
-	// 이미지만 업로드하는 API
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<MonthlyArtImageDto> uploadImages(
 		@RequestParam("files") List<MultipartFile> files,
-		@AuthenticatedManagerUser Long managerId,
+		@AuthenticationPrincipal Long userId,
 		@PathVariable Long shopId) {
-		log.info("Uploading images for shopId: {}", shopId);
-		return monthlyArtService.uploadImages(files, managerId);
+		log.info("Uploading images for shopId: {} by userId: {}", shopId, userId);
+		return monthlyArtService.uploadImages(files, userId);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public MonthlyArtDto.Response registerMonthlyArt(@PathVariable Long shopId,
-		@RequestBody MonthlyArtDto.Request monthlyArtRequest) {
-		log.info("Registering new monthly art for shopId: {}", shopId);
+	public MonthlyArtDto.Response registerMonthlyArt(
+		@PathVariable Long shopId,
+		@RequestBody MonthlyArtDto.Request monthlyArtRequest,
+		@AuthenticationPrincipal Long userId) {
+		log.info("Registering new monthly art for shopId: {} by userId: {}", shopId, userId);
 		return monthlyArtService.registerMonthlyArt(shopId, monthlyArtRequest);
 	}
 
@@ -55,16 +55,16 @@ public class MonthlyArtController {
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
 		@RequestBody MonthlyArtDto.Request monthlyArtRequest,
-		@AuthenticatedManagerUser Long managerId) {
-		log.info("Updating monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		return monthlyArtService.updateMonthlyArt(shopId, monthlyArtId, monthlyArtRequest, managerId);
+		@AuthenticationPrincipal Long userId) {
+		log.info("Updating monthly art: {} for shopId: {} by userId: {}", monthlyArtId, shopId, userId);
+		return monthlyArtService.updateMonthlyArt(shopId, monthlyArtId, monthlyArtRequest, userId);
 	}
 
 	@GetMapping
 	public List<MonthlyArtDto.Response> listMonthlyArt(
 		@PathVariable Long shopId,
-		@AuthenticatedUser Long userId) {
-		log.info("Listing all monthly arts for shopId: {}", shopId);
+		@AuthenticationPrincipal Long userId) {
+		log.info("Listing all monthly arts for shopId: {} by userId: {}", shopId, userId);
 		return monthlyArtService.listMonthlyArts(shopId, userId);
 	}
 
@@ -72,8 +72,8 @@ public class MonthlyArtController {
 	public MonthlyArtDto.Response viewMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
-		@AuthenticatedUser Long userId) {
-		log.info("Viewing monthly art: {} for shopId: {}", monthlyArtId, shopId);
+		@AuthenticationPrincipal Long userId) {
+		log.info("Viewing monthly art: {} for shopId: {} by userId: {}", monthlyArtId, shopId, userId);
 		return monthlyArtService.viewMonthlyArt(shopId, monthlyArtId, userId);
 	}
 
@@ -82,9 +82,9 @@ public class MonthlyArtController {
 	public void deleteMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
-		@AuthenticatedManagerUser Long managerId) {
-		log.info("Deleting monthly art: {} for shopId: {}", monthlyArtId, shopId);
-		monthlyArtService.deleteMonthlyArt(shopId, monthlyArtId, managerId);
+		@AuthenticationPrincipal Long userId) {
+		log.info("Deleting monthly art: {} for shopId: {} by userId: {}", monthlyArtId, shopId, userId);
+		monthlyArtService.deleteMonthlyArt(shopId, monthlyArtId, userId);
 	}
 
 	@PostMapping("/{monthlyArtId}/like")
@@ -92,8 +92,8 @@ public class MonthlyArtController {
 	public void likeMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
-		@AuthenticatedUser Long userId) {
-		log.info("Liking monthly art: {} for shopId: {}", monthlyArtId, shopId);
+		@AuthenticationPrincipal Long userId) {
+		log.info("Liking monthly art: {} for shopId: {} by userId: {}", monthlyArtId, shopId, userId);
 		monthlyArtService.likeMonthlyArt(monthlyArtId, userId);
 	}
 
@@ -102,8 +102,8 @@ public class MonthlyArtController {
 	public void unlikeMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
-		@AuthenticatedUser Long userId) {
-		log.info("Unliking monthly art: {} for shopId: {}", monthlyArtId, shopId);
+		@AuthenticationPrincipal Long userId) {
+		log.info("Unliking monthly art: {} for shopId: {} by userId: {}", monthlyArtId, shopId, userId);
 		monthlyArtService.unlikeMonthlyArt(monthlyArtId, userId);
 	}
 }

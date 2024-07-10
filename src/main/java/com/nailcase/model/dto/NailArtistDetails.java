@@ -8,44 +8,48 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.UserType;
 
 import lombok.Getter;
 
 @Getter
-public class MemberDetails extends User implements UserDetails, UserPrincipal {
+public class NailArtistDetails extends User implements UserDetails, UserPrincipal {
 
-	private final Long memberId;
-
+	private final Long nailArtistId;
 	private final String email;
+	private final Role role;
 
-	public MemberDetails(
-		Long memberId,
+	public NailArtistDetails(
+		Long nailArtistId,
 		String username,
 		String password,
+		Role role,
 		Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
-		this.memberId = memberId;
+		this.nailArtistId = nailArtistId;
 		this.email = username;
+		this.role = role;
 	}
 
-	public static MemberDetails withMember(Member member) {
-		return new MemberDetails(
-			member.getMemberId(),
-			member.getEmail(),
+	public static NailArtistDetails withNailArtist(NailArtist nailArtist) {
+		return new NailArtistDetails(
+			nailArtist.getNailArtistId(),
+			nailArtist.getEmail(),
 			"",
-			List.of(new SimpleGrantedAuthority(member.getRole().name()))
+			nailArtist.getRole(),
+			List.of(new SimpleGrantedAuthority(nailArtist.getRole().name()))
 		);
 	}
 
 	@Override
 	public Long getId() {
-		return this.memberId;
+		return this.nailArtistId;
 	}
 
 	@Override
 	public UserType getUserType() {
-		return UserType.MEMBER;
+		return UserType.MANAGER;
 	}
 }

@@ -13,7 +13,8 @@ public enum AuthErrorCode implements ErrorCodeInterface {
 	AUTH_UNSUPPORTED(407, "지원하지 않는 로그인 서비스"),
 	UNAUTHORIZED(408, "인증되지 않은 사용자"),
 	INVALID_USER_TYPE(409, "잘못된 유저 타입"),
-	TOKEN_NOT_FOUND(410, "잘못된 토큰");
+	TOKEN_NOT_FOUND(410, "잘못된 토큰"),
+	REFRESH_TOKEN_SAVE_FAILED(411, "리프레쉬 토큰 저장 실패");
 
 	private final int code;
 	private final String message;
