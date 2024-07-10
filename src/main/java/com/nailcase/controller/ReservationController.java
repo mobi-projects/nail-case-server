@@ -60,4 +60,13 @@ public class ReservationController {
 	public ReservationDto.Response viewReservation(@PathVariable Long shopId, @PathVariable Long reservationId) {
 		return reservationService.viewReservation(shopId, reservationId);
 	}
+
+	@GetMapping("/time")
+	public List<ReservationDto.Available> listAvailableTime(
+		@PathVariable Long shopId,
+		@RequestParam Long[] artistIds,
+		@RequestParam Long date
+	) {
+		return reservationService.listAvailableTime(shopId, artistIds, date);
+	}
 }
