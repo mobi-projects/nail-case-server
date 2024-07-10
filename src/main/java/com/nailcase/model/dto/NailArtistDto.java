@@ -59,11 +59,19 @@ public class NailArtistDto {
 			return this;
 		}
 
-		public static Response listEntity(NailArtist nailArtist) {
-			Response response = new Response();
-			response.setId(nailArtist.getNailArtistId());
+	}
+
+	@Data
+	public static class ListResponse {
+		private Long nailArtistId;
+		private String nickname;
+
+		public static ListResponse fromEntity(NailArtist nailArtist) {
+			ListResponse response = new ListResponse();
+			response.setNailArtistId(nailArtist.getNailArtistId());
 			response.setNickname(nailArtist.getName());
 			return response;
 		}
 	}
+
 }

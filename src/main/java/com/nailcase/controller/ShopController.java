@@ -114,11 +114,10 @@ public class ShopController {
 	}
 
 	@GetMapping("/{shopId}/manager/list")
-	public List<NailArtistDto.Response> listShopNailArtist(
-		@PathVariable Long shopId,
-		@AuthenticationPrincipal Long userId
+	public List<NailArtistDto.ListResponse> listShopNailArtist(
+		@PathVariable Long shopId
 	) {
-		return shopService.listShopNailArtist(shopId, userId);
+		return shopService.listShopNailArtist(shopId);
 	}
 
 }
