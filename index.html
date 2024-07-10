@@ -945,6 +945,18 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.NailArtistDto$ListResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "nailArtistId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "nickname" : {
+      "type" : "string"
+    }
+  }
+};
             defs["com.nailcase.model.dto.NailArtistDto$Response"] = {
   "type" : "object",
   "properties" : {
@@ -19699,7 +19711,7 @@ public class ShopControllerApiExample {
         ShopControllerApi apiInstance = new ShopControllerApi();
         Long shopId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.NailArtistDto$Response] result = apiInstance.listShopNailArtist(shopId);
+            array[com.nailcase.model.dto.NailArtistDto$ListResponse] result = apiInstance.listShopNailArtist(shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#listShopNailArtist");
@@ -19718,7 +19730,7 @@ public class ShopControllerApiExample {
         ShopControllerApi apiInstance = new ShopControllerApi();
         Long shopId = 789; // Long | 
         try {
-            array[com.nailcase.model.dto.NailArtistDto$Response] result = apiInstance.listShopNailArtist(shopId);
+            array[com.nailcase.model.dto.NailArtistDto$ListResponse] result = apiInstance.listShopNailArtist(shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#listShopNailArtist");
@@ -19740,7 +19752,7 @@ Long *shopId = 789; //
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
 [apiInstance listShopNailArtistWith:shopId
-              completionHandler: ^(array[com.nailcase.model.dto.NailArtistDto$Response] output, NSError* error) {
+              completionHandler: ^(array[com.nailcase.model.dto.NailArtistDto$ListResponse] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -19799,7 +19811,7 @@ namespace Example
 
             try
             {
-                array[com.nailcase.model.dto.NailArtistDto$Response] result = apiInstance.listShopNailArtist(shopId);
+                array[com.nailcase.model.dto.NailArtistDto$ListResponse] result = apiInstance.listShopNailArtist(shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -19931,7 +19943,7 @@ except ApiException as e:
       "schema" : {
         "type" : "array",
         "items" : {
-          "$ref" : "#/components/schemas/com.nailcase.model.dto.NailArtistDto$Response"
+          "$ref" : "#/components/schemas/com.nailcase.model.dto.NailArtistDto$ListResponse"
         },
         "x-content-type" : "*/*"
       }
