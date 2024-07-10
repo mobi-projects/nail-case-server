@@ -22,6 +22,8 @@ import com.nailcase.model.enums.TreatmentOption;
 import com.nailcase.testUtils.fixture.FileFixture;
 import com.nailcase.testUtils.fixture.MemberFixture;
 import com.nailcase.testUtils.fixture.MemberFixtureToBootTest;
+import com.nailcase.testUtils.fixture.NailArtistFixture;
+import com.nailcase.testUtils.fixture.NailArtistFixtureToBootTest;
 import com.nailcase.testUtils.fixture.ShopFixture;
 import com.nailcase.testUtils.fixture.ShopInfoFixture;
 import com.nailcase.testUtils.fixture.WorkHourFixture;
@@ -52,6 +54,7 @@ import lombok.RequiredArgsConstructor;
 public class FixtureFactory {
 
 	public static final MemberFixture memberFixture = new MemberFixture();
+	public static final NailArtistFixture nailArtistFixture = new NailArtistFixture();
 	public static final ShopFixture shopFixture = new ShopFixture();
 	public static final FileFixture fileFixture = new FileFixture();
 	public static final WorkHourFixture workHourFixture = new WorkHourFixture();
@@ -86,6 +89,7 @@ public class FixtureFactory {
 	public static final Long FIXTURE_IMAGE_ID = 1L;
 	public static final String FIXTURE_IMAGE_URL = "hello/imageUrl";
 	private final MemberFixtureToBootTest memberFixtureToBootTest;
+	private final NailArtistFixtureToBootTest nailArtistFixtureToBootTest;
 
 	public static Treatment treatment() {
 		return createTreatment(

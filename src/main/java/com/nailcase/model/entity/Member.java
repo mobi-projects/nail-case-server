@@ -2,7 +2,6 @@ package com.nailcase.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
 import com.nailcase.model.enums.Role;
@@ -46,15 +45,9 @@ public class Member extends BaseEntity {
 	@Column(name = "email", length = 128)
 	private String email;
 
-/*	@Column(name = "phone", length = 128)
-	private String phone;
-
-	@Column(name = "password")
-	private String password;*/
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "social_type")
-	private SocialType socialType; // KAKAO, NAVER, FACEBOOK*/
+	private SocialType socialType; // KAKAO, NAVER, FACEBOOK
 
 	@Column(name = "social_id")
 	private String socialId;
@@ -67,14 +60,10 @@ public class Member extends BaseEntity {
 	@Column(name = "profile_img_url", length = 128)
 	private String profileImgUrl;
 
-	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	private Set<Shop> shops;
-
 	@Builder.Default
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reservation> reservations = new ArrayList<>();
 
-	// TODO
 	public Member update(String name) {
 		// this.name = name;
 		return this;

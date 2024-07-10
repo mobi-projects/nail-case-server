@@ -38,7 +38,7 @@ public interface ShopMapper {
 		if (shopImages == null || shopImages.isEmpty()) {
 			return null;
 		}
-		
+
 		return shopImages.stream()
 			.map(shopImage -> ShopDto.Image.builder()
 				.imageId(shopImage.getImageId())
@@ -55,7 +55,7 @@ public interface ShopMapper {
 		target = "modifiedAt",
 		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getModifiedAt()))"
 	)
-	@Mapping(target = "ownerId", source = "member.memberId")
+	@Mapping(target = "ownerId", source = "nailArtist.nailArtistId")
 	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
 	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
 	ShopDto.Response toResponse(Shop shop);

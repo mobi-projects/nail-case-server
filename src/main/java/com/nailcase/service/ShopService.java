@@ -20,8 +20,8 @@ import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.MemberLikedShop;
+import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.ShopInfo;
@@ -30,7 +30,7 @@ import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberLikedShopRepository;
-import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopImageRepository;
 import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
@@ -47,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopService {
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
 	private final ShopRepository shopRepository;
-	private final MemberRepository memberRepository;
+	private final NailArtistRepository nailArtistRepository;
 	private final TagRepository tagRepository;
 	private final ShopImageRepository shopImageRepository;
 	private final TagMappingRepository tagMappingRepository;
@@ -59,21 +59,23 @@ public class ShopService {
 	@Transactional
 	public ShopDto.Response registerShop(
 		ShopDto.Post request,
-		Long memberId
+		Long nailArtistId
 	) throws BusinessException {
 		// Set member role MANAGER
-		Member member = memberRepository
-			.findById(memberId)
+		NailArtist nailArtist = nailArtistRepository
+			.findById(nailArtistId)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
 
-		member.setRole(Role.MANAGER);
+		nailArtist.setRole(Role.MANAGER);
 
 		// Create shop
 		Shop shop = Shop.builder()
 			.shopName(request.getShopName())
 			.phone(request.getPhone())
-			.member(member)
+			.nailArtist(nailArtist)
 			.build();
+
+		nailArtist.addShop(shop);
 
 		Shop savedShop = shopRepository.save(shop);
 
@@ -91,10 +93,10 @@ public class ShopService {
 	}
 
 	@Transactional
-	public void deleteShop(Long shopId, Long memberId) throws BusinessException {
+	public void deleteShop(Long shopId, Long nailArtistId) throws BusinessException {
 		Shop shop = getShopById(shopId);
 
-		if (!shop.getMember().getMemberId().equals(memberId)) {
+		if (!shop.getNailArtist().getNailArtistId().equals(nailArtistId)) {
 			throw new BusinessException(ShopErrorCode.SHOP_DELETION_FORBIDDEN);
 		}
 
@@ -132,10 +134,10 @@ public class ShopService {
 	}
 
 	@Transactional
-	public ShopDto.Response updateOverview(Long shopId, ShopDto.Patch patchRequest, Long memberId)
+	public ShopDto.Response updateOverview(Long shopId, ShopDto.Patch patchRequest, Long nailArtistId)
 		throws BusinessException {
 		// TODO 샵에 속해있는 아티스트 인지 검사
-		log.debug(String.valueOf(memberId)); // TODO remove
+		log.debug(String.valueOf(nailArtistId)); // TODO remove
 
 		// Update overview
 		Shop shop = getShopById(shopId);
@@ -221,10 +223,12 @@ public class ShopService {
 			.forEach(workHourRepository::save);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<Shop> findTopPopularShops(Pageable pageable) {
 		return shopRepository.findTopShopsByPopularityCriteria(pageable);
 	}
 
+	@Transactional
 	public void likeShop(Long shopId) {
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
@@ -232,6 +236,7 @@ public class ShopService {
 		shopRepository.save(shop);
 	}
 
+	@Transactional
 	public void unlikeShop(Long shopId) {
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
