@@ -1,7 +1,5 @@
 package com.nailcase.oauth.service;
 
-import java.util.Collections;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,11 +15,13 @@ import com.nailcase.repository.MemberRepository;
 public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 
 	private final MemberRepository memberRepository;
+	private final JwtService jwtService;
 
 	public KakaoMemberLoginService(RestTemplate restTemplate, JwtService jwtService,
 		MemberRepository memberRepository) {
 		super(restTemplate, jwtService);
 		this.memberRepository = memberRepository;
+		this.jwtService = jwtService;
 	}
 
 	@Override
@@ -35,8 +35,8 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 		return LoginResponseDto.builder()
 			.accessToken(accessTokenJwt)
 			.refreshToken(refreshToken)
-			.shopIds(Collections.emptyList())
-			.hasShop(false)
+			.accessTokenExpirationTime(jwtService.getAccessTokenExpirationPeriod())
+			.refreshTokenExpirationTime(jwtService.getRefreshTokenExpirationPeriod())
 			.userType(UserType.MEMBER)
 			.build();
 	}

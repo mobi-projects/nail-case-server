@@ -21,11 +21,13 @@ import jakarta.transaction.Transactional;
 public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 
 	private final NailArtistRepository nailArtistRepository;
+	private final JwtService jwtService;
 
 	public KakaoManagerLoginService(RestTemplate restTemplate, JwtService jwtService,
 		NailArtistRepository nailArtistRepository) {
 		super(restTemplate, jwtService);
 		this.nailArtistRepository = nailArtistRepository;
+		this.jwtService = jwtService;
 	}
 
 	@Transactional
@@ -48,6 +50,8 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 			.refreshToken(refreshToken)
 			.shopIds(shopIds)
 			.hasShop(hasShop)
+			.accessTokenExpirationTime(jwtService.getAccessTokenExpirationPeriod())
+			.refreshTokenExpirationTime(jwtService.getRefreshTokenExpirationPeriod())
 			.userType(UserType.MANAGER)
 			.build();
 	}
