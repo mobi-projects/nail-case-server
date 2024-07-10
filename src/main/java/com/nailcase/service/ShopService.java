@@ -18,7 +18,6 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
-import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
@@ -262,22 +261,12 @@ public class ShopService {
 		return new PageImpl<>(shops, pageable, shops.size());
 	}
 
-	@Transactional(readOnly = true)
-	public List<NailArtistDto.Response> listShopNailArtist(Long shopId, Long userId) {
+	public List<NailArtistDto.ListResponse> listShopNailArtist(Long shopId) {
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
-
-		boolean isMember = memberRepository.existsById(userId);
-		boolean isNailArtist = nailArtistRepository.existsById(userId);
-
-		if (!isMember && !isNailArtist) {
-			throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
-		}
-
-		List<NailArtist> shopNailArtists = nailArtistRepository.findByShopsShopId(shopId);
-
+		List<NailArtist> shopNailArtists = nailArtistRepository.findByShop_ShopId(shopId);
 		return shopNailArtists.stream()
-			.map(NailArtistDto.Response::listEntity)
+			.map(NailArtistDto.ListResponse::fromEntity)
 			.collect(Collectors.toList());
 	}
 

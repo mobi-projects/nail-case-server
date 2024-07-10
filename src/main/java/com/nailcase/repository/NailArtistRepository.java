@@ -24,5 +24,5 @@ public interface NailArtistRepository extends JpaRepository<NailArtist, Long> {
 	Optional<NailArtist> findBySocialTypeAndSocialIdWithShops(@Param("socialType") SocialType socialType,
 		@Param("socialId") String socialId);
 
-	List<NailArtist> findByShopsShopId(Long shopId);
+	List<NailArtist> findByShop_ShopId(Long shopId);
 }
