@@ -229,4 +229,12 @@ public class JwtService {
 			return Optional.empty();
 		}
 	}
+
+	public long getAccessTokenExpirationPeriod() {
+		return accessTokenExpirationPeriod / 1000;
+	}
+
+	public long getRefreshTokenExpirationPeriod() {
+		return refreshTokenExpirationPeriod / 1000;
+	}
 }
