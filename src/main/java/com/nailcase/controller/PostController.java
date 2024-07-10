@@ -130,7 +130,7 @@ public class PostController {
 		@RequestBody PostCommentDto.Request commentRequest,
 		@AuthenticatedUser Long userId) {
 		log.info("Updating comment: {} for post: {}", commentId, announcementId);
-		return postService.updateComment(commentId, commentRequest, userId);
+		return postService.updateComment(commentId, commentRequest);
 	}
 
 	@DeleteMapping("/{announcementId}/comments/{commentId}")
@@ -141,7 +141,7 @@ public class PostController {
 		@PathVariable Long commentId,
 		@AuthenticatedUser Long userId) {
 		log.info("Deleting comment: {} from post: {}", commentId, announcementId);
-		postService.deleteComment(shopId, announcementId, commentId, userId);
+		postService.deleteComment(shopId, announcementId, commentId);
 	}
 
 	@PostMapping("/{announcementId}/like")
