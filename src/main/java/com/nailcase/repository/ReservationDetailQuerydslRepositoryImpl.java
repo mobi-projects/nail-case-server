@@ -49,10 +49,11 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 			.fetchJoin()
 			.leftJoin(QReservationDetail.reservationDetail.nailArtist, QNailArtist.nailArtist)
 			.fetchJoin()
-			.where(QShop.shop.shopId.eq(shopId)
-				.and(QReservationDetail.reservationDetail.startTime.between(startOfDate, endOfDate))
-				.and(QReservationDetail.reservationDetail.status.eq(ReservationStatus.CONFIRMED)))
-			.orderBy(QReservationDetail.reservationDetail.startTime.asc())
+			.where(QShop.shop.shopId.eq(shopId),
+				QReservationDetail.reservationDetail.startTime.between(startOfDate, endOfDate),
+				QReservationDetail.reservationDetail.status.eq(ReservationStatus.CONFIRMED))
+			.orderBy(QReservationDetail.reservationDetail.startTime.asc(),
+				QReservationDetail.reservationDetail.endTime.asc())
 			.fetch();
 	}
 }
