@@ -6,8 +6,7 @@ import java.util.List;
 import com.nailcase.model.entity.ReservationDetail;
 
 public interface ReservationDetailQuerydslRepository {
-	List<ReservationDetail> findOngoingReservationDetailList(Long shopId, LocalDateTime startTime,
-		LocalDateTime endTime);
+	List<ReservationDetail> findOngoingReservationDetailList(Long shopId, LocalDateTime startTime);
 
 	List<ReservationDetail> findReservationByShopIdAndOnDate(Long shopId, LocalDateTime time);
 }
