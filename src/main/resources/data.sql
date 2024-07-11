@@ -4,6 +4,14 @@ INSERT INTO members (name, email, role, profile_img_url, social_type, social_id,
 SELECT 'Member', 'member@example.com', 'MEMBER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'member@example.com');
 
+INSERT INTO members (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT 'Member', CONCAT('member', n, '@example.com'), 'MEMBER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO',
+       CONCAT('3588226794', n), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (SELECT 2 AS n UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11) AS nums
+WHERE NOT EXISTS (SELECT 2 FROM members WHERE email = CONCAT('member', nums.n, '@example.com'));
+
+
 INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT 'Manager', 'manager@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'manager@example.com');
@@ -663,3 +671,121 @@ WHERE NOT EXISTS (
     WHERE created_at >= '2024-06-25 11:00:00'::timestamp
         AND created_at <= '2024-07-07 11:00:00'::timestamp
 );
+
+
+-- 리뷰 데이터 삽입
+INSERT INTO review (shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 1, '친절한 서비스와 아름다운 네일 아트에 감동했습니다. 다음에도 꼭 방문할게요!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 1);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 2, '디자인이 마음에 들었지만, 예약 시간이 조금 지연되어 아쉬웠어요.', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 2);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT  1, 3, '깨끗하고 편안한 분위기에서 네일을 받을 수 있어서 좋았습니다.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 3);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT  1, 4, '매번 새로운 디자인을 제안해주셔서 너무 만족스럽습니다!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 4);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 5, '네일 유지력이 좋아서 오랜 시간 예쁜 상태로 유지됩니다. 추천해요!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 5);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 6, '가격 대비 서비스가 조금 아쉬웠어요. 그래도 디자인은 만족스럽습니다.', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 6);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 7, '친구 소개로 왔는데 정말 좋네요! 다음에도 또 오고 싶어요.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 7);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 8, '직원분들이 정말 친절하고 세심하게 신경 써주셔서 만족스러웠습니다.', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 8);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 9, '디자인 선택에 있어서 다양성이 좀 더 있었으면 좋겠어요.', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 9);
+
+INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
+SELECT 1, 10, '전체적으로 만족하지만, 예약 잡기가 조금 힘들었어요.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 10);
+
+
+-- 게시물 데이터 삽입
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '4월 이달의 아트 이벤트', 'NEWS', '<4월 이달의 아트> 봄 느낌 물씬 풍기는 이달의 아트! 이벤트가로 할인 진행합니다.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '4월 이달의 아트 이벤트');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '5월 이달의 아트 소개', 'NEWS', '<5월 이달의 아트> 여름 느낌 물씬 풍기는 이달의 아트! 지금 예약하고 특별 할인을 받아보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '5월 이달의 아트 소개');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '여름 네일 할인 이벤트', 'NEWS', '<5월 이달의 아트> 여름 느낌 물씬 풍기는 네일 아트를 할인된 가격에 만나보세요!', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '여름 네일 할인 이벤트');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '5월의 특별한 아트', 'NEWS', '<5월 이달의 아트> 이번 달 특별한 아트를 할인된 가격으로 만나보세요!', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '5월의 특별한 아트');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '여름 네일 아트 이벤트', 'NEWS', '<5월 이달의 아트> 여름 느낌 가득한 네일 아트를 특별 이벤트 가격으로 제공합니다.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '여름 네일 아트 이벤트');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '특별 할인 네일 아트', 'NEWS', '<5월 이달의 아트> 여름 분위기를 담은 네일 아트를 특별 할인가로 만나보세요!', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '특별 할인 네일 아트');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '긴급 공지', 'NOTICE', '안녕하세요 고객님, 시스템 점검으로 인해 7월 15일 오전 10시부터 12시까지 서비스 이용이 제한됩니다. 불편을 드려 죄송합니다.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '긴급 공지');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '공지사항', 'NOTICE', '안녕하세요 고객님, 새로운 아트 디자인이 입고되었습니다. 많은 관심 부탁드립니다.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '공지사항');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '영업시간 변경 안내', 'NOTICE', '안녕하세요 고객님, 8월부터 매장 영업시간이 오전 10시에서 오후 8시로 변경됩니다. 방문에 참고 부탁드립니다.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '영업시간 변경 안내');
+
+INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)
+SELECT 1, '매장 이전 안내', 'NOTICE', '안녕하세요 고객님, 저희 매장이 9월 1일부터 새로운 위치로 이전합니다. 새로운 주소는 서울시 강남구 테헤란로 123입니다.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM posts WHERE title = '매장 이전 안내');
+
+
+-- 이달의 아트 데이터 삽입
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '에메랄드 바다 네일', '투명한 에메랄드 빛 바다를 닮은 네일 아트로, 시원한 여름을 연출해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '에메랄드 바다 네일');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '썸머 나이트 글로우', '여름 밤의 낭만을 담은 반짝이는 글로우 네일 아트로, 손끝을 화려하게 빛내보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '썸머 나이트 글로우');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '트로피컬 프루츠 네일', '여름의 청량함을 가득 담은 열대 과일 모티브의 네일 아트로 상큼함을 더해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '트로피컬 프루츠 네일');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '로맨틱 플라워 네일', '우아하고 세련된 플라워 패턴 네일 아트로, 손끝에 로맨틱한 감성을 더해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '로맨틱 플라워 네일');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '여름빛 라벤더 네일', '여름 햇살을 닮은 라벤더 색상의 네일 아트로, 은은한 멋을 연출해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '여름빛 라벤더 네일');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '선셋 오렌지 네일', '노을 지는 여름 하늘을 표현한 선셋 오렌지 네일 아트로 따뜻한 분위기를 완성해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '선셋 오렌지 네일');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '코랄 리프 네일', '산호초의 아름다움을 담은 코랄 리프 네일 아트로, 활기찬 여름을 맞이해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '코랄 리프 네일');
+
+INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
+SELECT 1, '실버 샌드 네일', '은빛 모래사장을 연상시키는 실버 샌드 네일 아트로, 고급스러운 여름 스타일을 연출해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '실버 샌드 네일');

@@ -25,7 +25,6 @@ import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.MonthlyArtImageRepository;
 import com.nailcase.repository.MonthlyArtLikedMemberRepository;
 import com.nailcase.repository.MonthlyArtRepository;
-import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ public class MonthlyArtService {
 	private final MonthlyArtImageRepository monthlyArtImageRepository;
 	private final MonthlyArtImageService monthlyArtImageService;
 	private final MemberRepository memberRepository;
-	private final NailArtistRepository nailArtistRepository;
 	private final ShopRepository shopRepository;
 	private final MonthlyArtLikedMemberRepository monthlyArtLikedMemberRepository;
 	private final BitmapService bitmapService;
@@ -77,6 +75,7 @@ public class MonthlyArtService {
 
 		MonthlyArt monthlyArt = MonthlyArt.builder()
 			.title(monthlyArtRequest.getTitle())
+			.contents(monthlyArtRequest.getContents())
 			.shop(shop)
 			.build();
 
