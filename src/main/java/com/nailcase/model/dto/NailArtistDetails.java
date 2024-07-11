@@ -16,7 +16,7 @@ import com.nailcase.model.enums.Role;
 import lombok.Getter;
 
 @Getter
-public class NailArtistDetails extends User implements UserDetails, UserPrincipal {
+public final class NailArtistDetails extends User implements UserDetails, UserPrincipal {
 
 	private final Long nailArtistId;
 	private final String email;

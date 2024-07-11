@@ -2,7 +2,7 @@ package com.nailcase.model.dto;
 
 import com.nailcase.model.enums.Role;
 
-public interface UserPrincipal {
+public sealed interface UserPrincipal permits MemberDetails, NailArtistDetails {
 	Long getId();
 
 	String getEmail();

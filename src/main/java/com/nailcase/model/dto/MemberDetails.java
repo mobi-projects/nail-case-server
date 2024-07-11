@@ -16,7 +16,7 @@ import com.nailcase.model.enums.Role;
 import lombok.Getter;
 
 @Getter
-public class MemberDetails extends User implements UserDetails, UserPrincipal {
+public final class MemberDetails extends User implements UserDetails, UserPrincipal {
 
 	private final Long memberId;
 	private final String email;
@@ -47,6 +47,11 @@ public class MemberDetails extends User implements UserDetails, UserPrincipal {
 	@Override
 	public Long getId() {
 		return this.memberId;
+	}
+
+	@Override
+	public String getEmail() {
+		return this.email;
 	}
 
 	@Override
