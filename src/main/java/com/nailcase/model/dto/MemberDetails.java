@@ -8,8 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.nailcase.exception.BusinessException;
-import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.enums.Role;
 
@@ -59,9 +57,4 @@ public final class MemberDetails extends User implements UserDetails, UserPrinci
 		return this.role;
 	}
 
-	public void validateMember(UserDetails userDetails) {
-		if (!(userDetails instanceof UserPrincipal) || !((UserPrincipal)userDetails).isMember()) {
-			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
-		}
-	}
 }

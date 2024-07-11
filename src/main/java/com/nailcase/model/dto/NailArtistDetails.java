@@ -58,15 +58,8 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 		return this.role;
 	}
 
-	public NailArtist validateAndGetNailArtistForShop(Long shopId) {
+	public void validateAndGetNailArtistForShop(Long shopId) {
 		if (!this.nailArtist.getShop().getShopId().equals(shopId)) {
-			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
-		}
-		return this.nailArtist;
-	}
-
-	public void validateNailArtist(UserDetails userDetails) {
-		if (!(userDetails instanceof UserPrincipal) || !((UserPrincipal)userDetails).isNailArtist()) {
 			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
 		}
 	}
