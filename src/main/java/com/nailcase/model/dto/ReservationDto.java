@@ -1,5 +1,6 @@
 package com.nailcase.model.dto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,5 +60,22 @@ public class ReservationDto {
 		private int availableSeats;
 
 		private List<NailArtistDto.Response> artists;
+	}
+
+	@Data
+	public static class MainPageResponse {
+		private Long reservationId;
+		private ShopInfo shop;
+		private LocalDateTime startTime;
+		private LocalDateTime endTime;
+		private LocalDateTime createdAt;
+		private LocalDateTime modifiedAt;
+
+		@Data
+		public static class ShopInfo {
+			private Long id;
+			private String name;
+		}
+
 	}
 }
