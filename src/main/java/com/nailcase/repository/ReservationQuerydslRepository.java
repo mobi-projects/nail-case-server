@@ -7,4 +7,6 @@ import com.nailcase.model.entity.Reservation;
 
 public interface ReservationQuerydslRepository {
 	List<Reservation> findReservationListWithinDateRange(Long shopId, LocalDateTime startDate, LocalDateTime endDate);
+
+	List<Reservation> fetchReservationsWithMemberAndShop(Long memberId);
 }

@@ -24,7 +24,7 @@ public class MemberLikedShop extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 

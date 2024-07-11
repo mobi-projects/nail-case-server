@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -160,8 +161,15 @@ public class ReservationService {
 			.anyMatch(reservationDetail -> reservationDetail.isStatusUpdatable(dto.getStatus()));
 	}
 
-	public List<Reservation> findReservationsByCustomer(Member member) {
-		return reservationRepository.findByCustomer(member);
+	public ReservationDto.MainPageResponse findEarliestReservationByCustomer(Member member) {
+		return reservationRepository.fetchReservationsWithMemberAndShop(member.getMemberId()).stream()
+			.min(Comparator.comparing(reservation ->
+				reservation.getReservationDetailList().stream()
+					.map(ReservationDetail::getStartTime)
+					.min(LocalDateTime::compareTo)
+					.orElse(LocalDateTime.MAX)))
+			.map(this::convertToMainPageResponse)
+			.orElse(null);
 	}
 
 	public List<ReservationDto.Available> listAvailableTime(Shop shop, Long[] artistIds, WorkHour workHour, Long date) {
@@ -333,5 +341,38 @@ public class ReservationService {
 			.map(rd -> DateUtils.localDateTimeToUnixTimeStamp(rd.getStartTime()) - timeUnixTimeStamp)
 			.findFirst()
 			.orElse(null);
+	}
+
+	public ReservationDto.MainPageResponse convertToMainPageResponse(Reservation reservation) {
+		ReservationDto.MainPageResponse response = new ReservationDto.MainPageResponse();
+		response.setReservationId(reservation.getReservationId());
+
+		// 예약 상세 목록에서 시작 시간과 종료 시간 계산
+		List<ReservationDetail> details = reservation.getReservationDetailList();
+		if (!details.isEmpty()) {
+			LocalDateTime startTime = details.stream()
+				.map(ReservationDetail::getStartTime)
+				.min(LocalDateTime::compareTo)
+				.orElse(null);
+
+			LocalDateTime endTime = details.stream()
+				.map(ReservationDetail::getEndTime)
+				.max(LocalDateTime::compareTo)
+				.orElse(null);
+
+			response.setStartTime(startTime);
+			response.setEndTime(endTime);
+		}
+
+		response.setCreatedAt(reservation.getCreatedAt());
+		response.setModifiedAt(reservation.getModifiedAt());
+
+		// Shop 정보 설정
+		ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
+		shopInfo.setId(reservation.getShop().getShopId());
+		shopInfo.setName(reservation.getShop().getShopName());
+		response.setShop(shopInfo);
+
+		return response;
 	}
 }

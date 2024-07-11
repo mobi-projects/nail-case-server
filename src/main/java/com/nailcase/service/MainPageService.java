@@ -1,6 +1,7 @@
 package com.nailcase.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
+import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
-import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.repository.MemberRepository;
 
@@ -29,18 +30,19 @@ public class MainPageService {
 	private final ShopMapper shopMapper;
 
 	// 사용자 ID를 기반으로 사용자의 최근 예약 목록 가져오기
-	@Transactional(readOnly = true)
-	public List<Reservation> getRecentReservationsByMember(Long memberId) {
+	public Optional<ReservationDto.MainPageResponse> getEarliestReservationByMember(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-		return reservationService.findReservationsByCustomer(member);
+		ReservationDto.MainPageResponse earliestReservation = reservationService.findEarliestReservationByCustomer(
+			member);
+		return Optional.ofNullable(earliestReservation);
 	}
 
 	// 인기 매장 목록 가져오기, 상위 3개 매장만 반환
 	@Transactional(readOnly = true)
-	public List<ShopDto.Response> getTopPopularShops() {
+	public List<ShopDto.MainPageResponse> getTopPopularShops() {
 		Pageable topThree = PageRequest.of(0, 3, Sort.by("likes").descending());
-		return shopService.findTopPopularShops(topThree).map(shopMapper::toResponse).getContent();
+		return shopService.findTopPopularShops(topThree).map(shopMapper::toMainPageResponse).getContent();
 	}
 
 	// 사용자가 좋아요한 매장 목록 가져오기
