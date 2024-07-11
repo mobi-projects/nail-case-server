@@ -33,7 +33,7 @@ public class ReservationController {
 		@RequestBody ReservationDto.Post dto,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return reservationService.createReservation(shopId, memberDetails.getMemberId(), dto);
+		return reservationFacade.createReservation(shopId, memberDetails.getMemberId(), dto);
 	}
 
 	// TODO: 어디까지 변경 가능한지 알아야 함
