@@ -15,11 +15,10 @@ public class ReservationDetailDto {
 
 		private Long shopId;
 
-		@NotNull
-		private Long startTime;
+		private Long nailArtistId;
 
 		@NotNull
-		private Long endTime;
+		private Long startTime;
 
 		@NotNull
 		private RemoveOption remove;
