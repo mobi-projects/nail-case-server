@@ -32,10 +32,12 @@ import com.nailcase.repository.ReservationRepository;
 import com.nailcase.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class ReservationService {
 
 	private final ReservationMapper reservationMapper;
@@ -165,8 +167,12 @@ public class ReservationService {
 		// CONFIRMED만 조회
 		List<ReservationDetail> reservationDetails = reservationDetailRepository.findReservationByShopIdAndOnDate(
 			shopId, time);
+		log.info("reservationDetails.size() = {}", reservationDetails.size());
 		Shop shop = reservationDetails.getFirst().getShop();
+		log.info("shopId = {}", shop.getShopId());
 		int requestingDayOfWeek = time.getDayOfWeek().ordinal();
+		log.info("time = {}, requestingDayOfweek = {}", time, requestingDayOfWeek);
+		log.info("workHour.size() = {}", shop.getWorkHours().size());
 		WorkHour workHour = shop.getWorkHours().stream()
 			.filter(wH -> wH.getDayOfWeek() == requestingDayOfWeek)
 			.findFirst()
