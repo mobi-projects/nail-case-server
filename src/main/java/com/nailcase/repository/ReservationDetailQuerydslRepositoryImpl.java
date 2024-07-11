@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QReservationDetail;
 import com.nailcase.model.entity.QShop;
-import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.ReservationStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -43,13 +42,9 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 		LocalDateTime endOfDate = time.with(LocalTime.MAX);
 
 		return queryFactory.selectFrom(QReservationDetail.reservationDetail)
-			.join(QReservationDetail.reservationDetail.shop, QShop.shop)
-			.fetchJoin()
-			.join(QShop.shop.workHours, QWorkHour.workHour)
-			.fetchJoin()
 			.leftJoin(QReservationDetail.reservationDetail.nailArtist, QNailArtist.nailArtist)
 			.fetchJoin()
-			.where(QShop.shop.shopId.eq(shopId),
+			.where(QReservationDetail.reservationDetail.shop.shopId.eq(shopId),
 				QReservationDetail.reservationDetail.startTime.between(startOfDate, endOfDate),
 				QReservationDetail.reservationDetail.status.eq(ReservationStatus.CONFIRMED))
 			.orderBy(QReservationDetail.reservationDetail.startTime.asc(),
