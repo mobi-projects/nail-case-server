@@ -74,17 +74,17 @@ SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM shops s WHERE s.shop
 INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
 SELECT * FROM (
                   VALUES
+                      (1, 0, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
                       (1, 1, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
                       (1, 2, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
                       (1, 3, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
                       (1, 4, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 5, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 6, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 7, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                      (1, 5, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                      (1, 6, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
               ) AS temp
 WHERE NOT EXISTS (
     SELECT 1 FROM work_hours
-    WHERE shop_id = 1 AND day_of_week IN (1, 2, 3, 4, 5, 6, 7)
+    WHERE shop_id = 1 AND day_of_week IN (0, 1, 2, 3, 4, 5, 6)
 );
 
 -- 예약(reservations) 데이터 삽입
