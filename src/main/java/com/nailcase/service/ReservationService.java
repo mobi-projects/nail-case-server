@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +29,7 @@ import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.WorkHour;
+import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.repository.ReservationDetailRepository;
 import com.nailcase.repository.ReservationRepository;
 import com.nailcase.util.DateUtils;
@@ -51,13 +51,8 @@ public class ReservationService {
 	public ReservationDto.Response createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
 		// startTime, endTime 비교 유효성 검사
 		LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(dto.getStartTime());
-		LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(dto.getEndTime());
-		if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
-			throw new BusinessException(ReservationErrorCode.INVALID_TIME_RANGE);
-		}
-
 		// 예약 초과인지 여부 검토
-		validateReservationAvailability(shopId, startTime, endTime);
+		validateReservationAvailability(shopId, startTime);
 
 		// 예약 생성
 		Reservation reservation = reservationMapper.toEntity(shopId, memberId, dto);
@@ -124,35 +119,29 @@ public class ReservationService {
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 	}
 
-	private void validateReservationAvailability(Long shopId, LocalDateTime startTime, LocalDateTime endTime) {
-		List<ReservationDetail> reservationDetailList =
-			reservationDetailRepository.findOngoingReservationDetailList(shopId, startTime, endTime);
-		if (!reservationDetailList.isEmpty()) {
-			Integer availableSeats = reservationDetailList.getFirst().getShop().getAvailableSeats();
-			int reservationHour = endTime.getHour() - startTime.getHour();
-			if (checkReservationAvailability(reservationDetailList, availableSeats, reservationHour, startTime)) {
-				throw new BusinessException(ReservationErrorCode.RESERVATION_OVERBOOKED);
-			}
+	private void validateReservationAvailability(Long shopId, LocalDateTime startTime) {
+		// eq(shopId), eq(startTime), eq(PENDING), eq(CONFIRMED)
+		List<ReservationDetail> reservationDetails =
+			reservationDetailRepository.findOngoingReservationDetailList(shopId, startTime);
+		if (!reservationDetails.isEmpty() && checkReservationAvailability(reservationDetails)) {
+			throw new BusinessException(ReservationErrorCode.RESERVATION_OVERBOOKED);
 		}
 	}
 
 	private boolean checkReservationAvailability(
-		List<ReservationDetail> reservationDetailList,
-		int availableSeats,
-		int reservationHour,
-		LocalDateTime startTime
+		List<ReservationDetail> reservationDetails
 	) {
-		// TODO: intervalUnit
-		return IntStream.range(0, reservationHour)
-			.mapToObj(startTime::plusHours)
-			.anyMatch(reservationTime ->
-				reservationDetailList.stream()
-					.filter(reservationDetail ->
-						(reservationDetail.getStartTime().isBefore(reservationTime)
-							|| reservationDetail.getStartTime().isEqual(reservationTime))
-							&& (reservationDetail.getEndTime().isAfter(reservationTime)
-							|| reservationDetail.getEndTime().isEqual(reservationTime)))
-					.count() >= availableSeats);
+		int pendingMultiplier = 3;
+		int tempAvailableSeats = reservationDetails.getFirst().getShop().getAvailableSeats();
+
+		Map<ReservationStatus, List<ReservationDetail>> groupByStatus = reservationDetails.stream()
+			.collect(Collectors.groupingBy(ReservationDetail::getStatus));
+		List<ReservationDetail> confirmed = groupByStatus.get(ReservationStatus.CONFIRMED);
+		List<ReservationDetail> pending = groupByStatus.get(ReservationStatus.PENDING);
+		tempAvailableSeats -= confirmed.size();
+		tempAvailableSeats *= pendingMultiplier;
+		tempAvailableSeats -= pending.size();
+		return tempAvailableSeats > 0;
 	}
 
 	private boolean isUpdatable(ReservationDto.Patch dto, Reservation reservation) {
