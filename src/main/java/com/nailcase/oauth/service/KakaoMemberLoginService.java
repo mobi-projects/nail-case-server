@@ -6,7 +6,6 @@ import org.springframework.web.client.RestTemplate;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.enums.SocialType;
-import com.nailcase.model.enums.UserType;
 import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.OAuthAttributes;
 import com.nailcase.repository.MemberRepository;
@@ -28,16 +27,16 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 	protected LoginResponseDto processUserLogin(OAuthAttributes attributes) {
 		Member member = getOrCreateMember(attributes);
 		String accessTokenJwt = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
-			UserType.MEMBER.getValue());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail(), UserType.MEMBER.getValue());
-		jwtService.updateRefreshToken(member.getEmail(), refreshToken, UserType.MEMBER.getValue());
+			member.getRole());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getRole());
+		jwtService.updateRefreshToken(member.getEmail(), refreshToken, member.getRole());
 
 		return LoginResponseDto.builder()
 			.accessToken(accessTokenJwt)
 			.refreshToken(refreshToken)
 			.accessTokenExpirationTime(jwtService.getAccessTokenExpirationPeriod())
 			.refreshTokenExpirationTime(jwtService.getRefreshTokenExpirationPeriod())
-			.userType(UserType.MEMBER)
+			.role(member.getRole())
 			.build();
 	}
 

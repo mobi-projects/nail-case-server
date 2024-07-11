@@ -118,4 +118,17 @@ public class Shop extends BaseEntity {
 		this.phone = dto.getPhone();
 		this.availableSeats = dto.getAvailableSeats();
 	}
+
+	// 객체 받아서 직접 확인하는 메소드
+	public boolean hasNailArtist(NailArtist nailArtist) {
+		return this.nailArtists.contains(nailArtist) ||
+			(this.nailArtist != null && this.nailArtist.equals(nailArtist));
+	}
+
+	// id만 받아서 확인하는 메소드
+	public boolean hasNailArtist(Long nailArtistId) {
+		return this.nailArtists.stream()
+			.anyMatch(artist -> artist.getNailArtistId().equals(nailArtistId)) ||
+			(this.nailArtist != null && this.nailArtist.getNailArtistId().equals(nailArtistId));
+	}
 }

@@ -13,7 +13,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
-import com.nailcase.model.enums.UserType;
+import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,31 +47,31 @@ public class JwtService {
 	private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
 	private static final String EMAIL_CLAIM = "email";
 	private static final String ID_CLAIM = "sequenceId";
-	private static final String USERTYPE_CLAIM = "userType";
+	private static final String ROLE_CLAIM = "role";
 	private static final String BEARER = "Bearer ";
 
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	public String createAccessToken(String email, Long sequenceId, String userType) {
+	public String createAccessToken(String email, Long sequenceId, Role role) {
 		Date now = new Date();
 		String token = JWT.create()
 			.withSubject(ACCESS_TOKEN_SUBJECT)
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
 			.withClaim(EMAIL_CLAIM, email)
-			.withClaim(USERTYPE_CLAIM, userType)
+			.withClaim(ROLE_CLAIM, role.getKey())
 			.withClaim(ID_CLAIM, sequenceId)
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("{} 해당 유저에 대한 AccessToken 발급", email);
 		return token;
 	}
 
-	public String createRefreshToken(String email, String userType) {
+	public String createRefreshToken(String email, Role role) {
 		Date now = new Date();
 		String token = JWT.create()
 			.withSubject(REFRESH_TOKEN_SUBJECT)
 			.withClaim(EMAIL_CLAIM, email)
-			.withClaim(USERTYPE_CLAIM, userType)
+			.withClaim(ROLE_CLAIM, role.getKey())
 			.withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("{} 해당 유저에 대한 RefreshToken 발급", email);
@@ -124,8 +124,8 @@ public class JwtService {
 		response.setHeader(refreshHeader, refreshToken);
 	}
 
-	public void updateRefreshToken(String email, String refreshToken, String userType) {
-		String key = userType + ":" + email;
+	public void updateRefreshToken(String email, String refreshToken, Role role) {
+		String key = role.getKey() + ":" + email;
 		redisTemplate.opsForValue().set(key, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
 	}
 
@@ -155,25 +155,21 @@ public class JwtService {
 		if (!isTokenValid(accessToken)) {
 			throw new BusinessException(AuthErrorCode.TOKEN_INVALID);
 		}
-
 		String email = extractEmail(accessToken)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-
-		UserType userType = extractUserType(accessToken)
+		Role role = extractRole(accessToken)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-
-		String redisKey = userType.getValue() + ":" + email;
+		String redisKey = role.getKey() + ":" + email;
 		redisTemplate.delete(redisKey);
-
 		addTokenToBlacklist(accessToken);
 	}
 
 	public void removeRefreshToken(String refreshToken) {
 		String email = extractEmail(refreshToken)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-		UserType userType = extractUserType(refreshToken)
+		Role role = extractRole(refreshToken)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-		String key = userType.getValue() + ":" + email;
+		String key = role.getKey() + ":" + email;
 		Boolean deleted = redisTemplate.delete(key);
 		if (Boolean.FALSE.equals(deleted)) {
 			log.warn("해당 계정의 refresh 토큰이 레디스에 없습니다: {}", email);
@@ -197,17 +193,6 @@ public class JwtService {
 			.verify(token);
 	}
 
-	public Optional<UserType> extractUserType(String token) {
-		token = removeBearerInToken(token);
-		try {
-			String userTypeString = verifyToken(token).getClaim(USERTYPE_CLAIM).asString();
-			return Optional.of(UserType.fromString(userTypeString));
-		} catch (Exception e) {
-			log.error("유효하지 않은 토큰입니다 : {}", token, e);
-			return Optional.empty();
-		}
-	}
-
 	public Optional<String> extractUserEmail(String token) {
 		token = removeBearerInToken(token);
 		try {
@@ -224,6 +209,17 @@ public class JwtService {
 		try {
 			Long userId = verifyToken(token).getClaim(ID_CLAIM).asLong();
 			return Optional.of(userId);
+		} catch (Exception e) {
+			log.error("유효하지 않은 토큰입니다 : {}", token, e);
+			return Optional.empty();
+		}
+	}
+
+	public Optional<Role> extractRole(String token) {
+		token = removeBearerInToken(token);
+		try {
+			String roleKey = verifyToken(token).getClaim(ROLE_CLAIM).asString();
+			return Optional.of(Role.fromKey(roleKey));  // fromKey() 메소드 사용
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰입니다 : {}", token, e);
 			return Optional.empty();
