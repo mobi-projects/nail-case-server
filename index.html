@@ -729,16 +729,13 @@
             defs["com.nailcase.model.dto.MainPageDto"] = {
   "type" : "object",
   "properties" : {
-    "recentReservations" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
-      }
+    "recentReservation" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$MainPageResponse"
     },
     "topPopularShops" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Response"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$MainPageResponse"
       }
     },
     "likedShops" : {
@@ -1255,6 +1252,46 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.ReservationDto$MainPageResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "reservationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$MainPageResponse$ShopInfo"
+    },
+    "startTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "endTime" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "createdAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "modifiedAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$MainPageResponse$ShopInfo"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    }
+  }
+};
             defs["com.nailcase.model.dto.ReservationDto$Patch"] = {
   "type" : "object",
   "properties" : {
@@ -1484,6 +1521,30 @@
 };
             defs["com.nailcase.model.dto.ShopDto$Image"] = {
   "type" : "object"
+};
+            defs["com.nailcase.model.dto.ShopDto$MainPageResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "ownerId" : {
+      "type" : "string"
+    },
+    "shopName" : {
+      "type" : "string"
+    },
+    "address" : {
+      "type" : "string"
+    },
+    "images" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Image"
+      }
+    }
+  }
 };
             defs["com.nailcase.model.dto.ShopDto$Patch"] = {
   "required" : [ "overview" ],
@@ -2441,27 +2502,6 @@
     }
   }
 };
-            defs["org.springdoc.core.converters.models.Pageable"] = {
-  "type" : "object",
-  "properties" : {
-    "page" : {
-      "minimum" : 0,
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "size" : {
-      "minimum" : 1,
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "sort" : {
-      "type" : "array",
-      "items" : {
-        "type" : "string"
-      }
-    }
-  }
-};
             defs["org.springdoc.core.converters.models.SortObject"] = {
   "type" : "object",
   "properties" : {
@@ -2496,6 +2536,12 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
+    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -2515,12 +2561,6 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
-    },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
@@ -4142,7 +4182,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/main?memberId=&pageable="</code></pre>
+"http://localhost:8081/api/v1/main?memberId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -4164,10 +4204,9 @@ public class MainPageControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         MainPageControllerApi apiInstance = new MainPageControllerApi();
-        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
         Long memberId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(pageable, memberId);
+            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(memberId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MainPageControllerApi#getMainPageData");
@@ -4184,10 +4223,9 @@ public class MainPageControllerApiExample {
 
     public static void main(String[] args) {
         MainPageControllerApi apiInstance = new MainPageControllerApi();
-        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
         Long memberId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(pageable, memberId);
+            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(memberId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MainPageControllerApi#getMainPageData");
@@ -4204,13 +4242,11 @@ public class MainPageControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-org.springdoc.core.converters.models.Pageable *pageable = ; // 
 Long *memberId = 789; //  (optional)
 
 MainPageControllerApi *apiInstance = [[MainPageControllerApi alloc] init];
 
-[apiInstance getMainPageDataWith:pageable
-    memberId:memberId
+[apiInstance getMainPageDataWith:memberId
               completionHandler: ^(com.nailcase.model.dto.MainPageDto output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -4232,7 +4268,6 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MainPageControllerApi()
-var pageable = ; // {{org.springdoc.core.converters.models.Pageable}} 
 var opts = { 
   'memberId': 789 // {{Long}} 
 };
@@ -4243,7 +4278,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getMainPageData(pageable, opts, callback);
+api.getMainPageData(opts, callback);
 </code></pre>
                             </div>
 
@@ -4268,12 +4303,11 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new MainPageControllerApi();
-            var pageable = new org.springdoc.core.converters.models.Pageable(); // org.springdoc.core.converters.models.Pageable | 
             var memberId = 789;  // Long |  (optional) 
 
             try
             {
-                com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(pageable, memberId);
+                com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(memberId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -4294,11 +4328,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiMainPageControllerApi();
-$pageable = ; // org.springdoc.core.converters.models.Pageable | 
 $memberId = 789; // Long | 
 
 try {
-    $result = $api_instance->getMainPageData($pageable, $memberId);
+    $result = $api_instance->getMainPageData($memberId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MainPageControllerApi->getMainPageData: ', $e->getMessage(), PHP_EOL;
@@ -4315,11 +4348,10 @@ use WWW::SwaggerClient::MainPageControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MainPageControllerApi->new();
-my $pageable = ; # org.springdoc.core.converters.models.Pageable | 
 my $memberId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->getMainPageData(pageable => $pageable, memberId => $memberId);
+    my $result = $api_instance->getMainPageData(memberId => $memberId);
     print Dumper($result);
 };
 if ($@) {
@@ -4339,11 +4371,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.MainPageControllerApi()
-pageable =  # org.springdoc.core.converters.models.Pageable | 
 memberId = 789 # Long |  (optional)
 
 try: 
-    api_response = api_instance.get_main_page_data(pageable, memberId=memberId)
+    api_response = api_instance.get_main_page_data(memberId=memberId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling MainPageControllerApi->getMainPageData: %s\n" % e)</code></pre>
@@ -4377,25 +4408,6 @@ except ApiException as e:
                                                     </span>
                                 
                                             </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                                <tr><td style="width:150px;">pageable*</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_getMainPageData_pageable">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    org.springdoc.core.converters.models.Pageable
-                                                </span>
-                                
-                                            </div>
-                                                <div class="inner required">
-                                                    Required
-                                                </div>
                                         </div>
                                     </div>
                                 </td>
