@@ -1,6 +1,8 @@
 package com.nailcase.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -162,7 +165,7 @@ public class ReservationService {
 	}
 
 	public List<ReservationDto.Available> listAvailableTime(Shop shop, Long[] artistIds, WorkHour workHour, Long date) {
-		LocalDateTime time = DateUtils.unixTimeStampToLocalDateTime(date);
+		LocalDateTime time = getReservationTimeIfBeforeEnableTime(date);
 		List<ReservationDetail> reservationDetails = reservationDetailRepository.findReservationByShopIdAndOnDate(
 			shop.getShopId(), time);
 
@@ -190,6 +193,16 @@ public class ReservationService {
 
 		return getAvailables(times, reservationDetails, availableSeats, requestedArtists,
 			reservationDetailsOrderByArtistId);
+	}
+
+	private @NotNull LocalDateTime getReservationTimeIfBeforeEnableTime(Long date) {
+		long reservationPeriod = 1L;
+		LocalDateTime time = DateUtils.unixTimeStampToLocalDateTime(date);
+		LocalDateTime today = LocalDate.now().atTime(LocalTime.MIN);
+		if (time.isAfter(today.plusMonths(reservationPeriod))) {
+			throw new BusinessException(ReservationErrorCode.INVALID_TIME);
+		}
+		return time;
 	}
 
 	private List<ReservationDto.Available> getAvailables(List<Long> times,
