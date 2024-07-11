@@ -1,5 +1,6 @@
 package com.nailcase.service;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,12 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.exception.codes.WorkHourErrorCode;
 import com.nailcase.mapper.WorkHourMapper;
 import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.repository.WorkHourRepository;
+import com.nailcase.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,5 +55,20 @@ public class WorkHourService {
 			.sorted(Comparator.comparingInt(WorkHour::getDayOfWeek))
 			.map(workHourMapper::toResponse)
 			.collect(Collectors.toList());
+	}
+
+	public WorkHour retrieveWorkHourIfOpen(Collection<WorkHour> workHours, Long date) {
+		int requestingDayOfWeek = DateUtils.unixTimeStampToLocalDateTime(date).getDayOfWeek().ordinal();
+
+		WorkHour workHour = workHours.stream()
+			.filter(wH -> wH.getDayOfWeek() == requestingDayOfWeek)
+			.findFirst()
+			.orElseThrow(() -> new BusinessException(ReservationErrorCode.WORK_HOUR_NOT_DEFINED));
+
+		if (Boolean.FALSE.equals(workHour.getIsOpen())) {
+			throw new BusinessException(ReservationErrorCode.WORK_HOUR_NOT_DEFINED);
+		}
+
+		return workHour;
 	}
 }
