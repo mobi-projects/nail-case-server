@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nailcase.config.SecurityConfig;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.repository.ShopRepository;
 import com.nailcase.service.ShopService;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
@@ -37,9 +35,6 @@ public class ShopControllerTest {
 
 	@MockBean
 	private ShopService shopService;
-
-	@Autowired
-	private ShopRepository shopRepository;
 
 	@Autowired
 	private FixtureFactory fixtureFactory;
@@ -61,12 +56,6 @@ public class ShopControllerTest {
 			.addFilter(securityConfig.jwtAuthenticationProcessingFilter())
 			.build();
 		om = new ObjectMapper();
-	}
-
-	@AfterEach
-	public void cleanUp() {
-		shopRepository.deleteAll(); // Shop 데이터 삭제
-		fixtureFactory.getNailArtistFixtureToBootTest().deleteAllNailArtist(); // Member 데이터 삭제
 	}
 
 	@Test
@@ -98,7 +87,7 @@ public class ShopControllerTest {
 	@DisplayName("Post요청시 필수 필드 누락으로 인해 HTTP.BAD_REQUEST를 반환한다.")
 	void registerShopMissingRequiredFields() throws Exception {
 		// Given
-		String jwt = fixtureFactory.getMemberFixtureToBootTest().createMemberAndGetJwt();
+		String jwt = fixtureFactory.getNailArtistFixtureToBootTest().createNailArtistAndGetJwt();
 
 		// 필수 필드(shopName, phone)가 누락된 요청 데이터
 		EasyRandomParameters params = new EasyRandomParameters()

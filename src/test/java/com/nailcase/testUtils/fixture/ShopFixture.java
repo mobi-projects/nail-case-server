@@ -8,7 +8,7 @@ import java.util.Set;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 
-import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.Tag;
@@ -27,7 +27,7 @@ public class ShopFixture {
 	}
 
 	public Shop getShop(Long shopId) {
-		Member member = FixtureFactory.memberFixture.getMember();
+		NailArtist member = FixtureFactory.nailArtistFixture.getNailArtist();
 		Set<WorkHour> workHours = FixtureFactory.workHourFixture.getWorkHours();
 		EasyRandomParameters params = new EasyRandomParameters()
 			.randomize(named("shopId"), () -> shopId)
