@@ -137,7 +137,6 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_REMOVE,
 			FIXTURE_RESERVATION_EXTEND,
 			FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME,
-			FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME,
 			List.of(conditionPostDto()),
 			List.of(treatmentPostDto())
 		);
@@ -188,7 +187,6 @@ public class FixtureFactory {
 		RemoveOption remove,
 		boolean extend,
 		Long startTime,
-		Long endTime,
 		List<ConditionDto.Post> conditionList,
 		List<TreatmentDto.Post> treatmentList
 	) {
@@ -197,7 +195,6 @@ public class FixtureFactory {
 		reservationDetailDto.setRemove(remove);
 		reservationDetailDto.setExtend(extend);
 		reservationDetailDto.setStartTime(startTime);
-		reservationDetailDto.setEndTime(endTime);
 		reservationDetailDto.setConditionList(conditionList);
 		reservationDetailDto.setTreatmentList(treatmentList);
 		return reservationDetailDto;

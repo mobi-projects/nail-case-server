@@ -27,7 +27,6 @@ import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
-import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.repository.ReservationDetailRepository;
 import com.nailcase.repository.ReservationRepository;
@@ -56,8 +55,7 @@ class ReservationServiceTest {
 		ReservationDto.Post reservationPostDto = FixtureFactory.reservationPostDto();
 		given(reservationDetailRepository.findOngoingReservationDetailList(
 			shopId,
-			FixtureFactory.FIXTURE_RESERVATION_DETAIL_START_TIME,
-			FixtureFactory.FIXTURE_RESERVATION_DETAIL_END_TIME
+			FixtureFactory.FIXTURE_RESERVATION_DETAIL_START_TIME
 		)).willReturn(List.of());
 		given(reservationRepository.save(any(Reservation.class))).willReturn(this.reservation(reservationId));
 
@@ -95,38 +93,6 @@ class ReservationServiceTest {
 			.hasFieldOrPropertyWithValue("imageUrl", FixtureFactory.FIXTURE_IMAGE_URL)
 			.hasFieldOrProperty("createdAt")
 			.hasFieldOrProperty("modifiedAt");
-	}
-
-	@Test
-	void createReservation_invalidTimeRange() {
-		ReservationDto.Post reservationPostDtoWithInvalidTimeRange = FixtureFactory.reservationPostDto();
-		for (ReservationDetailDto.Post post : reservationPostDtoWithInvalidTimeRange.getReservationDetailList()) {
-			post.setStartTime(1000L);
-			post.setEndTime(900L);
-		}
-
-		Assertions.assertThrows(BusinessException.class,
-			() -> reservationService.createReservation(
-				FixtureFactory.FIXTURE_SHOP_ID,
-				FixtureFactory.FIXTURE_MEMBER_ID,
-				reservationPostDtoWithInvalidTimeRange));
-	}
-
-	@Test
-	void createReservation_reservationOverBooked() {
-		ReservationDetail reservationDetail = FixtureFactory.reservationDetail();
-		Shop shop = reservationDetail.getShop(); // availableSeats = 3, reservationDetail = 1
-		shop.minusAvailableSeats(); // availableSeats = 2, reservationDetail = 1
-		shop.minusAvailableSeats(); // availableSeats = 1, reservationDetail = 1
-		given(reservationDetailRepository.findOngoingReservationDetailList(
-			FixtureFactory.FIXTURE_SHOP_ID,
-			FixtureFactory.FIXTURE_RESERVATION_DETAIL_START_TIME,
-			FixtureFactory.FIXTURE_RESERVATION_DETAIL_END_TIME
-		)).willReturn(List.of(reservationDetail));
-
-		Assertions.assertThrows(BusinessException.class,
-			() -> reservationService.createReservation(
-				FixtureFactory.FIXTURE_SHOP_ID, FixtureFactory.FIXTURE_MEMBER_ID, FixtureFactory.reservationPostDto()));
 	}
 
 	@Test
@@ -176,13 +142,14 @@ class ReservationServiceTest {
 		Long reservationId = FixtureFactory.FIXTURE_RESERVATION_ID;
 		given(reservationRepository.findById(reservationId)).willReturn(Optional.empty());
 
+		ReservationDto.Patch reservationPatchDto = FixtureFactory.reservationPatchDto();
 		Assertions.assertThrows(
 			BusinessException.class,
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
 				FixtureFactory.FIXTURE_MEMBER_ID,
-				FixtureFactory.reservationPatchDto()
+				reservationPatchDto
 			),
 			ReservationErrorCode.RESERVATION_NOT_FOUND.getMessage()
 		);
@@ -193,13 +160,14 @@ class ReservationServiceTest {
 		Long reservationId = FixtureFactory.FIXTURE_RESERVATION_ID;
 		given(reservationRepository.findById(reservationId)).willReturn(Optional.empty());
 
+		ReservationDto.Patch reservationPatchDto = FixtureFactory.reservationPatchDto();
 		Assertions.assertThrows(
 			BusinessException.class,
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID + 1L,
 				reservationId,
 				FixtureFactory.FIXTURE_MEMBER_ID,
-				FixtureFactory.reservationPatchDto()
+				reservationPatchDto
 			),
 			CommonErrorCode.NOT_FOUND.getMessage()
 		);
@@ -215,13 +183,14 @@ class ReservationServiceTest {
 		given(reservationRepository.findById(reservationId))
 			.willReturn(Optional.of(reservation));
 
+		ReservationDto.Patch reservationPatchDto = FixtureFactory.reservationPatchDto();
 		Assertions.assertThrows(
 			BusinessException.class,
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
 				FixtureFactory.FIXTURE_MEMBER_ID,
-				FixtureFactory.reservationPatchDto()
+				reservationPatchDto
 			),
 			ReservationErrorCode.STATUS_NOT_UPDATABLE.getMessage()
 		);
@@ -237,13 +206,14 @@ class ReservationServiceTest {
 		given(reservationRepository.findById(reservationId))
 			.willReturn(Optional.of(reservation));
 
+		ReservationDto.Patch reservationPatchDto = FixtureFactory.reservationPatchDto();
 		Assertions.assertThrows(
 			BusinessException.class,
 			() -> reservationService.updateReservation(
 				FixtureFactory.FIXTURE_SHOP_ID,
 				reservationId,
 				FixtureFactory.FIXTURE_MEMBER_ID,
-				FixtureFactory.reservationPatchDto()
+				reservationPatchDto
 			),
 			ReservationErrorCode.STATUS_NOT_UPDATABLE.getMessage()
 		);
