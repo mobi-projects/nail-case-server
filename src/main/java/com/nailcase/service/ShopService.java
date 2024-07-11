@@ -257,4 +257,10 @@ public class ShopService {
 		List<Shop> shops = shopRepository.findAllById(shopIds);
 		return new PageImpl<>(shops, pageable, shops.size());
 	}
+
+	@Transactional(readOnly = true)
+	public Shop findByShopIdAndNailArtistsAndWorkHours(Long shopId) {
+		return shopRepository.findByShopIdAndNailArtistsAndWorkHours(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+	}
 }
