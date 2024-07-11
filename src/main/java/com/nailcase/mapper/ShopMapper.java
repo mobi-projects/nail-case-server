@@ -59,4 +59,8 @@ public interface ShopMapper {
 	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
 	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
 	ShopDto.Response toResponse(Shop shop);
+	
+	@Mapping(target = "ownerId", source = "nailArtist.nailArtistId")
+	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
+	ShopDto.MainPageResponse toMainPageResponse(Shop shop);
 }

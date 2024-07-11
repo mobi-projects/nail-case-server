@@ -55,7 +55,7 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
-					"/static/**", "/auth/**")
+					"/static/**", "/auth/**", "/main")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
 				.requestMatchers("/shops/**")
 				.permitAll()

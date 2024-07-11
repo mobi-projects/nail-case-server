@@ -38,9 +38,9 @@ public class MainPageService {
 
 	// 인기 매장 목록 가져오기, 상위 3개 매장만 반환
 	@Transactional(readOnly = true)
-	public List<ShopDto.Response> getTopPopularShops() {
+	public List<ShopDto.MainPageResponse> getTopPopularShops() {
 		Pageable topThree = PageRequest.of(0, 3, Sort.by("likes").descending());
-		return shopService.findTopPopularShops(topThree).map(shopMapper::toResponse).getContent();
+		return shopService.findTopPopularShops(topThree).map(shopMapper::toMainPageResponse).getContent();
 	}
 
 	// 사용자가 좋아요한 매장 목록 가져오기

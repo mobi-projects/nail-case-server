@@ -66,4 +66,18 @@ public class ShopDto {
 
 		private String imageUrl;
 	}
+
+	@Data
+	@NoArgsConstructor
+	public static class MainPageResponse {
+		private Long shopId;
+
+		private String ownerId;
+
+		private String shopName;
+
+		private String address;
+
+		private List<Image> images;
+	}
 }
