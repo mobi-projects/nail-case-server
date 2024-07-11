@@ -1,5 +1,6 @@
 package com.nailcase.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,6 @@ public interface NailArtistRepository extends JpaRepository<NailArtist, Long> {
 	@Query("SELECT na FROM NailArtist na LEFT JOIN FETCH na.shops WHERE na.socialType = :socialType AND na.socialId = :socialId")
 	Optional<NailArtist> findBySocialTypeAndSocialIdWithShops(@Param("socialType") SocialType socialType,
 		@Param("socialId") String socialId);
+
+	List<NailArtist> findByShop_ShopId(Long shopId);
 }

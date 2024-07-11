@@ -32,7 +32,6 @@ import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
-import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopRepository;
@@ -48,8 +47,6 @@ import com.nailcase.testUtils.fixture.ShopFixture;
 public class ShopServiceTest {
 	private final ShopFixture shopFixture = FixtureFactory.shopFixture;
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
-	@Mock
-	private MemberRepository memberRepository;
 
 	@Mock
 	private NailArtistRepository nailArtistRepository;

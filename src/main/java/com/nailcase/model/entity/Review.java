@@ -52,7 +52,7 @@ public class Review extends BaseEntity {
 	// private ShopMember shopMember;
 
 	@Schema(title = "리뷰 내용")
-	@Column(name = "contents", nullable = false, length = 32)
+	@Column(name = "contents", nullable = false, columnDefinition = "TEXT")
 	private String contents;
 
 	@Schema(title = "리뷰 평점")

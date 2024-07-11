@@ -19,6 +19,7 @@ import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.mapper.ShopMapper;
+import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.MemberLikedShop;
 import com.nailcase.model.entity.NailArtist;
@@ -30,6 +31,7 @@ import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberLikedShopRepository;
+import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopImageRepository;
 import com.nailcase.repository.ShopInfoRepository;
@@ -55,6 +57,7 @@ public class ShopService {
 	private final WorkHourRepository workHourRepository;
 	private final ShopImageService shopImageService;
 	private final MemberLikedShopRepository memberLikedShopRepository;
+	private final MemberRepository memberRepository;
 
 	@Transactional
 	public ShopDto.Response registerShop(
@@ -256,6 +259,15 @@ public class ShopService {
 		}
 		List<Shop> shops = shopRepository.findAllById(shopIds);
 		return new PageImpl<>(shops, pageable, shops.size());
+	}
+
+	public List<NailArtistDto.ListResponse> listShopNailArtist(Long shopId) {
+		Shop shop = shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+		List<NailArtist> shopNailArtists = nailArtistRepository.findByShop_ShopId(shopId);
+		return shopNailArtists.stream()
+			.map(NailArtistDto.ListResponse::fromEntity)
+			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)

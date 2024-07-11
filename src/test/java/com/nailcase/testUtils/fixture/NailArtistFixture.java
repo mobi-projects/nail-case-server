@@ -15,7 +15,7 @@ public class NailArtistFixture {
 
 	private static final Long MEMBER_ID = 1L;
 
-	private static final Role ROLE = Role.MEMBER;
+	private static final Role ROLE = Role.MANAGER;
 
 	public NailArtist getNailArtist() {
 		EasyRandomParameters params = new EasyRandomParameters()
@@ -25,5 +25,4 @@ public class NailArtistFixture {
 			.excludeField(named("shops").and(ofType(Set.class)));
 		return new EasyRandom(params).nextObject(NailArtist.class);
 	}
-
 }
