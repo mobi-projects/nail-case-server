@@ -1,6 +1,7 @@
 package com.nailcase.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,5 @@ public interface ShopQuerydslRepository {
 
 	Page<Shop> findShopsByIds(List<Long> ids, Pageable pageable);
 
+	Optional<Shop> findByShopIdAndNailArtistsAndWorkHours(Long shopId);
 }

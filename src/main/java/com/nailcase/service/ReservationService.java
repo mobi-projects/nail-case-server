@@ -1,6 +1,8 @@
 package com.nailcase.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,8 +138,8 @@ public class ReservationService {
 
 	private boolean checkReservationAvailability(
 		List<ReservationDetail> reservationDetailList,
-		Integer availableSeats,
-		Integer reservationHour,
+		int availableSeats,
+		int reservationHour,
 		LocalDateTime startTime
 	) {
 		// TODO: intervalUnit
@@ -161,37 +164,20 @@ public class ReservationService {
 		return reservationRepository.findByCustomer(member);
 	}
 
-	public List<ReservationDto.Available> listAvailableTime(Long shopId, Long[] artistIds, Long date) {
-		LocalDateTime time = DateUtils.unixTimeStampToLocalDateTime(date);
-
-		// CONFIRMED만 조회
+	public List<ReservationDto.Available> listAvailableTime(Shop shop, Long[] artistIds, WorkHour workHour, Long date) {
+		LocalDateTime time = getReservationTimeIfBeforeEnableTime(date);
 		List<ReservationDetail> reservationDetails = reservationDetailRepository.findReservationByShopIdAndOnDate(
-			shopId, time);
-		log.info("reservationDetails.size() = {}", reservationDetails.size());
-		Shop shop = reservationDetails.getFirst().getShop();
-		log.info("shopId = {}", shop.getShopId());
-		int requestingDayOfWeek = time.getDayOfWeek().ordinal();
-		log.info("time = {}, requestingDayOfweek = {}", time, requestingDayOfWeek);
-		log.info("workHour.size() = {}", shop.getWorkHours().size());
-		WorkHour workHour = shop.getWorkHours().stream()
-			.filter(wH -> wH.getDayOfWeek() == requestingDayOfWeek)
-			.findFirst()
-			.orElseThrow(() -> new BusinessException(ReservationErrorCode.WORK_HOUR_NOT_DEFINED));
+			shop.getShopId(), time);
 
-		if (Boolean.FALSE.equals(workHour.getIsOpen())) {
-			throw new BusinessException(ReservationErrorCode.WORK_HOUR_NOT_DEFINED);
-		}
-
-		Integer availableSeats = shop.getAvailableSeats();
-		Long openTime = DateUtils.localDateTimeToUnixTimeStamp(workHour.getOpenTime());
-		Long closeTime = DateUtils.localDateTimeToUnixTimeStamp(workHour.getCloseTime());
+		int availableSeats = shop.getAvailableSeats();
+		long openTime = DateUtils.localDateTimeToUnixTimeStamp(workHour.getOpenTime());
+		long closeTime = DateUtils.localDateTimeToUnixTimeStamp(workHour.getCloseTime());
 		Set<NailArtist> nailArtists = shop.getNailArtists();
 		List<NailArtist> requestedArtists = nailArtists.stream()
 			.filter(nailArtist -> Arrays.stream(artistIds)
 				.anyMatch(artistId -> nailArtist.getNailArtistId().equals(artistId)))
 			.toList();
 
-		// nailArtistId로 그룹화
 		Map<Long, List<ReservationDetail>> reservationDetailsOrderByArtistId = reservationDetails.stream()
 			.collect(Collectors.groupingBy(
 				r -> r.getNailArtist() == null ? 0L : r.getNailArtist().getNailArtistId()));
@@ -209,11 +195,24 @@ public class ReservationService {
 			reservationDetailsOrderByArtistId);
 	}
 
+	private @NotNull LocalDateTime getReservationTimeIfBeforeEnableTime(Long date) {
+		long reservationPeriod = 1L;
+		LocalDateTime time = DateUtils.unixTimeStampToLocalDateTime(date);
+		LocalDateTime today = LocalDate.now().atTime(LocalTime.MIN);
+		if (time.isAfter(today.plusMonths(reservationPeriod))) {
+			throw new BusinessException(ReservationErrorCode.INVALID_TIME);
+		}
+		return time;
+	}
+
 	private List<ReservationDto.Available> getAvailables(List<Long> times,
-		List<ReservationDetail> reservationDetails, Integer availableSeats, List<NailArtist> requestedArtists,
-		Map<Long, List<ReservationDetail>> reservationDetailsOrderByArtistId) {
+		List<ReservationDetail> reservationDetails,
+		int availableSeats,
+		List<NailArtist> requestedArtists,
+		Map<Long, List<ReservationDetail>> reservationDetailsOrderByArtistId
+	) {
 		List<ReservationDto.Available> availables = new ArrayList<>();
-		// 투 포인터
+
 		int timeIdx = 0;
 		int reservationIdx = 0;
 		while (timeIdx < times.size() && reservationIdx < reservationDetails.size()) {
@@ -231,22 +230,14 @@ public class ReservationService {
 			}
 			// startTime <= time < endTime 시작
 			List<NailArtistDto.Response> artistResponses = getNailArtistResponses(requestedArtists);
-
 			int tempIdx = reservationIdx;
 			int tempAvailableSeats = availableSeats;
 			long endTime = DateUtils.localDateTimeToUnixTimeStamp(reservationDetails.get(tempIdx).getEndTime());
 			while (tempIdx < reservationDetails.size() && time < endTime) {
 				ReservationDetail reservationDetail = reservationDetails.get(tempIdx);
 				endTime = DateUtils.localDateTimeToUnixTimeStamp(reservationDetail.getEndTime());
-				// Long startTime = DateUtils.localDateTimeToUnixTimeStamp(reservationDetail.getStartTime());
-				// if (isReserved(startTime, time, endTime)) {
-				// 	tempAvailableSeats--;
-				// }
-
-				tempAvailableSeats--;
-
 				setNearToArtistResponses(reservationDetailsOrderByArtistId, artistResponses, reservationDetail, time);
-
+				tempAvailableSeats--;
 				tempIdx++;
 			}
 
@@ -287,10 +278,6 @@ public class ReservationService {
 		return timeUnixTimeStamp < DateUtils.localDateTimeToUnixTimeStamp(reservationStartTimeUnixTime);
 	}
 
-	// private boolean isReserved(Long startTime, Long time, long endTime) {
-	// 	return startTime <= time && endTime >= time;
-	// }
-
 	private boolean isArtistAlreadyReserved(NailArtistDto.Response artist, ReservationDetail reservationDetail) {
 		return reservationDetail.getNailArtist() != null
 			&& artist.getId().equals(reservationDetail.getNailArtist().getNailArtistId());
@@ -298,7 +285,7 @@ public class ReservationService {
 
 	private ReservationDto.Available getAvailable(
 		int tempAvailableSeats,
-		Long time,
+		long time,
 		List<NailArtistDto.Response> artistResponses
 	) {
 		ReservationDto.Available available = new ReservationDto.Available();
@@ -315,10 +302,10 @@ public class ReservationService {
 	}
 
 	private ReservationDto.Available getAvailableWithArtistNear(
-		Integer availableSeats,
+		int availableSeats,
 		List<NailArtist> requestedArtists,
 		Map<Long, List<ReservationDetail>> reservationDetailsOrderByArtistId,
-		Long startTime
+		long startTime
 	) {
 		ReservationDto.Available available = new ReservationDto.Available();
 
@@ -337,10 +324,10 @@ public class ReservationService {
 
 	private @Nullable Long getNear(
 		Map<Long, List<ReservationDetail>> reservationDetailsOrderByArtistId,
-		Long artist,
-		Long timeUnixTimeStamp
+		long nailArtistId,
+		long timeUnixTimeStamp
 	) {
-		return reservationDetailsOrderByArtistId.getOrDefault(artist, List.of())
+		return reservationDetailsOrderByArtistId.getOrDefault(nailArtistId, List.of())
 			.stream()
 			.filter(rd -> DateUtils.localDateTimeToUnixTimeStamp(rd.getStartTime()) > timeUnixTimeStamp)
 			.map(rd -> DateUtils.localDateTimeToUnixTimeStamp(rd.getStartTime()) - timeUnixTimeStamp)

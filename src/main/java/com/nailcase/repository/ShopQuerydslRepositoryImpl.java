@@ -1,6 +1,7 @@
 package com.nailcase.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.QMemberLikedShop;
+import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QShop;
+import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -95,5 +98,22 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 			.fetch().size();
 
 		return PageableExecutionUtils.getPage(shops, pageable, () -> total);
+	}
+
+	@Override
+	public Optional<Shop> findByShopIdAndNailArtistsAndWorkHours(Long shopId) {
+		QShop shop = QShop.shop;
+		QNailArtist nailArtist = QNailArtist.nailArtist;
+		QWorkHour workHour = QWorkHour.workHour;
+
+		Shop fetch = queryFactory.selectFrom(shop)
+			.leftJoin(shop.nailArtists, nailArtist)
+			.fetchJoin()
+			.leftJoin(shop.workHours, workHour)
+			.fetchJoin()
+			.where(shop.shopId.eq(shopId))
+			.fetchOne();
+
+		return Optional.ofNullable(fetch);
 	}
 }

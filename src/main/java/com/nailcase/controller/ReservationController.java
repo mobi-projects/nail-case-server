@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReservationDto;
+import com.nailcase.service.ReservationFacade;
 import com.nailcase.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class ReservationController {
 
 	private final ReservationService reservationService;
+	private final ReservationFacade reservationFacade;
 
 	@PostMapping
 	public ReservationDto.Response registerReservation(
@@ -67,6 +69,6 @@ public class ReservationController {
 		@RequestParam Long[] artistIds,
 		@RequestParam Long date
 	) {
-		return reservationService.listAvailableTime(shopId, artistIds, date);
+		return reservationFacade.listAvailableTime(shopId, artistIds, date);
 	}
 }

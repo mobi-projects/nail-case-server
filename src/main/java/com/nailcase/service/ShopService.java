@@ -270,4 +270,9 @@ public class ShopService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
+	public Shop findByShopIdAndNailArtistsAndWorkHours(Long shopId) {
+		return shopRepository.findByShopIdAndNailArtistsAndWorkHours(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+	}
 }
