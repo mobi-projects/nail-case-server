@@ -93,7 +93,19 @@ public class DateUtils {
 		}
 	}
 
+	// time이 start와 end 사이에 있는지 체크
 	public static boolean isLocalTimeBetween(LocalTime time, LocalTime start, LocalTime end) {
 		return time.isAfter(start) && time.isBefore(end);
+	}
+
+	// localDateTime1의 날짜와 localDateTime2의 시간을 조합하여 리턴합니다
+	public static LocalDateTime combineLocalDateTime(LocalDateTime date, LocalDateTime time) {
+		return LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+			time.getHour(), time.getMinute(), time.getSecond());
+	}
+
+	public static Long combineLocalDateTimeToUnixTimeStamp(LocalDateTime date, LocalDateTime time) {
+		return localDateTimeToUnixTimeStamp(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+			time.getHour(), time.getMinute(), time.getSecond()));
 	}
 }
