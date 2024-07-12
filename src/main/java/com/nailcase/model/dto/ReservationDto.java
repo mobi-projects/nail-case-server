@@ -3,6 +3,7 @@ package com.nailcase.model.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.nailcase.model.enums.ReservationStatus;
 
@@ -29,6 +30,7 @@ public class ReservationDto {
 
 		public List<Long> getNailArtistIds() {
 			return reservationDetailList.stream().map(ReservationDetailDto.Post::getNailArtistId)
+				.filter(Objects::nonNull)
 				.toList();
 		}
 	}
@@ -59,6 +61,8 @@ public class ReservationDto {
 		private Long startTime;
 
 		private int availableSeats;
+
+		private boolean enable;
 
 		private List<NailArtistDto.Response> artists;
 	}
