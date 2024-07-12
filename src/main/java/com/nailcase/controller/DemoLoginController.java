@@ -13,7 +13,6 @@ import com.nailcase.model.dto.MemberDto;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
-import com.nailcase.model.enums.UserType;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 
@@ -34,8 +33,8 @@ public class DemoLoginController {
 
 		MemberDto memberDto = MemberDto.fromEntity(member);
 		String accessToken = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
-			UserType.MEMBER.getValue());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail(), UserType.MEMBER.getValue());
+			member.getRole());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getRole());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)
@@ -43,15 +42,16 @@ public class DemoLoginController {
 			.body(memberDto);
 	}
 
-	@GetMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/manager", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<NailArtistDto> loginAdmin() {
-		NailArtist admin = nailArtistRepository.findByEmail("manager@example.com")
+		NailArtist manager = nailArtistRepository.findByEmail("manager@example.com")
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-		NailArtistDto adminDto = NailArtistDto.fromEntity(admin);
-		String accessToken = jwtService.createAccessToken(admin.getEmail(), admin.getNailArtistId(),
-			UserType.MANAGER.getValue());
-		String refreshToken = jwtService.createRefreshToken(admin.getEmail(), UserType.MANAGER.getValue());
+		NailArtistDto adminDto = NailArtistDto.fromEntity(manager);
+		String accessToken = jwtService.createAccessToken(manager.getEmail(), manager.getNailArtistId(),
+			manager.getRole()
+		);
+		String refreshToken = jwtService.createRefreshToken(manager.getEmail(), manager.getRole());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)

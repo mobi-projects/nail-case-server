@@ -9,25 +9,27 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.nailcase.model.entity.Member;
-import com.nailcase.model.enums.UserType;
+import com.nailcase.model.enums.Role;
 
 import lombok.Getter;
 
 @Getter
-public class MemberDetails extends User implements UserDetails, UserPrincipal {
+public final class MemberDetails extends User implements UserDetails, UserPrincipal {
 
 	private final Long memberId;
-
 	private final String email;
+	private final Role role;
 
 	public MemberDetails(
 		Long memberId,
 		String username,
 		String password,
+		Role role,
 		Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 		this.memberId = memberId;
 		this.email = username;
+		this.role = role;
 	}
 
 	public static MemberDetails withMember(Member member) {
@@ -35,7 +37,8 @@ public class MemberDetails extends User implements UserDetails, UserPrincipal {
 			member.getMemberId(),
 			member.getEmail(),
 			"",
-			List.of(new SimpleGrantedAuthority(member.getRole().name()))
+			member.getRole(),
+			List.of(new SimpleGrantedAuthority(member.getRole().getKey()))  // getKey() 사용
 		);
 	}
 
@@ -45,7 +48,13 @@ public class MemberDetails extends User implements UserDetails, UserPrincipal {
 	}
 
 	@Override
-	public UserType getUserType() {
-		return UserType.MEMBER;
+	public String getEmail() {
+		return this.email;
 	}
+
+	@Override
+	public Role getRole() {
+		return this.role;
+	}
+
 }

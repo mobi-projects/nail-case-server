@@ -8,29 +8,33 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.enums.Role;
-import com.nailcase.model.enums.UserType;
 
 import lombok.Getter;
 
 @Getter
-public class NailArtistDetails extends User implements UserDetails, UserPrincipal {
+public final class NailArtistDetails extends User implements UserDetails, UserPrincipal {
 
 	private final Long nailArtistId;
 	private final String email;
 	private final Role role;
+	private final NailArtist nailArtist;
 
 	public NailArtistDetails(
 		Long nailArtistId,
 		String username,
 		String password,
 		Role role,
-		Collection<? extends GrantedAuthority> authorities) {
+		Collection<? extends GrantedAuthority> authorities,
+		NailArtist nailArtist) {
 		super(username, password, authorities);
 		this.nailArtistId = nailArtistId;
 		this.email = username;
 		this.role = role;
+		this.nailArtist = nailArtist;
 	}
 
 	public static NailArtistDetails withNailArtist(NailArtist nailArtist) {
@@ -39,7 +43,8 @@ public class NailArtistDetails extends User implements UserDetails, UserPrincipa
 			nailArtist.getEmail(),
 			"",
 			nailArtist.getRole(),
-			List.of(new SimpleGrantedAuthority(nailArtist.getRole().name()))
+			List.of(new SimpleGrantedAuthority(nailArtist.getRole().getKey())),
+			nailArtist
 		);
 	}
 
@@ -49,7 +54,14 @@ public class NailArtistDetails extends User implements UserDetails, UserPrincipa
 	}
 
 	@Override
-	public UserType getUserType() {
-		return UserType.MANAGER;
+	public Role getRole() {
+		return this.role;
 	}
+
+	public void validateAndGetNailArtistForShop(Long shopId) {
+		if (!this.nailArtist.getShop().getShopId().equals(shopId)) {
+			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
+		}
+	}
+
 }

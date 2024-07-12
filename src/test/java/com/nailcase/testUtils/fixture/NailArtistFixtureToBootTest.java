@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.entity.NailArtist;
-import com.nailcase.model.enums.UserType;
 import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.testUtils.FixtureFactory;
 
@@ -24,7 +23,7 @@ public class NailArtistFixtureToBootTest {
 		nailArtistRepository.save(nailArtist);
 
 		return jwtService.createAccessToken(nailArtist.getEmail(), nailArtist.getNailArtistId(),
-			UserType.MANAGER.getValue());
+			nailArtist.getRole());
 	}
 
 	public void deleteAllNailArtist() {

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.entity.Member;
-import com.nailcase.model.enums.UserType;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.testUtils.FixtureFactory;
 
@@ -23,7 +22,7 @@ public class MemberFixtureToBootTest {
 
 		memberRepository.save(member);
 
-		return jwtService.createAccessToken(member.getEmail(), member.getMemberId(), UserType.MEMBER.getValue());
+		return jwtService.createAccessToken(member.getEmail(), member.getMemberId(), member.getRole());
 	}
 
 	public void deleteAllMembers() {

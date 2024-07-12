@@ -1,5 +1,7 @@
 package com.nailcase.jwt.filter;
 
+import static com.nailcase.model.enums.Role.*;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +20,7 @@ import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
-import com.nailcase.model.enums.UserType;
+import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 
@@ -61,21 +63,21 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	private void checkRefreshTokenAndReIssueAccessToken(@NonNull HttpServletResponse response,
 		@NonNull String refreshToken) {
 		jwtService.extractEmail(refreshToken).ifPresent(email -> {
-			jwtService.extractUserType(refreshToken).ifPresent(userType -> {
-				String savedRefreshToken = (String)redisTemplate.opsForValue().get(userType.getValue() + ":" + email);
+			jwtService.extractRole(refreshToken).ifPresent(role -> {
+				String savedRefreshToken = (String)redisTemplate.opsForValue().get(role.getKey() + ":" + email);
 				if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-					String reIssuedRefreshToken = reIssueRefreshToken(email, userType);
-					if (userType == UserType.MEMBER) {
+					String reIssuedRefreshToken = reIssueRefreshToken(email, role);
+					if (role == MEMBER) {
 						Member member = memberRepository.findByEmail(email)
 							.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
 						jwtService.sendAccessAndRefreshToken(response,
-							jwtService.createAccessToken(email, member.getMemberId(), userType.getValue()),
+							jwtService.createAccessToken(email, member.getMemberId(), role),
 							reIssuedRefreshToken);
-					} else if (userType == UserType.MANAGER) {
+					} else if (role == MANAGER) {
 						NailArtist nailArtist = nailArtistRepository.findByEmail(email)
 							.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
 						jwtService.sendAccessAndRefreshToken(response,
-							jwtService.createAccessToken(email, nailArtist.getNailArtistId(), userType.getValue()),
+							jwtService.createAccessToken(email, nailArtist.getNailArtistId(), role),
 							reIssuedRefreshToken);
 					} else {
 						throw new BusinessException(AuthErrorCode.INVALID_USER_TYPE);
@@ -87,9 +89,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		});
 	}
 
-	public String reIssueRefreshToken(String email, UserType userType) {
-		String newRefreshToken = jwtService.createRefreshToken(email, userType.getValue());
-		String key = userType.getValue() + ":" + email;
+	public String reIssueRefreshToken(String email, com.nailcase.model.enums.Role role) {
+		String newRefreshToken = jwtService.createRefreshToken(email, role);
+		String key = role.getKey() + ":" + email;
 
 		// 기존 토큰 제거
 		redisTemplate.delete(key);
@@ -118,19 +120,19 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	}
 
 	private void saveAuthentication(String token) {
-		UserType userType = jwtService.extractUserType(token)
+		Role role = jwtService.extractRole(token)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
 		Long userId = jwtService.extractUserId(token)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
-		jwtService.extractEmail(token)
+		String email = jwtService.extractEmail(token)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.TOKEN_INVALID));
 
 		UserDetails userDetails;
-		if (userType == UserType.MEMBER) {
+		if (role == MEMBER) {
 			Member member = memberRepository.findById(userId)
 				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 			userDetails = MemberDetails.withMember(member);
-		} else if (userType == UserType.MANAGER) {
+		} else if (role == MANAGER) {
 			NailArtist nailArtist = nailArtistRepository.findById(userId)
 				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 			userDetails = NailArtistDetails.withNailArtist(nailArtist);

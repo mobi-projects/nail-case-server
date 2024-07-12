@@ -10,7 +10,6 @@ import com.nailcase.jwt.JwtService;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.SocialType;
-import com.nailcase.model.enums.UserType;
 import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.OAuthAttributes;
 import com.nailcase.repository.NailArtistRepository;
@@ -35,9 +34,9 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 	protected LoginResponseDto processUserLogin(OAuthAttributes attributes) {
 		NailArtist nailArtist = getOrCreateManager(attributes);
 		String accessTokenJwt = jwtService.createAccessToken(nailArtist.getEmail(), nailArtist.getNailArtistId(),
-			UserType.MANAGER.getValue());
-		String refreshToken = jwtService.createRefreshToken(nailArtist.getEmail(), UserType.MANAGER.getValue());
-		jwtService.updateRefreshToken(nailArtist.getEmail(), refreshToken, UserType.MANAGER.getValue());
+			nailArtist.getRole());
+		String refreshToken = jwtService.createRefreshToken(nailArtist.getEmail(), nailArtist.getRole());
+		jwtService.updateRefreshToken(nailArtist.getEmail(), refreshToken, nailArtist.getRole());
 
 		List<Long> shopIds = nailArtist.getShops().stream()
 			.map(Shop::getShopId)
@@ -52,7 +51,7 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 			.hasShop(hasShop)
 			.accessTokenExpirationTime(jwtService.getAccessTokenExpirationPeriod())
 			.refreshTokenExpirationTime(jwtService.getRefreshTokenExpirationPeriod())
-			.userType(UserType.MANAGER)
+			.role(nailArtist.getRole())
 			.build();
 	}
 
