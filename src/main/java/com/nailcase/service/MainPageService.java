@@ -2,6 +2,7 @@ package com.nailcase.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,18 +48,17 @@ public class MainPageService {
 
 	// 사용자가 좋아요한 매장 목록 가져오기
 	@Transactional(readOnly = true)
-	public List<Shop> getMemberLikedShops(Long memberId) {
+	public List<ShopDto.MainPageResponse> getMemberLikedShops(Long memberId) {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-		// 좋아요한 매장 3개만 가져오기 위해 PageRequest를 생성합니다.
-		// 여기서는 최신 순으로 정렬하고자 할 때 'createdAt' 필드를 기준으로 정렬합니다.
 		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-		// 서비스 계층에 pageable 객체를 전달받은 데이터
 		Page<Shop> likedShopsPage = shopService.findLikedShopsByMemberInMainPage(memberId, pageable);
 
-		// Page 객체에서 실제 List<Shop>을 추출하여 반환
-		return likedShopsPage.getContent();
+		// Shop 엔티티를 ShopDto.MainPageResponse로 변환
+		return likedShopsPage.getContent().stream()
+			.map(shopMapper::toMainPageResponse)
+			.collect(Collectors.toList());
 	}
 }

@@ -33,41 +33,14 @@ public class ReviewController {
 
 	private final ReviewService reviewService;
 
-	// 이미지만 업로드하는 API
-	@PostMapping("/images")
-	@ResponseStatus(HttpStatus.CREATED)
-	public List<ReviewImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
-		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
-		Long memberId = memberDetails.getMemberId();
-		log.info("Uploading images for shopId: {}", shopId);
-		return reviewService.uploadImages(files, memberId);
-	}
-
-	@PostMapping("/{reviewId}/images")
-	@ResponseStatus(HttpStatus.CREATED)
-	public void addImageToReview(@PathVariable Long reviewId, @RequestParam("files") List<MultipartFile> files,
-		@PathVariable String shopId) {
-		log.info("Adding images to post: {} for shopId: {}", reviewId, shopId);
-		reviewService.addImageToReview(reviewId, files);
-	}
-
-	@DeleteMapping("/{reviewId}/images/{imageId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeImageFromReview(@PathVariable Long reviewId, @PathVariable Long imageId,
-		@PathVariable String shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
-		log.info("Removing image: {} from post: {}", imageId, reviewId);
-		reviewService.removeImageFromReview(reviewId, imageId, memberId);
-	}
-
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ReviewDto.Response registerReview(@PathVariable Long shopId, @RequestBody ReviewDto.Request request,
 		@AuthenticationPrincipal
 		MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
-		log.info("Uploading images for shopId: {} by {}", shopId, memberId);
-		return reviewService.registerReview(shopId, request, memberId);
+
+		log.info("Uploading images for shopId: {}", shopId);
+		return reviewService.registerReview(shopId, request, memberDetails);
 	}
 
 	@PutMapping("/{reviewId}")
@@ -77,16 +50,6 @@ public class ReviewController {
 		log.info("Updating review: {} for shopId: {}", reviewId, shopId);
 		Long memberId = memberDetails.getMemberId();
 		return reviewService.updateReview(shopId, reviewId, request, memberId);
-	}
-
-	@GetMapping
-	public List<ReviewDto.Response> listReviews(@PathVariable Long shopId) {
-		return reviewService.listReviews(shopId);
-	}
-
-	@GetMapping("/{reviewId}")
-	public ReviewDto.Response viewReview(@PathVariable Long shopId, @PathVariable Long reviewId) {
-		return reviewService.viewReview(shopId, reviewId);
 	}
 
 	@DeleteMapping("/{reviewId}")
@@ -120,4 +83,42 @@ public class ReviewController {
 		Long memberId = memberDetails.getMemberId();
 		reviewService.deleteReviewComment(shopId, reviewId, commentId, memberId);
 	}
+
+	// 이미지만 업로드하는 API
+	@PostMapping("/images")
+	@ResponseStatus(HttpStatus.CREATED)
+	public List<ReviewImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
+		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
+		Long memberId = memberDetails.getMemberId();
+		log.info("Uploading images for shopId: {}", shopId);
+		return reviewService.uploadImages(files, memberId);
+	}
+
+	@PostMapping("/{reviewId}/images")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void addImageToReview(@PathVariable Long reviewId, @RequestParam("files") List<MultipartFile> files,
+		@PathVariable String shopId) {
+		log.info("Adding images to post: {} for shopId: {}", reviewId, shopId);
+		reviewService.addImageToReview(reviewId, files);
+	}
+
+	@DeleteMapping("/{reviewId}/images/{imageId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeImageFromReview(@PathVariable Long reviewId, @PathVariable Long imageId,
+		@PathVariable String shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
+		Long memberId = memberDetails.getMemberId();
+		log.info("Removing image: {} from post: {}", imageId, reviewId);
+		reviewService.removeImageFromReview(reviewId, imageId, memberId);
+	}
+
+	@GetMapping
+	public List<ReviewDto.Response> listReviews(@PathVariable Long shopId) {
+		return reviewService.listReviews(shopId);
+	}
+
+	@GetMapping("/{reviewId}")
+	public ReviewDto.Response viewReview(@PathVariable Long shopId, @PathVariable Long reviewId) {
+		return reviewService.viewReview(shopId, reviewId);
+	}
+
 }

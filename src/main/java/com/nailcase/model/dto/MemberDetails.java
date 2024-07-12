@@ -18,17 +18,20 @@ public final class MemberDetails extends User implements UserDetails, UserPrinci
 
 	private final Long memberId;
 	private final String email;
+	private final String nickname;
 	private final Role role;
 
 	public MemberDetails(
 		Long memberId,
-		String username,
+		String email,
 		String password,
+		String nickname,
 		Role role,
 		Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, authorities);
+		super(email, password, authorities);
+		this.email = email;
 		this.memberId = memberId;
-		this.email = username;
+		this.nickname = nickname;
 		this.role = role;
 	}
 
@@ -37,6 +40,7 @@ public final class MemberDetails extends User implements UserDetails, UserPrinci
 			member.getMemberId(),
 			member.getEmail(),
 			"",
+			member.getNickname(),
 			member.getRole(),
 			List.of(new SimpleGrantedAuthority(member.getRole().getKey()))  // getKey() 사용
 		);
@@ -55,6 +59,11 @@ public final class MemberDetails extends User implements UserDetails, UserPrinci
 	@Override
 	public Role getRole() {
 		return this.role;
+	}
+
+	@Override
+	public String getNickname() {
+		return this.nickname;
 	}
 
 }

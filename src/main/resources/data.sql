@@ -1,10 +1,10 @@
 
 -- 먼저 members와 nail_artists 테이블에 데이터 삽입
-INSERT INTO members (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO members (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT 'Member', 'member@example.com', 'MEMBER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'member@example.com');
 
-INSERT INTO members (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO members (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT 'Member', CONCAT('member', n, '@example.com'), 'MEMBER',
        'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO',
        CONCAT('3588226794', n), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -12,39 +12,39 @@ FROM (SELECT 2 AS n UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNI
 WHERE NOT EXISTS (SELECT 2 FROM members WHERE email = CONCAT('member', nums.n, '@example.com'));
 
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT 'Manager', 'manager@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'manager@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '모비쌤', 'mobi1@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 2 FROM nail_artists WHERE email = 'mobi1@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '비모쌤', 'mobi2@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 3 FROM nail_artists WHERE email = 'mobi2@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '피넛쌤', 'mobi3@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 4 FROM nail_artists WHERE email = 'mobi3@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '케이쌤', 'mobi4@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 5 FROM nail_artists WHERE email = 'mobi4@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '제로쌤', 'mobi5@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 6 FROM nail_artists WHERE email = 'mobi5@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '조이쌤', 'mobi6@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 7 FROM nail_artists WHERE email = 'mobi6@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '제인쌤', 'mobi7@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 8 FROM nail_artists WHERE email = 'mobi7@example.com');
 
-INSERT INTO nail_artists (name, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT '알루미늄쌤', 'mobi8@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 9 FROM nail_artists WHERE email = 'mobi8@example.com');
 
@@ -218,6 +218,7 @@ SELECT * FROM (
 ( 1, 1, '2024-07-10 14:00:00'::timestamp, '2024-07-10 14:00:00'::timestamp),
 ( 1, 1, '2024-07-10 15:00:00'::timestamp, '2024-07-10 15:00:00'::timestamp),
 ( 1, 1, '2024-07-10 16:00:00'::timestamp, '2024-07-10 16:00:00'::timestamp),
+( 1, 1, '2024-07-10 17:00:00'::timestamp, '2024-07-10 17:00:00'::timestamp) ,
 ( 1, 1, '2024-07-10 17:00:00'::timestamp, '2024-07-10 17:00:00'::timestamp) ) AS temp
 WHERE NOT EXISTS (
     SELECT 1
@@ -350,7 +351,8 @@ SELECT * FROM (VALUES
 (117, 1, 'PENDING', 'ELSE_WHERE', '2024-07-31 10:00:00'::timestamp, '2024-07-31 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, null),
 (118, 1, 'CONFIRMED', 'ELSE_WHERE', '2024-07-31 13:00:00'::timestamp, '2024-07-31 14:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 6),
 (119, 1, 'PENDING', 'ELSE_WHERE', '2024-07-31 16:00:00'::timestamp, '2024-07-31 17:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, true, null),
-(120, 1, 'CONFIRMED', 'IN_SHOP', '2024-07-01 10:00:00'::timestamp, '2024-07-01 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 7) ) AS temp
+(120, 1, 'CONFIRMED', 'IN_SHOP', '2024-07-01 10:00:00'::timestamp, '2024-07-01 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 7) ,
+(121, 1, 'CONFIRMED', 'IN_SHOP', '2024-07-02 10:00:00'::timestamp, '2024-07-02 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 7) ) AS temp
 WHERE NOT EXISTS (SELECT 1 FROM members WHERE email = 'admin@example.com');
 
 -- 조건 정보 삽입
@@ -528,7 +530,8 @@ SELECT * FROM (VALUES
 (118, 'AS', '2024-07-07 09:00:00'::timestamp, '2024-07-07 09:00:00'::timestamp),
 (119, 'REPAIR', '2024-07-07 10:00:00'::timestamp, '2024-07-07 10:00:00'::timestamp),
 (120, 'WOUND_CARE', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp),
-(120, 'CORRECTION', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
+(120, 'CORRECTION', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp),
+(121, 'CORRECTION', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
 WHERE NOT EXISTS (
     SELECT 1
     FROM conditions
@@ -664,7 +667,8 @@ SELECT * FROM (VALUES
 (117, 'ONE', 117, '', '2024-07-06 23:00:00'::timestamp, '2024-07-06 23:00:00'::timestamp),
 (118, 'AOM', 118, '', '2024-07-07 09:00:00'::timestamp, '2024-07-07 09:00:00'::timestamp),
 (119, 'CARE', 119, '', '2024-07-07 10:00:00'::timestamp, '2024-07-07 10:00:00'::timestamp),
-(120, 'ONE', 120, '', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
+(120, 'ONE', 120, '', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp),
+(121, 'AOM', 120, '', '2024-07-07 11:00:00'::timestamp, '2024-07-07 11:00:00'::timestamp)) AS temp
 WHERE NOT EXISTS (
     SELECT 1
     FROM treatments
@@ -674,46 +678,45 @@ WHERE NOT EXISTS (
 
 
 -- 리뷰 데이터 삽입
-INSERT INTO review (shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 1, '친절한 서비스와 아름다운 네일 아트에 감동했습니다. 다음에도 꼭 방문할게요!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 1,1, '친절한 서비스와 아름다운 네일 아트에 감동했습니다. 다음에도 꼭 방문할게요!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 1);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 2, '디자인이 마음에 들었지만, 예약 시간이 조금 지연되어 아쉬웠어요.', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 2,2 ,'디자인이 마음에 들었지만, 예약 시간이 조금 지연되어 아쉬웠어요.', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 2);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT  1, 3, '깨끗하고 편안한 분위기에서 네일을 받을 수 있어서 좋았습니다.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT  1, 3,3, '깨끗하고 편안한 분위기에서 네일을 받을 수 있어서 좋았습니다.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 3);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT  1, 4, '매번 새로운 디자인을 제안해주셔서 너무 만족스럽습니다!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT  1, 4,4, '매번 새로운 디자인을 제안해주셔서 너무 만족스럽습니다!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 4);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 5, '네일 유지력이 좋아서 오랜 시간 예쁜 상태로 유지됩니다. 추천해요!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 5,5, '네일 유지력이 좋아서 오랜 시간 예쁜 상태로 유지됩니다. 추천해요!', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 5);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 6, '가격 대비 서비스가 조금 아쉬웠어요. 그래도 디자인은 만족스럽습니다.', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 6,6, '가격 대비 서비스가 조금 아쉬웠어요. 그래도 디자인은 만족스럽습니다.', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 6);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 7, '친구 소개로 왔는데 정말 좋네요! 다음에도 또 오고 싶어요.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 7,7, '친구 소개로 왔는데 정말 좋네요! 다음에도 또 오고 싶어요.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 7);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 8, '직원분들이 정말 친절하고 세심하게 신경 써주셔서 만족스러웠습니다.', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 8,8, '직원분들이 정말 친절하고 세심하게 신경 써주셔서 만족스러웠습니다.', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 8);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 9, '디자인 선택에 있어서 다양성이 좀 더 있었으면 좋겠어요.', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 9,9, '디자인 선택에 있어서 다양성이 좀 더 있었으면 좋겠어요.', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 9);
 
-INSERT INTO review ( shop_id, member_id, contents, rating, created_at, modified_at)
-SELECT 1, 10, '전체적으로 만족하지만, 예약 잡기가 조금 힘들었어요.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+INSERT INTO review (shop_id, member_id,reservation_detail_id, contents, rating, created_at, modified_at)
+SELECT 1, 10,10 ,'전체적으로 만족하지만, 예약 잡기가 조금 힘들었어요.', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM review WHERE review_id = 10);
-
 
 -- 게시물 데이터 삽입
 INSERT INTO posts (shop_id, title, category, contents, likes, views, created_at, modified_at)

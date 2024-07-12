@@ -55,7 +55,7 @@ public class OAuthAttributes {
 			.socialId(oauth2UserInfo.getId())
 			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
 				oauth2UserInfo.getId() + "@socialuser.com")
-			.name(oauth2UserInfo.getName())
+			.nickname(oauth2UserInfo.getNickname())
 			.role(Role.MEMBER)
 			.build();
 	}
@@ -66,7 +66,7 @@ public class OAuthAttributes {
 			.socialId(oauth2UserInfo.getId())
 			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
 				oauth2UserInfo.getId() + "@socialuser.com")
-			.name(oauth2UserInfo.getName())
+			.nickname(oauth2UserInfo.getNickname())
 			.role(Role.MANAGER)
 			.build();
 	}

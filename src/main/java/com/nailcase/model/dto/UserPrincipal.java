@@ -9,6 +9,8 @@ import com.nailcase.model.enums.Role;
 public sealed interface UserPrincipal permits MemberDetails, NailArtistDetails {
 	Long getId();
 
+	String getNickname();
+
 	String getEmail();
 
 	Role getRole();

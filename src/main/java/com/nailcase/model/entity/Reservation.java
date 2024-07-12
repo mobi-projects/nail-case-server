@@ -57,4 +57,9 @@ public class Reservation extends BaseEntity {
 	public void associateDown() {
 		this.reservationDetailList.forEach(reservationDetail -> reservationDetail.associateDown(this));
 	}
+
+	public boolean isAccompanied() {
+		return reservationDetailList.size() > 1 && reservationDetailList.get(1) != null;
+	}
+
 }
