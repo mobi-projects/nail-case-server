@@ -167,8 +167,8 @@ public class ReservationService {
 			shop.getShopId(), time);
 
 		int availableSeats = shop.getAvailableSeats();
-		long openTime = DateUtils.localDateTimeToUnixTimeStamp(workHour.getOpenTime());
-		long closeTime = DateUtils.localDateTimeToUnixTimeStamp(workHour.getCloseTime());
+		long openTime = DateUtils.combineLocalDateTimeToUnixTimeStamp(time, workHour.getOpenTime());
+		long closeTime = DateUtils.combineLocalDateTimeToUnixTimeStamp(time, workHour.getCloseTime());
 		Set<NailArtist> nailArtists = shop.getNailArtists();
 		List<NailArtist> requestedArtists = nailArtists.stream()
 			.filter(nailArtist -> Arrays.stream(artistIds)
