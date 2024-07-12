@@ -23,7 +23,7 @@ public class NailArtistFixtureToBootTest {
 		nailArtistRepository.save(nailArtist);
 
 		return jwtService.createAccessToken(nailArtist.getEmail(), nailArtist.getNailArtistId(),
-			UserType.MANAGER.getValue());
+			nailArtist.getRole());
 	}
 
 	public void deleteAllNailArtist() {
