@@ -1145,18 +1145,18 @@
   }
 };
             defs["com.nailcase.model.dto.ReservationDetailDto$Post"] = {
-  "required" : [ "conditionList", "endTime", "extend", "remove", "startTime", "treatmentList" ],
+  "required" : [ "conditionList", "extend", "remove", "startTime", "treatmentList" ],
   "type" : "object",
   "properties" : {
     "shopId" : {
       "type" : "integer",
       "format" : "int64"
     },
-    "startTime" : {
+    "nailArtistId" : {
       "type" : "integer",
       "format" : "int64"
     },
-    "endTime" : {
+    "startTime" : {
       "type" : "integer",
       "format" : "int64"
     },
@@ -1321,9 +1321,12 @@
         "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Post"
       }
     },
-    "endTime" : {
-      "type" : "integer",
-      "format" : "int64"
+    "nailArtistIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
     },
     "startTime" : {
       "type" : "integer",
