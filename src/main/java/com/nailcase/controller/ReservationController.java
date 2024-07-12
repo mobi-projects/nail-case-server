@@ -66,7 +66,7 @@ public class ReservationController {
 	@GetMapping("/time")
 	public List<ReservationDto.Available> listAvailableTime(
 		@PathVariable Long shopId,
-		@RequestParam Long[] artistIds,
+		@RequestParam(required = false) Long[] artistIds,
 		@RequestParam Long date
 	) {
 		return reservationFacade.listAvailableTime(shopId, artistIds, date);
