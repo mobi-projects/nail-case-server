@@ -3,6 +3,7 @@ package com.nailcase.util;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -92,7 +93,7 @@ public class DateUtils {
 		}
 	}
 
-	public static boolean isTimeBetween(LocalDateTime time, LocalDateTime start, LocalDateTime end) {
+	public static boolean isLocalTimeBetween(LocalTime time, LocalTime start, LocalTime end) {
 		return time.isAfter(start) && time.isBefore(end);
 	}
 }

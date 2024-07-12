@@ -1,6 +1,7 @@
 package com.nailcase.service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -74,9 +75,12 @@ public class WorkHourService {
 
 	public void verifyTimeInOpeningHour(Collection<WorkHour> workHours, Long time) {
 		WorkHour workHour = verifyBusinessDay(workHours, time);
-
 		LocalDateTime requestingTime = DateUtils.unixTimeStampToLocalDateTime(time);
-		if (!DateUtils.isTimeBetween(requestingTime, workHour.getOpenTime(), workHour.getCloseTime())) {
+
+		LocalTime requestingLocalTime = requestingTime.toLocalTime();
+		LocalTime openTime = workHour.getOpenTime().toLocalTime();
+		LocalTime closeTime = workHour.getCloseTime().toLocalTime();
+		if (!DateUtils.isLocalTimeBetween(requestingLocalTime, openTime, closeTime)) {
 			throw new BusinessException(WorkHourErrorCode.NOT_OPENED);
 		}
 	}
