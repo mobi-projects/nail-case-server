@@ -8,13 +8,13 @@ public enum AuthErrorCode implements ErrorCodeInterface {
 	ACCESS_DENIED(402, "접근 거부"),
 	ACCESS_RETRIEVE(403, "액세스 토큰 발급 에러"),
 	TOKEN_EXPIRED(404, "토큰이 만료됨"),
-	TOKEN_INVALID(405, "잘못된 토큰"),
+	TOKEN_INVALID(401, "유효하지 않은 토큰이거나 만료된 토큰"),
 	AUTH_UNEXPECTED(406, "인증과정에서 예기치 않은 에러"),
 	AUTH_UNSUPPORTED(407, "지원하지 않는 로그인 서비스"),
-	UNAUTHORIZED(408, "인증되지 않은 사용자"),
-	INVALID_USER_TYPE(409, "잘못된 유저 타입"),
+	UNAUTHORIZED(401, "인증되지 않은 사용자"),
+	INVALID_USER_TYPE(401, "잘못된 유저 타입"),
 	TOKEN_NOT_FOUND(410, "잘못된 토큰"),
-	REFRESH_TOKEN_SAVE_FAILED(411, "리프레쉬 토큰 저장 실패");
+	REFRESH_TOKEN_SAVE_FAILED(401, "리프레쉬 토큰 저장 실패");
 
 	private final int code;
 	private final String message;

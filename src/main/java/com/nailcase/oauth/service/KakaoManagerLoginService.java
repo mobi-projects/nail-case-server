@@ -35,7 +35,8 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 		NailArtist nailArtist = getOrCreateManager(attributes);
 		String accessTokenJwt = jwtService.createAccessToken(nailArtist.getEmail(), nailArtist.getNailArtistId(),
 			nailArtist.getRole());
-		String refreshToken = jwtService.createRefreshToken(nailArtist.getEmail(), nailArtist.getRole());
+		String refreshToken = jwtService.createRefreshToken(nailArtist.getEmail(), nailArtist.getNailArtistId(),
+			nailArtist.getRole());
 		jwtService.updateRefreshToken(nailArtist.getEmail(), refreshToken, nailArtist.getRole());
 
 		List<Long> shopIds = nailArtist.getShops().stream()
