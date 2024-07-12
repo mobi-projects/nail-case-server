@@ -1,5 +1,6 @@
 package com.nailcase.service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
-import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.exception.codes.WorkHourErrorCode;
 import com.nailcase.mapper.WorkHourMapper;
 import com.nailcase.model.dto.WorkHourDto;
@@ -57,18 +57,27 @@ public class WorkHourService {
 			.collect(Collectors.toList());
 	}
 
-	public WorkHour retrieveWorkHourIfOpen(Collection<WorkHour> workHours, Long date) {
+	public WorkHour verifyBusinessDay(Collection<WorkHour> workHours, Long date) {
 		int requestingDayOfWeek = DateUtils.unixTimeStampToLocalDateTime(date).getDayOfWeek().ordinal();
 
 		WorkHour workHour = workHours.stream()
 			.filter(wH -> wH.getDayOfWeek() == requestingDayOfWeek)
 			.findFirst()
-			.orElseThrow(() -> new BusinessException(ReservationErrorCode.WORK_HOUR_NOT_DEFINED));
+			.orElseThrow(() -> new BusinessException(WorkHourErrorCode.WORK_HOUR_NOT_DEFINED));
 
 		if (Boolean.FALSE.equals(workHour.getIsOpen())) {
-			throw new BusinessException(ReservationErrorCode.WORK_HOUR_NOT_DEFINED);
+			throw new BusinessException(WorkHourErrorCode.NOT_OPENED);
 		}
 
 		return workHour;
+	}
+
+	public void verifyTimeInOpeningHour(Collection<WorkHour> workHours, Long time) {
+		WorkHour workHour = verifyBusinessDay(workHours, time);
+
+		LocalDateTime requestingTime = DateUtils.unixTimeStampToLocalDateTime(time);
+		if (!DateUtils.isTimeBetween(requestingTime, workHour.getOpenTime(), workHour.getCloseTime())) {
+			throw new BusinessException(WorkHourErrorCode.NOT_OPENED);
+		}
 	}
 }

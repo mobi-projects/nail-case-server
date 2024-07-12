@@ -1,7 +1,7 @@
 package com.nailcase.service;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class NailArtistService {
-	public void verifyArtistsExistenceInShop(Long[] nailArtistIds, Collection<NailArtist> nailArtists) {
+	public void verifyArtistsExistenceInShop(List<Long> nailArtistIds, Collection<NailArtist> nailArtists) {
 		if (notContainsAnyArtistIds(nailArtistIds, nailArtists)) {
 			throw new BusinessException(NailArtistErrorCode.NOT_FOUND);
 		}
 	}
 
-	private boolean notContainsAnyArtistIds(Long[] nailArtistIds, Collection<NailArtist> nailArtists) {
-		return Arrays.stream(nailArtistIds)
+	private boolean notContainsAnyArtistIds(List<Long> nailArtistIds, Collection<NailArtist> nailArtists) {
+		return nailArtistIds.stream()
 			.noneMatch(artistId -> nailArtists
 				.stream()
 				.map(NailArtist::getNailArtistId)

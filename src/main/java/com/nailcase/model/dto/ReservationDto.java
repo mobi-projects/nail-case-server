@@ -27,8 +27,9 @@ public class ReservationDto {
 			return reservationDetailList.getFirst().getStartTime();
 		}
 
-		public Long getEndTime() {
-			return reservationDetailList.getLast().getEndTime();
+		public List<Long> getNailArtistIds() {
+			return reservationDetailList.stream().map(ReservationDetailDto.Post::getNailArtistId)
+				.toList();
 		}
 	}
 

@@ -68,7 +68,7 @@ public class ReservationDetail extends BaseEntity {
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime startTime;
 
-	@Column(name = "end_time", nullable = false)
+	@Column(name = "end_time")
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime endTime;
 

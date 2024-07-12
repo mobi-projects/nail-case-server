@@ -92,4 +92,7 @@ public class DateUtils {
 		}
 	}
 
+	public static boolean isTimeBetween(LocalDateTime time, LocalDateTime start, LocalDateTime end) {
+		return time.isAfter(start) && time.isBefore(end);
+	}
 }

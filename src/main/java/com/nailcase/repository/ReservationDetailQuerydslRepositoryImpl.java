@@ -22,16 +22,17 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<ReservationDetail> findOngoingReservationDetailList(Long shopId, LocalDateTime startTime,
-		LocalDateTime endTime) {
+	public List<ReservationDetail> findOngoingReservationDetailList(
+		Long shopId,
+		LocalDateTime startTime
+	) {
 		return queryFactory.selectFrom(QReservationDetail.reservationDetail)
 			.join(QReservationDetail.reservationDetail.shop, QShop.shop)
 			.fetchJoin()
 			.where(QReservationDetail.reservationDetail.shop.shopId.eq(shopId),
-				QReservationDetail.reservationDetail.status.ne(ReservationStatus.CANCELED),
-				QReservationDetail.reservationDetail.status.ne(ReservationStatus.REJECTED),
-				QReservationDetail.reservationDetail.startTime.before(endTime),
-				QReservationDetail.reservationDetail.endTime.after(startTime))
+				QReservationDetail.reservationDetail.startTime.eq(startTime),
+				QReservationDetail.reservationDetail.status.eq(ReservationStatus.PENDING),
+				QReservationDetail.reservationDetail.status.eq(ReservationStatus.CONFIRMED))
 			.orderBy(QReservationDetail.reservationDetail.startTime.asc())
 			.fetch();
 	}

@@ -1,5 +1,6 @@
 package com.nailcase.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -23,8 +24,16 @@ public class ReservationFacade {
 
 	public List<ReservationDto.Available> listAvailableTime(Long shopId, Long[] nailArtistIds, Long date) {
 		Shop shop = shopService.findByShopIdAndNailArtistsAndWorkHours(shopId);
-		nailArtistService.verifyArtistsExistenceInShop(nailArtistIds, shop.getNailArtists());
-		WorkHour workHour = workHourService.retrieveWorkHourIfOpen(shop.getWorkHours(), date);
+		nailArtistService.verifyArtistsExistenceInShop(Arrays.asList(nailArtistIds), shop.getNailArtists());
+		WorkHour workHour = workHourService.verifyBusinessDay(shop.getWorkHours(), date);
 		return reservationService.listAvailableTime(shop, nailArtistIds, workHour, date);
+	}
+
+	@Transactional
+	public ReservationDto.Response createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
+		Shop shop = shopService.findByShopIdAndNailArtistsAndWorkHours(shopId);
+		nailArtistService.verifyArtistsExistenceInShop(dto.getNailArtistIds(), shop.getNailArtists());
+		workHourService.verifyTimeInOpeningHour(shop.getWorkHours(), dto.getStartTime());
+		return reservationService.createReservation(shopId, memberId, dto);
 	}
 }
