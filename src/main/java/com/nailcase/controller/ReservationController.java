@@ -1,5 +1,6 @@
 package com.nailcase.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,12 +17,15 @@ import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.service.ReservationFacade;
 import com.nailcase.service.ReservationService;
+import com.nailcase.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/shops/{shopId}/reservations")
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationController {
 
 	private final ReservationService reservationService;
@@ -69,6 +73,8 @@ public class ReservationController {
 		@RequestParam(required = false) Long[] artistIds,
 		@RequestParam Long date
 	) {
+		LocalDateTime localDateTime = DateUtils.unixTimeStampToLocalDateTime(date);
+		log.info("localDateTime: {}", localDateTime);
 		return reservationFacade.listAvailableTime(shopId, artistIds, date);
 	}
 }
