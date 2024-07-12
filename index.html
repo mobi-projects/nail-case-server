@@ -741,7 +741,7 @@
     "likedShops" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$MainPageResponse"
       }
     }
   }
@@ -920,7 +920,7 @@
       "type" : "integer",
       "format" : "int64"
     },
-    "name" : {
+    "nickName" : {
       "type" : "string"
     },
     "email" : {
@@ -1437,6 +1437,10 @@
     "rating" : {
       "type" : "number",
       "format" : "double"
+    },
+    "reservationDetailId" : {
+      "type" : "integer",
+      "format" : "int64"
     }
   }
 };
@@ -1455,6 +1459,9 @@
       "type" : "integer",
       "format" : "int64"
     },
+    "nickname" : {
+      "type" : "string"
+    },
     "contents" : {
       "type" : "string"
     },
@@ -1462,17 +1469,34 @@
       "type" : "number",
       "format" : "double"
     },
+    "accompaniedIn" : {
+      "type" : "boolean"
+    },
+    "treatmentOptions" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string",
+        "enum" : [ "AOM", "CARE", "ONE", "MEMBER_IMAGE" ]
+      }
+    },
+    "conditionOptions" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string",
+        "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
+      }
+    },
     "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
+      "type" : "string",
+      "format" : "date-time"
     },
     "createdBy" : {
       "type" : "integer",
       "format" : "int64"
     },
     "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
+      "type" : "string",
+      "format" : "date-time"
     },
     "modifiedBy" : {
       "type" : "integer",
@@ -1820,658 +1844,6 @@
     "closeTime" : {
       "type" : "integer",
       "format" : "int64"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.Condition"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "conditionId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "reservationDetail" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
-    },
-    "option" : {
-      "type" : "string",
-      "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
-    }
-  }
-};
-            defs["com.nailcase.model.entity.Member"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "memberId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "name" : {
-      "type" : "string"
-    },
-    "email" : {
-      "type" : "string"
-    },
-    "socialType" : {
-      "type" : "string",
-      "enum" : [ "KAKAO" ]
-    },
-    "socialId" : {
-      "type" : "string"
-    },
-    "role" : {
-      "type" : "string",
-      "enum" : [ "OWNER", "MANAGER", "MEMBER" ]
-    },
-    "profileImgUrl" : {
-      "type" : "string"
-    },
-    "reservations" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
-      }
-    },
-    "roleKey" : {
-      "type" : "string"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.NailArtist"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "nailArtistId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "name" : {
-      "type" : "string"
-    },
-    "email" : {
-      "type" : "string"
-    },
-    "socialType" : {
-      "type" : "string",
-      "enum" : [ "KAKAO" ]
-    },
-    "socialId" : {
-      "type" : "string"
-    },
-    "role" : {
-      "type" : "string",
-      "enum" : [ "OWNER", "MANAGER", "MEMBER" ]
-    },
-    "profileImgUrl" : {
-      "type" : "string"
-    },
-    "shops" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-      }
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    },
-    "timeTableList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
-      }
-    },
-    "reservationDetailList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
-      }
-    }
-  }
-};
-            defs["com.nailcase.model.entity.PriceImage"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "imageId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "bucketName" : {
-      "type" : "string"
-    },
-    "objectName" : {
-      "type" : "string"
-    },
-    "shopInfo" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopInfo"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.Reservation"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "reservationId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    },
-    "customer" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Member"
-    },
-    "nailArtist" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
-    },
-    "reservationDetailList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
-      }
-    }
-  }
-};
-            defs["com.nailcase.model.entity.ReservationDetail"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "reservationDetailId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    },
-    "nailArtist" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
-    },
-    "reservation" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
-    },
-    "treatmentList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Treatment"
-      }
-    },
-    "conditionList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Condition"
-      }
-    },
-    "startTime" : {
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "endTime" : {
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "status" : {
-      "type" : "string",
-      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED" ]
-    },
-    "remove" : {
-      "type" : "string",
-      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
-    },
-    "extend" : {
-      "type" : "boolean"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.Shop"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shopId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "nailArtist" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
-    },
-    "nailArtists" : {
-      "uniqueItems" : true,
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.NailArtist"
-      }
-    },
-    "shopName" : {
-      "type" : "string"
-    },
-    "phone" : {
-      "type" : "string"
-    },
-    "overview" : {
-      "type" : "string"
-    },
-    "address" : {
-      "type" : "string"
-    },
-    "availableSeats" : {
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "shopInfo" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopInfo"
-    },
-    "workHours" : {
-      "uniqueItems" : true,
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.WorkHour"
-      }
-    },
-    "tags" : {
-      "uniqueItems" : true,
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.TagMapping"
-      }
-    },
-    "shopImages" : {
-      "uniqueItems" : true,
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.ShopImage"
-      }
-    },
-    "reservationList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.Reservation"
-      }
-    },
-    "reservationDetailList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
-      }
-    },
-    "likes" : {
-      "type" : "integer",
-      "format" : "int64"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.ShopImage"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "imageId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "bucketName" : {
-      "type" : "string"
-    },
-    "objectName" : {
-      "type" : "string"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.ShopInfo"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shopInfoId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shopId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    },
-    "point" : {
-      "type" : "string"
-    },
-    "parkingLotCnt" : {
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "availableCnt" : {
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "info" : {
-      "type" : "string"
-    },
-    "price" : {
-      "type" : "string"
-    },
-    "priceImage" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.PriceImage"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.Tag"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "tagId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "tagName" : {
-      "type" : "string"
-    },
-    "tagMappings" : {
-      "uniqueItems" : true,
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.entity.TagMapping"
-      }
-    }
-  }
-};
-            defs["com.nailcase.model.entity.TagMapping"] = {
-  "type" : "object",
-  "properties" : {
-    "tagMappingId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "sortOrder" : {
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    },
-    "tag" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Tag"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.Treatment"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "treatmentId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "reservationDetail" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.ReservationDetail"
-    },
-    "option" : {
-      "type" : "string",
-      "enum" : [ "AOM", "CARE", "ONE", "MEMBER_IMAGE" ]
-    },
-    "imageId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "imageUrl" : {
-      "type" : "string"
-    }
-  }
-};
-            defs["com.nailcase.model.entity.WorkHour"] = {
-  "type" : "object",
-  "properties" : {
-    "createdAt" : {
-      "title" : "생성시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "modifiedAt" : {
-      "title" : "수정시간",
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "createdBy" : {
-      "title" : "생성자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedBy" : {
-      "title" : "수정자",
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "workHourId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.entity.Shop"
-    },
-    "dayOfWeek" : {
-      "type" : "integer",
-      "format" : "int32"
-    },
-    "isOpen" : {
-      "type" : "boolean"
-    },
-    "openTime" : {
-      "type" : "string",
-      "format" : "date-time"
-    },
-    "closeTime" : {
-      "type" : "string",
-      "format" : "date-time"
     }
   }
 };
