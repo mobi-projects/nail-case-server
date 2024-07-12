@@ -12396,10 +12396,10 @@ public class ReservationControllerApiExample {
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
-        array[Long] artistIds = ; // array[Long] | 
         Long date = 789; // Long | 
+        array[Long] artistIds = ; // array[Long] | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$Available] result = apiInstance.listAvailableTime(shopId, artistIds, date);
+            array[com.nailcase.model.dto.ReservationDto$Available] result = apiInstance.listAvailableTime(shopId, date, artistIds);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listAvailableTime");
@@ -12417,10 +12417,10 @@ public class ReservationControllerApiExample {
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
-        array[Long] artistIds = ; // array[Long] | 
         Long date = 789; // Long | 
+        array[Long] artistIds = ; // array[Long] | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$Available] result = apiInstance.listAvailableTime(shopId, artistIds, date);
+            array[com.nailcase.model.dto.ReservationDto$Available] result = apiInstance.listAvailableTime(shopId, date, artistIds);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listAvailableTime");
@@ -12438,14 +12438,14 @@ public class ReservationControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
-array[Long] *artistIds = ; // 
 Long *date = 789; // 
+array[Long] *artistIds = ; //  (optional)
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance listAvailableTimeWith:shopId
-    artistIds:artistIds
     date:date
+    artistIds:artistIds
               completionHandler: ^(array[com.nailcase.model.dto.ReservationDto$Available] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -12468,9 +12468,10 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
-var artistIds = ; // {{array[Long]}} 
 var date = 789; // {{Long}} 
-
+var opts = { 
+  'artistIds':  // {{array[Long]}} 
+};
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -12478,7 +12479,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listAvailableTime(shopId, artistIds, date, callback);
+api.listAvailableTime(shopId, date, opts, callback);
 </code></pre>
                             </div>
 
@@ -12504,12 +12505,12 @@ namespace Example
 
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
-            var artistIds = new array[Long](); // array[Long] | 
             var date = 789;  // Long | 
+            var artistIds = new array[Long](); // array[Long] |  (optional) 
 
             try
             {
-                array[com.nailcase.model.dto.ReservationDto$Available] result = apiInstance.listAvailableTime(shopId, artistIds, date);
+                array[com.nailcase.model.dto.ReservationDto$Available] result = apiInstance.listAvailableTime(shopId, date, artistIds);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -12531,11 +12532,11 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
-$artistIds = ; // array[Long] | 
 $date = 789; // Long | 
+$artistIds = ; // array[Long] | 
 
 try {
-    $result = $api_instance->listAvailableTime($shopId, $artistIds, $date);
+    $result = $api_instance->listAvailableTime($shopId, $date, $artistIds);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->listAvailableTime: ', $e->getMessage(), PHP_EOL;
@@ -12553,11 +12554,11 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
-my $artistIds = []; # array[Long] | 
 my $date = 789; # Long | 
+my $artistIds = []; # array[Long] | 
 
 eval { 
-    my $result = $api_instance->listAvailableTime(shopId => $shopId, artistIds => $artistIds, date => $date);
+    my $result = $api_instance->listAvailableTime(shopId => $shopId, date => $date, artistIds => $artistIds);
     print Dumper($result);
 };
 if ($@) {
@@ -12578,11 +12579,11 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
 shopId = 789 # Long | 
-artistIds =  # array[Long] | 
 date = 789 # Long | 
+artistIds =  # array[Long] |  (optional)
 
 try: 
-    api_response = api_instance.list_available_time(shopId, artistIds, date)
+    api_response = api_instance.list_available_time(shopId, date, artistIds=artistIds)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->listAvailableTime: %s\n" % e)</code></pre>
@@ -12630,7 +12631,7 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">artistIds*</td>
+                                <tr><td style="width:150px;">artistIds</td>
                                 <td>
                                 
                                 
@@ -12645,9 +12646,6 @@ except ApiException as e:
                                                     </span>
                                 
                                             </div>
-                                                <div class="inner required">
-                                                    Required
-                                                </div>
                                         </div>
                                     </div>
                                 </td>
