@@ -2488,9 +2488,9 @@
     "hasShop" : {
       "type" : "boolean"
     },
-    "userType" : {
+    "role" : {
       "type" : "string",
-      "enum" : [ "MEMBER", "MANAGER" ]
+      "enum" : [ "OWNER", "MANAGER", "MEMBER" ]
     },
     "accessTokenExpirationTime" : {
       "type" : "integer",
@@ -3587,7 +3587,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/demo-login/admin</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/demo-login/manager</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -3611,7 +3611,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: application/json"\
-"http://localhost:8081/api/v1/demo-login/admin"</code></pre>
+"http://localhost:8081/api/v1/demo-login/manager"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-DemoLoginController-loginAdmin-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
