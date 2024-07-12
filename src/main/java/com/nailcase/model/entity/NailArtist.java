@@ -41,8 +41,9 @@ public class NailArtist extends BaseEntity {
 	@Column(name = "nail_artist_id")
 	private Long nailArtistId;
 
-	@Column(name = "name", length = 128)
-	private String name;
+	//nickname으로 들어감
+	@Column(name = "nickname", length = 128)
+	private String nickname;
 
 	@Column(name = "email", length = 128)
 	private String email;

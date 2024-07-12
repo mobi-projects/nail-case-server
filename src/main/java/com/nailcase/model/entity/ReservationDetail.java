@@ -23,6 +23,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -80,6 +81,9 @@ public class ReservationDetail extends BaseEntity {
 	@Column(name = "remove", nullable = false, length = 16)
 	private RemoveOption remove;
 
+	@OneToOne(mappedBy = "reservationDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Review review;
+
 	private boolean extend;
 
 	public boolean isStatusUpdatable(ReservationStatus status) {
@@ -108,6 +112,13 @@ public class ReservationDetail extends BaseEntity {
 	public void updateArtist(NailArtist nailArtist) {
 		if (nailArtist != null) {
 			this.nailArtist = nailArtist;
+		}
+	}
+
+	public void setReview(Review review) {
+		this.review = review;
+		if (review != null && review.getReservationDetail() != this) {
+			review.setReservationDetail(this);
 		}
 	}
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nailcase.model.dto.MainPageDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.entity.Shop;
 import com.nailcase.service.MainPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class MainPageController {
 	@GetMapping
 	public MainPageDto getMainPageData(@RequestParam(required = false) Long memberId) {
 		List<ShopDto.MainPageResponse> topPopularShops = mainPageService.getTopPopularShops();
-		List<Shop> likedShops = List.of();
+		List<ShopDto.MainPageResponse> likedShops = List.of();
 		ReservationDto.MainPageResponse earliestReservation = null;
 
 		if (memberId != null) {

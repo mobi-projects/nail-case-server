@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -46,6 +47,10 @@ public class Review extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "reservation_detail_id", nullable = false)
+	private ReservationDetail reservationDetail;
 
 	// @ManyToOne
 	// @JoinColumn(name = "shop_member_id")
@@ -93,6 +98,13 @@ public class Review extends BaseEntity {
 	public void removeReviewImage(ReviewImage reviewImage) {
 		reviewImages.remove(reviewImage);
 		reviewImage.setReview(null);
+	}
+
+	public void setReservationDetail(ReservationDetail reservationDetail) {
+		this.reservationDetail = reservationDetail;
+		if (reservationDetail != null && reservationDetail.getReview() != this) {
+			reservationDetail.setReview(this);
+		}
 	}
 
 }

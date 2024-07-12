@@ -21,31 +21,23 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 	private final Long nailArtistId;
 	private final String email;
 	private final Role role;
+	private final String nickname;
 	private final NailArtist nailArtist;
 
 	public NailArtistDetails(
 		Long nailArtistId,
-		String username,
+		String email,
 		String password,
+		String nickname,
 		Role role,
 		Collection<? extends GrantedAuthority> authorities,
 		NailArtist nailArtist) {
-		super(username, password, authorities);
+		super(email, password, authorities);
 		this.nailArtistId = nailArtistId;
-		this.email = username;
+		this.email = email;
+		this.nickname = nickname;
 		this.role = role;
 		this.nailArtist = nailArtist;
-	}
-
-	public static NailArtistDetails withNailArtist(NailArtist nailArtist) {
-		return new NailArtistDetails(
-			nailArtist.getNailArtistId(),
-			nailArtist.getEmail(),
-			"",
-			nailArtist.getRole(),
-			List.of(new SimpleGrantedAuthority(nailArtist.getRole().getKey())),
-			nailArtist
-		);
 	}
 
 	@Override
@@ -56,6 +48,23 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 	@Override
 	public Role getRole() {
 		return this.role;
+	}
+
+	@Override
+	public String getNickname() {
+		return this.nickname;
+	}
+
+	public static NailArtistDetails withNailArtist(NailArtist nailArtist) {
+		return new NailArtistDetails(
+			nailArtist.getNailArtistId(),
+			nailArtist.getEmail(),
+			"",
+			nailArtist.getNickname(),
+			nailArtist.getRole(),
+			List.of(new SimpleGrantedAuthority(nailArtist.getRole().getKey())),
+			nailArtist
+		);
 	}
 
 	public void validateAndGetNailArtistForShop(Long shopId) {

@@ -25,7 +25,7 @@ public class MemberDto {
 	public static MemberDto fromEntity(Member member) {
 		MemberDto dto = new MemberDto();
 		dto.setMemberId(member.getMemberId());
-		dto.setName(member.getName());
+		dto.setName(member.getNickname());
 		dto.setEmail(member.getEmail());
 		dto.setProfileImgUrl(member.getProfileImgUrl());
 		dto.setRole(member.getRole());

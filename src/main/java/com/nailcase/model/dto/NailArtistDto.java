@@ -16,7 +16,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NailArtistDto {
 	private Long nailArtistId;
-	private String name;
+	private String nickName;
 	private String email;
 	private String profileImgUrl;
 	private Role role;
@@ -26,7 +26,7 @@ public class NailArtistDto {
 	public static NailArtistDto fromEntity(NailArtist nailArtist) {
 		NailArtistDto dto = new NailArtistDto();
 		dto.setNailArtistId(nailArtist.getNailArtistId());
-		dto.setName(nailArtist.getName());
+		dto.setNickName(nailArtist.getNickname());
 		dto.setEmail(nailArtist.getEmail());
 		dto.setProfileImgUrl(nailArtist.getProfileImgUrl());
 		dto.setRole(nailArtist.getRole());
@@ -49,7 +49,7 @@ public class NailArtistDto {
 		public static Response fromEntity(NailArtist nailArtist) {
 			NailArtistDto.Response response = new NailArtistDto.Response();
 			response.setId(nailArtist.getNailArtistId());
-			response.setNickname(nailArtist.getName());
+			response.setNickname(nailArtist.getNickname());
 			response.setEnable(true);
 			return response;
 		}
@@ -69,7 +69,7 @@ public class NailArtistDto {
 		public static ListResponse fromEntity(NailArtist nailArtist) {
 			ListResponse response = new ListResponse();
 			response.setNailArtistId(nailArtist.getNailArtistId());
-			response.setNickname(nailArtist.getName());
+			response.setNickname(nailArtist.getNickname());
 			return response;
 		}
 	}
