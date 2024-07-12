@@ -28,7 +28,7 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 		Member member = getOrCreateMember(attributes);
 		String accessTokenJwt = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
 			member.getRole());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getRole());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getMemberId(), member.getRole());
 		jwtService.updateRefreshToken(member.getEmail(), refreshToken, member.getRole());
 
 		return LoginResponseDto.builder()

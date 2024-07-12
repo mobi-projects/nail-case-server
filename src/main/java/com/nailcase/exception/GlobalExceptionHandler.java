@@ -20,7 +20,9 @@ import com.nailcase.exception.codes.ErrorCodeInterface;
 import com.nailcase.exception.codes.ErrorResponse;
 
 import io.minio.errors.MinioException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -41,10 +43,17 @@ public class GlobalExceptionHandler {
 		return buildErrorResponse(ex.getErrorCode(), HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(TokenException.class)
+	public ResponseEntity<ErrorResponse> handleTokenException(TokenException ex) {
+		logger.error("TokenException: {}", ex.getMessage(), ex);
+		return buildErrorResponse(AuthErrorCode.TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
+	}
+
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
 		logger.error("AccessDeniedException: {}", ex.getMessage(), ex);
-		return buildErrorResponse(AuthErrorCode.ACCESS_DENIED, HttpStatus.FORBIDDEN);
+		return buildErrorResponse(AuthErrorCode.ACCESS_DENIED,
+			HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(SQLException.class)

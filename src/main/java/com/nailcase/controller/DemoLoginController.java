@@ -34,7 +34,8 @@ public class DemoLoginController {
 		MemberDto memberDto = MemberDto.fromEntity(member);
 		String accessToken = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
 			member.getRole());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getRole());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getMemberId(), member.getRole());
+		jwtService.updateRefreshToken(member.getEmail(), refreshToken, member.getRole());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)
@@ -51,7 +52,9 @@ public class DemoLoginController {
 		String accessToken = jwtService.createAccessToken(manager.getEmail(), manager.getNailArtistId(),
 			manager.getRole()
 		);
-		String refreshToken = jwtService.createRefreshToken(manager.getEmail(), manager.getRole());
+		String refreshToken = jwtService.createRefreshToken(manager.getEmail(), manager.getNailArtistId(),
+			manager.getRole());
+		jwtService.updateRefreshToken(manager.getEmail(), refreshToken, manager.getRole());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)
