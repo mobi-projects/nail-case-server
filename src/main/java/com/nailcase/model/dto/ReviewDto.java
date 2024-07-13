@@ -1,6 +1,5 @@
 package com.nailcase.model.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.nailcase.model.enums.ConditionOption;
@@ -39,9 +38,9 @@ public class ReviewDto {
 		private boolean accompaniedIn;
 		private List<TreatmentOption> treatmentOptions;
 		private List<ConditionOption> conditionOptions;
-		private LocalDateTime createdAt;
+		private Long createdAt;
 		private Long createdBy;
-		private LocalDateTime modifiedAt;
+		private Long modifiedAt;
 		private Long modifiedBy;
 		private List<Long> imageIds;
 		private List<String> imageUrls;
