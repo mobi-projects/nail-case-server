@@ -78,7 +78,6 @@ public class MonthlyArtController {
 	}
 
 	@DeleteMapping("/{monthlyArtId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
@@ -88,7 +87,6 @@ public class MonthlyArtController {
 	}
 
 	@PostMapping("/{monthlyArtId}/like")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void likeMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,
@@ -98,7 +96,6 @@ public class MonthlyArtController {
 	}
 
 	@PostMapping("/{monthlyArtId}/unlike")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void unlikeMonthlyArt(
 		@PathVariable Long shopId,
 		@PathVariable Long monthlyArtId,

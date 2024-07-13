@@ -64,7 +64,6 @@ public class ShopController {
 	}
 
 	@DeleteMapping("/{shopId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteShop(
 		@PathVariable Long shopId,
 		@AuthenticationPrincipal Long userId
@@ -106,7 +105,6 @@ public class ShopController {
 	}
 
 	@DeleteMapping("/image/{imageId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteImage(
 		@PathVariable Long imageId,
 		@AuthenticationPrincipal Long userId
@@ -122,7 +120,6 @@ public class ShopController {
 	}
 
 	@PostMapping("/{shopId}/like")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void likeShop(
 		@PathVariable Long shopId,
 		@AuthenticationPrincipal MemberDetails memberDetails) {
@@ -132,7 +129,6 @@ public class ShopController {
 	}
 
 	@PostMapping("/{shopId}/unlike")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void unLikeShop(
 		@PathVariable Long shopId,
 		@AuthenticationPrincipal MemberDetails memberDetails) {

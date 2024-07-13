@@ -53,7 +53,6 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteReview(@PathVariable Long shopId, @PathVariable Long reviewId,
 		@AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();
@@ -77,7 +76,6 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}/comments/{commentId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
 		@PathVariable Long commentId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();
@@ -103,7 +101,6 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}/images/{imageId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeImageFromReview(@PathVariable Long reviewId, @PathVariable Long imageId,
 		@PathVariable String shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getMemberId();
