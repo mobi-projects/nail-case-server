@@ -743,6 +743,12 @@
       "items" : {
         "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$MainPageResponse"
       }
+    },
+    "max3RecentlyCompletedReservation" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$CompletedReservationResponse"
+      }
     }
   }
 };
@@ -1255,6 +1261,37 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.ReservationDto$CompletedReservationResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "reservationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shop" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$CompletedReservationResponse$ShopInfo"
+    },
+    "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$CompletedReservationResponse$ShopInfo"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "image" : {
+      "type" : "string"
+    }
+  }
+};
             defs["com.nailcase.model.dto.ReservationDto$MainPageResponse"] = {
   "type" : "object",
   "properties" : {
@@ -1265,21 +1302,49 @@
     "shop" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$MainPageResponse$ShopInfo"
     },
+    "details" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$MainPageResponse$ReservationDetailInfo"
+      }
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$MainPageResponse$ReservationDetailInfo"] = {
+  "type" : "object",
+  "properties" : {
+    "reservationDetailsId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
     "startTime" : {
-      "type" : "string",
-      "format" : "date-time"
+      "type" : "integer",
+      "format" : "int64"
     },
     "endTime" : {
-      "type" : "string",
-      "format" : "date-time"
+      "type" : "integer",
+      "format" : "int64"
     },
-    "createdAt" : {
-      "type" : "string",
-      "format" : "date-time"
+    "treatmentOptions" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
     },
-    "modifiedAt" : {
-      "type" : "string",
-      "format" : "date-time"
+    "removeOption" : {
+      "type" : "string"
+    },
+    "conditionOptions" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "accompanied" : {
+      "type" : "boolean"
+    },
+    "status" : {
+      "type" : "string"
     }
   }
 };
@@ -1555,24 +1620,18 @@
             defs["com.nailcase.model.dto.ShopDto$MainPageResponse"] = {
   "type" : "object",
   "properties" : {
-    "shopId" : {
+    "id" : {
       "type" : "integer",
       "format" : "int64"
     },
-    "ownerId" : {
+    "name" : {
       "type" : "string"
     },
-    "shopName" : {
+    "overview" : {
       "type" : "string"
     },
-    "address" : {
-      "type" : "string"
-    },
-    "images" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Image"
-      }
+    "likedByUser" : {
+      "type" : "boolean"
     }
   }
 };
@@ -2060,8 +2119,8 @@
                     <li data-group="PostController" data-name="deletePost" class="">
                       <a href="#api-PostController-deletePost">deletePost</a>
                     </li>
-                    <li data-group="PostController" data-name="likePost" class="">
-                      <a href="#api-PostController-likePost">likePost</a>
+                    <li data-group="PostController" data-name="likePost1" class="">
+                      <a href="#api-PostController-likePost1">likePost1</a>
                     </li>
                     <li data-group="PostController" data-name="listShopNews" class="">
                       <a href="#api-PostController-listShopNews">listShopNews</a>
@@ -2075,8 +2134,8 @@
                     <li data-group="PostController" data-name="removeImageFromPost" class="">
                       <a href="#api-PostController-removeImageFromPost">removeImageFromPost</a>
                     </li>
-                    <li data-group="PostController" data-name="unLikePost" class="">
-                      <a href="#api-PostController-unLikePost">unLikePost</a>
+                    <li data-group="PostController" data-name="unLikePost1" class="">
+                      <a href="#api-PostController-unLikePost1">unLikePost1</a>
                     </li>
                     <li data-group="PostController" data-name="updateComment" class="">
                       <a href="#api-PostController-updateComment">updateComment</a>
@@ -2157,6 +2216,9 @@
                     <li data-group="ShopController" data-name="getTags" class="">
                       <a href="#api-ShopController-getTags">getTags</a>
                     </li>
+                    <li data-group="ShopController" data-name="likePost" class="">
+                      <a href="#api-ShopController-likePost">likePost</a>
+                    </li>
                     <li data-group="ShopController" data-name="listShopNailArtist" class="">
                       <a href="#api-ShopController-listShopNailArtist">listShopNailArtist</a>
                     </li>
@@ -2165,6 +2227,9 @@
                     </li>
                     <li data-group="ShopController" data-name="searchShop" class="">
                       <a href="#api-ShopController-searchShop">searchShop</a>
+                    </li>
+                    <li data-group="ShopController" data-name="unLikePost" class="">
+                      <a href="#api-ShopController-unLikePost">unLikePost</a>
                     </li>
                     <li data-group="ShopController" data-name="updateOverview" class="">
                       <a href="#api-ShopController-updateOverview">updateOverview</a>
@@ -3876,7 +3941,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/main?memberId="</code></pre>
+"http://localhost:8081/api/v1/main"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-MainPageController-getMainPageData-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -3898,9 +3963,8 @@ public class MainPageControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         MainPageControllerApi apiInstance = new MainPageControllerApi();
-        Long memberId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(memberId);
+            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MainPageControllerApi#getMainPageData");
@@ -3917,9 +3981,8 @@ public class MainPageControllerApiExample {
 
     public static void main(String[] args) {
         MainPageControllerApi apiInstance = new MainPageControllerApi();
-        Long memberId = 789; // Long | 
         try {
-            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(memberId);
+            com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling MainPageControllerApi#getMainPageData");
@@ -3936,12 +3999,11 @@ public class MainPageControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-Long *memberId = 789; //  (optional)
 
 MainPageControllerApi *apiInstance = [[MainPageControllerApi alloc] init];
 
-[apiInstance getMainPageDataWith:memberId
-              completionHandler: ^(com.nailcase.model.dto.MainPageDto output, NSError* error) {
+[apiInstance getMainPageDataWithCompletionHandler: 
+              ^(com.nailcase.model.dto.MainPageDto output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -3962,9 +4024,6 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.MainPageControllerApi()
-var opts = { 
-  'memberId': 789 // {{Long}} 
-};
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -3972,7 +4031,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getMainPageData(opts, callback);
+api.getMainPageData(callback);
 </code></pre>
                             </div>
 
@@ -3997,11 +4056,10 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new MainPageControllerApi();
-            var memberId = 789;  // Long |  (optional) 
 
             try
             {
-                com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData(memberId);
+                com.nailcase.model.dto.MainPageDto result = apiInstance.getMainPageData();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -4022,10 +4080,9 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiMainPageControllerApi();
-$memberId = 789; // Long | 
 
 try {
-    $result = $api_instance->getMainPageData($memberId);
+    $result = $api_instance->getMainPageData();
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MainPageControllerApi->getMainPageData: ', $e->getMessage(), PHP_EOL;
@@ -4042,10 +4099,9 @@ use WWW::SwaggerClient::MainPageControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::MainPageControllerApi->new();
-my $memberId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->getMainPageData(memberId => $memberId);
+    my $result = $api_instance->getMainPageData();
     print Dumper($result);
 };
 if ($@) {
@@ -4065,10 +4121,9 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.MainPageControllerApi()
-memberId = 789 # Long |  (optional)
 
 try: 
-    api_response = api_instance.get_main_page_data(memberId=memberId)
+    api_response = api_instance.get_main_page_data()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling MainPageControllerApi->getMainPageData: %s\n" % e)</code></pre>
@@ -4081,32 +4136,6 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">memberId</td>
-                                <td>
-                                
-                                
-                                    <div id="d2e199_getMainPageData_memberId">
-                                        <div class="json-schema-view">
-                                            <div class="primitive">
-                                                <span class="type">
-                                                    Long
-                                                </span>
-                                                    <span class="format">
-                                                        (int64)
-                                                    </span>
-                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK </h3>
@@ -7877,10 +7906,10 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-PostController-likePost">
-                      <article id="api-PostController-likePost-0" data-group="User" data-name="likePost" data-version="0">
+                    <div id="api-PostController-likePost1">
+                      <article id="api-PostController-likePost1-0" data-group="User" data-name="likePost1" data-version="0">
                         <div class="pull-left">
-                          <h1>likePost</h1>
+                          <h1>likePost1</h1>
                           <p></p>
                         </div>
                         <div class="pull-right"></div>
@@ -7894,27 +7923,27 @@ except ApiException as e:
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-PostController-likePost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-PostController-likePost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-PostController-likePost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-PostController-likePost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-PostController-likePost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-PostController-likePost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-PostController-likePost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-PostController-likePost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-PostController-likePost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-PostController-likePost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-PostController-likePost-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-PostController-likePost1-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-likePost1-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-likePost1-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-likePost1-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-likePost1-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-likePost1-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-likePost1-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-likePost1-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-likePost1-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-likePost1-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-likePost1-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-PostController-likePost-0-curl">
+                          <div class="tab-pane active" id="examples-PostController-likePost1-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/like"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-PostController-likePost-0-java">
+                          <div class="tab-pane" id="examples-PostController-likePost1-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -7937,16 +7966,16 @@ public class PostControllerApiExample {
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.likePost(announcementId, shopId);
+            apiInstance.likePost1(announcementId, shopId);
         } catch (ApiException e) {
-            System.err.println("Exception when calling PostControllerApi#likePost");
+            System.err.println("Exception when calling PostControllerApi#likePost1");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-PostController-likePost-0-android">
+                          <div class="tab-pane" id="examples-PostController-likePost1-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
 
 public class PostControllerApiExample {
@@ -7956,19 +7985,19 @@ public class PostControllerApiExample {
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.likePost(announcementId, shopId);
+            apiInstance.likePost1(announcementId, shopId);
         } catch (ApiException e) {
-            System.err.println("Exception when calling PostControllerApi#likePost");
+            System.err.println("Exception when calling PostControllerApi#likePost1");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-PostController-likePost-0-groovy">
+  <div class="tab-pane" id="examples-PostController-likePost1-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-PostController-likePost-0-objc">
+                            <div class="tab-pane" id="examples-PostController-likePost1-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
@@ -7977,7 +8006,7 @@ Long *shopId = 789; //
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance likePostWith:announcementId
+[apiInstance likePost1With:announcementId
     shopId:shopId
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -7987,7 +8016,7 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-likePost-0-javascript">
+                            <div class="tab-pane" id="examples-PostController-likePost1-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 var defaultClient = NailCaseApi.ApiClient.instance;
 
@@ -8007,14 +8036,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.likePost(announcementId, shopId, callback);
+api.likePost1(announcementId, shopId, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-PostController-likePost-0-angular">
+                            <!--<div class="tab-pane" id="examples-PostController-likePost1-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-PostController-likePost-0-csharp">
+                            <div class="tab-pane" id="examples-PostController-likePost1-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -8023,7 +8052,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class likePostExample
+    public class likePost1Example
     {
         public void main()
         {
@@ -8037,11 +8066,11 @@ namespace Example
 
             try
             {
-                apiInstance.likePost(announcementId, shopId);
+                apiInstance.likePost1(announcementId, shopId);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling PostControllerApi.likePost: " + e.Message );
+                Debug.Print("Exception when calling PostControllerApi.likePost1: " + e.Message );
             }
         }
     }
@@ -8049,7 +8078,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-likePost-0-php">
+                            <div class="tab-pane" id="examples-PostController-likePost1-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -8061,14 +8090,14 @@ $announcementId = 789; // Long |
 $shopId = 789; // Long | 
 
 try {
-    $api_instance->likePost($announcementId, $shopId);
+    $api_instance->likePost1($announcementId, $shopId);
 } catch (Exception $e) {
-    echo 'Exception when calling PostControllerApi->likePost: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PostControllerApi->likePost1: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-likePost-0-perl">
+                            <div class="tab-pane" id="examples-PostController-likePost1-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
@@ -8081,14 +8110,14 @@ my $announcementId = 789; # Long |
 my $shopId = 789; # Long | 
 
 eval { 
-    $api_instance->likePost(announcementId => $announcementId, shopId => $shopId);
+    $api_instance->likePost1(announcementId => $announcementId, shopId => $shopId);
 };
 if ($@) {
-    warn "Exception when calling PostControllerApi->likePost: $@\n";
+    warn "Exception when calling PostControllerApi->likePost1: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-likePost-0-python">
+                            <div class="tab-pane" id="examples-PostController-likePost1-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -8104,9 +8133,9 @@ announcementId = 789 # Long |
 shopId = 789 # Long | 
 
 try: 
-    api_instance.like_post(announcementId, shopId)
+    api_instance.like_post1(announcementId, shopId)
 except ApiException as e:
-    print("Exception when calling PostControllerApi->likePost: %s\n" % e)</code></pre>
+    print("Exception when calling PostControllerApi->likePost1: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -8122,7 +8151,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_likePost_announcementId">
+                                      <div id="d2e199_likePost1_announcementId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -8144,7 +8173,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_likePost_shopId">
+                                      <div id="d2e199_likePost1_shopId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -9621,10 +9650,10 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-PostController-unLikePost">
-                      <article id="api-PostController-unLikePost-0" data-group="User" data-name="unLikePost" data-version="0">
+                    <div id="api-PostController-unLikePost1">
+                      <article id="api-PostController-unLikePost1-0" data-group="User" data-name="unLikePost1" data-version="0">
                         <div class="pull-left">
-                          <h1>unLikePost</h1>
+                          <h1>unLikePost1</h1>
                           <p></p>
                         </div>
                         <div class="pull-right"></div>
@@ -9638,27 +9667,27 @@ except ApiException as e:
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-PostController-unLikePost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-PostController-unLikePost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-PostController-unLikePost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-PostController-unLikePost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-PostController-unLikePost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-PostController-unLikePost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-PostController-unLikePost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-PostController-unLikePost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-PostController-unLikePost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-PostController-unLikePost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-PostController-unLikePost-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-PostController-unLikePost1-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-java">Java</a></li>
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-PostController-unLikePost1-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-PostController-unLikePost1-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-PostController-unLikePost1-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-PostController-unLikePost-0-curl">
+                          <div class="tab-pane active" id="examples-PostController-unLikePost1-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
  -H "Authorization: Bearer [[accessToken]]"\
 \
 "http://localhost:8081/api/v1/shops/{shopId}/announcements/{announcementId}/unlike"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-PostController-unLikePost-0-java">
+                          <div class="tab-pane" id="examples-PostController-unLikePost1-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -9681,16 +9710,16 @@ public class PostControllerApiExample {
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.unLikePost(announcementId, shopId);
+            apiInstance.unLikePost1(announcementId, shopId);
         } catch (ApiException e) {
-            System.err.println("Exception when calling PostControllerApi#unLikePost");
+            System.err.println("Exception when calling PostControllerApi#unLikePost1");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-PostController-unLikePost-0-android">
+                          <div class="tab-pane" id="examples-PostController-unLikePost1-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.PostControllerApi;
 
 public class PostControllerApiExample {
@@ -9700,19 +9729,19 @@ public class PostControllerApiExample {
         Long announcementId = 789; // Long | 
         Long shopId = 789; // Long | 
         try {
-            apiInstance.unLikePost(announcementId, shopId);
+            apiInstance.unLikePost1(announcementId, shopId);
         } catch (ApiException e) {
-            System.err.println("Exception when calling PostControllerApi#unLikePost");
+            System.err.println("Exception when calling PostControllerApi#unLikePost1");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-PostController-unLikePost-0-groovy">
+  <div class="tab-pane" id="examples-PostController-unLikePost1-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-PostController-unLikePost-0-objc">
+                            <div class="tab-pane" id="examples-PostController-unLikePost1-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
@@ -9721,7 +9750,7 @@ Long *shopId = 789; //
 
 PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 
-[apiInstance unLikePostWith:announcementId
+[apiInstance unLikePost1With:announcementId
     shopId:shopId
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -9731,7 +9760,7 @@ PostControllerApi *apiInstance = [[PostControllerApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-unLikePost-0-javascript">
+                            <div class="tab-pane" id="examples-PostController-unLikePost1-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
 var defaultClient = NailCaseApi.ApiClient.instance;
 
@@ -9751,14 +9780,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.unLikePost(announcementId, shopId, callback);
+api.unLikePost1(announcementId, shopId, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-PostController-unLikePost-0-angular">
+                            <!--<div class="tab-pane" id="examples-PostController-unLikePost1-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-PostController-unLikePost-0-csharp">
+                            <div class="tab-pane" id="examples-PostController-unLikePost1-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -9767,7 +9796,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class unLikePostExample
+    public class unLikePost1Example
     {
         public void main()
         {
@@ -9781,11 +9810,11 @@ namespace Example
 
             try
             {
-                apiInstance.unLikePost(announcementId, shopId);
+                apiInstance.unLikePost1(announcementId, shopId);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling PostControllerApi.unLikePost: " + e.Message );
+                Debug.Print("Exception when calling PostControllerApi.unLikePost1: " + e.Message );
             }
         }
     }
@@ -9793,7 +9822,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-unLikePost-0-php">
+                            <div class="tab-pane" id="examples-PostController-unLikePost1-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -9805,14 +9834,14 @@ $announcementId = 789; // Long |
 $shopId = 789; // Long | 
 
 try {
-    $api_instance->unLikePost($announcementId, $shopId);
+    $api_instance->unLikePost1($announcementId, $shopId);
 } catch (Exception $e) {
-    echo 'Exception when calling PostControllerApi->unLikePost: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PostControllerApi->unLikePost1: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-unLikePost-0-perl">
+                            <div class="tab-pane" id="examples-PostController-unLikePost1-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::PostControllerApi;
@@ -9825,14 +9854,14 @@ my $announcementId = 789; # Long |
 my $shopId = 789; # Long | 
 
 eval { 
-    $api_instance->unLikePost(announcementId => $announcementId, shopId => $shopId);
+    $api_instance->unLikePost1(announcementId => $announcementId, shopId => $shopId);
 };
 if ($@) {
-    warn "Exception when calling PostControllerApi->unLikePost: $@\n";
+    warn "Exception when calling PostControllerApi->unLikePost1: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-PostController-unLikePost-0-python">
+                            <div class="tab-pane" id="examples-PostController-unLikePost1-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -9848,9 +9877,9 @@ announcementId = 789 # Long |
 shopId = 789 # Long | 
 
 try: 
-    api_instance.un_like_post(announcementId, shopId)
+    api_instance.un_like_post1(announcementId, shopId)
 except ApiException as e:
-    print("Exception when calling PostControllerApi->unLikePost: %s\n" % e)</code></pre>
+    print("Exception when calling PostControllerApi->unLikePost1: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -9866,7 +9895,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_unLikePost_announcementId">
+                                      <div id="d2e199_unLikePost1_announcementId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -9888,7 +9917,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_unLikePost_shopId">
+                                      <div id="d2e199_unLikePost1_shopId">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -18814,6 +18843,278 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
+                    <div id="api-ShopController-likePost">
+                      <article id="api-ShopController-likePost-0" data-group="User" data-name="likePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>likePost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/like</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ShopController-likePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopController-likePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopController-likePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopController-likePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopController-likePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopController-likePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopController-likePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopController-likePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopController-likePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopController-likePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopController-likePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ShopController-likePost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/shops/{shopId}/like"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ShopController-likePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ShopControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ShopControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ShopControllerApi apiInstance = new ShopControllerApi();
+        Long shopId = 789; // Long | 
+        try {
+            apiInstance.likePost(shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopControllerApi#likePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ShopController-likePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopControllerApi;
+
+public class ShopControllerApiExample {
+
+    public static void main(String[] args) {
+        ShopControllerApi apiInstance = new ShopControllerApi();
+        Long shopId = 789; // Long | 
+        try {
+            apiInstance.likePost(shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopControllerApi#likePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ShopController-likePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ShopController-likePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
+
+ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
+
+[apiInstance likePostWith:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-likePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ShopControllerApi()
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.likePost(shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ShopController-likePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ShopController-likePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class likePostExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ShopControllerApi();
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                apiInstance.likePost(shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ShopControllerApi.likePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-likePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiShopControllerApi();
+$shopId = 789; // Long | 
+
+try {
+    $api_instance->likePost($shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling ShopControllerApi->likePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-likePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ShopControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
+my $shopId = 789; # Long | 
+
+eval { 
+    $api_instance->likePost(shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling ShopControllerApi->likePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-likePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ShopControllerApi()
+shopId = 789 # Long | 
+
+try: 
+    api_instance.like_post(shopId)
+except ApiException as e:
+    print("Exception when calling ShopControllerApi->likePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_likePost_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 204 - No Content </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-ShopController-listShopNailArtist">
                       <article id="api-ShopController-listShopNailArtist-0" data-group="User" data-name="listShopNailArtist" data-version="0">
                         <div class="pull-left">
@@ -19827,6 +20128,278 @@ except ApiException as e:
                                   </div>
                                   <input id='responses-searchShop-200-schema-data' type='hidden' value=''></input>
                                 </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-ShopController-unLikePost">
+                      <article id="api-ShopController-unLikePost-0" data-group="User" data-name="unLikePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>unLikePost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/shops/{shopId}/unlike</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-ShopController-unLikePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ShopController-unLikePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ShopController-unLikePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ShopController-unLikePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-ShopController-unLikePost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+"http://localhost:8081/api/v1/shops/{shopId}/unlike"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-ShopController-unLikePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ShopControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ShopControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        ShopControllerApi apiInstance = new ShopControllerApi();
+        Long shopId = 789; // Long | 
+        try {
+            apiInstance.unLikePost(shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopControllerApi#unLikePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-ShopController-unLikePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ShopControllerApi;
+
+public class ShopControllerApiExample {
+
+    public static void main(String[] args) {
+        ShopControllerApi apiInstance = new ShopControllerApi();
+        Long shopId = 789; // Long | 
+        try {
+            apiInstance.unLikePost(shopId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ShopControllerApi#unLikePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-ShopController-unLikePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-ShopController-unLikePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Long *shopId = 789; // 
+
+ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
+
+[apiInstance unLikePostWith:shopId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-unLikePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.ShopControllerApi()
+var shopId = 789; // {{Long}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.unLikePost(shopId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-ShopController-unLikePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-ShopController-unLikePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class unLikePostExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ShopControllerApi();
+            var shopId = 789;  // Long | 
+
+            try
+            {
+                apiInstance.unLikePost(shopId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ShopControllerApi.unLikePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-unLikePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiShopControllerApi();
+$shopId = 789; // Long | 
+
+try {
+    $api_instance->unLikePost($shopId);
+} catch (Exception $e) {
+    echo 'Exception when calling ShopControllerApi->unLikePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-unLikePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ShopControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
+my $shopId = 789; # Long | 
+
+eval { 
+    $api_instance->unLikePost(shopId => $shopId);
+};
+if ($@) {
+    warn "Exception when calling ShopControllerApi->unLikePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-ShopController-unLikePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ShopControllerApi()
+shopId = 789 # Long | 
+
+try: 
+    api_instance.un_like_post(shopId)
+except ApiException as e:
+    print("Exception when calling ShopControllerApi->unLikePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">shopId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_unLikePost_shopId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 204 - No Content </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
                         </article>
