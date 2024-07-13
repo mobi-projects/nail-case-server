@@ -53,7 +53,6 @@ public class PostController {
 	}
 
 	@DeleteMapping("/{announcementId}/images/{imageId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeImageFromPost(
 		@PathVariable Long announcementId,
 		@PathVariable Long imageId,
@@ -101,7 +100,6 @@ public class PostController {
 	}
 
 	@DeleteMapping("/{announcementId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletePost(
 		@PathVariable Long shopId,
 		@PathVariable Long announcementId,
@@ -133,7 +131,6 @@ public class PostController {
 	}
 
 	@DeleteMapping("/{announcementId}/comments/{commentId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteComment(
 		@PathVariable Long shopId,
 		@PathVariable Long announcementId,
@@ -144,7 +141,6 @@ public class PostController {
 	}
 
 	@PostMapping("/{announcementId}/like")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void likePost(
 		@PathVariable Long announcementId,
 		@PathVariable Long shopId,
@@ -154,7 +150,6 @@ public class PostController {
 	}
 
 	@PostMapping("/{announcementId}/unlike")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void unLikePost(
 		@PathVariable Long announcementId,
 		@PathVariable Long shopId,
