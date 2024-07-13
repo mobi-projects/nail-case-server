@@ -805,7 +805,7 @@ FROM
         JOIN (
         SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn
         FROM shops
-    ) s ON s.rn <= CAST(RANDOM() * 3 AS INT) + 1
+    ) s ON s.rn <= CAST(RANDOM() * 5 AS INT) + 1
 WHERE
     NOT EXISTS (
         SELECT 1
@@ -823,11 +823,11 @@ FROM
     (SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn
      FROM shops
      ORDER BY RANDOM()
-         LIMIT 3) s
+         LIMIT 5) s
 WHERE
     NOT EXISTS (
         SELECT 1
         FROM shop_liked_member slm
         WHERE slm.member_id = 1 AND slm.shop_id = s.shop_id
     )
-    LIMIT FLOOR(1 + RANDOM() * 3);
+    LIMIT FLOOR(1 + RANDOM() * 5);
