@@ -42,15 +42,12 @@ public class NailArtistDto {
 
 		private String nickname;
 
-		private boolean enable;
-
 		private Long near;
 
 		public static Response fromEntity(NailArtist nailArtist) {
 			NailArtistDto.Response response = new NailArtistDto.Response();
 			response.setId(nailArtist.getNailArtistId());
 			response.setNickname(nailArtist.getName());
-			response.setEnable(true);
 			return response;
 		}
 
