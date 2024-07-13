@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.jwt.JwtService;
+import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.service.ShopService;
@@ -120,4 +121,23 @@ public class ShopController {
 		return shopService.listShopNailArtist(shopId);
 	}
 
+	@PostMapping("/{shopId}/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void likePost(
+		@PathVariable Long shopId,
+		@AuthenticationPrincipal MemberDetails memberDetails) {
+		Long memberId = memberDetails.getId();
+		log.info("Liking shop: {} for shopId: {}", memberId, shopId);
+		shopService.likeShop(shopId, memberId);
+	}
+
+	@PostMapping("/{shopId}/unlike")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void unLikePost(
+		@PathVariable Long shopId,
+		@AuthenticationPrincipal MemberDetails memberDetails) {
+		Long memberId = memberDetails.getId();
+		log.info("Unliking shop: {} for shopId: {}", memberId, shopId);
+		shopService.unlikeShop(shopId, memberId);
+	}
 }

@@ -22,24 +22,24 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@Schema(description = "유저의 좋아요 리스트 엔티티")
-@Table(name = "post_liked_member")
-public class PostLikedMember extends BaseEntity {
+@Schema(description = "유저의 샵 좋아요 리스트 엔티티")
+@Table(name = "shop_liked_member")
+public class ShopLikedMember extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "post_id")
-	private Post post;
+	@JoinColumn(name = "shop_id")
+	private Shop shop;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	public void updatePost(Post post) {
-		this.post = post;
+	public void updateShop(Shop shop) {
+		this.shop = shop;
 	}
 
 	public void updateMember(Member member) {

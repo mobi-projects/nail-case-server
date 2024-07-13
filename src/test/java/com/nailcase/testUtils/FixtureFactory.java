@@ -2,6 +2,7 @@ package com.nailcase.testUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -121,8 +122,8 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_DETAIL_ID,
 			FIXTURE_SHOP_ID,
 			FIXTURE_NAIL_ARTIST_ID,
-			List.of(treatment()),
-			List.of(condition()),
+			Set.of(treatment()),
+			Set.of(condition()),
 			FIXTURE_RESERVATION_DETAIL_START_TIME,
 			FIXTURE_RESERVATION_DETAIL_END_TIME,
 			FIXTURE_RESERVATION_STATUS,
@@ -154,7 +155,7 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_ID,
 			FIXTURE_SHOP_ID,
 			FIXTURE_NAIL_ARTIST_ID,
-			List.of(reservationDetail())
+			Set.of(reservationDetail())
 		);
 	}
 
@@ -244,7 +245,7 @@ public class FixtureFactory {
 		Long reservationId,
 		Long shopId,
 		Long nailArtistId,
-		List<ReservationDetail> reservationDetailList
+		Set<ReservationDetail> reservationDetailList
 	) {
 		return Reservation.builder()
 			.reservationId(reservationId)
@@ -260,8 +261,8 @@ public class FixtureFactory {
 		Long reservationDetailId,
 		Long shopId,
 		Long nailArtistId,
-		List<Treatment> treatmentList,
-		List<Condition> conditionList,
+		Set<Treatment> treatmentList,
+		Set<Condition> conditionList,
 		LocalDateTime startTime,
 		LocalDateTime endTime,
 		ReservationStatus status,

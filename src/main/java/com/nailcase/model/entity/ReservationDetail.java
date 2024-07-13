@@ -1,8 +1,9 @@
 package com.nailcase.model.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
@@ -59,11 +60,11 @@ public class ReservationDetail extends BaseEntity {
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservationDetail")
-	private List<Treatment> treatmentList = new ArrayList<>();
+	private Set<Treatment> treatmentList = new HashSet<>();
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservationDetail")
-	private List<Condition> conditionList = new ArrayList<>();
+	private Set<Condition> conditionList = new HashSet<>();
 
 	@Column(name = "start_time", nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
@@ -120,5 +121,20 @@ public class ReservationDetail extends BaseEntity {
 		if (review != null && review.getReservationDetail() != this) {
 			review.setReservationDetail(this);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof ReservationDetail))
+			return false;
+		ReservationDetail that = (ReservationDetail)o;
+		return Objects.equals(getReservationDetailId(), that.getReservationDetailId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getReservationDetailId());
 	}
 }

@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -355,7 +356,7 @@ class ReservationServiceTest {
 			reservationId,
 			FixtureFactory.FIXTURE_SHOP_ID,
 			FixtureFactory.FIXTURE_NAIL_ARTIST_ID,
-			List.of(FixtureFactory.reservationDetail())
+			Set.of(FixtureFactory.reservationDetail())
 		);
 	}
 }

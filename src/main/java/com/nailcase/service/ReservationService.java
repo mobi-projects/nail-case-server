@@ -14,6 +14,8 @@ import java.util.stream.LongStream;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,14 +153,88 @@ public class ReservationService {
 	}
 
 	public ReservationDto.MainPageResponse findEarliestReservationByCustomer(Member member) {
-		return reservationRepository.fetchReservationsWithMemberAndShop(member.getMemberId()).stream()
-			.min(Comparator.comparing(reservation ->
+		Pageable pageable = PageRequest.of(0, 1);
+		return reservationRepository.fetchUpcomingReservationWithReservationDetails(member.getMemberId(), pageable)
+			.stream()
+			.findFirst()
+			.map(reservationMapper::toMainPageResponse)
+			.orElse(null);
+	}
+
+	public List<ReservationDto.CompletedReservationResponse> findRecentlyCompletedReservationByCustomer(Member member) {
+		Pageable pageable = PageRequest.of(0, 3);
+		return reservationRepository.fetchCompletedReservationDetailsWithMemberAndShop(member.getMemberId(), pageable)
+			.stream()
+			.sorted(Comparator.comparing(reservation ->
 				reservation.getReservationDetailList().stream()
 					.map(ReservationDetail::getStartTime)
-					.min(LocalDateTime::compareTo)
-					.orElse(LocalDateTime.MAX)))
-			.map(this::convertToMainPageResponse)
+					.max(LocalDateTime::compareTo)
+					.orElse(LocalDateTime.MIN)))
+			.limit(3)
+			.map(this::convertToCompletedReservationResponse)
+			.collect(Collectors.toList());
+	}
+
+	private ReservationDto.CompletedReservationResponse convertToCompletedReservationResponse(Reservation reservation) {
+		ReservationDto.CompletedReservationResponse response = new ReservationDto.CompletedReservationResponse();
+		response.setReservationId(reservation.getReservationId());
+		response.setShop(convertToCompletedShopInfo(reservation.getShop()));
+		response.setStartTime(getEarliestStartTime(reservation.getReservationDetailList()));
+		return response;
+	}
+
+	private ReservationDto.MainPageResponse.ShopInfo convertToShopInfo(Shop shop) {
+		ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
+		shopInfo.setId(shop.getShopId());
+		shopInfo.setName(shop.getShopName());
+		return shopInfo;
+	}
+
+	private ReservationDto.CompletedReservationResponse.ShopInfo convertToCompletedShopInfo(Shop shop) {
+		ReservationDto.CompletedReservationResponse.ShopInfo shopInfo = new ReservationDto.CompletedReservationResponse.ShopInfo();
+		shopInfo.setId(shop.getShopId());
+		shopInfo.setName(shop.getShopName());
+		shopInfo.setImage(getFirstShopImage(shop));
+		return shopInfo;
+	}
+
+	private String getFirstShopImage(Shop shop) {
+		return shop.getShopImages().stream()
+			.findFirst()
+			.map(image -> String.format("%s/%s", image.getBucketName(), image.getObjectName()))
 			.orElse(null);
+	}
+
+	private Long getEarliestStartTime(Set<ReservationDetail> details) {
+		return details.stream()
+			.map(ReservationDetail::getStartTime)
+			.min(LocalDateTime::compareTo)
+			.map(DateUtils::localDateTimeToUnixTimeStamp)
+			.orElse(null);
+	}
+
+	private List<ReservationDto.MainPageResponse.ReservationDetailInfo> convertToReservationDetailInfoList(
+		List<ReservationDetail> details) {
+		return details.stream()
+			.map(detail -> {
+				ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
+				detailInfo.setReservationDetailsId(detail.getReservationDetailId());  // ID 추가
+				detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
+				detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
+				detailInfo.setTreatmentOptions(detail.getTreatmentList().stream()
+					.map(treatment -> treatment.getOption().name())
+					.distinct()
+					.collect(Collectors.toList()));
+				detailInfo.setRemoveOption(detail.getRemove().name());
+				detailInfo.setConditionOptions(detail.getConditionList().stream()
+					.map(condition -> condition.getOption().name())
+					.distinct()
+					.collect(Collectors.toList()));
+				detailInfo.setAccompanied(detail.getReservation().isAccompanied());
+				detailInfo.setStatus(detail.getStatus().name());  // status를 null이 아닌 값으로 설정
+				return detailInfo;
+			})
+			.collect(Collectors.toList());
 	}
 
 	public List<ReservationDto.Available> listAvailableTime(Shop shop, Long[] artistIds, WorkHour workHour, Long date) {
@@ -336,25 +412,38 @@ public class ReservationService {
 		ReservationDto.MainPageResponse response = new ReservationDto.MainPageResponse();
 		response.setReservationId(reservation.getReservationId());
 
-		// 예약 상세 목록에서 시작 시간과 종료 시간 계산
-		List<ReservationDetail> details = reservation.getReservationDetailList();
-		if (!details.isEmpty()) {
-			LocalDateTime startTime = details.stream()
-				.map(ReservationDetail::getStartTime)
-				.min(LocalDateTime::compareTo)
-				.orElse(null);
+		boolean isAccompanied = reservation.isAccompanied();
+		System.out.println("isAccompanied = " + isAccompanied);
 
-			LocalDateTime endTime = details.stream()
-				.map(ReservationDetail::getEndTime)
-				.max(LocalDateTime::compareTo)
-				.orElse(null);
+		// 예약 상세 목록에서 각 항목을 변환
+		List<ReservationDto.MainPageResponse.ReservationDetailInfo> details = reservation.getReservationDetailList()
+			.stream()
+			.map(detail -> {
+				ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
+				detailInfo.setReservationDetailsId(detail.getReservationDetailId());
+				detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
+				detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
+				detailInfo.setTreatmentOptions(detail.getTreatmentList().stream()
+					.map(treatment -> treatment.getOption().name())
+					.distinct()
+					.collect(Collectors.toList()));
+				detailInfo.setRemoveOption(detail.getRemove().name());
+				detailInfo.setConditionOptions(detail.getConditionList().stream()
+					.map(condition -> condition.getOption().name())
+					.distinct()
+					.collect(Collectors.toList()));
+				detailInfo.setAccompanied(isAccompanied);
+				detailInfo.setStatus(detail.getStatus().name());
+				return detailInfo;
+			})
+			.collect(Collectors.toList());
 
-			response.setStartTime(startTime);
-			response.setEndTime(endTime);
-		}
+		// 중복 제거
+		List<ReservationDto.MainPageResponse.ReservationDetailInfo> uniqueDetails = details.stream()
+			.distinct()
+			.collect(Collectors.toList());
 
-		response.setCreatedAt(reservation.getCreatedAt());
-		response.setModifiedAt(reservation.getModifiedAt());
+		response.setDetails(uniqueDetails);
 
 		// Shop 정보 설정
 		ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
@@ -364,4 +453,5 @@ public class ReservationService {
 
 		return response;
 	}
+
 }

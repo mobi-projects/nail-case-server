@@ -1,8 +1,6 @@
 package com.nailcase.model.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -84,11 +82,11 @@ public class Shop extends BaseEntity {
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
-	private List<Reservation> reservationList = new ArrayList<>();
+	private Set<Reservation> reservationList = new HashSet<>();
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
-	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
+	private Set<ReservationDetail> reservationDetailList = new HashSet<>();
 
 	@Builder.Default
 	@Column(name = "likes", nullable = false)

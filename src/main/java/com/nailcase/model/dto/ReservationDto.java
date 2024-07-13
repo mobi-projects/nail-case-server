@@ -1,6 +1,5 @@
 package com.nailcase.model.dto;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,10 +70,7 @@ public class ReservationDto {
 	public static class MainPageResponse {
 		private Long reservationId;
 		private ShopInfo shop;
-		private LocalDateTime startTime;
-		private LocalDateTime endTime;
-		private LocalDateTime createdAt;
-		private LocalDateTime modifiedAt;
+		private List<ReservationDetailInfo> details;
 
 		@Data
 		public static class ShopInfo {
@@ -82,5 +78,46 @@ public class ReservationDto {
 			private String name;
 		}
 
+		@Data
+		public static class ReservationDetailInfo {
+			private Long reservationDetailsId;
+			private Long startTime;
+			private Long endTime;
+			private List<String> treatmentOptions;
+			private String removeOption;
+			private List<String> conditionOptions;
+			private boolean accompanied;
+			private String status;
+
+			@Override
+			public boolean equals(Object o) {
+				if (this == o)
+					return true;
+				if (o == null || getClass() != o.getClass())
+					return false;
+				ReservationDetailInfo that = (ReservationDetailInfo)o;
+				return Objects.equals(reservationDetailsId, that.reservationDetailsId);
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(reservationDetailsId);
+			}
+		}
 	}
+
+	@Data
+	public static class CompletedReservationResponse {
+		private Long reservationId;
+		private ShopInfo shop;
+		private Long startTime;
+
+		@Data
+		public static class ShopInfo {
+			private Long id;
+			private String name;
+			private String image;
+		}
+	}
+
 }
