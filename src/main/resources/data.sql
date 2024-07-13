@@ -803,9 +803,9 @@ SELECT
 FROM
     members m
         JOIN (
-        SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RAND()) as rn
+        SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn
         FROM shops
-    ) s ON s.rn <= CAST(RAND() * 3 AS INT) + 1
+    ) s ON s.rn <= CAST(RANDOM() * 3 AS INT) + 1
 WHERE
     NOT EXISTS (
         SELECT 1
@@ -820,9 +820,9 @@ SELECT
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP
 FROM
-    (SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RAND()) as rn
+    (SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn
      FROM shops
-     ORDER BY RAND()
+     ORDER BY RANDOM()
          LIMIT 3) s
 WHERE
     NOT EXISTS (
@@ -830,4 +830,4 @@ WHERE
         FROM shop_liked_member slm
         WHERE slm.member_id = 1 AND slm.shop_id = s.shop_id
     )
-    LIMIT FLOOR(1 + RAND() * 3);
+    LIMIT FLOOR(1 + RANDOM() * 3);
