@@ -1,7 +1,5 @@
 package com.nailcase.mapper;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +28,8 @@ public interface ReviewMapper {
 	@Mapping(target = "imageIds", ignore = true)
 	@Mapping(target = "imageUrls", ignore = true)
 	@Mapping(target = "comments", source = "reviewComments")
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "modifiedAt", ignore = true)
 	ReviewDto.Response toResponse(Review review);
 
 	@AfterMapping
@@ -60,10 +60,10 @@ public interface ReviewMapper {
 			.collect(Collectors.toList());
 	}
 
-	default Long map(LocalDateTime dateTime) {
-		// null 검사를 수행하고, UTC를 기준으로 에포크 밀리초를 반환
-		return dateTime == null ? null : dateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-	}
+	// @Named("localDateTimeToLong")
+	// default Long mapLocalDateTimeToLong(LocalDateTime dateTime) {
+	// 	return dateTime == null ? null : dateTime.atZone(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
+	// }
 
 	List<ReviewDto.Response> toResponseList(List<Review> reviews);
 }

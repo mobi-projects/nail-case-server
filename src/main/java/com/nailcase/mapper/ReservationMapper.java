@@ -157,9 +157,7 @@ public interface ReservationMapper {
 	default List<ReservationDto.MainPageResponse.ReservationDetailInfo> mapReservationDetails(
 		Set<ReservationDetail> details, Reservation reservation) {
 		boolean isAccompanied = reservation.isAccompanied();
-		System.out.println("Original details size: " + details.size());
-		System.out.println("Is accompanied: " + isAccompanied);
-
+	
 		Set<ReservationDto.MainPageResponse.ReservationDetailInfo> mappedDetails = details.stream()
 			.map(detail -> {
 				ReservationDto.MainPageResponse.ReservationDetailInfo info = new ReservationDto.MainPageResponse.ReservationDetailInfo();
@@ -179,7 +177,6 @@ public interface ReservationMapper {
 			})
 			.collect(Collectors.toSet());
 
-		System.out.println("Mapped details size: " + mappedDetails.size());
 		return new ArrayList<>(mappedDetails);
 	}
 
