@@ -110,4 +110,10 @@ public class ReservationDetail extends BaseEntity {
 			this.nailArtist = nailArtist;
 		}
 	}
+
+	public Long getNailArtistIdOrZero() {
+		return this.getNailArtist() != null
+			? this.getNailArtist().getNailArtistId()
+			: 0L;
+	}
 }

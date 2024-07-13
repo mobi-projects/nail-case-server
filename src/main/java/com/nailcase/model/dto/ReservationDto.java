@@ -64,5 +64,9 @@ public class ReservationDto {
 		private boolean enable;
 
 		private List<NailArtistDto.Response> artists;
+
+		public enum TimeStatus {
+			BEFORE_NOW, BEFORE_START, AFTER_END, BETWEEN_RESERVATION
+		}
 	}
 }
