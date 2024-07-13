@@ -123,7 +123,7 @@ public class ShopController {
 
 	@PostMapping("/{shopId}/like")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void likePost(
+	public void likeShop(
 		@PathVariable Long shopId,
 		@AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getId();
@@ -133,7 +133,7 @@ public class ShopController {
 
 	@PostMapping("/{shopId}/unlike")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void unLikePost(
+	public void unLikeShop(
 		@PathVariable Long shopId,
 		@AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getId();
