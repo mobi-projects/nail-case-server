@@ -1,7 +1,7 @@
 package com.nailcase.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
 
@@ -51,7 +51,7 @@ public class Reservation extends BaseEntity {
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservation")
-	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
+	private Set<ReservationDetail> reservationDetailList = new LinkedHashSet<>();
 
 	// 순환 참조를 막기 위해 한 방향으로만 관계를 맺음
 	public void associateDown() {
@@ -59,7 +59,6 @@ public class Reservation extends BaseEntity {
 	}
 
 	public boolean isAccompanied() {
-		return reservationDetailList.size() > 1 && reservationDetailList.get(1) != null;
+		return reservationDetailList.size() > 1;
 	}
-
 }

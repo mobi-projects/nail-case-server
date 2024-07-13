@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,23 +17,25 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
+import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.entity.MemberLikedShop;
+import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.ShopInfo;
+import com.nailcase.model.entity.ShopLikedMember;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.Role;
-import com.nailcase.repository.MemberLikedShopRepository;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopImageRepository;
 import com.nailcase.repository.ShopInfoRepository;
+import com.nailcase.repository.ShopLikedMemberRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
@@ -43,6 +44,7 @@ import com.nailcase.repository.WorkHourRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Transactional(readOnly = true)
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -56,8 +58,8 @@ public class ShopService {
 	private final ShopInfoRepository shopInfoRepository;
 	private final WorkHourRepository workHourRepository;
 	private final ShopImageService shopImageService;
-	private final MemberLikedShopRepository memberLikedShopRepository;
 	private final MemberRepository memberRepository;
+	private final ShopLikedMemberRepository shopLikedMemberRepository;
 
 	@Transactional
 	public ShopDto.Response registerShop(
@@ -89,7 +91,6 @@ public class ShopService {
 		return shopMapper.toResponse(savedShop);
 	}
 
-	@Transactional(readOnly = true)
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {
 		// TODO 여기서 방문자 수 처리?
 		return shopMapper.toResponse(getShopById(shopId));
@@ -108,7 +109,6 @@ public class ShopService {
 		// TODO 사진 관련 처리
 	}
 
-	@Transactional(readOnly = true)
 	public Page<ShopDto.Response> searchShop(String keyword, Pageable pageable) throws BusinessException {
 		return shopRepository.searchShop(keyword, pageable).map(shopMapper::toResponse);
 	}
@@ -125,12 +125,10 @@ public class ShopService {
 		return shopMapper.toResponse(updatedShop);
 	}
 
-	@Transactional(readOnly = true)
 	public List<String> getTags() {
 		return tagRepository.findAll().stream().map(Tag::getTagName).toList();
 	}
 
-	@Transactional(readOnly = true)
 	public Shop getShopById(Long shopId) throws BusinessException {
 		return shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
@@ -226,39 +224,46 @@ public class ShopService {
 			.forEach(workHourRepository::save);
 	}
 
-	@Transactional(readOnly = true)
-	public Page<Shop> findTopPopularShops(Pageable pageable) {
-		return shopRepository.findTopShopsByPopularityCriteria(pageable);
+	public List<Shop> findTopPopularShops(Pageable pageable) {
+		return shopRepository.findTopShopsByPopularityCriteria(pageable).getContent();
+	}
+
+	public List<Shop> findMemberLikedShops(Long memberId, Pageable pageable) {
+		return shopRepository.findLikedShopsByMember(memberId, pageable).getContent();
 	}
 
 	@Transactional
-	public void likeShop(Long shopId) {
+	public void likeShop(Long shopId, Long memberId) {
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+		Member currentMember = memberRepository.findById(memberId)
+			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+		boolean alreadyLiked = shopLikedMemberRepository.existsByShop_ShopIdAndMember_MemberId(shopId,
+			memberId);
+
+		if (!alreadyLiked) {
+			ShopLikedMember shopLikedMember = new ShopLikedMember();
+			shopLikedMember.updateShop(shop);
+			shopLikedMember.updateMember(currentMember);
+			shopLikedMemberRepository.save(shopLikedMember);
+			shop.incrementLikes();
+			shopRepository.save(shop);
+		}
 		shop.incrementLikes();
 		shopRepository.save(shop);
 	}
 
 	@Transactional
-	public void unlikeShop(Long shopId) {
+	public void unlikeShop(Long shopId, Long memberId) {
+		ShopLikedMember shopLike = shopLikedMemberRepository.findByShop_ShopIdAndMember_MemberId(
+			shopId, memberId).orElseThrow(() -> new BusinessException(ShopErrorCode.LIKE_NOT_FOUND));
+
+		shopLikedMemberRepository.delete(shopLike);
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
 		shop.decrementLikes();
 		shopRepository.save(shop);
-	}
-
-	@Transactional(readOnly = true)
-	public Page<Shop> findLikedShopsByMemberInMainPage(Long memberId, Pageable pageable) {
-		Page<MemberLikedShop> likedShopsPage = memberLikedShopRepository.findByMember_MemberId(memberId, pageable);
-		List<Long> shopIds = likedShopsPage.getContent().stream()
-			.map(likedShop -> likedShop.getShop().getShopId())
-			.collect(Collectors.toList());
-
-		if (shopIds.isEmpty()) {
-			return Page.empty(pageable);
-		}
-		List<Shop> shops = shopRepository.findAllById(shopIds);
-		return new PageImpl<>(shops, pageable, shops.size());
 	}
 
 	public List<NailArtistDto.ListResponse> listShopNailArtist(Long shopId) {
@@ -270,7 +275,6 @@ public class ShopService {
 			.collect(Collectors.toList());
 	}
 
-	@Transactional(readOnly = true)
 	public Shop findByShopIdAndNailArtistsAndWorkHours(Long shopId) {
 		return shopRepository.findByShopIdAndNailArtistsAndWorkHours(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));

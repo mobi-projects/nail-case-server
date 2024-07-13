@@ -1,5 +1,6 @@
 package com.nailcase.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,10 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import com.nailcase.model.entity.Member;
-import com.nailcase.model.entity.QMemberLikedShop;
 import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QShop;
+import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -54,50 +54,45 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		// 좋아요 수 기반의 총 매장 수를 계산하여 효율적으로 페이지네이션 처리
+		// null 체크 및 빈 리스트로 대체
+		shops = (shops != null) ? shops : new ArrayList<>();
+
 		JPAQuery<Long> countQuery = queryFactory
 			.select(qShop.count())
 			.from(qShop);
 
-		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
+		return PageableExecutionUtils.getPage(shops, pageable, () -> {
+			Long count = countQuery.fetchOne();
+			return count != null ? count : 0L;
+		});
 	}
 
 	@Override
-	public Page<Shop> findLikedShopsByMember(Member member, Pageable pageable) {
+	public Page<Shop> findLikedShopsByMember(Long memberId, Pageable pageable) {
 		QShop qShop = QShop.shop;
-		QMemberLikedShop qMemberLikedShop = QMemberLikedShop.memberLikedShop;
+
+		QShopLikedMember qShopLikedMember = QShopLikedMember.shopLikedMember;
 
 		List<Shop> shops = queryFactory
-			.select(qMemberLikedShop.shop)
-			.from(qMemberLikedShop)
-			.where(qMemberLikedShop.member.eq(member))
-			.join(qMemberLikedShop.shop, qShop)
+			.select(qShopLikedMember.shop)
+			.from(qShopLikedMember)
+			.where(qShopLikedMember.member.memberId.eq(memberId))
+			.join(qShopLikedMember.shop, qShop)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		long total = queryFactory
-			.selectFrom(qMemberLikedShop)
-			.where(qMemberLikedShop.member.eq(member))
-			.fetch().size();
+		// shops가 null이면 빈 리스트로 초기화
+		shops = (shops != null) ? shops : new ArrayList<>();
+
+		long total = Optional.ofNullable(queryFactory
+				.select(qShopLikedMember.count())
+				.from(qShopLikedMember)
+				.where(qShopLikedMember.member.memberId.eq(memberId))
+				.fetchOne())
+			.orElse(0L);
 
 		return new PageImpl<>(shops, pageable, total);
-	}
-
-	@Override
-	public Page<Shop> findShopsByIds(List<Long> ids, Pageable pageable) {
-		QShop qShop = QShop.shop;
-		List<Shop> shops = queryFactory.selectFrom(qShop)
-			.where(qShop.shopId.in(ids))
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
-
-		long total = queryFactory.selectFrom(qShop)
-			.where(qShop.shopId.in(ids))
-			.fetch().size();
-
-		return PageableExecutionUtils.getPage(shops, pageable, () -> total);
 	}
 
 	@Override

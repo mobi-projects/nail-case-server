@@ -289,6 +289,7 @@ SELECT * FROM (VALUES
 (55, 1,'CONFIRMED', 'ELSE_WHERE', '2024-07-13 13:00:00'::timestamp, '2024-07-13 14:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 7),
 (56, 1,'PENDING', 'ELSE_WHERE', '2024-07-13 16:00:00'::timestamp, '2024-07-13 17:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, null),
 (57, 1,'CONFIRMED', 'IN_SHOP', '2024-07-14 10:00:00'::timestamp, '2024-07-14 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 8),
+(57, 1,'CONFIRMED', 'NO_NEED', '2024-07-14 10:00:00'::timestamp, '2024-07-14 11:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, false, 8),
 (58, 1,'PENDING', 'NO_NEED', '2024-07-14 12:00:00'::timestamp, '2024-07-14 13:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, true, null),
 (59, 1,'PENDING', 'IN_SHOP', '2024-07-14 14:00:00'::timestamp, '2024-07-14 15:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, true, null),
 (60, 1,'CONFIRMED', 'NO_NEED', '2024-07-14 16:00:00'::timestamp, '2024-07-14 17:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, '2024-06-29 23:00:00'::timestamp, true, 9),
@@ -792,3 +793,41 @@ SELECT 1, '코랄 리프 네일', '산호초의 아름다움을 담은 코랄 �
 INSERT INTO monthly_art (shop_id, title, contents, likes, views, created_at, modified_at)
 SELECT 1, '실버 샌드 네일', '은빛 모래사장을 연상시키는 실버 샌드 네일 아트로, 고급스러운 여름 스타일을 연출해보세요.', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM monthly_art WHERE title = '실버 샌드 네일');
+
+INSERT INTO shop_liked_member (member_id, shop_id, created_at, modified_at)
+SELECT
+    m.member_id,
+    s.shop_id,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
+FROM
+    members m
+        JOIN (
+        SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RAND()) as rn
+        FROM shops
+    ) s ON s.rn <= CAST(RAND() * 3 AS INT) + 1
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM shop_liked_member slm
+        WHERE slm.member_id = m.member_id AND slm.shop_id = s.shop_id
+    );
+
+INSERT INTO shop_liked_member (member_id, shop_id, created_at, modified_at)
+SELECT
+    1 as member_id,
+    s.shop_id,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
+FROM
+    (SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RAND()) as rn
+     FROM shops
+     ORDER BY RAND()
+         LIMIT 3) s
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM shop_liked_member slm
+        WHERE slm.member_id = 1 AND slm.shop_id = s.shop_id
+    )
+    LIMIT FLOOR(1 + RAND() * 3);

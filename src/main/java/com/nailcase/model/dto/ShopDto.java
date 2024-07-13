@@ -68,16 +68,10 @@ public class ShopDto {
 	}
 
 	@Data
-	@NoArgsConstructor
 	public static class MainPageResponse {
-		private Long shopId;
-
-		private String ownerId;
-
-		private String shopName;
-
-		private String address;
-
-		private List<Image> images;
+		private Long id;
+		private String name;
+		private String overview;
+		private boolean likedByUser;  // 사용자가 매장을 좋아요 했는지 여부
 	}
 }

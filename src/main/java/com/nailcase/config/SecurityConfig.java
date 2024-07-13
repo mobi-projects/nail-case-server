@@ -65,7 +65,7 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
-					"/static/**", "/auth/**", "/main")
+					"/static/**", "/auth/**", "/main/**")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll() // h2-console 접근 허용
