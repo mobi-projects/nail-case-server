@@ -3,10 +3,8 @@ package com.nailcase.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.core.SerializableString;
-import com.fasterxml.jackson.core.io.CharacterEscapes;
-import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
 public class JacksonConfig {
@@ -14,25 +12,13 @@ public class JacksonConfig {
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.getFactory().setCharacterEscapes(new CharacterEscapes() {
-			private final int[] asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
 
-			@Override
-			public int[] getEscapeCodesForAscii() {
-				asciiEscapes['\n'] = CharacterEscapes.ESCAPE_NONE;
-				asciiEscapes['\r'] = CharacterEscapes.ESCAPE_NONE;
-				return asciiEscapes;
-			}
+		// 들여쓰기를 사용하여 JSON을 보기 좋게 출력 (선택 사항)
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-			@Override
-			public SerializableString getEscapeSequence(int ch) {
-				if (ch > 0x7F) {
-					return new SerializedString(String.format("\\u%04x", ch));
-				} else {
-					return null;
-				}
-			}
-		});
+		// 날짜/시간을 ISO-8601 형식으로 직렬화 (선택 사항)
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
 		return objectMapper;
 	}
 }
