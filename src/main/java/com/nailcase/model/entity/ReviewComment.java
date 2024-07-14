@@ -42,4 +42,5 @@ public class ReviewComment extends BaseEntity {
 	public void updateContents(String contents) {
 		this.contents = contents;
 	}
+
 }
