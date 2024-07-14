@@ -1551,6 +1551,10 @@
         "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
       }
     },
+    "visitCount" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
     "createdAt" : {
       "type" : "integer",
       "format" : "int64"
@@ -1973,6 +1977,12 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
+    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -1992,12 +2002,6 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
-    },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
