@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -140,21 +141,13 @@ public class PostController {
 		postService.deleteComment(shopId, announcementId, commentId);
 	}
 
-	@PostMapping("/{announcementId}/like")
-	public void likePost(
-		@PathVariable Long announcementId,
+	@PostMapping("/{announcementId}/toggle-like")
+	public boolean toggleLikePost(
 		@PathVariable Long shopId,
-		@AuthenticationPrincipal Long userId) {
-		log.info("Liking post: {} for shopId: {}", announcementId, shopId);
-		postService.likePost(announcementId, userId);
-	}
-
-	@PostMapping("/{announcementId}/unlike")
-	public void unLikePost(
 		@PathVariable Long announcementId,
-		@PathVariable Long shopId,
-		@AuthenticationPrincipal Long userId) {
-		log.info("Unliking post: {} for shopId: {}", announcementId, shopId);
-		postService.unlikePost(announcementId, userId);
+		@AuthenticationPrincipal MemberDetails memberDetails) {
+		Long memberId = memberDetails.getId();
+		log.info("toggleLike post: {} for shopId: {}", memberId, shopId);
+		return postService.toggleLike(shopId, announcementId, memberId);
 	}
 }

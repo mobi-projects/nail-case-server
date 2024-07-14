@@ -84,8 +84,11 @@ public class Post extends BaseEntity {
 	@Builder.Default
 	private List<PostImage> postImages = new ArrayList<>();
 
+	@Builder.Default
 	@Version
-	private Long version;  // 낙관적 잠금을 위한 버전 필드
+	@Column(name = "version", nullable = false)
+	@ColumnDefault("0")
+	private Long version = 0L;
 
 	public void incrementViews(Long viewCount) {
 		this.views = viewCount;

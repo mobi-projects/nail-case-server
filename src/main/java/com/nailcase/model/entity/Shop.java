@@ -21,6 +21,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -92,6 +93,12 @@ public class Shop extends BaseEntity {
 	@Column(name = "likes", nullable = false)
 	@ColumnDefault("0")
 	private Long likes = 0L;
+
+	@Builder.Default
+	@Version
+	@Column(name = "version", nullable = false)
+	@ColumnDefault("0")
+	private Long version = 0L;
 
 	public void incrementLikes() {
 		this.likes += 1;

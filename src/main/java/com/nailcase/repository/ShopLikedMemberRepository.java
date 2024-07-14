@@ -17,7 +17,7 @@ public interface ShopLikedMemberRepository extends JpaRepository<ShopLikedMember
 
 	Optional<ShopLikedMember> findByShop_ShopIdAndMember_MemberId(Long shopId, Long memberId);
 
-	@Query("SELECT s.shop.id FROM ShopLikedMember s WHERE s.member.id = :memberId")
+	@Query("SELECT s.shop.shopId FROM ShopLikedMember s WHERE s.member.memberId = :memberId")
 	Set<Long> findLikedShopIdsByMemberId(@Param("memberId") Long memberId);
 
 }
