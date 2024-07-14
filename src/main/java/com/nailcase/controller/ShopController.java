@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.jwt.JwtService;
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.response.ResponseService;
 import com.nailcase.service.ShopService;
 
 import jakarta.validation.Valid;
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopController {
 
 	private final ShopService shopService;
-	private final JwtService jwtService;
+	private final ResponseService responseService;
 
 	@Value("${spring.data.web.pageable.default-page-size}")
 	private int pageSize;
@@ -119,21 +119,13 @@ public class ShopController {
 		return shopService.listShopNailArtist(shopId);
 	}
 
-	@PostMapping("/{shopId}/like")
-	public void likeShop(
+	@PostMapping("/{shopId}/toggle-like")
+	public boolean toggleLikeShop(
 		@PathVariable Long shopId,
 		@AuthenticationPrincipal MemberDetails memberDetails) {
 		Long memberId = memberDetails.getId();
-		log.info("Liking shop: {} for shopId: {}", memberId, shopId);
-		shopService.likeShop(shopId, memberId);
+		log.info("toggleLike shop: {} for shopId: {}", memberId, shopId);
+		return shopService.toggleLike(shopId, memberId);
 	}
 
-	@PostMapping("/{shopId}/unlike")
-	public void unLikeShop(
-		@PathVariable Long shopId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getId();
-		log.info("Unliking shop: {} for shopId: {}", memberId, shopId);
-		shopService.unlikeShop(shopId, memberId);
-	}
 }

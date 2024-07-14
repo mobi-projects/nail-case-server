@@ -9,12 +9,15 @@ import java.util.stream.IntStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.codes.ConcurrencyErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
@@ -41,6 +44,7 @@ import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
 import com.nailcase.repository.WorkHourRepository;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -232,38 +236,52 @@ public class ShopService {
 		return shopRepository.findLikedShopsByMember(memberId, pageable).getContent();
 	}
 
-	@Transactional
-	public void likeShop(Long shopId, Long memberId) {
-		Shop shop = shopRepository.findById(shopId)
-			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
-		Member currentMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public boolean toggleLike(Long shopId, Long memberId) {
+		try {
+			Shop shop = shopRepository.findById(shopId)
+				.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+			Member currentMember = memberRepository.findById(memberId)
+				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-		boolean alreadyLiked = shopLikedMemberRepository.existsByShop_ShopIdAndMember_MemberId(shopId,
-			memberId);
+			ShopLikedMember existingLike = shopLikedMemberRepository.findByShop_ShopIdAndMember_MemberId(shopId,
+					memberId)
+				.orElse(null);
 
-		if (!alreadyLiked) {
-			ShopLikedMember shopLikedMember = new ShopLikedMember();
-			shopLikedMember.updateShop(shop);
-			shopLikedMember.updateMember(currentMember);
-			shopLikedMemberRepository.save(shopLikedMember);
-			shop.incrementLikes();
+			boolean liked;
+
+			if (existingLike == null) {
+				log.info("좋아요가 없음: shopId={}, memberId={}", shopId, memberId);
+				// 좋아요가 없는 경우 추가
+				ShopLikedMember newLike = new ShopLikedMember();
+				newLike.updateShop(shop);
+				newLike.updateMember(currentMember);
+				shopLikedMemberRepository.save(newLike);
+				shop.incrementLikes();
+				liked = true;
+				log.info("좋아요 추가됨: shopId={}, memberId={}", shopId, memberId);
+			} else {
+				log.info("좋아요가 이미 있음: shopId={}, memberId={}", shopId, memberId);
+				// 좋아요가 있는 경우 제거
+				shopLikedMemberRepository.delete(existingLike);
+				shop.decrementLikes();
+				liked = false;
+				log.info("좋아요 제거됨: shopId={}, memberId={}", shopId, memberId);
+			}
+
 			shopRepository.save(shop);
+			log.info("최종 좋아요 상태: shopId={}, memberId={}, liked={}", shopId, memberId, liked);
+			return liked;
+		} catch (OptimisticLockException e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			log.error("낙관적 락킹 실패 ", e);
+			throw new BusinessException(ConcurrencyErrorCode.OPTIMISTIC_LOCK_ERROR,
+				"현재 다른 사용자가 같은 작업을 수행 중입니다. 잠시 후 다시 시도해주세요.");
+		} catch (Exception e) {
+			log.error("toggle like 실행중 예상치 못한 예외 발생 : ", e);
+			throw new BusinessException(ConcurrencyErrorCode.UPDATE_FAILURE,
+				"좋아요 상태 변경 중 예기치 않은 에러가 발생했습니다.");
 		}
-		shop.incrementLikes();
-		shopRepository.save(shop);
-	}
-
-	@Transactional
-	public void unlikeShop(Long shopId, Long memberId) {
-		ShopLikedMember shopLike = shopLikedMemberRepository.findByShop_ShopIdAndMember_MemberId(
-			shopId, memberId).orElseThrow(() -> new BusinessException(ShopErrorCode.LIKE_NOT_FOUND));
-
-		shopLikedMemberRepository.delete(shopLike);
-		Shop shop = shopRepository.findById(shopId)
-			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
-		shop.decrementLikes();
-		shopRepository.save(shop);
 	}
 
 	public List<NailArtistDto.ListResponse> listShopNailArtist(Long shopId) {
@@ -279,4 +297,5 @@ public class ShopService {
 		return shopRepository.findByShopIdAndNailArtistsAndWorkHours(shopId)
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
 	}
+
 }
