@@ -73,6 +73,9 @@ public class Review extends BaseEntity {
 	@Builder.Default
 	private List<ReviewImage> reviewImages = new ArrayList<>();
 
+	@Column(name = "visit_count")
+	private Integer visitCount;
+
 	public void updateContents(String contents) {
 		this.contents = contents;
 	}
@@ -107,4 +110,7 @@ public class Review extends BaseEntity {
 		}
 	}
 
+	public void updateVisitCount(Integer visitCount) {
+		this.visitCount = visitCount;
+	}
 }

@@ -61,12 +61,20 @@ public class ReviewService {
 		ReservationDetail reservationDetail = reservationDetailRepository.findById(request.getReservationDetailId())
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 
+		// 리뷰 대상 예약의 날짜를 기준으로 방문 횟수 계산
+		Integer visitCount = reservationDetailRepository.countVisitsByMemberAndShop(
+			memberId,
+			shopId,
+			reservationDetail.getStartTime()
+		);
+
 		Review review = Review.builder()
 			.shop(shop)
 			.member(member)
 			.reservationDetail(reservationDetail)
 			.contents(request.getContents())
 			.rating(request.getRating())
+			.visitCount(visitCount)  // 방문 횟수 설정
 			.build();
 
 		// 양방향 관계 설정

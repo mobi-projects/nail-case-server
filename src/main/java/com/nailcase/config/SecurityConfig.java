@@ -28,7 +28,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ErrorResponse;
@@ -139,7 +141,20 @@ public class SecurityConfig {
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+		objectMapper.getFactory().setCharacterEscapes(new CharacterEscapes() {
+			@Override
+			public int[] getEscapeCodesForAscii() {
+				return CharacterEscapes.standardAsciiEscapesForJSON();
+			}
+
+			@Override
+			public SerializableString getEscapeSequence(int ch) {
+				if (ch > 127) {
+					return new SerializedString(String.format("\\u%04x", ch));
+				}
+				return null;
+			}
+		});
 		return objectMapper;
 	}
 

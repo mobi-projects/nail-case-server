@@ -9,4 +9,7 @@ public interface ReservationDetailQuerydslRepository {
 	List<ReservationDetail> findOngoingReservationDetailList(Long shopId, LocalDateTime startTime);
 
 	List<ReservationDetail> findReservationByShopIdAndOnDate(Long shopId, LocalDateTime time);
+
+	Integer countVisitsByMemberAndShop(Long memberId, Long shopId, LocalDateTime commentDate);
+
 }

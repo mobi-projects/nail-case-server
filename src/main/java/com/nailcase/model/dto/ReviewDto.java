@@ -38,6 +38,7 @@ public class ReviewDto {
 		private boolean accompaniedIn;
 		private List<TreatmentOption> treatmentOptions;
 		private List<ConditionOption> conditionOptions;
+		private Integer visitCount;
 		private Long createdAt;
 		private Long createdBy;
 		private Long modifiedAt;

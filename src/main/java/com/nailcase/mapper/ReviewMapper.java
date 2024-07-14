@@ -25,6 +25,7 @@ public interface ReviewMapper {
 	@Mapping(target = "accompaniedIn", expression = "java(review.getReservationDetail().getReservation().isAccompanied())")
 	@Mapping(target = "treatmentOptions", expression = "java(mapTreatmentOptions(review))")
 	@Mapping(target = "conditionOptions", expression = "java(mapConditionOptions(review))")
+	@Mapping(target = "visitCount", source = "visitCount")
 	@Mapping(target = "imageIds", ignore = true)
 	@Mapping(target = "imageUrls", ignore = true)
 	@Mapping(target = "comments", source = "reviewComments")

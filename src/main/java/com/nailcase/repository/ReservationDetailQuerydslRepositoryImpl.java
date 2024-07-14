@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.QNailArtist;
+import com.nailcase.model.entity.QReservation;
 import com.nailcase.model.entity.QReservationDetail;
 import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.ReservationDetail;
@@ -52,4 +53,23 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 				QReservationDetail.reservationDetail.endTime.asc())
 			.fetch();
 	}
+
+	@Override
+	public Integer countVisitsByMemberAndShop(Long memberId, Long shopId, LocalDateTime reservationDate) {
+		QReservation reservation = QReservation.reservation;
+		QShop shop = QShop.shop;
+
+		return Math.toIntExact(queryFactory
+			.selectDistinct(reservation.reservationId)
+			.from(reservation)
+			.join(reservation.shop, shop)
+			.where(
+				reservation.customer.memberId.eq(memberId),
+				shop.shopId.eq(shopId),
+				reservation.reservationDetailList.any().status.eq(ReservationStatus.CONFIRMED),
+				reservation.reservationDetailList.any().startTime.loe(reservationDate)
+			)
+			.fetch().size());
+	}
+
 }
