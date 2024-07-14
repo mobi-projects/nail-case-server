@@ -50,7 +50,7 @@ SELECT '알루미늄쌤', 'mobi8@example.com', 'MANAGER', 'https://github.com/mo
 
 -- 모비네일 강남점 데이터 삽입
 INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '모비네일 강남점', '01012341234', 8, '서울 강남구 봉은사로6길 29 1층 102호',  CONCAT('매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ', CHAR(10), '현재 당일 예약 가능합니다'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+SELECT '모비네일 강남점', '01012341234', 8, '서울 강남구 봉은사로6길 29 1층 102호',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
 FROM nail_artists n
 WHERE n.email = 'manager@example.com'
   AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '모비네일 강남점');
@@ -62,21 +62,21 @@ WHERE shop_id IS NULL;
 
 -- 나의네일 데이터 삽입
 INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '나의네일', '01087872938', 8, '경기 광주시 태재로 102 대진프라자 108호',  CONCAT('매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ', CHAR(10), '현재 당일 예약 가능합니다'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+SELECT '나의네일', '01087872938', 8, '경기 광주시 태재로 102 대진프라자 108호',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
 FROM nail_artists n
 WHERE n.email = 'mobi3@example.com'
   AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '나의네일');
 
 -- 유네일 데이터 삽입
 INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '유네일', '01087872938', 8, '서울 동작구 장승배기로10길 100',  CONCAT('매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ', CHAR(10), '현재 당일 예약 가능합니다'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+SELECT '유네일', '01087872938', 8, '서울 동작구 장승배기로10길 100',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
 FROM nail_artists n
 WHERE n.email = 'mobi4@example.com'
   AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '유네일');
 
 -- 코코네일 데이터 삽입
 INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '코코네일', '01087872938', 8, '서울 동작구 장승배기로10길 100',  CONCAT('매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ', CHAR(10), '현재 당일 예약 가능합니다'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+SELECT '코코네일', '01087872938', 8, '서울 동작구 장승배기로10길 100',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
 FROM nail_artists n
 WHERE n.email = 'mobi5@example.com'
   AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '코코네일');
