@@ -1,10 +1,12 @@
 package com.nailcase.repository;
 
+import static com.nailcase.model.entity.QCondition.*;
 import static com.nailcase.model.entity.QMember.*;
 import static com.nailcase.model.entity.QNailArtist.*;
 import static com.nailcase.model.entity.QReservation.*;
 import static com.nailcase.model.entity.QReservationDetail.*;
 import static com.nailcase.model.entity.QShop.*;
+import static com.nailcase.model.entity.QTreatment.*;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -14,8 +16,6 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.nailcase.model.entity.QCondition;
-import com.nailcase.model.entity.QTreatment;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.ReservationStatus;
@@ -32,16 +32,17 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 
 	@Override
 	public List<Reservation> findReservationListWithinDateRange(Long shopId, LocalDateTime startDate,
-		LocalDateTime endDate) {
+		LocalDateTime endDate, ReservationStatus status) {
 		List<Reservation> reservationList = queryFactory.selectFrom(reservation)
 			.leftJoin(reservation.reservationDetailList, reservationDetail)
 			.fetchJoin()
 			.leftJoin(reservation.shop, shop)
 			.fetchJoin()
-			.leftJoin(reservation.nailArtist, nailArtist)
+			.leftJoin(reservationDetail.nailArtist, nailArtist)
 			.fetchJoin()
 			.where(reservation.shop.shopId.eq(shopId),
-				reservationDetail.startTime.between(startDate, endDate))
+				reservationDetail.startTime.between(startDate, endDate),
+				reservationDetail.status.eq(status))
 			.orderBy(reservationDetail.startTime.asc())
 			.fetch();
 
@@ -51,12 +52,12 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.map(ReservationDetail::getReservationDetailId)
 			.toList();
 
-		queryFactory.selectFrom(QCondition.condition)
-			.where(QCondition.condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
+		queryFactory.selectFrom(condition)
+			.where(condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
 			.fetch();
 
-		queryFactory.selectFrom(QTreatment.treatment)
-			.where(QTreatment.treatment.reservationDetail.reservationDetailId.in(reservationDetailIdList))
+		queryFactory.selectFrom(treatment)
+			.where(treatment.reservationDetail.reservationDetailId.in(reservationDetailIdList))
 			.fetch();
 
 		return reservationList;
