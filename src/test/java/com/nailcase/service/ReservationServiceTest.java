@@ -269,13 +269,15 @@ class ReservationServiceTest {
 	@Test
 	void listReservation() {
 		given(reservationRepository
-			.findReservationListWithinDateRange(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class)))
+			.findReservationListWithinDateRange(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class), any(
+				ReservationStatus.class)))
 			.willReturn(List.of(this.reservation(1L), this.reservation(2L), this.reservation(3L)));
 
 		List<ReservationDto.Response> responses = reservationService.listReservation(
 			FixtureFactory.FIXTURE_SHOP_ID,
 			FixtureFactory.FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME,
-			FixtureFactory.FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME
+			FixtureFactory.FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME,
+			FixtureFactory.FIXTURE_RESERVATION_STATUS
 		);
 
 		ReservationDto.Response response = responses.getFirst();
