@@ -40,11 +40,11 @@ public class Review extends BaseEntity {
 	@Column(name = "review_id", nullable = false)
 	private Long reviewId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
