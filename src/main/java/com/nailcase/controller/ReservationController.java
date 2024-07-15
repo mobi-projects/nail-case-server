@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReservationDto;
+import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.service.ReservationFacade;
 import com.nailcase.service.ReservationService;
 import com.nailcase.util.DateUtils;
@@ -51,15 +52,18 @@ public class ReservationController {
 		return reservationService.updateReservation(shopId, reservationId, memberDetails.getMemberId(), dto);
 	}
 
+	//TODO MANAGER
 	@GetMapping
 	public List<ReservationDto.Response> listReservation(
 		@PathVariable Long shopId,
-		@RequestParam Long startTime,
-		@RequestParam Long endTime
+		// TODO: startTime, endTime = required=false, startTime defaultValue = now, endTime defaultValue = startTime.plusMonths(1)
+		@RequestParam(required = false) Long startDate,
+		@RequestParam(required = false) Long endDate,
+		@RequestParam(required = false, defaultValue = "CONFIRMED") ReservationStatus status
 	) {
 		// TODO: 예약 조회할때 shop 에 권한있는 사람일 때 목록 조회 가능
 		// TODO: 예약을 위해 예약 조회할때에는 정보가 간소화 되어야 함
-		return reservationService.listReservation(shopId, startTime, endTime);
+		return reservationService.listReservation(shopId, startDate, endDate, status);
 	}
 
 	@GetMapping("/{reservationId}")
