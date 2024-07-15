@@ -56,6 +56,7 @@ public interface ReservationMapper {
 		target = "modifiedAt",
 		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservation.getModifiedAt() ) )"
 	)
+	@Mapping(target = "nickname", source = "customer.nickname")
 	ReservationDto.Response toResponse(Reservation reservation);
 
 	@Mapping(target = "reservationId", source = "reservationId")
@@ -157,7 +158,7 @@ public interface ReservationMapper {
 	default List<ReservationDto.MainPageResponse.ReservationDetailInfo> mapReservationDetails(
 		Set<ReservationDetail> details, Reservation reservation) {
 		boolean isAccompanied = reservation.isAccompanied();
-	
+
 		Set<ReservationDto.MainPageResponse.ReservationDetailInfo> mappedDetails = details.stream()
 			.map(detail -> {
 				ReservationDto.MainPageResponse.ReservationDetailInfo info = new ReservationDto.MainPageResponse.ReservationDetailInfo();

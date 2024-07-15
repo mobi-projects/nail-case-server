@@ -47,6 +47,8 @@ public class ReservationDto {
 
 		private Long reservationId;
 
+		private String nickname;
+
 		private List<ReservationDetailDto.Response> reservationDetailList = new ArrayList<>();
 
 		private Long createdAt;

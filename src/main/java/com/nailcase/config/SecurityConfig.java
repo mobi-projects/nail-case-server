@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -65,6 +66,8 @@ public class SecurityConfig {
 				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
 				.requestMatchers("/demo-login/**") // 데모 테스트용
+				.permitAll()
+				.requestMatchers(HttpMethod.GET, "/shops/*/reservations")
 				.permitAll()
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
