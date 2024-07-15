@@ -63,9 +63,6 @@ jobs:
           nohup ./gradlew bootRun &
           sleep 30
 
-      - name: Check application logs
-        run: cat nohup.out
-
       - name: Generate Swagger UI static files
         run: |
           chmod +x generate-swagger-ui.sh
