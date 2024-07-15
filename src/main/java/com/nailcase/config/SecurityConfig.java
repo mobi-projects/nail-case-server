@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,7 +40,6 @@ public class SecurityConfig {
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
 	private final NailArtistRepository nailArtistRepository;
-	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 	private final ResponseService responseService; // RedisTemplate 주입
 	// private final CustomOAuth2UserService customOAuth2UserService;
 	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -92,7 +90,7 @@ public class SecurityConfig {
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
 		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, nailArtistRepository,
-			redisTemplate, responseService); // RedisTemplate 전달
+			responseService); // RedisTemplate 전달
 	}
 
 	@Bean

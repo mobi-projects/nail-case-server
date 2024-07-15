@@ -25,13 +25,13 @@ public sealed interface UserPrincipal permits MemberDetails, NailArtistDetails {
 
 	static void validateMember(UserDetails userDetails) {
 		if (!(userDetails instanceof UserPrincipal) || !((UserPrincipal)userDetails).isMember()) {
-			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
+			throw new BusinessException(AuthErrorCode.REQUIRED_MEMBER_ROLE);
 		}
 	}
 
 	static void validateNailArtist(UserDetails userDetails) {
 		if (!(userDetails instanceof UserPrincipal) || !((UserPrincipal)userDetails).isNailArtist()) {
-			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
+			throw new BusinessException(AuthErrorCode.REQUIRED_MANAGER_ROLE);
 		}
 	}
 
