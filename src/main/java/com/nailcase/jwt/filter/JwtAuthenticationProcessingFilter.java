@@ -73,7 +73,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			}
 
 			String accessToken = jwtService.extractAccessToken(request).orElse(null);
-			log.info("추출된 액세스 토큰: {}", accessToken);
 
 			if (accessToken != null) {
 				processAccessToken(accessToken);
@@ -135,14 +134,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			String email = jwtService.extractEmail(token)
 				.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
-			log.info("토큰에서 추출된 정보 - 역할: {}, 사용자 ID: {}, 이메일: {}", role, userId, email);
+			// log.info("토큰에서 추출된 정보 - 역할: {}, 사용자 ID: {}, 이메일: {}", role, userId, email);
 
 			UserPrincipal userPrincipal = createUserPrincipal(role, userId);
 
 			Authentication authentication = new UsernamePasswordAuthenticationToken(
 				userPrincipal, null, ((UserDetails)userPrincipal).getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			log.info("SecurityContextHolder에 인증 정보 설정 완료: {}", authentication);
+			// log.info("SecurityContextHolder에 인증 정보 설정 완료: {}", authentication);
 		} catch (Exception e) {
 			log.error("인증 정보 저장 실패: {}", e.getMessage(), e);
 			throw new BusinessException(AuthErrorCode.AUTHENTICATION_FAILED);
