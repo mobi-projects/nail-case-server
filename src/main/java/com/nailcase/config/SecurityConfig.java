@@ -111,7 +111,10 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.setAllowedOrigins(Arrays.asList(
+			"http://localhost:3000",
+			"https://nail-case-client.vercel.app"
+		));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");
 		configuration.addExposedHeader("*");

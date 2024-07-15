@@ -97,7 +97,7 @@ public class JwtService {
 	public void sendAccessToken(HttpServletResponse response, String accessToken) {
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setHeader(accessHeader, accessToken);
-		log.info("새로 발급된 액세스 토큰: {}", accessToken);
+		// log.info("새로 발급된 액세스 토큰: {}", accessToken);
 	}
 
 	public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
