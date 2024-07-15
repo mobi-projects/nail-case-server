@@ -105,11 +105,23 @@ public class ReservationService {
 		return reservationMapper.toResponse(reservation);
 	}
 
-	public List<ReservationDto.Response> listReservation(Long shopId, Long startUnixTimeStamp, Long endUnixTimeStamp) {
-		LocalDateTime startDate = DateUtils.unixTimeStampToLocalDateTime(startUnixTimeStamp);
-		LocalDateTime endDate = DateUtils.unixTimeStampToLocalDateTime(endUnixTimeStamp);
+	public List<ReservationDto.Response> listReservation(Long shopId, Long startUnixTimeStamp, Long endUnixTimeStamp,
+		ReservationStatus status) {
+		LocalDateTime start = LocalDate.now().atTime(LocalTime.MIN);
+		LocalDateTime startDate = startUnixTimeStamp != null
+			? DateUtils.unixTimeStampToLocalDateTime(startUnixTimeStamp)
+			: start;
+		LocalDateTime endDate = endUnixTimeStamp != null
+			? DateUtils.unixTimeStampToLocalDateTime(endUnixTimeStamp)
+			: start.plusMonths(1);
+
+		if (startDate.plusMonths(1).isBefore(endDate)) {
+			throw new BusinessException(ReservationErrorCode.INVALID_TIME_RANGE);
+		}
+
 		List<Reservation> reservationList =
-			reservationRepository.findReservationListWithinDateRange(shopId, startDate, endDate);
+			reservationRepository.findReservationListWithinDateRange(shopId, startDate, endDate, status);
+
 		return reservationList.stream()
 			.map(reservationMapper::toResponse)
 			.toList();
