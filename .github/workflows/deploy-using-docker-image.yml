@@ -58,4 +58,4 @@ jobs:
             ${{ secrets.KAKAO_REDIRECT_URI }} \
             ${{ secrets.KAKAO_CLIENT_SECRET }} \
             ${{ secrets.JWT_SECRET_KEY }} \
-            
+            ${{ secrets.FRONT_ENDPOINT }}

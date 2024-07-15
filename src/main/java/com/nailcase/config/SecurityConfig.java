@@ -2,6 +2,7 @@ package com.nailcase.config;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,13 +39,16 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
 	private final NailArtistRepository nailArtistRepository;
 	private final ResponseService responseService; // RedisTemplate 주입
+	private final JwtService jwtService;
 	// private final CustomOAuth2UserService customOAuth2UserService;
 	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	// private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+
+	@Value("${window.endpoint:localhost}")
+	private String endpoint;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -115,6 +119,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin(endpoint);
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");
 		configuration.addExposedHeader("*");
