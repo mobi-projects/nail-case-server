@@ -11,10 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.nailcase.exception.TokenException;
-import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.TokenErrorCode;
 import com.nailcase.model.enums.Role;
+import com.nailcase.model.enums.TokenType;
 import com.nailcase.oauth.dto.TokenResponseDto;
 import com.nailcase.repository.MemberRepository;
 
@@ -51,6 +56,8 @@ public class JwtService {
 	private static final String ID_CLAIM = "sequenceId";
 	private static final String ROLE_CLAIM = "role";
 	private static final String BEARER = "Bearer ";
+	private static final String BLACKLIST_PREFIX = "blacklist:";
+	private static final long ALLOWED_TIME_DIFFERENCE = 60000; // 1분
 
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
@@ -61,6 +68,7 @@ public class JwtService {
 		String token = JWT.create()
 			.withSubject(ACCESS_TOKEN_SUBJECT)
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+			.withIssuedAt(now)
 			.withClaim(EMAIL_CLAIM, email)
 			.withClaim(ROLE_CLAIM, role.getKey())
 			.withClaim(ID_CLAIM, sequenceId)
@@ -79,6 +87,7 @@ public class JwtService {
 			.withClaim(ROLE_CLAIM, role.getKey())
 			.withClaim(ID_CLAIM, sequenceId)
 			.withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+			.withIssuedAt(now)
 			.withJWTId(jti)
 			.sign(Algorithm.HMAC512(secretKey));
 		log.info("사용자 {}에 대한 리프레시 토큰 발급 (JTI: {})", email, jti);
@@ -119,7 +128,7 @@ public class JwtService {
 				.asString());
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰으로 이메일 추출 시도: {}", accessToken, e);
-			throw new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage());
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
 		}
 	}
 
@@ -146,7 +155,7 @@ public class JwtService {
 				log.warn("토큰에 JTI가 없습니다");
 				return false;
 			}
-			String blacklistKey = "blacklist:" + jti;
+			String blacklistKey = BLACKLIST_PREFIX + jti;
 			Boolean isBlacklisted = (Boolean)redisTemplate.opsForValue().get(blacklistKey);
 			Date expiresAt = decodedJWT.getExpiresAt();
 			log.info("토큰 검증 - JTI: {}, 블랙리스트 키: {}, 블랙리스트 여부: {}, 만료 시간: {}",
@@ -160,7 +169,7 @@ public class JwtService {
 			boolean isValid = expiresAt.after(new Date());
 			log.info("토큰 유효성 결과: {}", isValid);
 			return isValid;
-		} catch (TokenException e) {
+		} catch (BusinessException e) {
 			log.error("토큰 검증 실패: {}", e.getMessage(), e);
 			return false;
 		} catch (Exception e) {
@@ -169,23 +178,15 @@ public class JwtService {
 		}
 	}
 
-	public void addTokenToBlacklist(String token) {
-		token = removeBearerInToken(token);
-		DecodedJWT decoded = verifyToken(token);
-		long remainingTime = decoded.getExpiresAt().getTime() - System.currentTimeMillis();
-		redisTemplate.opsForValue().set("blacklist:" + decoded.getId(), true, remainingTime, TimeUnit.MILLISECONDS);
-		log.info("토큰을 블랙리스트에 추가: JWT ID {}", decoded.getId());
-	}
-
 	public void logout(String accessToken, String refreshToken) {
 		accessToken = removeBearerInToken(accessToken);
 		refreshToken = removeBearerInToken(refreshToken);
 
 		if (isTokenValid(accessToken)) {
 			String email = extractEmail(accessToken)
-				.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+				.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 			Role role = extractRole(accessToken)
-				.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+				.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
 			String redisKey = role.getKey() + ":" + email;
 			redisTemplate.delete(redisKey);
@@ -200,9 +201,9 @@ public class JwtService {
 
 	public void removeRefreshToken(String refreshToken) {
 		String email = extractEmail(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 		Role role = extractRole(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 		String key = role.getKey() + ":" + email;
 		Boolean deleted = redisTemplate.delete(key);
 		if (Boolean.FALSE.equals(deleted)) {
@@ -244,23 +245,109 @@ public class JwtService {
 		}
 	}
 
-	public TokenResponseDto refreshTokens(String refreshToken) {
-		if (!isTokenValid(refreshToken)) {
-			throw new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage());
+	public boolean isTokenValid(String token, TokenType tokenType) {
+		try {
+			validateTokenAndThrow(token, tokenType);
+			return true;
+		} catch (BusinessException e) {
+			log.error("토큰 검증 실패: {}", e.getMessage(), e);
+			return false;
+		}
+	}
+
+	public void validateTokenAndThrow(String token, TokenType tokenType) {
+		try {
+			token = removeBearerInToken(token);
+			DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+
+			validateTokenClaims(decodedJWT, tokenType);
+			validateTokenTimes(decodedJWT, tokenType);
+			validateTokenBlacklist(decodedJWT);
+
+		} catch (TokenExpiredException e) {
+			throw new BusinessException(tokenType == TokenType.ACCESS ?
+				TokenErrorCode.ACCESS_TOKEN_EXPIRED : TokenErrorCode.REFRESH_TOKEN_EXPIRED);
+		} catch (SignatureVerificationException e) {
+			throw new BusinessException(TokenErrorCode.TOKEN_SIGNATURE_INVALID);
+		} catch (JWTDecodeException e) {
+			throw new BusinessException(TokenErrorCode.TOKEN_MALFORMED);
+		} catch (AlgorithmMismatchException e) {
+			throw new BusinessException(TokenErrorCode.TOKEN_UNSUPPORTED);
+		} catch (BusinessException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
+		}
+	}
+
+	private void validateTokenClaims(DecodedJWT decodedJWT, TokenType tokenType) {
+		String jti = decodedJWT.getId();
+		if (jti == null) {
+			throw new BusinessException(TokenErrorCode.NOT_JTI_IN_TOKEN);
 		}
 
+		if (tokenType == TokenType.ACCESS && !decodedJWT.getSubject().equals(ACCESS_TOKEN_SUBJECT)) {
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
+		} else if (tokenType == TokenType.REFRESH && !decodedJWT.getSubject().equals(REFRESH_TOKEN_SUBJECT)) {
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
+		}
+	}
+
+	private void validateTokenTimes(DecodedJWT decodedJWT, TokenType tokenType) {
+		Date now = new Date();
+		Date issuedAt = decodedJWT.getIssuedAt();
+		Date expiresAt = decodedJWT.getExpiresAt();
+
+		if (issuedAt != null && issuedAt.after(new Date(now.getTime() + ALLOWED_TIME_DIFFERENCE))) {
+			throw new BusinessException(TokenErrorCode.TOKEN_ISSUED_IN_FUTURE);
+		}
+
+		if (expiresAt.before(now)) {
+			if (tokenType == TokenType.ACCESS) {
+				throw new BusinessException(TokenErrorCode.ACCESS_TOKEN_EXPIRED);
+			} else {
+				throw new BusinessException(TokenErrorCode.REFRESH_TOKEN_EXPIRED);
+			}
+		}
+	}
+
+	private void validateTokenBlacklist(DecodedJWT decodedJWT) {
+		String blacklistKey = BLACKLIST_PREFIX + decodedJWT.getId();
+		Boolean isBlacklisted = (Boolean)redisTemplate.opsForValue().get(blacklistKey);
+
+		if (isBlacklisted != null && isBlacklisted) {
+			throw new BusinessException(TokenErrorCode.TOKEN_IN_BLACKLIST);
+		}
+	}
+
+	public void addTokenToBlacklist(String token) {
+		token = removeBearerInToken(token);
+		DecodedJWT decoded = verifyToken(token);
+		long remainingTime = decoded.getExpiresAt().getTime() - System.currentTimeMillis();
+		redisTemplate.opsForValue().set(BLACKLIST_PREFIX + decoded.getId(), true, remainingTime, TimeUnit.MILLISECONDS);
+		log.info("토큰을 블랙리스트에 추가: JWT ID {}", decoded.getId());
+	}
+
+	public TokenResponseDto refreshTokens(String refreshToken) {
+		validateTokenAndThrow(refreshToken, TokenType.REFRESH);
+
 		String email = extractEmail(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 		Role role = extractRole(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
 		String savedRefreshToken = (String)redisTemplate.opsForValue().get(role.getKey() + ":" + email);
-		if (savedRefreshToken == null || !savedRefreshToken.equals(refreshToken)) {
-			throw new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage());
+		if (savedRefreshToken == null) {
+			throw new BusinessException(TokenErrorCode.REFRESH_TOKEN_NOT_FOUND);
+		}
+		if (!savedRefreshToken.equals(refreshToken)) {
+			// 리프레시 토큰 재사용 감지
+			removeRefreshToken(refreshToken);
+			throw new BusinessException(TokenErrorCode.REFRESH_TOKEN_REUSED);
 		}
 
 		Long userId = extractUserId(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
 		String newAccessToken = createAccessToken(email, userId, role);
 		String newRefreshToken = createRefreshToken(email, userId, role);
@@ -270,8 +357,6 @@ public class JwtService {
 		return TokenResponseDto.builder()
 			.accessToken(newAccessToken)
 			.refreshToken(newRefreshToken)
-			.accessTokenExpirationTime(getAccessTokenExpirationPeriod())
-			.refreshTokenExpirationTime(getRefreshTokenExpirationPeriod())
 			.build();
 	}
 

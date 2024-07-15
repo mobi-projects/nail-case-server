@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum NailArtistErrorCode implements ErrorCodeInterface {
-	NOT_FOUND(400, "네일아티스트가 존재하지 않음");
+	NOT_FOUND(900, "네일아티스트가 존재하지 않음");
 
 	private final int code;
 	private final String message;

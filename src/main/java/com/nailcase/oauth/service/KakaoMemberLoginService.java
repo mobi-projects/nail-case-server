@@ -34,8 +34,6 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 		return LoginResponseDto.builder()
 			.accessToken(accessTokenJwt)
 			.refreshToken(refreshToken)
-			.accessTokenExpirationTime(jwtService.getAccessTokenExpirationPeriod())
-			.refreshTokenExpirationTime(jwtService.getRefreshTokenExpirationPeriod())
 			.role(member.getRole())
 			.build();
 	}
