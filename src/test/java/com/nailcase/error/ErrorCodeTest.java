@@ -27,6 +27,7 @@ public class ErrorCodeTest {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		String path = packageName.replace('.', '/');
 		URL resource = classLoader.getResource(path);
+		assert resource != null;
 		File directory = new File(resource.getFile());
 
 		List<Class<? extends ErrorCodeInterface>> classes = new ArrayList<>();
