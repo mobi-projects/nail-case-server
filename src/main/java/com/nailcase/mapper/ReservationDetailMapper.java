@@ -37,6 +37,8 @@ public interface ReservationDetailMapper {
 	@Mapping(target = "modifiedAt", ignore = true)
 	@Mapping(target = "createdBy", ignore = true)
 	@Mapping(target = "modifiedBy", ignore = true)
+	@Mapping(target = "endTime", ignore = true)
+	@Mapping(target = "review", ignore = true)
 	ReservationDetail toEntity(ReservationDetailDto.Post dto);
 
 	@Mapping(

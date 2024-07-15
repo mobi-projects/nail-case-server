@@ -1,7 +1,7 @@
 package com.nailcase.model.enums;
 
 public enum ReservationStatus {
-	PENDING, CANCELED, REJECTED, CONFIRMED
+	PENDING, CANCELED, REJECTED, CONFIRMED, COMPLETED
 	// PENDING -> CANCELED
 	// PENDING -> REJECTED
 	// PENDING -> CONFIRMED
