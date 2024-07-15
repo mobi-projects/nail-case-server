@@ -1409,6 +1409,9 @@
       "type" : "integer",
       "format" : "int64"
     },
+    "nickname" : {
+      "type" : "string"
+    },
     "reservationDetailList" : {
       "type" : "array",
       "items" : {
@@ -11297,7 +11300,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/reservations?startTime=&endTime="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/reservations?startDate=&endDate=&status="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-listReservation-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -11320,10 +11323,11 @@ public class ReservationControllerApiExample {
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
-        Long startTime = 789; // Long | 
-        Long endTime = 789; // Long | 
+        Long startDate = 789; // Long | 
+        Long endDate = 789; // Long | 
+        String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startTime, endTime);
+            array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -11341,10 +11345,11 @@ public class ReservationControllerApiExample {
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
-        Long startTime = 789; // Long | 
-        Long endTime = 789; // Long | 
+        Long startDate = 789; // Long | 
+        Long endDate = 789; // Long | 
+        String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startTime, endTime);
+            array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -11362,14 +11367,16 @@ public class ReservationControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
-Long *startTime = 789; // 
-Long *endTime = 789; // 
+Long *startDate = 789; //  (optional)
+Long *endDate = 789; //  (optional)
+String *status = status_example; //  (optional) (default to CONFIRMED)
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance listReservationWith:shopId
-    startTime:startTime
-    endTime:endTime
+    startDate:startDate
+    endDate:endDate
+    status:status
               completionHandler: ^(array[com.nailcase.model.dto.ReservationDto$Response] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -11392,9 +11399,11 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
-var startTime = 789; // {{Long}} 
-var endTime = 789; // {{Long}} 
-
+var opts = { 
+  'startDate': 789, // {{Long}} 
+  'endDate': 789, // {{Long}} 
+  'status': status_example // {{String}} 
+};
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -11402,7 +11411,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listReservation(shopId, startTime, endTime, callback);
+api.listReservation(shopId, opts, callback);
 </code></pre>
                             </div>
 
@@ -11428,12 +11437,13 @@ namespace Example
 
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
-            var startTime = 789;  // Long | 
-            var endTime = 789;  // Long | 
+            var startDate = 789;  // Long |  (optional) 
+            var endDate = 789;  // Long |  (optional) 
+            var status = status_example;  // String |  (optional)  (default to CONFIRMED)
 
             try
             {
-                array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startTime, endTime);
+                array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startDate, endDate, status);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -11455,11 +11465,12 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
-$startTime = 789; // Long | 
-$endTime = 789; // Long | 
+$startDate = 789; // Long | 
+$endDate = 789; // Long | 
+$status = status_example; // String | 
 
 try {
-    $result = $api_instance->listReservation($shopId, $startTime, $endTime);
+    $result = $api_instance->listReservation($shopId, $startDate, $endDate, $status);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->listReservation: ', $e->getMessage(), PHP_EOL;
@@ -11477,11 +11488,12 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
-my $startTime = 789; # Long | 
-my $endTime = 789; # Long | 
+my $startDate = 789; # Long | 
+my $endDate = 789; # Long | 
+my $status = status_example; # String | 
 
 eval { 
-    my $result = $api_instance->listReservation(shopId => $shopId, startTime => $startTime, endTime => $endTime);
+    my $result = $api_instance->listReservation(shopId => $shopId, startDate => $startDate, endDate => $endDate, status => $status);
     print Dumper($result);
 };
 if ($@) {
@@ -11502,11 +11514,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
 shopId = 789 # Long | 
-startTime = 789 # Long | 
-endTime = 789 # Long | 
+startDate = 789 # Long |  (optional)
+endDate = 789 # Long |  (optional)
+status = status_example # String |  (optional) (default to CONFIRMED)
 
 try: 
-    api_response = api_instance.list_reservation(shopId, startTime, endTime)
+    api_response = api_instance.list_reservation(shopId, startDate=startDate, endDate=endDate, status=status)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->listReservation: %s\n" % e)</code></pre>
@@ -11554,11 +11567,11 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">startTime*</td>
+                                <tr><td style="width:150px;">startDate</td>
                                 <td>
                                 
                                 
-                                    <div id="d2e199_listReservation_startTime">
+                                    <div id="d2e199_listReservation_startDate">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -11569,18 +11582,15 @@ except ApiException as e:
                                                     </span>
                                 
                                             </div>
-                                                <div class="inner required">
-                                                    Required
-                                                </div>
                                         </div>
                                     </div>
                                 </td>
                                 </tr>
-                                <tr><td style="width:150px;">endTime*</td>
+                                <tr><td style="width:150px;">endDate</td>
                                 <td>
                                 
                                 
-                                    <div id="d2e199_listReservation_endTime">
+                                    <div id="d2e199_listReservation_endDate">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -11591,9 +11601,22 @@ except ApiException as e:
                                                     </span>
                                 
                                             </div>
-                                                <div class="inner required">
-                                                    Required
-                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">status</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listReservation_status">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
