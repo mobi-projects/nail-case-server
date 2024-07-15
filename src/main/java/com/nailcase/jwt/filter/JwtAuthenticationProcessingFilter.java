@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,41 +46,34 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	private final MemberRepository memberRepository;
 	private final NailArtistRepository nailArtistRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
-	private final AuthenticationEntryPoint authenticationEntryPoint;
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
 		@NonNull FilterChain filterChain) throws ServletException, IOException, TokenException {
 
 		log.info("JWT 인증 처리 필터: URI {} 처리 중", request.getRequestURI());
-		try {
-			// 기존 로직
 
-			if (request.getRequestURI().equals(LOGOUT_URL)) {
-				log.info("로그아웃 URL 감지, 토큰 처리 건너뛰기");
-				filterChain.doFilter(request, response);
-				return;
-			}
-
-			if (request.getRequestURI().equals(REFRESH_TOKEN_URL)) {
-				log.info("리프레시 토큰 URL 감지, 리프레시 토큰 처리");
-				processRefreshToken(request, response);
-				return;
-			}
-
-			String accessToken = jwtService.extractAccessToken(request).orElse(null);
-			log.info("추출된 액세스 토큰: {}", accessToken);
-
-			if (accessToken != null) {
-				processAccessToken(accessToken, response);
-			} else {
-				log.info("요청에서 액세스 토큰을 찾을 수 없음");
-			}
-		} catch (TokenException e) {
-			SecurityContextHolder.clearContext();
-			authenticationEntryPoint.commence(request, response, e);
+		if (request.getRequestURI().equals(LOGOUT_URL)) {
+			log.info("로그아웃 URL 감지, 토큰 처리 건너뛰기");
+			filterChain.doFilter(request, response);
 			return;
 		}
+
+		if (request.getRequestURI().equals(REFRESH_TOKEN_URL)) {
+			log.info("리프레시 토큰 URL 감지, 리프레시 토큰 처리");
+			processRefreshToken(request, response);
+			return;
+		}
+
+		String accessToken = jwtService.extractAccessToken(request).orElse(null);
+		log.info("추출된 액세스 토큰: {}", accessToken);
+
+		if (accessToken != null) {
+			processAccessToken(accessToken, response);
+		} else {
+			log.info("요청에서 액세스 토큰을 찾을 수 없음");
+		}
+
 		filterChain.doFilter(request, response);
 	}
 

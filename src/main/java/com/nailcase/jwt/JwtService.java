@@ -270,8 +270,6 @@ public class JwtService {
 		return TokenResponseDto.builder()
 			.accessToken(newAccessToken)
 			.refreshToken(newRefreshToken)
-			.accessTokenExpirationTime(getAccessTokenExpirationPeriod())
-			.refreshTokenExpirationTime(getRefreshTokenExpirationPeriod())
 			.build();
 	}
 

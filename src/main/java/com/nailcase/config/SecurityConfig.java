@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,7 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -28,9 +26,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nailcase.exception.codes.AuthErrorCode;
-import com.nailcase.exception.codes.ErrorResponse;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.nailcase.oauth.AuditorAwareImpl;
@@ -89,8 +84,7 @@ public class SecurityConfig {
 			// 	.logoutSuccessUrl("/"))
 			// .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
 			// .addFilterBefore(exceptionTranslationFilter(), JwtAuthenticationProcessingFilter.class);
-			.exceptionHandling(exceptionHandling -> exceptionHandling
-				.authenticationEntryPoint(authenticationEntryPoint()))
+		
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -99,19 +93,7 @@ public class SecurityConfig {
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
 		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, nailArtistRepository,
-			redisTemplate, authenticationEntryPoint()); // RedisTemplate 전달
-	}
-
-	@Bean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
-		return (request, response, authException) -> {
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			response.setCharacterEncoding("UTF-8");
-			ErrorResponse errorResponse = new ErrorResponse(AuthErrorCode.TOKEN_INVALID.getCode(),
-				authException.getMessage());
-			response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
-		};
+			redisTemplate); // RedisTemplate 전달
 	}
 
 	@Bean

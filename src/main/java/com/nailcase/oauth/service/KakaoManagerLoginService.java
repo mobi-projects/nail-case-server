@@ -50,8 +50,6 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 			.refreshToken(refreshToken)
 			.shopIds(shopIds)
 			.hasShop(hasShop)
-			.accessTokenExpirationTime(jwtService.getAccessTokenExpirationPeriod())
-			.refreshTokenExpirationTime(jwtService.getRefreshTokenExpirationPeriod())
 			.role(nailArtist.getRole())
 			.build();
 	}
