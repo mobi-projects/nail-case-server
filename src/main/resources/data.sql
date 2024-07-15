@@ -1,4 +1,3 @@
-
 -- 먼저 members와 nail_artists 테이블에 데이터 삽입
 INSERT INTO members (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
 SELECT 'Member', 'member@example.com', 'MEMBER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -12,95 +11,420 @@ FROM (SELECT 2 AS n UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNI
 WHERE NOT EXISTS (SELECT 2 FROM members WHERE email = CONCAT('member', nums.n, '@example.com'));
 
 
+-- Step 1: nail_artists 테이블에 관리자 데이터를 먼저 삽입
 INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT 'Manager', 'manager@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+SELECT 'Manager', 'manager@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226795', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'manager@example.com');
 
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '모비쌤', 'mobi1@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 2 FROM nail_artists WHERE email = 'mobi1@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '비모쌤', 'mobi2@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 3 FROM nail_artists WHERE email = 'mobi2@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '피넛쌤', 'mobi3@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 4 FROM nail_artists WHERE email = 'mobi3@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '케이쌤', 'mobi4@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 5 FROM nail_artists WHERE email = 'mobi4@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '제로쌤', 'mobi5@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 6 FROM nail_artists WHERE email = 'mobi5@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '조이쌤', 'mobi6@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 7 FROM nail_artists WHERE email = 'mobi6@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '제인쌤', 'mobi7@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 8 FROM nail_artists WHERE email = 'mobi7@example.com');
-
-INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
-SELECT '알루미늄쌤', 'mobi8@example.com', 'MANAGER', 'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c', 'KAKAO', '3588226794', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-    WHERE NOT EXISTS (SELECT 9 FROM nail_artists WHERE email = 'mobi8@example.com');
-
--- 모비네일 강남점 데이터 삽입
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
 INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '모비네일 강남점', '01012341234', 8, '서울 강남구 봉은사로6길 29 1층 102호',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+SELECT '모비네일 강남점', '01012341234', 8, '서울 강남구 봉은사로6길 29 1층 102호',
+       '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
 FROM nail_artists n
 WHERE n.email = 'manager@example.com'
   AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '모비네일 강남점');
 
--- 모비네일 강남점 아티스트 
-UPDATE nail_artists
-SET shop_id=1
-WHERE shop_id IS NULL;
+-- 모비네일 강남점의 shop_id를 가져옵니다.
+-- 직접 쿼리에서 데이터를 가져와서 사용합니다.
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '모비쌤', 'mobi1@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226796', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi1@example.com');
 
--- 나의네일 데이터 삽입
-INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '나의네일', '01087872938', 8, '경기 광주시 태재로 102 대진프라자 108호',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
-FROM nail_artists n
-WHERE n.email = 'mobi3@example.com'
-  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '나의네일');
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '비모쌤', 'mobi2@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226797', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi2@example.com');
 
--- 유네일 데이터 삽입
-INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '유네일', '01087872938', 8, '서울 동작구 장승배기로10길 100',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
-FROM nail_artists n
-WHERE n.email = 'mobi4@example.com'
-  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '유네일');
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '피넛쌤', 'mobi3@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226798', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi3@example.com');
 
--- 코코네일 데이터 삽입
-INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
-SELECT '코코네일', '01087872938', 8, '서울 동작구 장승배기로10길 100',  '매달 네일 오마카세를 제공하는 디자인 맛집 모비네일 ' || E'\n' || '현재 당일 예약 가능합니다', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
-FROM nail_artists n
-WHERE n.email = 'mobi5@example.com'
-  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '코코네일');
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '케이쌤', 'mobi4@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226799', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi4@example.com');
 
--- shop_info 테이블에 데이터 삽입
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '제로쌤', 'mobi5@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226800', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi5@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '조이쌤', 'mobi6@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226811', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi6@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '제인쌤', 'mobi7@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226812', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi7@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '알루미늄쌤', 'mobi8@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226813', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'mobi8@example.com');
+
+-- Step 4: shop_info 테이블에 데이터 삽입
 INSERT INTO shop_info (shop_id, created_at, modified_at)
-SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM shops s WHERE s.shop_name = '모비네일 강남점' AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
 
--- 월요일부터 일요일까지의 WorkHour 데이터 삽입
+-- 모비네일 강남점의 WorkHour 데이터 삽입
 INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
-SELECT * FROM (
-                  VALUES
-                      (1, 0, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 1, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 2, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 3, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 4, true, '09:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 5, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-                      (1, 6, true, '10:00:00'::time, '22:00:00'::time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-              ) AS temp
-WHERE NOT EXISTS (
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:00:00'::time AS open_time, '20:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 2, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 3, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 4, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 5, false, '00:00:00', '00:00:00'
+         UNION ALL SELECT 6, false, '00:00:00', '00:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '모비네일 강남점'
+  AND NOT EXISTS (
     SELECT 1 FROM work_hours
-    WHERE shop_id = 1 AND day_of_week IN (0, 1, 2, 3, 4, 5, 6)
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
 );
+
+
+-- 러블리네일 강남점 데이터 삽입
+-- Step 1: nail_artists 테이블에 관리자 데이터를 먼저 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '김수빈', 'kim@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'kim@example.com');
+
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '러블리네일 강남점', '025820206', 2, '서초동 1319-13 KR 서울특별시 서초구 서초2동 현대타워 507호',
+       '안녕하세요. 러블리네일아트 입니다.' || E'\n' || '저희 강남역네일 러블리는 10년 이상된 샵으로 최상의 서비스와 꼼꼼한 관리로 건강하고 아름다운 손 , 발 , 눈썹 관리를 지향합니다.',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'kim@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '러블리네일 강남점');
+
+-- 러블리네일 강남점의 shop_id를 가져옵니다.
+-- 직접 쿼리에서 데이터를 가져와서 사용합니다.
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '강동원', 'dongwon@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226815', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '러블리네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'dongwon@example.com');
+
+-- Step 4: shop_info 테이블에 데이터 삽입
+INSERT INTO shop_info (shop_id, created_at, modified_at)
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '러블리네일 강남점'
+  AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+
+-- 러블리네일 강남점의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '09:00:00'::time AS open_time, '21:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '09:00:00', '21:00:00'
+         UNION ALL SELECT 2, true, '09:00:00', '21:00:00'
+         UNION ALL SELECT 3, true, '09:00:00', '21:00:00'
+         UNION ALL SELECT 4, true, '09:00:00', '21:00:00'
+         UNION ALL SELECT 5, true, '09:00:00', '19:00:00'
+         UNION ALL SELECT 6, false, '00:00:00', '00:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '러블리네일 강남점'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 레푸스강남선릉점 인디고네일 데이터 삽입
+-- Step 1: nail_artists 테이블에 관리자 데이터를 먼저 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '김스타', 'kimStar@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226816', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'kimStar@example.com');
+
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '레푸스강남선릉점 인디고네일', '025653009', 5, '서울 강남구 테헤란로57길 24 1층',
+       '문제성 손,발관리 실무 경력 25년 이상된 원장과 부원장 포함 5인조 팀의 프로페셔널한 서비스를 경험해보세요~' || E'\n' ||
+       '인디고 네일은 남녀노소 불문 건강하고 아름다운 손톱.발톱을 지향합니다. 어떤 상태라도 관리.시술.변신.유지 다양한 솔루션을 드립니다.',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'kimStar@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '레푸스강남선릉점 인디고네일');
+
+-- 레푸스강남선릉점 인디고네일의 shop_id를 가져옵니다.
+-- 직접 쿼리에서 데이터를 가져와서 사용합니다.
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '이스타', 'leeStar@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226817', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '레푸스강남선릉점 인디고네일'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'leeStar@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '장스타', 'jangStar@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226818', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '레푸스강남선릉점 인디고네일'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'jangStar@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '홍스타', 'hongStar@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226819', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '레푸스강남선릉점 인디고네일'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'hongStar@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '코스타', 'coStar@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226820', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '레푸스강남선릉점 인디고네일'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'coStar@example.com');
+
+-- Step 4: shop_info 테이블에 데이터 삽입
+INSERT INTO shop_info (shop_id, created_at, modified_at)
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '레푸스강남선릉점 인디고네일'
+  AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+
+-- Step 5: 월요일부터 일요일까지의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '11:00:00'::time AS open_time, '22:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '11:00:00', '22:00:00'
+         UNION ALL SELECT 2, true, '11:00:00', '22:00:00'
+         UNION ALL SELECT 3, true, '11:00:00', '22:00:00'
+         UNION ALL SELECT 4, true, '11:00:00', '22:00:00'
+         UNION ALL SELECT 5, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 6, false, '00:00:00', '00:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '레푸스강남선릉점 인디고네일'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 아트랩네일 신사점 데이터 삽입
+-- Step 1: nail_artists 테이블에 관리자 데이터를 먼저 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '김아티스트', 'kimArt@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226820', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'kimArt@example.com');
+
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '아트랩네일 신사점', '0261050021', 3, '서울 강남구 강남대로162길 27-15 1층 아트랩네일 스튜디오',
+       '신사동 가로수길에 위치한 ''핫플레이스'' 아트랩 네일스튜디오 입니다.' || E'\n' ||
+       '공간에서 주는 HIP한 무드와 15년 경력의 감각적인 네일선생님의 시술로, 기쁨과 아름다움을 동시에 누리실 수 있습니다.',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'kimArt@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '아트랩네일 신사점');
+
+-- 아트랩네일 신사점의 shop_id를 가져옵니다.
+-- 직접 쿼리에서 데이터를 가져와서 사용합니다.
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '홍아티스트', 'hongArt@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226821', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '아트랩네일 신사점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'hongArt@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, '장아티스트', 'jangArt@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226822', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '아트랩네일 신사점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'jangArt@example.com');
+
+-- Step 4: shop_info 테이블에 데이터 삽입
+INSERT INTO shop_info (shop_id, created_at, modified_at)
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '아트랩네일 신사점'
+  AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+
+-- Step 5: 월요일부터 일요일까지의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '09:00:00'::time AS open_time, '18:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '09:00:00', '18:00:00'
+         UNION ALL SELECT 2, true, '09:00:00', '18:00:00'
+         UNION ALL SELECT 3, true, '09:00:00', '18:00:00'
+         UNION ALL SELECT 4, true, '09:00:00', '18:00:00'
+         UNION ALL SELECT 5, true, '10:00:00', '17:00:00'
+         UNION ALL SELECT 6, true, '10:00:00', '17:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '아트랩네일 신사점'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 네일맑음 데이터 삽입
+-- Step 1: nail_artists 테이블에 관리자 데이터를 먼저 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '혼자해', 'alone@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226823', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'alone@example.com');
+
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일맑음', '025525433', 1, '서울 강남구 역삼로14길 18',
+       '오랜 경력의 1인샵으로 편하고 퀄리티 있는 시술 및 서비스 면에서 고객 만족하실겁니다.' || E'\n' ||
+       '매니큐어 패디큐어 젤 아크릴 왁싱 속눈썹연장 속눈썹펌 가능하구여' || E'\n' ||
+       '회원권(금액권, 횟수권)이용하시면 더 많은 혜택을 제공받으실수 있습니다.',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'alone@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일맑음');
+
+-- 네일맑음의 shop_id를 가져옵니다.
+-- 직접 쿼리에서 데이터를 가져와서 사용합니다.
+-- Step 3: shop_info 테이블에 데이터 삽입
+INSERT INTO shop_info (shop_id, created_at, modified_at)
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '네일맑음'
+  AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+
+-- Step 4: 월요일부터 일요일까지의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '08:00:00'::time AS open_time, '20:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '08:00:00', '20:00:00'
+         UNION ALL SELECT 2, true, '08:00:00', '20:00:00'
+         UNION ALL SELECT 3, true, '08:00:00', '20:00:00'
+         UNION ALL SELECT 4, true, '08:00:00', '20:00:00'
+         UNION ALL SELECT 5, true, '09:00:00', '19:00:00'
+         UNION ALL SELECT 6, true, '09:00:00', '19:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일맑음'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 네일몰 강남점 데이터 삽입
+-- Step 1: nail_artists 테이블에 관리자 데이터를 먼저 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT 'nail1', 'nail1@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226824', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'nail1@example.com');
+
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일몰 강남점', '025351949', 4, '서울특별시 서초구 강남대로65길 10 K-Tower 6층',
+       '안녕하세요~ 네일몰 강남점입니다. 좀더 가까이 네일아트재료를 접하실수 있도록 강남점에 오픈하였습니다.' || E'\n' ||
+       '누구나 쉽게 네일아트를 접할 수 있도록 다양하고 저렴한 재품들로 구성된 네일몰 강남점입니다',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'nail1@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일몰 강남점');
+
+-- 네일몰 강남점의 shop_id를 가져옵니다.
+-- 직접 쿼리에서 데이터를 가져와서 사용합니다.
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, 'nail2', 'nail2@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226825', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '네일몰 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'nail2@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, 'nail3', 'nail3@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226826', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '네일몰 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'nail3@example.com');
+
+INSERT INTO nail_artists (shop_id, nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT s.shop_id, 'nail4', 'nail4@example.com', 'MANAGER',
+       'https://github.com/mobi-projects/nail-case-server/assets/96242198/5c306514-6a10-4887-98cf-6e897a2f063c',
+       'KAKAO', '3588226827', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '네일몰 강남점'
+  AND NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'nail4@example.com');
+
+-- Step 4: shop_info 테이블에 데이터 삽입
+INSERT INTO shop_info (shop_id, created_at, modified_at)
+SELECT s.shop_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM shops s
+WHERE s.shop_name = '네일몰 강남점'
+  AND NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+
+-- 네일몰 강남점의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:00:00'::time AS open_time, '22:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 2, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 3, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 4, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 5, true, '11:00:00', '20:00:00'
+         UNION ALL SELECT 6, true, '11:00:00', '20:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일몰 강남점'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+
 
 -- 예약(reservations) 데이터 삽입
 INSERT INTO reservations (shop_id, member_id, created_at, modified_at)
