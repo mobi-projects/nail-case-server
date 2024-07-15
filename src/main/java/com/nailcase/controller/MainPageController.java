@@ -35,7 +35,13 @@ public class MainPageController {
 		List<ReservationDto.CompletedReservationResponse> recentlyCompletedReservations = new ArrayList<>();
 
 		if (memberId != null) {
-			earliestReservation = mainPageService.getEarliestReservationByMember(memberId).orElse(null);
+			earliestReservation = mainPageService.getEarliestReservationByMember(memberId)
+				.filter(reservation -> reservation.getDetails() != null
+					&& !reservation.getDetails().isEmpty()
+					&& reservation.getDetails()
+					.stream()
+					.allMatch(detail -> detail.getStartTime() != null))
+				.orElse(null);
 			likedShops = mainPageService.getMemberLikedShops(memberId);
 			recentlyCompletedReservations = mainPageService.getCompletedReservations(memberId);
 		}

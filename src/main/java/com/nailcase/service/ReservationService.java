@@ -169,7 +169,17 @@ public class ReservationService {
 		return reservationRepository.fetchUpcomingReservationWithReservationDetails(member.getMemberId(), pageable)
 			.stream()
 			.findFirst()
-			.map(reservationMapper::toMainPageResponse)
+			.map(reservation -> {
+				ReservationDto.MainPageResponse response = reservationMapper.toMainPageResponse(reservation);
+				if (response == null || response.getDetails() == null || response.getDetails().isEmpty() ||
+					response.getDetails()
+						.stream()
+						.anyMatch(detail -> detail.getStartTime() == null)) {
+					System.out.println("response = " + response);
+					return null;
+				}
+				return response;
+			})
 			.orElse(null);
 	}
 

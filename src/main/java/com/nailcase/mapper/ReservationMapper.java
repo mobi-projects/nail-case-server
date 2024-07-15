@@ -157,28 +157,33 @@ public interface ReservationMapper {
 	@Named("mapReservationDetails")
 	default List<ReservationDto.MainPageResponse.ReservationDetailInfo> mapReservationDetails(
 		Set<ReservationDetail> details, Reservation reservation) {
+		if (details == null || details.isEmpty()) {
+			return new ArrayList<>();
+		}
 		boolean isAccompanied = reservation.isAccompanied();
 
-		Set<ReservationDto.MainPageResponse.ReservationDetailInfo> mappedDetails = details.stream()
+		return details.stream()
 			.map(detail -> {
 				ReservationDto.MainPageResponse.ReservationDetailInfo info = new ReservationDto.MainPageResponse.ReservationDetailInfo();
 				info.setReservationDetailsId(detail.getReservationDetailId());
-				info.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
-				info.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
-				info.setTreatmentOptions(detail.getTreatmentList().stream()
+				info.setStartTime(
+					detail.getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()) :
+						null);
+				info.setEndTime(
+					detail.getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()) : null);
+				info.setTreatmentOptions(detail.getTreatmentList() != null ? detail.getTreatmentList().stream()
 					.map(treatment -> treatment.getOption().name())
-					.collect(Collectors.toList()));
-				info.setRemoveOption(detail.getRemove().name());
-				info.setConditionOptions(detail.getConditionList().stream()
+					.collect(Collectors.toList()) : new ArrayList<>());
+				info.setRemoveOption(detail.getRemove() != null ? detail.getRemove().name() : null);
+				info.setConditionOptions(detail.getConditionList() != null ? detail.getConditionList().stream()
 					.map(condition -> condition.getOption().name())
-					.collect(Collectors.toList()));
+					.collect(Collectors.toList()) : new ArrayList<>());
 				info.setAccompanied(isAccompanied);
-				info.setStatus(detail.getStatus().name());
+				info.setStatus(detail.getStatus() != null ? detail.getStatus().name() : null);
 				return info;
 			})
-			.collect(Collectors.toSet());
-
-		return new ArrayList<>(mappedDetails);
+			.filter(info -> info.getStartTime() != null) // endTime은 null이어도 괜찮습니다.
+			.collect(Collectors.toList());
 	}
 
 }
