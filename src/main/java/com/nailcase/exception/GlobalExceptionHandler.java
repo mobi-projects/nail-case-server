@@ -39,14 +39,11 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(BusinessException.class)
 	public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
-		logger.error("BusinessException: {}", ex.getMessage(), ex);
-		return buildErrorResponse(ex.getErrorCode(), HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler(TokenException.class)
-	public ResponseEntity<ErrorResponse> handleTokenException(TokenException ex) {
-		logger.error("TokenException: {}", ex.getMessage(), ex);
-		return buildErrorResponse(AuthErrorCode.TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
+		ErrorResponse errorResponse = new ErrorResponse(
+			ex.getErrorCode().getCode(),
+			ex.getErrorCode().getMessage()
+		);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)

@@ -4,18 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum AuthErrorCode implements ErrorCodeInterface {
-	INVALID_CREDENTIALS(401, "잘못된 자격 증명"),
-	ACCESS_DENIED(402, "접근 거부"),
-	ACCESS_RETRIEVE(403, "액세스 토큰 발급 에러"),
-	TOKEN_EXPIRED(404, "토큰이 만료됨"),
-	TOKEN_INVALID(401, "유효하지 않은 토큰이거나 만료된 토큰"),
-	AUTH_UNEXPECTED(406, "인증과정에서 예기치 않은 에러"),
-	AUTH_UNSUPPORTED(407, "지원하지 않는 로그인 서비스"),
-	UNAUTHORIZED(401, "인증되지 않은 사용자"),
-	INVALID_USER_TYPE(401, "잘못된 유저 타입"),
-	TOKEN_NOT_FOUND(410, "잘못된 토큰"),
-	REFRESH_TOKEN_SAVE_FAILED(401, "리프레쉬 토큰 저장 실패");
-
+	INVALID_CREDENTIALS(400, "잘못된 자격 증명"),
+	ACCESS_DENIED(401, "접근 거부"),
+	AUTH_UNEXPECTED(402, "인증과정에서 예기치 않은 에러"),
+	AUTH_UNSUPPORTED(403, "지원하지 않는 로그인 서비스"),
+	UNAUTHORIZED(404, "인증되지 않은 사용자"),
+	INVALID_USER_TYPE(405, "잘못된 유저 타입");
+	
 	private final int code;
 	private final String message;
 

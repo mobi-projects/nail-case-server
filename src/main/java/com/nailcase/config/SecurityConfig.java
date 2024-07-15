@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,8 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -31,6 +28,7 @@ import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.nailcase.oauth.AuditorAwareImpl;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
+import com.nailcase.response.ResponseService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +42,7 @@ public class SecurityConfig {
 	private final MemberRepository memberRepository;
 	private final NailArtistRepository nailArtistRepository;
 	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
+	private final ResponseService responseService; // RedisTemplate 주입
 	// private final CustomOAuth2UserService customOAuth2UserService;
 	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	// private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
@@ -84,7 +83,7 @@ public class SecurityConfig {
 			// 	.logoutSuccessUrl("/"))
 			// .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
 			// .addFilterBefore(exceptionTranslationFilter(), JwtAuthenticationProcessingFilter.class);
-		
+
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -93,18 +92,12 @@ public class SecurityConfig {
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
 		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, nailArtistRepository,
-			redisTemplate); // RedisTemplate 전달
+			redisTemplate, responseService); // RedisTemplate 전달
 	}
 
 	@Bean
 	public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
 		return http.getSharedObject(AuthenticationManagerBuilder.class).build();
-	}
-
-	@Bean
-	public ExceptionTranslationFilter exceptionTranslationFilter() {
-		HttpStatusEntryPoint entryPoint = new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
-		return new ExceptionTranslationFilter(entryPoint);
 	}
 
 	@Bean

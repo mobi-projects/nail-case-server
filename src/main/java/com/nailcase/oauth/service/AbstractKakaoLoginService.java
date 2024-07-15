@@ -126,7 +126,7 @@ public abstract class AbstractKakaoLoginService implements SocialLoginService {
 		if (response.getStatusCode() == HttpStatus.OK) {
 			return response.getBody();
 		} else {
-			throw new BusinessException(AuthErrorCode.ACCESS_RETRIEVE);
+			throw new BusinessException(AuthErrorCode.AUTH_UNEXPECTED);
 		}
 	}
 }

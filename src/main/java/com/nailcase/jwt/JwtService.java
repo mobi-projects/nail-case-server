@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.nailcase.exception.TokenException;
-import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.TokenErrorCode;
 import com.nailcase.model.enums.Role;
 import com.nailcase.oauth.dto.TokenResponseDto;
 import com.nailcase.repository.MemberRepository;
@@ -119,7 +119,7 @@ public class JwtService {
 				.asString());
 		} catch (Exception e) {
 			log.error("유효하지 않은 토큰으로 이메일 추출 시도: {}", accessToken, e);
-			throw new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage());
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class JwtService {
 			boolean isValid = expiresAt.after(new Date());
 			log.info("토큰 유효성 결과: {}", isValid);
 			return isValid;
-		} catch (TokenException e) {
+		} catch (BusinessException e) {
 			log.error("토큰 검증 실패: {}", e.getMessage(), e);
 			return false;
 		} catch (Exception e) {
@@ -183,9 +183,9 @@ public class JwtService {
 
 		if (isTokenValid(accessToken)) {
 			String email = extractEmail(accessToken)
-				.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+				.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 			Role role = extractRole(accessToken)
-				.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+				.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
 			String redisKey = role.getKey() + ":" + email;
 			redisTemplate.delete(redisKey);
@@ -200,9 +200,9 @@ public class JwtService {
 
 	public void removeRefreshToken(String refreshToken) {
 		String email = extractEmail(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 		Role role = extractRole(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 		String key = role.getKey() + ":" + email;
 		Boolean deleted = redisTemplate.delete(key);
 		if (Boolean.FALSE.equals(deleted)) {
@@ -246,21 +246,21 @@ public class JwtService {
 
 	public TokenResponseDto refreshTokens(String refreshToken) {
 		if (!isTokenValid(refreshToken)) {
-			throw new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage());
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
 		}
 
 		String email = extractEmail(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 		Role role = extractRole(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
 		String savedRefreshToken = (String)redisTemplate.opsForValue().get(role.getKey() + ":" + email);
 		if (savedRefreshToken == null || !savedRefreshToken.equals(refreshToken)) {
-			throw new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage());
+			throw new BusinessException(TokenErrorCode.TOKEN_INVALID);
 		}
 
 		Long userId = extractUserId(refreshToken)
-			.orElseThrow(() -> new TokenException(AuthErrorCode.TOKEN_INVALID.getMessage()));
+			.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
 		String newAccessToken = createAccessToken(email, userId, role);
 		String newRefreshToken = createRefreshToken(email, userId, role);
