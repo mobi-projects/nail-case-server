@@ -654,3 +654,41 @@ FROM
     shops s ON si.shop_id = s.shop_id
 WHERE
     NOT EXISTS (SELECT 1 FROM price_image pi WHERE pi.shop_info_id = si.shop_info_id);
+
+INSERT INTO shop_liked_member (member_id, shop_id, created_at, modified_at)
+SELECT
+    m.member_id,
+    s.shop_id,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
+FROM
+    members m
+        JOIN (
+        SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn
+        FROM shops
+    ) s ON s.rn <= CAST(RANDOM() * 5 AS INT) + 1
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM shop_liked_member slm
+        WHERE slm.member_id = m.member_id AND slm.shop_id = s.shop_id
+    );
+
+INSERT INTO shop_liked_member (member_id, shop_id, created_at, modified_at)
+SELECT
+    1 as member_id,
+    s.shop_id,
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
+FROM
+    (SELECT shop_id, ROW_NUMBER() OVER (ORDER BY RANDOM()) as rn
+     FROM shops
+     ORDER BY RANDOM()
+         LIMIT 5) s
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM shop_liked_member slm
+        WHERE slm.member_id = 1 AND slm.shop_id = s.shop_id
+    )
+    LIMIT FLOOR(1 + RANDOM() * 5);

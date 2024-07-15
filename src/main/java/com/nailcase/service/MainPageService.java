@@ -36,7 +36,17 @@ public class MainPageService {
 	public Optional<ReservationDto.MainPageResponse> getEarliestReservationByMember(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-		return Optional.ofNullable(reservationService.findEarliestReservationByCustomer(member));
+		ReservationDto.MainPageResponse response = reservationService.findEarliestReservationByCustomer(member);
+
+		System.out.println("response = " + response);
+		if (response == null || response.getDetails() == null || response.getDetails().isEmpty()) {
+			return Optional.empty();
+		}
+
+		boolean hasValidStartTimes = response.getDetails().stream()
+			.allMatch(detail -> detail.getStartTime() != null);
+
+		return hasValidStartTimes ? Optional.of(response) : Optional.empty();
 	}
 
 	// 사용자 ID를 기반으로 사용자의 과거 예약 가져오기 -> 시술을 받은 예약들만, 최대3개
