@@ -56,6 +56,7 @@ public interface ShopMapper {
 		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getModifiedAt()))"
 	)
 	@Mapping(target = "ownerId", source = "nailArtist.nailArtistId")
+	@Mapping(target = "shopAvgRatings", ignore = true) // 이 부분을 추가
 	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
 	@Mapping(target = "images", expression = "java(ShopMapper.toImageDtos(shop.getShopImages()))")
 	ShopDto.Response toResponse(Shop shop);

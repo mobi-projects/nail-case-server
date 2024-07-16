@@ -54,6 +54,8 @@ public class ShopDto {
 
 		private int availableSeats;
 
+		private Double shopAvgRatings;
+
 		private List<String> tags;
 
 		private List<Image> images;

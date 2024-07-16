@@ -1,5 +1,8 @@
 package com.nailcase.repository;
 
+import static com.nailcase.model.entity.QReview.*;
+import static com.nailcase.model.entity.QShop.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +14,8 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.QNailArtist;
+import com.nailcase.model.entity.QReservationDetail;
+import com.nailcase.model.entity.QReview;
 import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
@@ -47,7 +52,7 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 
 	@Override
 	public Page<Shop> findTopShopsByPopularityCriteria(Pageable pageable) {
-		QShop qShop = QShop.shop;
+		QShop qShop = shop;
 		List<Shop> shops = queryFactory.selectFrom(qShop)
 			.orderBy(qShop.likes.desc())
 			.offset(pageable.getOffset())
@@ -69,7 +74,7 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 
 	@Override
 	public Page<Shop> findLikedShopsByMember(Long memberId, Pageable pageable) {
-		QShop qShop = QShop.shop;
+		QShop qShop = shop;
 
 		QShopLikedMember qShopLikedMember = QShopLikedMember.shopLikedMember;
 
@@ -111,4 +116,27 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 
 		return Optional.ofNullable(fetch);
 	}
+
+	@Override
+	public double calculateShopReviewRating(Long shopId) {
+		boolean exists = queryFactory
+			.selectOne()
+			.from(QReservationDetail.reservationDetail)
+			.join(QReservationDetail.reservationDetail.review, QReview.review)
+			.where(QReservationDetail.reservationDetail.shop.shopId.eq(shopId)
+				.and(QReview.review.isNotNull()))
+			.fetchFirst() != null;
+
+		if (!exists) {
+			return 0.0;  // 리뷰가 없으면 0 반환
+		}
+
+		return Optional.ofNullable(queryFactory
+				.select(review.rating.avg())
+				.from(review)
+				.where(review.shop.shopId.eq(shopId))
+				.fetchOne())
+			.orElse(0.0);  // Optional을 사용하여 null 처리
+	}
+
 }
