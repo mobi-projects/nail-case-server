@@ -15,4 +15,6 @@ public interface ShopQuerydslRepository {
 	Page<Shop> findLikedShopsByMember(Long memberId, Pageable pageable);
 
 	Optional<Shop> findByShopIdAndNailArtistsAndWorkHours(Long shopId);
+
+	double calculateShopReviewRating(Long shopId);
 }

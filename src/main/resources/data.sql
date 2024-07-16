@@ -397,6 +397,141 @@ WHERE s.shop_name = '네일몰 강남점'
     WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
 );
 
+
+
+-- 태그 생성
+-- 태그 생성 및 생성 시간 기록
+INSERT INTO tags (tag_name, created_at, modified_at)
+VALUES
+    ('네일맛집', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('주차가능', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('오마카세아트', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('친환경 소재', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('빠른 서비스', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('예약 우선', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('아트 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('손상 복구', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('풀컬러 옵션', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('세련된 디자인', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    ON CONFLICT (tag_name) DO NOTHING;
+
+
+-- Shop 1에 태그 매핑
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 1, 1, 1  -- 태그 1
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 1
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 1, 2, 2  -- 태그 2
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 2
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 1, 3, 3  -- 태그 3
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 3
+);
+
+-- Shop 2에 태그 매핑
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 2, 4, 1  -- 태그 4
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 4
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 2, 5, 2  -- 태그 5
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 5
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 2, 6, 3  -- 태그 6
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 6
+);
+
+-- Shop 3에 태그 매핑
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 3, 7, 1  -- 태그 7
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 7
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 3, 8, 2  -- 태그 8
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 8
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 3, 9, 3  -- 태그 9
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 9
+);
+
+-- Shop 4에 태그 매핑
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 4, 10, 1  -- 태그 10
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 10
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 4, 1, 2  -- 태그 1
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 11
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 4, 2, 3  -- 태그 2
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 12
+);
+
+-- Shop 5에 태그 매핑
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 5, 3, 1  -- 태그 3
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 13
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 5, 4, 2  -- 태그 4
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 14
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 5, 5, 3  -- 태그 5
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 15
+);
+
+-- Shop 6에 태그 매핑
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 6, 6, 1  -- 태그 6
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 16
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 6, 7, 2  -- 태그 7
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 17
+);
+
+INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
+SELECT 6, 8, 3  -- 태그 8
+    WHERE NOT EXISTS (
+    SELECT 1 FROM tag_mapping WHERE tag_mapping_id = 18
+);
+
+
+
 WITH RECURSIVE shop_range AS (
     SELECT generate_series(1, 6) AS shop_id
 ),

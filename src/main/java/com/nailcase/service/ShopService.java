@@ -96,8 +96,11 @@ public class ShopService {
 	}
 
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {
-		// TODO 여기서 방문자 수 처리?
-		return shopMapper.toResponse(getShopById(shopId));
+		Shop shop = getShopById(shopId);
+		double avgRating = shopRepository.calculateShopReviewRating(shopId);
+		ShopDto.Response response = shopMapper.toResponse(shop);
+		response.setShopAvgRatings(avgRating == 0.0 ? null : avgRating);
+		return response;
 	}
 
 	@Transactional
