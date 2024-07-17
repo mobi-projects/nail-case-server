@@ -69,6 +69,9 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers(HttpMethod.GET, "/shops/*/reservations")
 				.permitAll()
+				.requestMatchers(HttpMethod.PATCH, "shops/*/reservations/*/confirm", "shops/*/reservations/*/reject",
+					"shops/*/reservations/*/complete")
+				.hasRole("MANAGER")
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
 			// .oauth2Login(oauth2 -> oauth2
