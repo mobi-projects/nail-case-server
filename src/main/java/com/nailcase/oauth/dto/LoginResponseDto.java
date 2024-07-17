@@ -15,4 +15,5 @@ public class LoginResponseDto {
 	private List<Long> shopIds;
 	private boolean hasShop;
 	private Role role;
+	private String profileImageUrl;
 }
