@@ -42,6 +42,18 @@ public class ReservationDetailDto {
 	}
 
 	@Data
+	public static class Confirm {
+
+		@NotNull
+		private Long reservationDetailId;
+
+		private Long startTime;
+
+		@NotNull
+		private Long endTime;
+	}
+
+	@Data
 	public static class Response {
 
 		private Long reservationDetailId;

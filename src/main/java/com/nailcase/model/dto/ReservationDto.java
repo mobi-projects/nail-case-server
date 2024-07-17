@@ -43,6 +43,12 @@ public class ReservationDto {
 	}
 
 	@Data
+	public static class Confirm {
+
+		private List<ReservationDetailDto.Confirm> reservationDetailList = new ArrayList<>();
+	}
+
+	@Data
 	public static class Response {
 
 		private Long reservationId;
