@@ -1,5 +1,7 @@
 package com.nailcase.oauth.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,15 +16,20 @@ import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.LogoutResponseDto;
 import com.nailcase.oauth.service.AbstractKakaoLoginService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
 	private final AbstractKakaoLoginService kakaoMemberLoginService;
 	private final AbstractKakaoLoginService kakaoManagerLoginService;
+
+	@Autowired
+	public AuthController(
+		@Qualifier("kakaoMemberLoginService") AbstractKakaoLoginService kakaoMemberLoginService,
+		@Qualifier("kakaoManagerLoginService") AbstractKakaoLoginService kakaoManagerLoginService) {
+		this.kakaoMemberLoginService = kakaoMemberLoginService;
+		this.kakaoManagerLoginService = kakaoManagerLoginService;
+	}
 
 	@PostMapping("/logout")
 	public ResponseEntity<?> logout() {
