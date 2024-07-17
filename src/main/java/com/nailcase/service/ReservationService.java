@@ -436,13 +436,18 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public ReservationDto.Response updateReservationStatus(Long reservationId, Long memberId,
+	public ReservationDto.Response updateReservationStatus(Shop shop, Long reservationId, Long memberId,
 		ReservationStatus status) {
 		Reservation reservation = reservationRepository.findByIdWithReservationDetail(reservationId)
 			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 
-		if (!reservation.getCustomer().getMemberId().equals(memberId)) {
-			throw new BusinessException(ReservationErrorCode.BOOKER_NOT_MATCHED);
+		if (status.equals(ReservationStatus.CANCELED) && !reservation.getCustomer().getMemberId().equals(memberId)) {
+			throw new BusinessException(ReservationErrorCode.NOT_UPDATABLE_USER);
+		}
+
+		if ((status.equals(ReservationStatus.REJECTED) || status.equals(ReservationStatus.COMPLETED))
+			&& !shop.hasNailArtist(memberId)) {
+			throw new BusinessException(ReservationErrorCode.NOT_UPDATABLE_USER);
 		}
 
 		if (reservation.isStatusUpdatable(status)) {
@@ -453,16 +458,17 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public ReservationDto.Response confirmReservation(Long reservationId, Long memberId,
+	public ReservationDto.Response confirmReservation(Shop shop, Long reservationId, Long memberId,
 		ReservationDto.Confirm request) {
 		Reservation reservation = reservationRepository.findByIdWithReservationDetail(reservationId)
 			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 
-		if (!reservation.getCustomer().getMemberId().equals(memberId)) {
-			throw new BusinessException(ReservationErrorCode.BOOKER_NOT_MATCHED);
+		if (!shop.hasNailArtist(memberId)) {
+			throw new BusinessException(ReservationErrorCode.NOT_UPDATABLE_USER);
 		}
 
-		Map<Long, List<ReservationDetail>> reservationDetailGroupById = reservation.getReservationDetailList().stream()
+		Map<Long, List<ReservationDetail>> reservationDetailGroupById = reservation.getReservationDetailList()
+			.stream()
 			.collect(Collectors.groupingBy(ReservationDetail::getReservationDetailId));
 
 		List<ReservationDetailDto.Confirm> reservationDetailDtoList = request.getReservationDetailList();

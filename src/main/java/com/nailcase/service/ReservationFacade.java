@@ -38,15 +38,17 @@ public class ReservationFacade {
 		return reservationService.createReservation(shopId, memberId, dto);
 	}
 
+	@Transactional
 	public ReservationDto.Response updateReservationStatus(Long shopId, Long reservationId, Long memberId,
 		ReservationStatus status) {
-		shopService.getShopById(shopId);
-		return reservationService.updateReservationStatus(reservationId, memberId, status);
+		Shop shop = shopService.getShopById(shopId);
+		return reservationService.updateReservationStatus(shop, reservationId, memberId, status);
 	}
 
+	@Transactional
 	public ReservationDto.Response confirmReservation(Long shopId, Long reservationId, Long memberId,
 		ReservationDto.Confirm dto) {
-		shopService.getShopById(shopId);
-		return reservationService.confirmReservation(reservationId, memberId, dto);
+		Shop shop = shopService.getShopById(shopId);
+		return reservationService.confirmReservation(shop, reservationId, memberId, dto);
 	}
 }
