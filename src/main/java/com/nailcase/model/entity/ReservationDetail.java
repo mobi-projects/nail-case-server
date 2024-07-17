@@ -88,16 +88,13 @@ public class ReservationDetail extends BaseEntity {
 	private boolean extend;
 
 	public boolean isStatusUpdatable(ReservationStatus status) {
-		if (this.status.equals(ReservationStatus.REJECTED)) {
-			return false;
-		}
-		if (this.status.equals(ReservationStatus.CANCELED)) {
+		if (ReservationStatus.getNotUpdateable().contains(this.status)) {
 			return false;
 		}
 		if (this.status.equals(ReservationStatus.CONFIRMED) && status.equals(ReservationStatus.PENDING)) {
 			return false;
 		}
-		return true;
+		return this.status.equals(ReservationStatus.PENDING);
 	}
 
 	public void updateStatus(ReservationStatus status) {
@@ -121,6 +118,42 @@ public class ReservationDetail extends BaseEntity {
 		if (review != null && review.getReservationDetail() != this) {
 			review.setReservationDetail(this);
 		}
+	}
+
+	public void updateReservationTime(LocalDateTime newStartTime, LocalDateTime newEndTime) {
+		if (newStartTime != null) {
+			this.startTime = newStartTime;
+		}
+		if (newEndTime != null) {
+			this.endTime = newEndTime;
+		}
+	}
+
+	public boolean isReservationTimeUpdatable(LocalDateTime newStartTime, LocalDateTime newEndTime) {
+		if (newStartTime == null && newEndTime == null) {
+			return false;
+		}
+		if (newStartTime != null && newEndTime != null) {
+			return newStartTime.isBefore(newEndTime);
+		}
+		if (newStartTime == null) {
+			return startTime.isBefore(newEndTime);
+		}
+		if (endTime == null) {
+			return false;
+		}
+		return newStartTime.isBefore(endTime);
+	}
+
+	public boolean isConfirmable() {
+		if (this.endTime == null) {
+			return false;
+		}
+		return this.status == ReservationStatus.PENDING;
+	}
+
+	public void confirm() {
+		this.status = ReservationStatus.CONFIRMED;
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.service.ReservationFacade;
@@ -41,22 +42,52 @@ public class ReservationController {
 		return reservationFacade.createReservation(shopId, memberDetails.getMemberId(), dto);
 	}
 
-	// TODO: 어디까지 변경 가능한지 알아야 함
-	@PatchMapping("/{reservationId}")
-	public ReservationDto.Response updateReservation(
+	@PatchMapping("/{reservationId}/cancel")
+	public ReservationDto.Response cancelReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@RequestBody ReservationDto.Patch dto,
 		@AuthenticationPrincipal MemberDetails memberDetails
 	) {
-		return reservationService.updateReservation(shopId, reservationId, memberDetails.getMemberId(), dto);
+		return reservationFacade.updateReservationStatus(shopId, reservationId, memberDetails.getMemberId(),
+			ReservationStatus.CANCELED);
+	}
+
+	@PatchMapping("/{reservationId}/reject")
+	public ReservationDto.Response rejectReservation(
+		@PathVariable Long shopId,
+		@PathVariable Long reservationId,
+		@AuthenticationPrincipal NailArtistDetails nailArtistDetails
+	) {
+		return reservationFacade.updateReservationStatus(shopId, reservationId, nailArtistDetails.getNailArtistId(),
+			ReservationStatus.REJECTED);
+	}
+
+	@PatchMapping("/{reservationId}/complete")
+	public ReservationDto.Response completeReservation(
+		@PathVariable Long shopId,
+		@PathVariable Long reservationId,
+		@AuthenticationPrincipal NailArtistDetails nailArtistDetails
+	) {
+		Long nailArtistId = nailArtistDetails.getNailArtistId();
+		return reservationFacade.updateReservationStatus(shopId, reservationId, nailArtistDetails.getNailArtistId(),
+			ReservationStatus.COMPLETED);
+	}
+
+	@PatchMapping("/{reservationId}/confirm")
+	public ReservationDto.Response confirmReservation(
+		@PathVariable Long shopId,
+		@PathVariable Long reservationId,
+		@RequestBody ReservationDto.Confirm request,
+		@AuthenticationPrincipal NailArtistDetails nailArtistDetails
+	) {
+		return reservationFacade.confirmReservation(shopId, reservationId, nailArtistDetails.getNailArtistId(),
+			request);
 	}
 
 	//TODO MANAGER
 	@GetMapping
 	public List<ReservationDto.Response> listReservation(
 		@PathVariable Long shopId,
-		// TODO: startTime, endTime = required=false, startTime defaultValue = now, endTime defaultValue = startTime.plusMonths(1)
 		@RequestParam(required = false) Long startDate,
 		@RequestParam(required = false) Long endDate,
 		@RequestParam(required = false, defaultValue = "CONFIRMED") ReservationStatus status
