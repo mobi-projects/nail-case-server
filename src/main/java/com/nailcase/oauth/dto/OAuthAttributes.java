@@ -60,7 +60,7 @@ public class OAuthAttributes {
 			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
 				oauth2UserInfo.getId() + "@socialuser.com")
 			.nickname(oauth2UserInfo.getNickname())
-			.profileImageUrl(profileImageUrl)
+			.profileImgUrl(profileImageUrl)
 			.role(Role.MEMBER)
 			.build();
 	}
@@ -76,7 +76,7 @@ public class OAuthAttributes {
 			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
 				oauth2UserInfo.getId() + "@socialuser.com")
 			.nickname(oauth2UserInfo.getNickname())
-			.profileImageUrl(profileImageUrl)
+			.profileImgUrl(profileImageUrl)
 			.role(Role.MANAGER)
 			.build();
 	}

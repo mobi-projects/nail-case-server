@@ -55,15 +55,12 @@ public class NailArtist extends BaseEntity {
 	@Column(name = "social_id")
 	private String socialId;
 
-	@Column(name = "profile_image_url")
-	private String profileImageUrl;
-	
 	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
 	private Role role;
 
-	@Column(name = "profile_img_url", length = 128)
+	@Column(name = "profile_img_url")
 	private String profileImgUrl;
 
 	@Builder.Default

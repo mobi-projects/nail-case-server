@@ -51,7 +51,7 @@ public class KakaoManagerLoginService extends AbstractKakaoLoginService {
 			.shopIds(shopIds)
 			.hasShop(hasShop)
 			.role(nailArtist.getRole())
-			.profileImageUrl(nailArtist.getProfileImageUrl())
+			.profileImgUrl(nailArtist.getProfileImgUrl())
 			.build();
 	}
 
