@@ -438,7 +438,7 @@ public class ReservationService {
 	@Transactional
 	public ReservationDto.Response updateReservationStatus(Long reservationId, Long memberId,
 		ReservationStatus status) {
-		Reservation reservation = reservationRepository.findById(reservationId)
+		Reservation reservation = reservationRepository.findByIdWithReservationDetail(reservationId)
 			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 
 		if (!reservation.getCustomer().getMemberId().equals(memberId)) {
@@ -455,7 +455,7 @@ public class ReservationService {
 	@Transactional
 	public ReservationDto.Response confirmReservation(Long reservationId, Long memberId,
 		ReservationDto.Confirm request) {
-		Reservation reservation = reservationRepository.findById(reservationId)
+		Reservation reservation = reservationRepository.findByIdWithReservationDetail(reservationId)
 			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
 
 		if (!reservation.getCustomer().getMemberId().equals(memberId)) {
