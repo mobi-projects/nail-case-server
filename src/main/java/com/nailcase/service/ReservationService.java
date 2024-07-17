@@ -64,47 +64,6 @@ public class ReservationService {
 		return reservationMapper.toResponse(savedReservation);
 	}
 
-	@Transactional
-	public ReservationDto.Response updateReservation(
-		Long shopId,
-		Long reservationId,
-		Long memberId,
-		ReservationDto.Patch dto
-	) {
-		// TODO: memberId 가 shop에 권한이 있는 사람이거나 예약자 본인이어야 함 -> or 조건 쿼리, 어플리케이션 처리 선택
-		Reservation reservation = reservationRepository.findById(reservationId)
-			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
-		if (!reservation.getShop().getShopId().equals(shopId)) {
-			throw new BusinessException(CommonErrorCode.NOT_FOUND);
-		}
-
-		// TODO: api 분리 status / nailArtist
-		if (dto.getStatus() != null) {
-			if (!isUpdatable(dto, reservation)) {
-				throw new BusinessException(ReservationErrorCode.STATUS_NOT_UPDATABLE);
-			}
-			reservation.getReservationDetailList()
-				.forEach(reservationDetail -> reservationDetail.updateStatus(dto.getStatus()));
-		}
-
-		// TODO: api 분리 status / nailArtist
-		// TODO: status 가 canceled, rejected, complete 라면 변경 불가능
-		if (!dto.getReservationDetailDtoList().isEmpty()) {
-			for (ReservationDetailDto.Patch detailDto : dto.getReservationDetailDtoList()) {
-				Long targetReservationDetailId = detailDto.getReservationDetailId();
-				Long nailArtistId = detailDto.getNailArtistId();
-				ReservationDetail targetReservationDetail = reservation.getReservationDetailList().stream()
-					.filter(reservationDetail ->
-						reservationDetail.getReservationDetailId().equals(targetReservationDetailId))
-					.findAny()
-					.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
-				targetReservationDetail.updateArtist(NailArtist.builder().nailArtistId(nailArtistId).build());
-			}
-		}
-
-		return reservationMapper.toResponse(reservation);
-	}
-
 	public List<ReservationDto.Response> listReservation(Long shopId, Long startUnixTimeStamp, Long endUnixTimeStamp,
 		ReservationStatus status) {
 		LocalDateTime start = LocalDate.now().atTime(LocalTime.MIN);
@@ -476,4 +435,55 @@ public class ReservationService {
 		return response;
 	}
 
+	@Transactional
+	public ReservationDto.Response updateReservationStatus(Long reservationId, Long memberId,
+		ReservationStatus status) {
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
+
+		if (!reservation.getCustomer().getMemberId().equals(memberId)) {
+			throw new BusinessException(ReservationErrorCode.BOOKER_NOT_MATCHED);
+		}
+
+		if (reservation.isStatusUpdatable(status)) {
+			reservation.updateStatus(status);
+		}
+
+		return reservationMapper.toResponse(reservation);
+	}
+
+	@Transactional
+	public ReservationDto.Response confirmReservation(Long reservationId, Long memberId,
+		ReservationDto.Confirm request) {
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
+
+		if (!reservation.getCustomer().getMemberId().equals(memberId)) {
+			throw new BusinessException(ReservationErrorCode.BOOKER_NOT_MATCHED);
+		}
+
+		Map<Long, List<ReservationDetail>> reservationDetailGroupById = reservation.getReservationDetailList().stream()
+			.collect(Collectors.groupingBy(ReservationDetail::getReservationDetailId));
+
+		List<ReservationDetailDto.Confirm> reservationDetailDtoList = request.getReservationDetailList();
+		for (ReservationDetailDto.Confirm reservationDetailDto : reservationDetailDtoList) {
+			Long reservationDetailId = reservationDetailDto.getReservationDetailId();
+			LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getStartTime());
+			LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getEndTime());
+
+			ReservationDetail reservationDetail = reservationDetailGroupById.get(reservationDetailId).getFirst();
+			if (!reservationDetail.isReservationTimeUpdatable(startTime, endTime)) {
+				throw new BusinessException(ReservationErrorCode.INVALID_TIME);
+			}
+			reservationDetail.updateReservationTime(startTime, endTime);
+		}
+
+		if (!reservation.isConfirmable()) {
+			throw new BusinessException(ReservationErrorCode.END_TIME_NOT_SET);
+		}
+
+		reservation.confirm();
+
+		return reservationMapper.toResponse(reservation);
+	}
 }
