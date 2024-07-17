@@ -11,7 +11,7 @@ public enum ReservationErrorCode implements ErrorCodeInterface {
 	STATUS_NOT_UPDATABLE(1104, "예약 상태 변경 불가"),
 	WORK_HOUR_NOT_DEFINED(1105, "예약 시간이 지정되지 않음"),
 	RESERVATION_NOT_AVAILABLE(1106, "운영하는 날이 아님"),
-	BOOKER_NOT_MATCHED(1107, "예약자가 같지 않음"),
+	NOT_UPDATABLE_USER(1107, "변경 가능한 유저가 아님"),
 	END_TIME_NOT_SET(1108, "종료 시간이 설정되지 않으면 확인 상태로 바꿀 수 없음");
 
 	private final int code;
