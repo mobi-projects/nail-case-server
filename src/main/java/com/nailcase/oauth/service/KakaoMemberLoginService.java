@@ -35,6 +35,7 @@ public class KakaoMemberLoginService extends AbstractKakaoLoginService {
 			.accessToken(accessTokenJwt)
 			.refreshToken(refreshToken)
 			.role(member.getRole())
+			.profileImageUrl(member.getProfileImageUrl())
 			.build();
 	}
 

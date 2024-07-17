@@ -50,23 +50,33 @@ public class OAuthAttributes {
 	}
 
 	public Member toMemberEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
+		String profileImageUrl = null;
+		if (oauth2UserInfo instanceof KakaoOAuth2UserInfo) {
+			profileImageUrl = ((KakaoOAuth2UserInfo)oauth2UserInfo).getProfileImageUrl();
+		}
 		return Member.builder()
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
 			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
 				oauth2UserInfo.getId() + "@socialuser.com")
 			.nickname(oauth2UserInfo.getNickname())
+			.profileImageUrl(profileImageUrl)
 			.role(Role.MEMBER)
 			.build();
 	}
 
 	public NailArtist toManagerEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
+		String profileImageUrl = null;
+		if (oauth2UserInfo instanceof KakaoOAuth2UserInfo) {
+			profileImageUrl = ((KakaoOAuth2UserInfo)oauth2UserInfo).getProfileImageUrl();
+		}
 		return NailArtist.builder()
 			.socialType(socialType)
 			.socialId(oauth2UserInfo.getId())
 			.email(oauth2UserInfo.getEmail() != null ? oauth2UserInfo.getEmail() :
 				oauth2UserInfo.getId() + "@socialuser.com")
 			.nickname(oauth2UserInfo.getNickname())
+			.profileImageUrl(profileImageUrl)
 			.role(Role.MANAGER)
 			.build();
 	}
