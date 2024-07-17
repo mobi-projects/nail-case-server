@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
+import com.nailcase.model.enums.ReservationStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,5 +61,22 @@ public class Reservation extends BaseEntity {
 
 	public boolean isAccompanied() {
 		return reservationDetailList.size() > 1;
+	}
+
+	public boolean isConfirmable() {
+		return this.reservationDetailList.stream().allMatch(ReservationDetail::isConfirmable);
+	}
+
+	public void confirm() {
+		this.reservationDetailList.forEach(ReservationDetail::confirm);
+	}
+
+	public boolean isStatusUpdatable(ReservationStatus status) {
+		return this.reservationDetailList.stream()
+			.allMatch(reservationDetail -> reservationDetail.isStatusUpdatable(status));
+	}
+
+	public void updateStatus(ReservationStatus status) {
+		this.reservationDetailList.forEach(reservationDetail -> reservationDetail.updateStatus(status));
 	}
 }
