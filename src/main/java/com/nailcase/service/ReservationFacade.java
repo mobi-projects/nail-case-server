@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.WorkHour;
+import com.nailcase.model.enums.ReservationStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,5 +36,17 @@ public class ReservationFacade {
 		nailArtistService.verifyArtistsExistenceInShop(dto.getNailArtistIds(), shop.getNailArtists());
 		workHourService.verifyTimeInOpeningHour(shop.getWorkHours(), dto.getStartTime());
 		return reservationService.createReservation(shopId, memberId, dto);
+	}
+
+	public ReservationDto.Response updateReservationStatus(Long shopId, Long reservationId, Long memberId,
+		ReservationStatus status) {
+		shopService.getShopById(shopId);
+		return reservationService.updateReservationStatus(reservationId, memberId, status);
+	}
+
+	public ReservationDto.Response confirmReservation(Long shopId, Long reservationId, Long memberId,
+		ReservationDto.Confirm dto) {
+		shopService.getShopById(shopId);
+		return reservationService.confirmReservation(reservationId, memberId, dto);
 	}
 }
