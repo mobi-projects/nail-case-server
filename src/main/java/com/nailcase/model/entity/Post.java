@@ -128,4 +128,8 @@ public class Post extends BaseEntity {
 		postImages.remove(postImage);
 		postImage.setPost(null);
 	}
+
+	public void clearPostImages() {
+		this.postImages.clear();
+	}
 }

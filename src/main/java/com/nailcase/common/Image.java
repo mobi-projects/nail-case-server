@@ -1,5 +1,7 @@
 package com.nailcase.common;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,4 +31,17 @@ public class Image extends BaseEntity {
 	@Column(name = "object_name")
 	private String objectName;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof Image image))
+			return false;
+		return Objects.equals(getImageId(), image.getImageId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getImageId());
+	}
 }

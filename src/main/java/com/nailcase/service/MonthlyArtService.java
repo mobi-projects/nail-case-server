@@ -6,16 +6,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.PostErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.model.dto.MonthlyArtDto;
-import com.nailcase.model.dto.MonthlyArtImageDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.MonthlyArt;
 import com.nailcase.model.entity.MonthlyArtImage;
@@ -41,33 +38,33 @@ public class MonthlyArtService {
 	private final MonthlyArtLikedMemberRepository monthlyArtLikedMemberRepository;
 	private final BitmapService bitmapService;
 
-	@Transactional
-	public List<MonthlyArtImageDto> uploadImages(List<MultipartFile> files, Long managerId) {
-		if (files.size() > 6) {
-			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "이달의 아트 게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
-		}
-
-		List<MonthlyArtImage> tempImages = files.stream()
-			.map(file -> {
-				MonthlyArtImage tempImage = new MonthlyArtImage();
-				tempImage.setCreatedBy(managerId);
-				return tempImage;
-			})
-			.collect(Collectors.toList());
-
-		List<ImageDto> savedImageDtos = monthlyArtImageService.saveImages(files, tempImages);
-
-		return savedImageDtos.stream()
-			.map(savedImageDto -> MonthlyArtImageDto.builder()
-				.id(savedImageDto.getId())
-				.bucketName(savedImageDto.getBucketName())
-				.objectName(savedImageDto.getObjectName())
-				.url(savedImageDto.getUrl())
-				.createdBy(savedImageDto.getCreatedBy())
-				.modifiedBy(savedImageDto.getModifiedBy())
-				.build())
-			.collect(Collectors.toList());
-	}
+	// @Transactional
+	// public List<MonthlyArtImageDto> uploadImages(List<MultipartFile> files, Long managerId) {
+	// 	if (files.size() > 6) {
+	// 		throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "이달의 아트 게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
+	// 	}
+	//
+	// 	List<MonthlyArtImage> tempImages = files.stream()
+	// 		.map(file -> {
+	// 			MonthlyArtImage tempImage = new MonthlyArtImage();
+	// 			tempImage.setCreatedBy(managerId);
+	// 			return tempImage;
+	// 		})
+	// 		.collect(Collectors.toList());
+	//
+	// 	List<ImageDto> savedImageDtos = monthlyArtImageService.saveImages(files, tempImages);
+	//
+	// 	return savedImageDtos.stream()
+	// 		.map(savedImageDto -> MonthlyArtImageDto.builder()
+	// 			.id(savedImageDto.getId())
+	// 			.bucketName(savedImageDto.getBucketName())
+	// 			.objectName(savedImageDto.getObjectName())
+	// 			.url(savedImageDto.getUrl())
+	// 			.createdBy(savedImageDto.getCreatedBy())
+	// 			.modifiedBy(savedImageDto.getModifiedBy())
+	// 			.build())
+	// 		.collect(Collectors.toList());
+	// }
 
 	public MonthlyArtDto.Response registerMonthlyArt(Long shopId, MonthlyArtDto.Request monthlyArtRequest) {
 		Shop shop = shopRepository.findById(shopId)
@@ -97,74 +94,74 @@ public class MonthlyArtService {
 		return MonthlyArtDto.Response.from(monthlyArt, false);
 	}
 
-	public MonthlyArtDto.Response updateMonthlyArt(Long shopId, Long monthlyArtId,
-		MonthlyArtDto.Request monthlyArtRequest, Long managerId) {
-		MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-		boolean alreadyLiked = monthlyArtLikedMemberRepository.existsByMonthlyArt_MonthlyArtIdAndMember_MemberId(
-			monthlyArtId, managerId);
+	// public MonthlyArtDto.Response updateMonthlyArt(Long shopId, Long monthlyArtId,
+	// 	MonthlyArtDto.Request monthlyArtRequest, Long managerId) {
+	// 	MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
+	// 		.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+	// 	boolean alreadyLiked = monthlyArtLikedMemberRepository.existsByMonthlyArt_MonthlyArtIdAndMember_MemberId(
+	// 		monthlyArtId, managerId);
+	//
+	// 	monthlyArt.updateTitle(monthlyArtRequest.getTitle());
+	// 	// 기존 이미지 삭제
+	// 	monthlyArt.getMonthlyArtImages().forEach(monthlyArtImage -> {
+	// 		monthlyArtImageService.deleteImage(monthlyArtImage.getObjectName());
+	// 		monthlyArtImageRepository.delete(monthlyArtImage);
+	// 	});
+	// 	monthlyArt.getMonthlyArtImages().clear();
+	//
+	// 	// 새로운 이미지 연결
+	// 	List<MonthlyArtImage> newMonthlyArtImages = monthlyArtRequest.getImageIds().stream()
+	// 		.map(imageId -> monthlyArtImageRepository.findByImageId(imageId)
+	// 			.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND)))
+	// 		.collect(Collectors.toList());
+	// 	monthlyArt.getMonthlyArtImages().addAll(newMonthlyArtImages);
+	// 	monthlyArtImageRepository.saveAll(newMonthlyArtImages);
+	//
+	// 	return MonthlyArtDto.Response.from(monthlyArt, alreadyLiked);
+	// }
 
-		monthlyArt.updateTitle(monthlyArtRequest.getTitle());
-		// 기존 이미지 삭제
-		monthlyArt.getMonthlyArtImages().forEach(monthlyArtImage -> {
-			monthlyArtImageService.deleteImage(monthlyArtImage.getObjectName());
-			monthlyArtImageRepository.delete(monthlyArtImage);
-		});
-		monthlyArt.getMonthlyArtImages().clear();
+	// @Transactional
+	// public void addImageToMonthlyArt(Long monthlyArtId, List<MultipartFile> files) {
+	// 	MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
+	// 		.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+	//
+	// 	List<MonthlyArtImage> monthlyArtImages = files.stream()
+	// 		.map(file -> {
+	// 			MonthlyArtImage monthlyArtImage = new MonthlyArtImage();
+	// 			monthlyArtImage.setMonthlyArt(monthlyArt);
+	// 			return monthlyArtImage;
+	// 		})
+	// 		.collect(Collectors.toList());
+	//
+	// 	List<ImageDto> savedImages = monthlyArtImageService.saveImages(files, monthlyArtImages);
+	//
+	// 	monthlyArtImages = savedImages.stream()
+	// 		.map(savedImage -> {
+	// 			MonthlyArtImage monthlyArtImage = new MonthlyArtImage();
+	// 			monthlyArtImage.setBucketName(savedImage.getBucketName());
+	// 			monthlyArtImage.setObjectName(savedImage.getObjectName());
+	// 			monthlyArtImage.setMonthlyArt(monthlyArt);
+	// 			return monthlyArtImage;
+	// 		})
+	// 		.collect(Collectors.toList());
+	//
+	// 	monthlyArt.getMonthlyArtImages().addAll(monthlyArtImages);
+	// 	monthlyArtImageRepository.saveAll(monthlyArtImages);
+	// 	monthlyArtRepository.save(monthlyArt);
+	// }
 
-		// 새로운 이미지 연결
-		List<MonthlyArtImage> newMonthlyArtImages = monthlyArtRequest.getImageIds().stream()
-			.map(imageId -> monthlyArtImageRepository.findByImageId(imageId)
-				.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND)))
-			.collect(Collectors.toList());
-		monthlyArt.getMonthlyArtImages().addAll(newMonthlyArtImages);
-		monthlyArtImageRepository.saveAll(newMonthlyArtImages);
-
-		return MonthlyArtDto.Response.from(monthlyArt, alreadyLiked);
-	}
-
-	@Transactional
-	public void addImageToMonthlyArt(Long monthlyArtId, List<MultipartFile> files) {
-		MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-
-		List<MonthlyArtImage> monthlyArtImages = files.stream()
-			.map(file -> {
-				MonthlyArtImage monthlyArtImage = new MonthlyArtImage();
-				monthlyArtImage.setMonthlyArt(monthlyArt);
-				return monthlyArtImage;
-			})
-			.collect(Collectors.toList());
-
-		List<ImageDto> savedImages = monthlyArtImageService.saveImages(files, monthlyArtImages);
-
-		monthlyArtImages = savedImages.stream()
-			.map(savedImage -> {
-				MonthlyArtImage monthlyArtImage = new MonthlyArtImage();
-				monthlyArtImage.setBucketName(savedImage.getBucketName());
-				monthlyArtImage.setObjectName(savedImage.getObjectName());
-				monthlyArtImage.setMonthlyArt(monthlyArt);
-				return monthlyArtImage;
-			})
-			.collect(Collectors.toList());
-
-		monthlyArt.getMonthlyArtImages().addAll(monthlyArtImages);
-		monthlyArtImageRepository.saveAll(monthlyArtImages);
-		monthlyArtRepository.save(monthlyArt);
-	}
-
-	public void removeImageFromMonthlyArt(Long monthlyArtId, Long imageId) {
-		MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-		MonthlyArtImage monthlyArtImage = monthlyArtImageRepository.findByImageId(imageId)
-			.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
-
-		String objectName = monthlyArtImage.getObjectName();
-		monthlyArtImageService.deleteImage(objectName);
-
-		monthlyArt.removeImage(monthlyArtImage);
-		monthlyArtImageRepository.delete(monthlyArtImage);
-	}
+	// public void removeImageFromMonthlyArt(Long monthlyArtId, Long imageId) {
+	// 	MonthlyArt monthlyArt = monthlyArtRepository.findById(monthlyArtId)
+	// 		.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+	// 	MonthlyArtImage monthlyArtImage = monthlyArtImageRepository.findByImageId(imageId)
+	// 		.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
+	//
+	// 	String objectName = monthlyArtImage.getObjectName();
+	// 	monthlyArtImageService.deleteImage(objectName);
+	//
+	// 	monthlyArt.removeImage(monthlyArtImage);
+	// 	monthlyArtImageRepository.delete(monthlyArtImage);
+	// }
 
 	public List<MonthlyArtDto.Response> listMonthlyArts(Long shopId, Long memberId) {
 		List<MonthlyArt> monthlyArts = monthlyArtRepository.findByShop_ShopId(shopId);

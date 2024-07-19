@@ -58,4 +58,28 @@ public class BitmapService {
 			throw new BusinessException(RedisErrorCode.REDIS_OPERATION_FAILED, e);
 		}
 	}
+
+	public void increment(String key) {
+		try {
+			bitmapRedisTemplate.opsForValue().increment(key);
+		} catch (Exception e) {
+			throw new BusinessException(RedisErrorCode.REDIS_OPERATION_FAILED, e);
+		}
+	}
+
+	public Long get(String key) {
+		try {
+			return (Long)bitmapRedisTemplate.opsForValue().get(key);
+		} catch (Exception e) {
+			throw new BusinessException(RedisErrorCode.REDIS_OPERATION_FAILED, e);
+		}
+	}
+
+	public void delete(String key) {
+		try {
+			bitmapRedisTemplate.delete(key);
+		} catch (Exception e) {
+			throw new BusinessException(RedisErrorCode.REDIS_OPERATION_FAILED, e);
+		}
+	}
 }

@@ -12,13 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ConcurrencyErrorCode;
-import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
@@ -27,7 +24,6 @@ import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Shop;
-import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.model.entity.ShopLikedMember;
 import com.nailcase.model.entity.Tag;
@@ -187,36 +183,36 @@ public class ShopService {
 		return shopMapper.toResponse(updatedShop);
 	}
 
-	@Transactional
-	public String uploadImage(Long shopId, MultipartFile file, Long memberId) throws BusinessException {
-		// TODO 샵에 속해있는 아티스트 인지 검사
-		log.debug(String.valueOf(memberId)); // TODO remove
-
-		Shop shop = getShopById(shopId);
-
-		if (shop.getShopImages().size() == 4) {
-			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED);
-		}
-
-		ShopImage shopImage = ShopImage.builder().shop(shop).build();
-		ImageDto savedImage = shopImageService.uploadImage(file, shopImage);
-
-		return savedImage.getUrl();
-	}
-
-	@Transactional
-	public void deleteImage(Long imageId, Long memberId) throws BusinessException {
-		ShopImage shopImage = shopImageRepository.findById(imageId)
-			.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
-
-		// TODO 샵에 속해있는 아티스트 인지 검사
-		Shop shop = shopImage.getShop();
-		log.debug(shop.toString()); // TODO remove
-		log.debug(String.valueOf(memberId)); // TODO remove
-
-		shopImageService.deleteImage(shopImage.getObjectName());
-		shopImageRepository.delete(shopImage);
-	}
+	// @Transactional
+	// public String uploadImage(Long shopId, MultipartFile file, Long memberId) throws BusinessException {
+	// 	// TODO 샵에 속해있는 아티스트 인지 검사
+	// 	log.debug(String.valueOf(memberId)); // TODO remove
+	//
+	// 	Shop shop = getShopById(shopId);
+	//
+	// 	if (shop.getShopImages().size() == 4) {
+	// 		throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED);
+	// 	}
+	//
+	// 	ShopImage shopImage = ShopImage.builder().shop(shop).build();
+	// 	ImageDto savedImage = shopImageService.uploadImage(file, shopImage);
+	//
+	// 	return savedImage.getUrl();
+	// }
+	//
+	// @Transactional
+	// public void deleteImage(Long imageId, Long memberId) throws BusinessException {
+	// 	ShopImage shopImage = shopImageRepository.findById(imageId)
+	// 		.orElseThrow(() -> new BusinessException(ImageErrorCode.IMAGE_NOT_FOUND));
+	//
+	// 	// TODO 샵에 속해있는 아티스트 인지 검사
+	// 	Shop shop = shopImage.getShop();
+	// 	log.debug(shop.toString()); // TODO remove
+	// 	log.debug(String.valueOf(memberId)); // TODO remove
+	//
+	// 	shopImageService.deleteImage(shopImage.getObjectName());
+	// 	shopImageRepository.delete(shopImage);
+	// }
 
 	@Transactional
 	protected void initShopInfo(Shop shop) {

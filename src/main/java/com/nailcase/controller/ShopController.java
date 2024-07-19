@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDto;
@@ -94,23 +93,23 @@ public class ShopController {
 		return shopService.updateOverview(shopId, patchRequest, userId);
 	}
 
-	@PostMapping("/{shopId}/image")
-	@ResponseStatus(HttpStatus.CREATED)
-	public String uploadImage(
-		@PathVariable Long shopId,
-		@RequestParam("file") MultipartFile file,
-		@AuthenticationPrincipal Long userId
-	) {
-		return shopService.uploadImage(shopId, file, userId);
-	}
-
-	@DeleteMapping("/image/{imageId}")
-	public void deleteImage(
-		@PathVariable Long imageId,
-		@AuthenticationPrincipal Long userId
-	) {
-		shopService.deleteImage(imageId, userId);
-	}
+	// @PostMapping("/{shopId}/image")
+	// @ResponseStatus(HttpStatus.CREATED)
+	// public String uploadImage(
+	// 	@PathVariable Long shopId,
+	// 	@RequestParam("file") MultipartFile file,
+	// 	@AuthenticationPrincipal Long userId
+	// ) {
+	// 	return shopService.uploadImage(shopId, file, userId);
+	// }
+	//
+	// @DeleteMapping("/image/{imageId}")
+	// public void deleteImage(
+	// 	@PathVariable Long imageId,
+	// 	@AuthenticationPrincipal Long userId
+	// ) {
+	// 	shopService.deleteImage(imageId, userId);
+	// }
 
 	@GetMapping("/{shopId}/manager/list")
 	public List<NailArtistDto.ListResponse> listShopNailArtist(

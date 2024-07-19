@@ -12,6 +12,7 @@ import com.nailcase.util.DateUtils;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,7 @@ public class PostDto {
 	}
 
 	@Data
+	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Response {
@@ -39,25 +41,30 @@ public class PostDto {
 		private Category category;
 		private String contents;
 		private Long likes;
-		private Long views;
 		private Boolean liked;
 		private Long commentCount;
 		private Long createdAt;
 		private List<String> imageUrls;
 		private List<PostCommentDto.Response> comments;
+		private Long currentViewCount; // 추가된 필드
 
 		public static Response from(Post post, Boolean liked) {
-			Response response = new Response();
-			response.setPostId(post.getPostId());
-			response.setTitle(post.getTitle());
-			response.setCategory(post.getCategory());
-			response.setContents(post.getContents());
-			response.setLikes(post.getLikes());
-			response.setViews(post.getViews());
-			response.setLiked(liked);
-			response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()));
+			return from(post, liked, null);
+		}
 
-			response.setMemberId(post.getCreatedBy());
+		public static Response from(Post post, Boolean liked, Long currentViewCount) {
+			Response response = Response.builder()
+				.postId(post.getPostId())
+				.title(post.getTitle())
+				.category(post.getCategory())
+				.contents(post.getContents())
+				.likes(post.getLikes())
+				.liked(liked)
+				.currentViewCount(currentViewCount)
+				.createdAt(DateUtils.localDateTimeToUnixTimeStamp(post.getCreatedAt()))
+				.memberId(post.getCreatedBy())
+				.currentViewCount(currentViewCount)
+				.build();
 
 			List<PostImage> postImages = post.getPostImages();
 			if (postImages != null) {
@@ -76,7 +83,7 @@ public class PostDto {
 
 			List<PostComment> comments = post.getPostComments();
 			if (comments == null) {
-				comments = new ArrayList<>(); // null일 경우 빈 리스트 할당
+				comments = new ArrayList<>();
 			}
 
 			List<PostCommentDto.Response> commentResponses = comments.stream()
