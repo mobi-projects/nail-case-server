@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -36,10 +37,10 @@ public class PostController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<PostImageDto> uploadImages(
 		@RequestParam("files") List<MultipartFile> files,
-		@AuthenticationPrincipal Long userId,
+		@AuthenticationPrincipal NailArtistDetails nailArtistDetails,
 		@PathVariable Long shopId) {
 		log.info("Uploading images for shopId: {}", shopId);
-		return postService.uploadImages(files, userId);
+		return postService.uploadImages(files, nailArtistDetails);
 	}
 
 	@PostMapping("/{announcementId}/images")

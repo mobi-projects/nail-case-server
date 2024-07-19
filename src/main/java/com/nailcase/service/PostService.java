@@ -18,6 +18,7 @@ import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.PostErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
+import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -53,15 +54,16 @@ public class PostService {
 	private final ShopRepository shopRepository;
 
 	@Transactional
-	public List<PostImageDto> uploadImages(List<MultipartFile> files, Long memberId) {
+	public List<PostImageDto> uploadImages(List<MultipartFile> files, NailArtistDetails nailArtistDetails) {
 		if (files.size() > 6) {
 			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
 		}
 
+		Long nailArtistId = nailArtistDetails.getNailArtistId();
 		List<PostImage> tempImages = files.stream()
 			.map(file -> {
 				PostImage tempImage = new PostImage();
-				tempImage.setCreatedBy(memberId);
+				tempImage.setCreatedBy(nailArtistId);
 				return tempImage;
 			})
 			.collect(Collectors.toList());
