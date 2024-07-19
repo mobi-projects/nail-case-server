@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MonthlyArtController {
 	private final MonthlyArtService monthlyArtService;
-
+	
 	// @PostMapping("/images")
 	// @ResponseStatus(HttpStatus.CREATED)
 	// public List<MonthlyArtImageDto> uploadImages(
