@@ -29,15 +29,4 @@ public sealed interface UserPrincipal permits MemberDetails, NailArtistDetails {
 		}
 	}
 
-	static void validateNailArtist(UserDetails userDetails) {
-		if (!(userDetails instanceof UserPrincipal) || !((UserPrincipal)userDetails).isNailArtist()) {
-			throw new BusinessException(AuthErrorCode.REQUIRED_MANAGER_ROLE);
-		}
-	}
-
-	static void validateAndGetNailArtistForShop(UserDetails userDetails, Long shopId) {
-		validateNailArtist(userDetails);
-		NailArtistDetails nailArtistDetails = (NailArtistDetails)userDetails;
-		nailArtistDetails.validateAndGetNailArtistForShop(shopId);
-	}
 }

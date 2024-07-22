@@ -6,6 +6,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +62,6 @@ public class PostService {
 	public CompletableFuture<List<PostImageDto>> uploadImages(List<MultipartFile> files,
 		NailArtistDetails nailArtistDetails,
 		Long shopId) {
-		UserPrincipal.validateAndGetNailArtistForShop(nailArtistDetails, shopId);
 
 		if (files.size() > 6) {
 			return CompletableFuture.failedFuture(
@@ -75,7 +76,8 @@ public class PostService {
 			})
 			.collect(Collectors.toList());
 
-		return postImageService.saveImagesAsync(files, tempImages)
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return postImageService.saveImagesAsync(files, tempImages, auth)
 			.thenApply(savedImageDtos -> savedImageDtos.stream()
 				.map(this::mapToPostImageDto)
 				.collect(Collectors.toList()));
@@ -84,7 +86,7 @@ public class PostService {
 	@Transactional
 	public PostDto.Response registerPost(Long shopId, PostDto.Request postRequest,
 		NailArtistDetails nailArtistDetails) {
-		UserPrincipal.validateAndGetNailArtistForShop(nailArtistDetails, shopId);
+		nailArtistDetails.validateAndGetNailArtistForShop(shopId);
 
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
@@ -100,7 +102,7 @@ public class PostService {
 	@Async("imageExecutor")
 	public CompletableFuture<PostDto.Response> updatePost(Long shopId, Long postId, PostDto.Request postRequest,
 		NailArtistDetails nailArtistDetails) {
-		UserPrincipal.validateAndGetNailArtistForShop(nailArtistDetails, shopId);
+		nailArtistDetails.validateAndGetNailArtistForShop(shopId);
 
 		return CompletableFuture.supplyAsync(() -> {
 			Post post = postRepository.findById(postId)
@@ -120,7 +122,7 @@ public class PostService {
 	@Transactional
 	public CompletableFuture<Void> addImageToPost(Long shopId, Long postId, List<MultipartFile> files,
 		NailArtistDetails nailArtistDetails) {
-		UserPrincipal.validateAndGetNailArtistForShop(nailArtistDetails, shopId);
+		nailArtistDetails.validateAndGetNailArtistForShop(shopId);
 
 		return CompletableFuture.runAsync(() -> {
 			Post post = postRepository.findById(postId)
@@ -129,8 +131,9 @@ public class PostService {
 			List<PostImage> postImages = files.stream()
 				.map(file -> new PostImage(post))
 				.collect(Collectors.toList());
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-			List<ImageDto> savedImages = postImageService.saveImagesAsync(files, postImages).join();
+			List<ImageDto> savedImages = postImageService.saveImagesAsync(files, postImages, auth).join();
 
 			List<PostImage> savedPostImages = savedImages.stream()
 				.map(savedImage -> new PostImage(post, savedImage.getBucketName(), savedImage.getObjectName()))
@@ -144,7 +147,7 @@ public class PostService {
 	@Async("imageExecutor")
 	public CompletableFuture<Void> removeImageFromPost(Long shopId, Long postId, Long imageId,
 		NailArtistDetails nailArtistDetails) {
-		UserPrincipal.validateAndGetNailArtistForShop(nailArtistDetails, shopId);
+		nailArtistDetails.validateAndGetNailArtistForShop(shopId);
 
 		return CompletableFuture.runAsync(() -> {
 			Post post = postRepository.findById(postId)
@@ -224,7 +227,7 @@ public class PostService {
 
 	@Transactional
 	public void deletePost(Long shopId, Long postId, NailArtistDetails nailArtistDetails) {
-		UserPrincipal.validateAndGetNailArtistForShop(nailArtistDetails, shopId);
+		nailArtistDetails.validateAndGetNailArtistForShop(shopId);
 		postRepository.deleteById(postId);
 	}
 
@@ -358,3 +361,4 @@ public class PostService {
 		postImageRepository.saveAll(newPostImages);
 	}
 }
+

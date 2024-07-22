@@ -42,9 +42,6 @@ public class SecurityConfig {
 	private final MemberRepository memberRepository;
 	private final NailArtistRepository nailArtistRepository;
 	private final ResponseService responseService; // RedisTemplate 주입
-	// private final CustomOAuth2UserService customOAuth2UserService;
-	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-	// private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -72,24 +69,9 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.PATCH, "shops/*/reservations/*/confirm", "shops/*/reservations/*/reject",
 					"shops/*/reservations/*/complete")
 				.hasRole("MANAGER")
-				.anyRequest()
-				.authenticated())    // 그 외 인증 없이 접근X
-			// .oauth2Login(oauth2 -> oauth2
-			// 		// TODO: OAuth2 로그인을 하면 session을 사용하게 되어 이 부분을 수정해야함.
-			// 		.loginPage("/oauth2/authorization/kakao")
-			// 		.userInfoEndpoint(userInfo -> userInfo
-			// 			.userService(customOAuth2UserService))
-			// 		.successHandler(oAuth2LoginSuccessHandler)
-			// 		.failureHandler(oAuth2LoginFailureHandler)
-			// 	// .defaultSuccessUrl("/swagger-ui/index.html", false)
-			// )
-			// .logout(logout -> logout
-			// 	.logoutSuccessUrl("/"))
-			// .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-			// .addFilterBefore(exceptionTranslationFilter(), JwtAuthenticationProcessingFilter.class);
-
+				.anyRequest().authenticated()
+			)
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-
 		return http.build();
 	}
 
@@ -130,4 +112,5 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+
 }

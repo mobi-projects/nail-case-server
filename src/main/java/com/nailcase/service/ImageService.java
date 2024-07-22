@@ -7,8 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.concurrent.Executor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ContentDisposition;
@@ -16,7 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,24 +32,27 @@ import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ImageErrorCode;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Transactional
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ImageService<T extends Image> {
 
+	protected final Executor imageExecutor;
 	private final AmazonS3 amazonS3;
-	private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList("image/jpeg", "image/png");
-	private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
-	@Async("imageExecutor")
+	@Autowired
+	public ImageService(@Qualifier("imageExecutor") Executor imageExecutor, AmazonS3 amazonS3) {
+		this.imageExecutor = imageExecutor;
+		this.amazonS3 = amazonS3;
+	}
+
+	private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList("image/jpeg", "image/png");
+	private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 	public CompletableFuture<Void> deleteImageAsync(String objectName) {
 		return CompletableFuture.runAsync(() -> {
 			try {
@@ -56,14 +61,14 @@ public class ImageService<T extends Image> {
 				log.error("비동기 이미지 삭제 실패", e);
 				throw new BusinessException(ImageErrorCode.DELETE_FAILURE, e);
 			}
-		});
+		}, imageExecutor);
 	}
 
-	@Async("imageExecutor")
 	public CompletableFuture<ImageDto> saveImageAsync(MultipartFile file, T image,
-		JpaRepository<T, Long> imageRepository) {
+		JpaRepository<T, Long> imageRepository, Authentication auth) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
+				log.info("Current authentication in async method imageService: {}", auth);
 				String objectName = generateUniqueObjectName(file.getOriginalFilename());
 				objectName = uploadImageAsync(file, objectName).join();
 				image.setBucketName(bucket);
@@ -74,21 +79,26 @@ public class ImageService<T extends Image> {
 				log.error("이미지 저장 실패", e);
 				throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);
 			}
-		});
+		}, imageExecutor);
 	}
 
-	@Async("imageExecutor")
 	public CompletableFuture<List<ImageDto>> saveImagesAsync(List<MultipartFile> files, List<T> images,
-		JpaRepository<T, Long> imageRepository) {
-		List<CompletableFuture<ImageDto>> futures = new ArrayList<>();
-		for (int i = 0; i < files.size(); i++) {
-			futures.add(saveImageAsync(files.get(i), images.get(i), imageRepository));
-		}
-		CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-		return allFutures.thenApply(v -> futures.stream().map(CompletableFuture::join).collect(Collectors.toList()));
+		JpaRepository<T, Long> imageRepository, Authentication auth) {
+		return CompletableFuture.supplyAsync(() -> {
+			List<ImageDto> savedImages = new ArrayList<>();
+			for (int i = 0; i < files.size(); i++) {
+				try {
+					ImageDto savedImage = saveImageAsync(files.get(i), images.get(i), imageRepository, auth).get();
+					savedImages.add(savedImage);
+				} catch (Exception e) {
+					log.error("이미지 저장 실패", e);
+					throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);
+				}
+			}
+			return savedImages;
+		}, imageExecutor);
 	}
 
-	@Async("imageExecutor")
 	public CompletableFuture<String> uploadImageAsync(MultipartFile file, String objectName) {
 		return CompletableFuture.supplyAsync(() -> {
 			validateFile(file);
@@ -106,10 +116,9 @@ public class ImageService<T extends Image> {
 				log.error("이미지 업로드 실패", e);
 				throw new BusinessException(ImageErrorCode.UPLOAD_FAILURE, e);
 			}
-		});
+		}, imageExecutor);
 	}
 
-	@Async("imageExecutor")
 	public CompletableFuture<ResponseEntity<byte[]>> downloadImageAsync(String objectName) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
@@ -128,7 +137,7 @@ public class ImageService<T extends Image> {
 				log.error("이미지 다운로드 실패", e);
 				throw new BusinessException(ImageErrorCode.DOWNLOAD_FAILURE, e);
 			}
-		});
+		}, imageExecutor);
 	}
 
 	private String generateUniqueObjectName(String originalFilename) {

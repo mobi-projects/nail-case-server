@@ -397,6 +397,7 @@ WHERE s.shop_name = '네일몰 강남점'
     WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
 );
 
+UPDATE nail_artists SET shop_id = 1 WHERE shop_id IS NULL;
 
 
 -- 태그 생성

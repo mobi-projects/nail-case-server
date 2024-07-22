@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.NailArtistErrorCode;
+import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.entity.NailArtist;
+import com.nailcase.repository.NailArtistRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class NailArtistService {
+	private final NailArtistRepository nailArtistRepository;
+
 	public void verifyArtistsExistenceInShop(List<Long> nailArtistIds, Collection<NailArtist> nailArtists) {
 		if (notContainsAnyArtistIds(nailArtistIds, nailArtists)) {
 			throw new BusinessException(NailArtistErrorCode.NOT_FOUND);
@@ -33,5 +37,12 @@ public class NailArtistService {
 				.map(NailArtist::getNailArtistId)
 				.collect(Collectors.toSet())
 				.contains(artistId));
+	}
+
+	public NailArtistDetails createNailArtistDetails(Long nailArtistId) {
+		NailArtist nailArtist = nailArtistRepository.findByIdWithShops(nailArtistId)
+			.orElseThrow(() -> new BusinessException(NailArtistErrorCode.NOT_FOUND));
+
+		return NailArtistDetails.withNailArtist(nailArtist);
 	}
 }

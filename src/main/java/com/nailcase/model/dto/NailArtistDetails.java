@@ -2,6 +2,8 @@ package com.nailcase.model.dto;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.Role;
 
 import lombok.Getter;
@@ -22,7 +25,7 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 	private final String email;
 	private final Role role;
 	private final String nickname;
-	private final NailArtist nailArtist;
+	private final Set<Long> associatedShopIds;
 
 	public NailArtistDetails(
 		Long nailArtistId,
@@ -31,13 +34,13 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 		String nickname,
 		Role role,
 		Collection<? extends GrantedAuthority> authorities,
-		NailArtist nailArtist) {
+		Set<Long> associatedShopIds) {
 		super(email, password, authorities);
 		this.nailArtistId = nailArtistId;
 		this.email = email;
 		this.nickname = nickname;
 		this.role = role;
-		this.nailArtist = nailArtist;
+		this.associatedShopIds = associatedShopIds;
 	}
 
 	@Override
@@ -56,6 +59,10 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 	}
 
 	public static NailArtistDetails withNailArtist(NailArtist nailArtist) {
+		Set<Long> shopIds = nailArtist.getShops().stream()
+			.map(Shop::getShopId)
+			.collect(Collectors.toSet());
+
 		return new NailArtistDetails(
 			nailArtist.getNailArtistId(),
 			nailArtist.getEmail(),
@@ -63,14 +70,13 @@ public final class NailArtistDetails extends User implements UserDetails, UserPr
 			nailArtist.getNickname(),
 			nailArtist.getRole(),
 			List.of(new SimpleGrantedAuthority(nailArtist.getRole().getKey())),
-			nailArtist
+			shopIds
 		);
 	}
 
 	public void validateAndGetNailArtistForShop(Long shopId) {
-		if (!this.nailArtist.getShop().getShopId().equals(shopId)) {
+		if (!this.associatedShopIds.contains(shopId)) {
 			throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
 		}
 	}
-
 }

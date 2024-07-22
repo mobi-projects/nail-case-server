@@ -134,14 +134,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			String email = jwtService.extractEmail(token)
 				.orElseThrow(() -> new BusinessException(TokenErrorCode.TOKEN_INVALID));
 
-			// log.info("토큰에서 추출된 정보 - 역할: {}, 사용자 ID: {}, 이메일: {}", role, userId, email);
+			log.info("토큰에서 추출된 정보 - 역할: {}, 사용자 ID: {}, 이메일: {}", role, userId, email);
 
 			UserPrincipal userPrincipal = createUserPrincipal(role, userId);
 
 			Authentication authentication = new UsernamePasswordAuthenticationToken(
 				userPrincipal, null, ((UserDetails)userPrincipal).getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			// log.info("SecurityContextHolder에 인증 정보 설정 완료: {}", authentication);
+			log.info("SecurityContextHolder에 인증 정보 설정 완료: {}", authentication);
 		} catch (Exception e) {
 			log.error("인증 정보 저장 실패: {}", e.getMessage(), e);
 			throw new BusinessException(AuthErrorCode.AUTHENTICATION_FAILED);
@@ -154,7 +154,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 			return MemberDetails.withMember(member);
 		} else if (role == MANAGER) {
-			NailArtist nailArtist = nailArtistRepository.findById(userId)
+			NailArtist nailArtist = nailArtistRepository.findByIdWithShops(userId)
 				.orElseThrow(() -> new BusinessException(NailArtistErrorCode.NOT_FOUND));
 			return NailArtistDetails.withNailArtist(nailArtist);
 		} else {

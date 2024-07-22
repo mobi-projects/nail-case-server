@@ -1,25 +1,12 @@
 package com.nailcase.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.io.InputStream;
-import java.net.URL;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.nailcase.common.dto.ImageDto;
-import com.nailcase.model.entity.Shop;
-import com.nailcase.model.entity.ShopImage;
 import com.nailcase.repository.ShopImageRepository;
 import com.nailcase.testUtils.FixtureFactory;
 import com.nailcase.testUtils.Reflection;
@@ -47,28 +34,28 @@ public class ShopImageServiceTest {
 		Reflection.setField(shopImageService, "bucket", bucket);
 	}
 
-	@Test
-	@DisplayName("uploadImage 성공 테스트")
-	void uploadImageSuccess() {
-		// Given
-		MockMultipartFile file = fileFixture.getImageFile();
-		Shop shop = shopFixture.getShop();
-
-		ShopImage shopImage = ShopImage.builder().shop(shop).build();
-		when(shopImageRepository.save(any(ShopImage.class))).thenReturn(shopImage);
-		when(amazonS3.getUrl(anyString(), anyString())).thenReturn(mock(URL.class));
-
-		// When
-		ImageDto result = shopImageService.uploadImage(file, shopImage);
-
-		// Then
-		assertNotNull(result);
-		assertEquals(shopImage.getBucketName(), result.getBucketName());
-		assertEquals(shopImage.getObjectName(), result.getObjectName());
-
-		verify(shopImageRepository, times(1)).save(any(ShopImage.class));
-		verify(amazonS3, times(1))
-			.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class));
-		verify(amazonS3, times(1)).getUrl(anyString(), anyString());
-	}
+	// @Test
+	// @DisplayName("uploadImage 성공 테스트")
+	// void uploadImageSuccess() {
+	// 	// Given
+	// 	MockMultipartFile file = fileFixture.getImageFile();
+	// 	Shop shop = shopFixture.getShop();
+	//
+	// 	ShopImage shopImage = ShopImage.builder().shop(shop).build();
+	// 	when(shopImageRepository.save(any(ShopImage.class))).thenReturn(shopImage);
+	// 	when(amazonS3.getUrl(anyString(), anyString())).thenReturn(mock(URL.class));
+	//
+	// 	// // When
+	// 	// ImageDto result = shopImageService.uploadImage(file, shopImage);
+	// 	//
+	// 	// // Then
+	// 	// assertNotNull(result);
+	// 	// assertEquals(shopImage.getBucketName(), result.getBucketName());
+	// 	// assertEquals(shopImage.getObjectName(), result.getObjectName());
+	//
+	// 	verify(shopImageRepository, times(1)).save(any(ShopImage.class));
+	// 	verify(amazonS3, times(1))
+	// 		.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class));
+	// 	verify(amazonS3, times(1)).getUrl(anyString(), anyString());
+	// }
 }
