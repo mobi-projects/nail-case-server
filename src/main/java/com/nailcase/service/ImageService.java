@@ -1,9 +1,13 @@
 package com.nailcase.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +32,9 @@ import com.nailcase.exception.codes.ImageErrorCode;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -42,16 +48,23 @@ public class ImageService<T extends Image> {
 
 	public void uploadImage(MultipartFile file, String objectName) {
 		validateFile(file);
+		log.info("Uploading file: original filename = {}, encoded filename = {}", file.getOriginalFilename(),
+			objectName);
 
 		try {
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			objectMetadata.setContentLength(file.getSize());
 			objectMetadata.setContentType(file.getContentType());
+			objectMetadata.addUserMetadata("original-filename",
+				URLEncoder.encode(Objects.requireNonNull(file.getOriginalFilename()), StandardCharsets.UTF_8));
 
-			objectMetadata.addUserMetadata("original-filename", file.getOriginalFilename());
+			byte[] bytes = file.getBytes();
+			InputStream inputStream = new ByteArrayInputStream(bytes);
 
-			amazonS3.putObject(bucket, objectName, file.getInputStream(), objectMetadata);
+			amazonS3.putObject(bucket, objectName, inputStream, objectMetadata);
 		} catch (Exception e) {
+			log.error("Failed to upload file: original filename = {}, encoded filename = {}",
+				file.getOriginalFilename(), objectName, e);
 			throw new BusinessException(ImageErrorCode.UPLOAD_FAILURE, e);
 		}
 	}
@@ -87,7 +100,8 @@ public class ImageService<T extends Image> {
 
 	public <T extends Image> ImageDto saveImage(MultipartFile file, T image, JpaRepository<T, Long> imageRepository) {
 		try {
-			String objectName = generateUniqueObjectName(file.getOriginalFilename());
+			String objectName = generateUniqueObjectName(Objects.requireNonNull(file.getOriginalFilename()));
+			log.debug("Generated object name: {}", objectName);
 
 			uploadImage(file, objectName);
 
@@ -95,6 +109,8 @@ public class ImageService<T extends Image> {
 			image.setObjectName(objectName);
 
 			T savedImage = imageRepository.save(image);
+			log.debug("Saved image: {}", savedImage);
+
 			return ImageDto.builder()
 				.id(savedImage.getImageId())
 				.bucketName(savedImage.getBucketName())
@@ -104,6 +120,7 @@ public class ImageService<T extends Image> {
 				.modifiedBy(savedImage.getModifiedBy())
 				.build();
 		} catch (Exception e) {
+			log.error("Failed to save image", e);
 			throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);
 		}
 	}
@@ -121,7 +138,12 @@ public class ImageService<T extends Image> {
 	}
 
 	private String generateUniqueObjectName(String originalFilename) {
-		return UUID.randomUUID() + "_" + originalFilename;
+		int lastDotIndex = originalFilename.lastIndexOf('.');
+		String nameWithoutExtension = originalFilename.substring(0, lastDotIndex);
+		String extension = originalFilename.substring(lastDotIndex);
+
+		String encodedName = URLEncoder.encode(nameWithoutExtension, StandardCharsets.UTF_8);
+		return UUID.randomUUID() + "_" + encodedName + extension;
 	}
 
 	private String generateImageUrl(String objectName) {
