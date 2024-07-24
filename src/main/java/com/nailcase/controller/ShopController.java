@@ -1,6 +1,7 @@
 package com.nailcase.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -96,7 +97,7 @@ public class ShopController {
 
 	@PostMapping("/{shopId}/image")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String uploadImage(
+	public CompletableFuture<String> uploadImage(
 		@PathVariable Long shopId,
 		@RequestParam("file") MultipartFile file,
 		@AuthenticationPrincipal Long userId

@@ -68,14 +68,27 @@ public class PostService {
 
 		List<ImageDto> savedImageDtos = postImageService.saveImages(files, tempImages);
 
-		return savedImageDtos.stream()
-			.map(savedImageDto -> PostImageDto.builder()
-				.id(savedImageDto.getId())
-				.bucketName(savedImageDto.getBucketName())
-				.objectName(savedImageDto.getObjectName())
-				.url(savedImageDto.getUrl())
-				.createdBy(savedImageDto.getCreatedBy())
-				.modifiedBy(savedImageDto.getModifiedBy())
+		List<PostImage> savedPostImages = savedImageDtos.stream()
+			.map(savedImageDto -> {
+				PostImage postImage = new PostImage();
+				postImage.setImageId(savedImageDto.getId());
+				postImage.setBucketName(savedImageDto.getBucketName());
+				postImage.setObjectName(savedImageDto.getObjectName());
+				postImage.setCreatedBy(savedImageDto.getCreatedBy());
+				postImage.setModifiedBy(savedImageDto.getModifiedBy());
+				return postImage;
+			})
+			.collect(Collectors.toList());
+
+		savedPostImages = postImageRepository.saveAll(savedPostImages);
+
+		return savedPostImages.stream()
+			.map(postImage -> PostImageDto.builder()
+				.id(postImage.getImageId())
+				.bucketName(postImage.getBucketName())
+				.objectName(postImage.getObjectName())
+				.createdBy(postImage.getCreatedBy())
+				.modifiedBy(postImage.getModifiedBy())
 				.build())
 			.collect(Collectors.toList());
 	}

@@ -3,6 +3,7 @@ package com.nailcase.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -188,8 +189,8 @@ public class ShopService {
 	}
 
 	@Transactional
-	public String uploadImage(Long shopId, MultipartFile file, Long memberId) throws BusinessException {
-		// TODO 샵에 속해있는 아티스트 인지 검사
+	public CompletableFuture<String> uploadImage(Long shopId, MultipartFile file, Long memberId) throws
+		BusinessException {
 		log.debug(String.valueOf(memberId)); // TODO remove
 
 		Shop shop = getShopById(shopId);
@@ -199,9 +200,8 @@ public class ShopService {
 		}
 
 		ShopImage shopImage = ShopImage.builder().shop(shop).build();
-		ImageDto savedImage = shopImageService.uploadImage(file, shopImage);
-
-		return savedImage.getUrl();
+		return shopImageService.uploadImage(file, shopImage)
+			.thenApply(ImageDto::getUrl);
 	}
 
 	@Transactional

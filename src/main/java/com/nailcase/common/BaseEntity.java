@@ -31,13 +31,13 @@ import lombok.experimental.SuperBuilder;
 public class BaseEntity {
 	@CreatedDate
 	@Schema(title = "생성시간")
-	@Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
+	@Column(name = "created_at", nullable = false, updatable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime createdAt;
 
 	@LastModifiedDate
 	@Schema(title = "수정시간")
-	@Column(name = "modified_at", nullable = false, columnDefinition = "TIMESTAMP")
+	@Column(name = "modified_at", nullable = false, updatable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime modifiedAt;
 
