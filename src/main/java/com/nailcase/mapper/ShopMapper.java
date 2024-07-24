@@ -8,11 +8,14 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.TagMapping;
+import com.nailcase.model.entity.WorkHour;
 import com.nailcase.util.DateUtils;
 
 @Mapper(
@@ -65,4 +68,38 @@ public interface ShopMapper {
 	@Mapping(target = "name", source = "shopName")
 	@Mapping(target = "overview", source = "overview")
 	ShopDto.MainPageResponse toMainPageResponse(Shop shop);
+
+	@Mapping(target = "shopName", source = "shopName")
+	@Mapping(target = "phone", source = "phone")
+	@Mapping(target = "address", source = "address")
+	@Mapping(target = "shopImages", ignore = true)
+	@Mapping(target = "workHours", ignore = true)
+	Shop postDtoToShop(ShopDto.Post dto);
+
+	default List<ShopImage> mapProfileImages(List<MultipartFile> files, String bucketName) {
+		return files.stream()
+			.map(file -> {
+				ShopImage shopImage = ShopImage.builder()
+					.bucketName(bucketName)
+					.objectName(file.getOriginalFilename()) // 예시로 파일 이름을 사용
+					.build();
+				// 파일 저장 로직 필요 (예: AWS S3, Google Cloud Storage)
+				return shopImage;
+			})
+			.collect(Collectors.toList());
+	}
+
+	default List<WorkHour> mapWorkHours(List<WorkHourDto> workHourDtos) {
+		return workHourDtos.stream()
+			.map(dto -> {
+				WorkHour workHour = WorkHour.builder()
+					.dayOfWeek(dto.getDayOfWeek())
+					.isOpen(dto.getIsOpen())
+					.openTime(DateUtils.unixTimeStampToLocalDateTime(dto.getOpenTime()))
+					.closeTime(DateUtils.unixTimeStampToLocalDateTime(dto.getCloseTime()))
+					.build();
+				return workHour;
+			})
+			.collect(Collectors.toList());
+	}
 }

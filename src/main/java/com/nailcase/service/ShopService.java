@@ -21,12 +21,15 @@ import com.nailcase.exception.codes.AuthErrorCode;
 import com.nailcase.exception.codes.ConcurrencyErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.ShopErrorCode;
+import com.nailcase.exception.codes.ShopInfoErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.entity.PriceImage;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.ShopInfo;
@@ -34,16 +37,15 @@ import com.nailcase.model.entity.ShopLikedMember;
 import com.nailcase.model.entity.Tag;
 import com.nailcase.model.entity.TagMapping;
 import com.nailcase.model.entity.WorkHour;
-import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
 import com.nailcase.repository.ShopImageRepository;
-import com.nailcase.repository.ShopInfoRepository;
 import com.nailcase.repository.ShopLikedMemberRepository;
 import com.nailcase.repository.ShopRepository;
 import com.nailcase.repository.TagMappingRepository;
 import com.nailcase.repository.TagRepository;
 import com.nailcase.repository.WorkHourRepository;
+import com.nailcase.util.DateUtils;
 
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
@@ -60,38 +62,50 @@ public class ShopService {
 	private final TagRepository tagRepository;
 	private final ShopImageRepository shopImageRepository;
 	private final TagMappingRepository tagMappingRepository;
-	private final ShopInfoRepository shopInfoRepository;
 	private final WorkHourRepository workHourRepository;
 	private final ShopImageService shopImageService;
+	private final PriceImageService priceImageService;
 	private final MemberRepository memberRepository;
 	private final ShopLikedMemberRepository shopLikedMemberRepository;
 
 	@Transactional
-	public ShopDto.Response registerShop(
-		ShopDto.Post request,
-		Long nailArtistId
-	) throws BusinessException {
-		// Set member role MANAGER
+	public ShopDto.Response registerShop(ShopDto.Post request, Long nailArtistId) throws BusinessException {
 		NailArtist nailArtist = nailArtistRepository
 			.findById(nailArtistId)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
 
-		nailArtist.setRole(Role.MANAGER);
-
-		// Create shop
-		Shop shop = Shop.builder()
-			.shopName(request.getShopName())
-			.phone(request.getPhone())
-			.nailArtist(nailArtist)
-			.build();
-
+		Shop shop = shopMapper.postDtoToShop(request);
+		shop.setNailArtist(nailArtist);
 		nailArtist.addShop(shop);
+
+		ShopInfo shopInfo = ShopInfo.builder().build();
+		shop.updateShopInfo(shopInfo);
 
 		Shop savedShop = shopRepository.save(shop);
 
-		// Create shop info, shop hour init
-		initShopInfo(savedShop);
-		initWorkHour(savedShop);
+		// 매장 프로필 이미지 저장
+		List<ShopImage> shopImages = request.getProfileImages().stream()
+			.map(file -> {
+				ShopImage shopImage = ShopImage.builder().shop(savedShop).build();
+				savedShop.addShopImage(shopImage);
+				return shopImage;
+			})
+			.collect(Collectors.toList());
+		shopImageService.saveImages(request.getProfileImages(), shopImages);
+
+		// 가격 이미지 저장
+		List<PriceImage> priceImages = request.getPriceImages().stream()
+			.map(file -> PriceImage.builder().shopInfo(shopInfo).build())
+			.collect(Collectors.toList());
+		priceImageService.saveImages(request.getPriceImages(), priceImages);
+
+		priceImages.forEach(shopInfo::addPriceImage);
+
+		// 영업 시간 저장
+		saveWorkHours(savedShop, request.getWorkHours());
+
+		// 변경사항 저장
+		shopRepository.save(savedShop);
 
 		return shopMapper.toResponse(savedShop);
 	}
@@ -219,12 +233,6 @@ public class ShopService {
 	}
 
 	@Transactional
-	protected void initShopInfo(Shop shop) {
-		ShopInfo initShopInfo = ShopInfo.builder().shop(shop).build();
-		shopInfoRepository.save(initShopInfo);
-	}
-
-	@Transactional
 	protected void initWorkHour(Shop shop) {
 		IntStream.range(0, 7)
 			.mapToObj(i -> WorkHour.builder().shop(shop).dayOfWeek(i).build())
@@ -301,4 +309,22 @@ public class ShopService {
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
 	}
 
+	private void saveWorkHours(Shop shop, List<WorkHourDto> workHourDtos) {
+		workHourDtos.forEach(dto -> {
+			WorkHour workHour = WorkHour.builder()
+				.shop(shop)
+				.dayOfWeek(dto.getDayOfWeek())
+				.isOpen(dto.getIsOpen())
+				.openTime(DateUtils.unixTimeStampToLocalDateTime(dto.getOpenTime()))
+				.closeTime(DateUtils.unixTimeStampToLocalDateTime(dto.getCloseTime()))
+				.build();
+			shop.addWorkHour(workHour);
+		});
+	}
+
+	public ShopInfo getShopInfoByShopId(Long shopId) throws BusinessException {
+		return shopRepository.findById(shopId)
+			.map(Shop::getShopInfo)
+			.orElseThrow(() -> new BusinessException(ShopInfoErrorCode.SHOP_INFO_NOT_FOUND));
+	}
 }

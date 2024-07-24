@@ -750,9 +750,8 @@ WHERE NOT EXISTS (
 );
 
 -- ShopInfo 데이터 삽입
-INSERT INTO shop_info (shop_id, point, parking_lot_cnt, available_cnt, info, price, created_at, modified_at)
+INSERT INTO shop_info (point, parking_lot_cnt, available_cnt, info, price, created_at, modified_at)
 SELECT
-    s.shop_id,
     CONCAT(CAST(random() * 180 - 90 AS DECIMAL(10,7)), ', ', CAST(random() * 360 - 180 AS DECIMAL(10,7))) AS point,
     floor(random() * 10)::int AS parking_lot_cnt,
         floor(random() * 20 + 1)::int AS available_cnt,
@@ -775,9 +774,21 @@ END AS price,
 FROM
     shops s
 WHERE
-    NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_id = s.shop_id);
+    NOT EXISTS (SELECT 1 FROM shop_info si WHERE si.shop_info_id = s.shop_id);
 
--- PriceImage 데이터 삽입 (ShopInfo와 1:1 관계)
+-- shop_info_id를 랜덤으로 shop 테이블에 업데이트
+UPDATE shops
+SET shop_info_id = subquery.shop_info_id
+    FROM (
+    SELECT s.shop_id, si.shop_info_id
+    FROM shops s
+    JOIN shop_info si ON si.shop_info_id = s.shop_id
+    ORDER BY random()
+    LIMIT 6
+) AS subquery
+WHERE shops.shop_id = subquery.shop_id;
+
+-- price_image 테이블에 데이터 삽입
 INSERT INTO price_image (shop_info_id, created_at, modified_at)
 SELECT
     si.shop_info_id,
@@ -785,10 +796,10 @@ SELECT
     CURRENT_TIMESTAMP
 FROM
     shop_info si
-        JOIN
-    shops s ON si.shop_id = s.shop_id
+        JOIN shops s ON si.shop_info_id = s.shop_id
 WHERE
     NOT EXISTS (SELECT 1 FROM price_image pi WHERE pi.shop_info_id = si.shop_info_id);
+
 
 INSERT INTO shop_liked_member (member_id, shop_id, created_at, modified_at)
 SELECT

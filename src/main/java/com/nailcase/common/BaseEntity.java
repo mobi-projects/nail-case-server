@@ -37,7 +37,7 @@ public class BaseEntity {
 
 	@LastModifiedDate
 	@Schema(title = "수정시간")
-	@Column(name = "modified_at", nullable = false, updatable = false)
+	@Column(name = "modified_at", nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime modifiedAt;
 
