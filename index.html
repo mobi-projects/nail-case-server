@@ -1659,12 +1659,17 @@
   }
 };
             defs["com.nailcase.model.dto.ShopDto$Post"] = {
-  "required" : [ "phone", "shopName" ],
+  "required" : [ "address", "phone", "priceImages", "profileImages", "shopName", "workHours" ],
   "type" : "object",
   "properties" : {
     "shopName" : {
-      "maxLength" : 128,
-      "minLength" : 0,
+      "maxLength" : 20,
+      "minLength" : 1,
+      "type" : "string"
+    },
+    "address" : {
+      "maxLength" : 50,
+      "minLength" : 5,
       "type" : "string"
     },
     "phone" : {
@@ -1672,9 +1677,29 @@
       "minLength" : 0,
       "type" : "string"
     },
-    "availableSeats" : {
-      "type" : "integer",
-      "format" : "int32"
+    "profileImages" : {
+      "maxItems" : 5,
+      "minItems" : 1,
+      "type" : "array",
+      "items" : {
+        "type" : "string",
+        "format" : "binary"
+      }
+    },
+    "workHours" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.WorkHourDto"
+      }
+    },
+    "priceImages" : {
+      "maxItems" : 5,
+      "minItems" : 1,
+      "type" : "array",
+      "items" : {
+        "type" : "string",
+        "format" : "binary"
+      }
     }
   }
 };
@@ -1778,7 +1803,7 @@
       "description" : "가격",
       "example" : "손젤 손 케어 + 원컬러 40,000원"
     },
-    "priceImg" : {
+    "priceImage" : {
       "type" : "string",
       "format" : "binary"
     }
@@ -1792,10 +1817,15 @@
       "description" : "가격",
       "example" : "손젤 손 케어 + 원컬러 40,000원"
     },
-    "imageUrl" : {
-      "type" : "string",
+    "imageUrls" : {
+      "type" : "array",
       "description" : "이미지 url",
-      "example" : "일단은 없습니다."
+      "example" : "일단은 없습니다.",
+      "items" : {
+        "type" : "string",
+        "description" : "이미지 url",
+        "example" : "일단은 없습니다."
+      }
     }
   }
 };
@@ -1898,12 +1928,16 @@
   }
 };
             defs["com.nailcase.model.dto.WorkHourDto"] = {
-  "required" : [ "workHourId" ],
+  "required" : [ "closeTime", "dayOfWeek", "isOpen", "openTime" ],
   "type" : "object",
   "properties" : {
     "workHourId" : {
       "type" : "integer",
       "format" : "int64"
+    },
+    "dayOfWeek" : {
+      "type" : "integer",
+      "format" : "int32"
     },
     "isOpen" : {
       "type" : "boolean"
@@ -23261,7 +23295,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/users/{userId}/info</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/users/info</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -23285,7 +23319,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/users/{userId}/info"</code></pre>
+"http://localhost:8081/api/v1/users/info"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-UserController-getUserInfo-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -23307,9 +23341,8 @@ public class UserControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         UserControllerApi apiInstance = new UserControllerApi();
-        Long userId = 789; // Long | 
         try {
-            com.nailcase.response.UserInfoResponse result = apiInstance.getUserInfo(userId);
+            com.nailcase.response.UserInfoResponse result = apiInstance.getUserInfo();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling UserControllerApi#getUserInfo");
@@ -23326,9 +23359,8 @@ public class UserControllerApiExample {
 
     public static void main(String[] args) {
         UserControllerApi apiInstance = new UserControllerApi();
-        Long userId = 789; // Long | 
         try {
-            com.nailcase.response.UserInfoResponse result = apiInstance.getUserInfo(userId);
+            com.nailcase.response.UserInfoResponse result = apiInstance.getUserInfo();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling UserControllerApi#getUserInfo");
@@ -23345,12 +23377,11 @@ public class UserControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-Long *userId = 789; // 
 
 UserControllerApi *apiInstance = [[UserControllerApi alloc] init];
 
-[apiInstance getUserInfoWith:userId
-              completionHandler: ^(com.nailcase.response.UserInfoResponse output, NSError* error) {
+[apiInstance getUserInfoWithCompletionHandler: 
+              ^(com.nailcase.response.UserInfoResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -23371,8 +23402,6 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.UserControllerApi()
-var userId = 789; // {{Long}} 
-
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -23380,7 +23409,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getUserInfo(userId, callback);
+api.getUserInfo(callback);
 </code></pre>
                             </div>
 
@@ -23405,11 +23434,10 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new UserControllerApi();
-            var userId = 789;  // Long | 
 
             try
             {
-                com.nailcase.response.UserInfoResponse result = apiInstance.getUserInfo(userId);
+                com.nailcase.response.UserInfoResponse result = apiInstance.getUserInfo();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -23430,10 +23458,9 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiUserControllerApi();
-$userId = 789; // Long | 
 
 try {
-    $result = $api_instance->getUserInfo($userId);
+    $result = $api_instance->getUserInfo();
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserControllerApi->getUserInfo: ', $e->getMessage(), PHP_EOL;
@@ -23450,10 +23477,9 @@ use WWW::SwaggerClient::UserControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::UserControllerApi->new();
-my $userId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->getUserInfo(userId => $userId);
+    my $result = $api_instance->getUserInfo();
     print Dumper($result);
 };
 if ($@) {
@@ -23473,10 +23499,9 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.UserControllerApi()
-userId = 789 # Long | 
 
 try: 
-    api_response = api_instance.get_user_info(userId)
+    api_response = api_instance.get_user_info()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling UserControllerApi->getUserInfo: %s\n" % e)</code></pre>
@@ -23485,35 +23510,6 @@ except ApiException as e:
 
                           <h2>Parameters</h2>
 
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">userId*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_getUserInfo_userId">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      Long
-                                                  </span>
-                                                      <span class="format">
-                                                          (int64)
-                                                      </span>
-                                  
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                            </table>
 
 
 
