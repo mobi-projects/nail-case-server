@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,13 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 public class PostImageService extends ImageService<PostImage> {
 
 	private final PostImageRepository postImageRepository;
+	private final AsyncImageService asyncImageService;
 
-	@Autowired
-	private AsyncImageService asyncImageService;
-
-	public PostImageService(AmazonS3 amazonS3, PostImageRepository postImageRepository) {
+	public PostImageService(AmazonS3 amazonS3,
+		PostImageRepository postImageRepository,
+		AsyncImageService asyncImageService) {
 		super(amazonS3);
 		this.postImageRepository = postImageRepository;
+		this.asyncImageService = asyncImageService;
 	}
 
 	public List<ImageDto> saveImages(List<MultipartFile> files, List<PostImage> images) {
@@ -47,14 +47,11 @@ public class PostImageService extends ImageService<PostImage> {
 			futures.add(future);
 		}
 
-		// 모든 비동기 작업이 완료될 때까지 기다리고 결과를 수집
-
 		return futures.stream()
 			.map(CompletableFuture::join)
 			.collect(Collectors.toList());
 	}
 
-	@Override
 	public void deleteImage(String objectName) {
 		asyncImageService.deleteImageAsync(objectName).join();
 	}

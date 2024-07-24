@@ -7,7 +7,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.nailcase.model.dto.UserPrincipal;
+import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.model.dto.NailArtistDetails;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,9 +26,12 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
 			return Optional.empty();
 		}
 
-		if (authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
-			log.debug("Returning auditor ID: {}", userPrincipal.getId());
-			return Optional.of(userPrincipal.getId());
+		if (authentication.getPrincipal() instanceof NailArtistDetails nailArtistDetails) {
+			log.debug("Returning auditor ID: {}", nailArtistDetails.getNailArtistId());
+			return Optional.of(nailArtistDetails.getNailArtistId());
+		} else if (authentication.getPrincipal() instanceof MemberDetails memberDetails) {
+			log.debug("Returning auditor ID: {}", memberDetails.getMemberId());
+			return Optional.of(memberDetails.getMemberId());
 		}
 
 		log.debug("Unknown principal type: {}", authentication.getPrincipal().getClass());

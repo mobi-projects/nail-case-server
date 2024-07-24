@@ -3,8 +3,7 @@ package com.nailcase.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.io.InputStream;
-import java.net.URL;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.nailcase.common.dto.ImageDto;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
@@ -38,8 +37,13 @@ public class ShopImageServiceTest {
 	@Mock
 	private ShopImageRepository shopImageRepository;
 
+	@Mock
+	private AsyncImageService asyncImageService;
+
 	@InjectMocks
 	private ShopImageService shopImageService;
+
+	private String bucket;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -49,26 +53,32 @@ public class ShopImageServiceTest {
 
 	@Test
 	@DisplayName("uploadImage 성공 테스트")
-	void uploadImageSuccess() {
+	void uploadImageSuccess() throws Exception {
 		// Given
 		MockMultipartFile file = fileFixture.getImageFile();
 		Shop shop = shopFixture.getShop();
 
 		ShopImage shopImage = ShopImage.builder().shop(shop).build();
-		when(shopImageRepository.save(any(ShopImage.class))).thenReturn(shopImage);
-		when(amazonS3.getUrl(anyString(), anyString())).thenReturn(mock(URL.class));
+
+		ImageDto expectedImageDto = ImageDto.builder()
+			.bucketName(bucket)
+			.objectName("test-object-name")
+			.url("http://example.com/image.jpg")
+			.build();
+
+		when(asyncImageService.saveImageAsync(any(MultipartFile.class), any(ShopImage.class), eq(shopImageRepository)))
+			.thenReturn(CompletableFuture.completedFuture(expectedImageDto));
 
 		// When
-		ImageDto result = shopImageService.uploadImage(file, shopImage);
+		CompletableFuture<ImageDto> futureResult = shopImageService.uploadImage(file, shopImage);
 
 		// Then
+		ImageDto result = futureResult.get();
 		assertNotNull(result);
-		assertEquals(shopImage.getBucketName(), result.getBucketName());
-		assertEquals(shopImage.getObjectName(), result.getObjectName());
+		assertEquals(bucket, result.getBucketName());
+		assertEquals("test-object-name", result.getObjectName());
+		assertEquals("http://example.com/image.jpg", result.getUrl());
 
-		verify(shopImageRepository, times(1)).save(any(ShopImage.class));
-		verify(amazonS3, times(1))
-			.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class));
-		verify(amazonS3, times(1)).getUrl(anyString(), anyString());
+		verify(asyncImageService, times(1)).saveImageAsync(eq(file), eq(shopImage), eq(shopImageRepository));
 	}
 }

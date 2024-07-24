@@ -44,6 +44,7 @@ public class AuditorAwareImplTest {
 		when(authentication.isAuthenticated()).thenReturn(true);
 		when(authentication.getPrincipal()).thenReturn(member);
 		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
 
 		// When
 		Optional<Long> currentAuditor = auditorAware.getCurrentAuditor();
