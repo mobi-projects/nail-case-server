@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -35,6 +36,7 @@ public class WorkHour extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long workHourId;
 
+	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id", nullable = false)
 	private Shop shop;
@@ -67,4 +69,15 @@ public class WorkHour extends BaseEntity {
 			this.closeTime = DateUtils.unixTimeStampToLocalDateTime(closeTimestamp);
 		}
 	}
+
+	public WorkHour registerWorkHour(Boolean isOpen, Long openTimestamp, Long closeTimestamp) {
+		return WorkHour.builder()
+			.shop(this.shop)
+			.dayOfWeek(this.dayOfWeek)
+			.isOpen(isOpen != null ? isOpen : this.isOpen)
+			.openTime(openTimestamp != null ? DateUtils.unixTimeStampToLocalDateTime(openTimestamp) : this.openTime)
+			.closeTime(closeTimestamp != null ? DateUtils.unixTimeStampToLocalDateTime(closeTimestamp) : this.closeTime)
+			.build();
+	}
+
 }

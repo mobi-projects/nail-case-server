@@ -2,9 +2,12 @@ package com.nailcase.model.dto;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.nailcase.common.dto.BaseTimeDto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -14,17 +17,29 @@ import lombok.experimental.SuperBuilder;
 
 public class ShopDto {
 	@Data
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Post {
 		@NotBlank
-		@Size(max = 128)
+		@Size(min = 1, max = 20)
 		private String shopName;
+
+		@NotBlank
+		@Size(min = 5, max = 50)
+		private String address;
 
 		@NotBlank
 		@Size(max = 16)
 		private String phone;
 
-		private int availableSeats = 0;
+		@NotNull
+		@Size(min = 1, max = 5)
+		private List<MultipartFile> profileImages;
+
+		@NotNull
+		private List<WorkHourDto> workHours;
+
+		@NotNull
+		@Size(min = 1, max = 5)
+		private List<MultipartFile> priceImages;
 	}
 
 	@Data

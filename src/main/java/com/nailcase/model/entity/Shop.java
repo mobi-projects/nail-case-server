@@ -22,6 +22,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,7 +69,8 @@ public class Shop extends BaseEntity {
 	@Column(name = "available_seat")
 	private Integer availableSeats = 0;
 
-	@OneToOne(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "shop_info_id")
 	private ShopInfo shopInfo;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,7 +80,8 @@ public class Shop extends BaseEntity {
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<TagMapping> tags;
 
-	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 1, max = 5)
 	private Set<ShopImage> shopImages;
 
 	@Builder.Default
@@ -121,7 +124,16 @@ public class Shop extends BaseEntity {
 	public void update(ShopDto.Post dto) {
 		this.shopName = dto.getShopName();
 		this.phone = dto.getPhone();
-		this.availableSeats = dto.getAvailableSeats();
+	}
+
+	public void addShopImage(ShopImage shopImage) {
+		this.shopImages.add(shopImage);
+		shopImage.setShop(this);
+	}
+
+	public void addWorkHour(WorkHour workHour) {
+		this.workHours.add(workHour);
+		workHour.setShop(this);
 	}
 
 	// 객체 받아서 직접 확인하는 메소드
@@ -136,4 +148,9 @@ public class Shop extends BaseEntity {
 			.anyMatch(artist -> artist.getNailArtistId().equals(nailArtistId)) ||
 			(this.nailArtist != null && this.nailArtist.getNailArtistId().equals(nailArtistId));
 	}
+
+	public void updateShopInfo(ShopInfo shopInfo) {
+		this.shopInfo = shopInfo;
+	}
+
 }

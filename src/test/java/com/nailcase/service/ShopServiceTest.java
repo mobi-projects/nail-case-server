@@ -209,7 +209,6 @@ public class ShopServiceTest {
 
 		request.setShopName(updatedShopName);
 		request.setPhone(updatedPhone);
-		request.setAvailableSeats(10);
 
 		Shop updatedShop = shopFixture.getShop();
 		updatedShop.update(request);
@@ -332,7 +331,6 @@ public class ShopServiceTest {
 	private ShopDto.Post shopToPostRequest(Shop shop) throws Exception {
 		ShopDto.Post request = (ShopDto.Post)Reflection.createInstance(ShopDto.Post.class);
 		request.setShopName(shop.getShopName());
-		request.setAvailableSeats(shop.getAvailableSeats());
 
 		return request;
 	}

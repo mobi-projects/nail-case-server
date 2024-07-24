@@ -1,15 +1,17 @@
 package com.nailcase.mapper;
 
-import org.mapstruct.BeforeMapping;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import com.nailcase.model.dto.ShopInfoDto;
+import com.nailcase.model.entity.PriceImage;
 import com.nailcase.model.entity.ShopInfo;
-import com.nailcase.util.DateUtils;
 
 @Mapper(
 	componentModel = "spring",
@@ -28,21 +30,22 @@ public interface ShopInfoMapper {
 
 	ShopInfoDto.Info toInfoResponse(ShopInfo shopInfo);
 
-	@Mapping(target = "imageUrl", ignore = true)
+	@Mapping(target = "imageUrls", expression = "java(getPriceImageUrls(shopInfo))")
 	ShopInfoDto.PriceResponse toPriceResponse(ShopInfo shopInfo);
 
-	@BeforeMapping
-	default void beforeMapping(ShopInfo shopInfo, @MappingTarget ShopInfoDto.Response response) {
-		// TODO 이미지 처리
-		response.setImageUrl("임시");
-
-		response.setCreatedAt(DateUtils.localDateTimeToUnixTimeStamp(shopInfo.getCreatedAt()));
-		response.setModifiedAt(DateUtils.localDateTimeToUnixTimeStamp(shopInfo.getModifiedAt()));
+	default List<String> getPriceImageUrls(ShopInfo shopInfo) {
+		if (shopInfo.getPriceImages() != null) {
+			return shopInfo.getPriceImages().stream()
+				.map(this::generateImageUrl)
+				.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
-	@BeforeMapping
-	default void beforeMapping(ShopInfo shopInfo, @MappingTarget ShopInfoDto.PriceResponse priceResponse) {
-		// TODO 이미지 처리
-		priceResponse.setImageUrl("임시");
+	default String generateImageUrl(PriceImage priceImage) {
+		return String.format("https://%s.s3.amazonaws.com/%s",
+			priceImage.getBucketName(),
+			priceImage.getObjectName());
 	}
+
 }
