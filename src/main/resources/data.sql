@@ -827,3 +827,8 @@ WHERE
         WHERE slm.member_id = 1 AND slm.shop_id = s.shop_id
     )
     LIMIT FLOOR(1 + RANDOM() * 5);
+
+-- 모비네일 강남점 아티스트
+UPDATE nail_artists
+SET shop_id=1
+WHERE shop_id IS NULL;
