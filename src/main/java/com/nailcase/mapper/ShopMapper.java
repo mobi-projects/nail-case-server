@@ -40,7 +40,7 @@ public interface ShopMapper {
 
 	static List<ShopDto.Image> toShopImageDtos(List<ShopImage> shopImages) {
 		if (shopImages == null || shopImages.isEmpty()) {
-			return null;
+			return new ArrayList<>(); // 빈 리스트 반환
 		}
 
 		return shopImages.stream()
