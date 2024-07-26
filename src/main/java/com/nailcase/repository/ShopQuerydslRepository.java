@@ -17,4 +17,5 @@ public interface ShopQuerydslRepository {
 	Optional<Shop> findByShopIdAndNailArtistsAndWorkHours(Long shopId);
 
 	double calculateShopReviewRating(Long shopId);
+
 }

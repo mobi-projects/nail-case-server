@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -30,18 +31,17 @@ import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ImageErrorCode;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Transactional
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageService<T extends Image> {
 
 	private final AmazonS3 amazonS3;
-	private final List<String> ALLOWED_MIME_TYPES = Arrays.asList("image/jpeg", "image/png");
+	private final List<String> ALLOWED_MIME_TYPES = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
@@ -98,6 +98,41 @@ public class ImageService<T extends Image> {
 		}
 	}
 
+	@Transactional
+	public List<ImageDto> saveImagesSync(List<MultipartFile> files, List<T> images,
+		JpaRepository<T, Long> imageRepository) {
+		List<ImageDto> savedImages = new ArrayList<>();
+		for (int i = 0; i < files.size(); i++) {
+			MultipartFile file = files.get(i);
+			T image = images.get(i);
+			try {
+				String objectName = generateUniqueObjectName(Objects.requireNonNull(file.getOriginalFilename()));
+				uploadImage(file, objectName);
+
+				image.setBucketName(bucket);
+				image.setObjectName(objectName);
+
+				T savedImage = imageRepository.save(image);
+
+				ImageDto imageDto = ImageDto.builder()
+					.id(savedImage.getImageId())
+					.bucketName(savedImage.getBucketName())
+					.objectName(savedImage.getObjectName())
+					.url(generateImageUrl(savedImage.getObjectName()))
+					.createdBy(savedImage.getCreatedBy())
+					.modifiedBy(savedImage.getModifiedBy())
+					.build();
+
+				savedImages.add(imageDto);
+				log.info("Saved image: {}", imageDto);
+			} catch (Exception e) {
+				log.error("Failed to save image at index {}", i, e);
+				throw e;  // 예외를 다시 던져서 트랜잭션이 롤백되도록 함
+			}
+		}
+		return savedImages;
+	}
+
 	public <T extends Image> ImageDto saveImage(MultipartFile file, T image, JpaRepository<T, Long> imageRepository) {
 		try {
 			String objectName = generateUniqueObjectName(Objects.requireNonNull(file.getOriginalFilename()));
@@ -123,18 +158,6 @@ public class ImageService<T extends Image> {
 			log.error("Failed to save image", e);
 			throw new BusinessException(ImageErrorCode.SAVE_FAILURE, e);
 		}
-	}
-
-	public <T extends Image> List<ImageDto> saveImages(List<MultipartFile> files, List<T> images,
-		JpaRepository<T, Long> imageRepository) {
-		List<ImageDto> savedImageDtos = new ArrayList<>();
-		for (int i = 0; i < files.size(); i++) {
-			MultipartFile file = files.get(i);
-			T image = images.get(i);
-			ImageDto savedImageDto = saveImage(file, image, imageRepository);
-			savedImageDtos.add(savedImageDto);
-		}
-		return savedImageDtos;
 	}
 
 	private String generateUniqueObjectName(String originalFilename) {

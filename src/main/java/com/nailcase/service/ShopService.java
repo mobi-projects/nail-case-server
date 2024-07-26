@@ -26,6 +26,7 @@ import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
@@ -47,6 +48,7 @@ import com.nailcase.repository.TagRepository;
 import com.nailcase.repository.WorkHourRepository;
 import com.nailcase.util.DateUtils;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ShopService {
+	private final EntityManager entityManager;
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
 	private final ShopRepository shopRepository;
 	private final NailArtistRepository nailArtistRepository;
@@ -69,45 +72,59 @@ public class ShopService {
 	private final ShopLikedMemberRepository shopLikedMemberRepository;
 
 	@Transactional
-	public ShopDto.Response registerShop(ShopDto.Post request, Long nailArtistId) throws BusinessException {
-		NailArtist nailArtist = nailArtistRepository
-			.findById(nailArtistId)
-			.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
+	public ShopDto.Response registerShop(ShopDto.Post request, UserPrincipal userPrincipal) throws BusinessException {
+		try {
+			NailArtist nailArtist = nailArtistRepository
+				.findById(userPrincipal.getId())
+				.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
 
-		Shop shop = shopMapper.postDtoToShop(request);
-		shop.setNailArtist(nailArtist);
-		nailArtist.addShop(shop);
+			Shop shop = shopMapper.postDtoToShop(request);
+			shop.setNailArtist(nailArtist);
+			nailArtist.addShop(shop);
 
-		ShopInfo shopInfo = ShopInfo.builder().build();
-		shop.updateShopInfo(shopInfo);
+			Shop savedShop = shopRepository.save(shop);
 
-		Shop savedShop = shopRepository.save(shop);
+			// 영업 시간 저장
+			saveWorkHours(savedShop, request.getWorkHours());
 
-		// 매장 프로필 이미지 저장
-		List<ShopImage> shopImages = request.getProfileImages().stream()
+			// 매장 프로필 이미지 저장
+			saveShopImages(request.getProfileImages(), savedShop);
+
+			shopRepository.flush();
+
+			// 변경사항을 포함한 Shop 엔티티를 다시 조회
+			Shop refreshedShop = shopRepository.findById(savedShop.getShopId())
+				.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+			// 가격 이미지 저장
+			savePriceImages(request.getPriceImages(), refreshedShop);
+
+			return shopMapper.toResponse(refreshedShop);
+		} catch (Exception e) {
+			log.error("Failed to register shop", e);
+			throw new BusinessException(ShopErrorCode.REGISTRATION_FAILED, e);
+		}
+	}
+
+	public void saveShopImages(List<MultipartFile> files, Shop shop) {
+		List<ShopImage> shopImages = files.stream()
 			.map(file -> {
-				ShopImage shopImage = ShopImage.builder().shop(savedShop).build();
-				savedShop.addShopImage(shopImage);
+				ShopImage shopImage = ShopImage.builder().build();
+				shop.addShopImage(shopImage);
 				return shopImage;
 			})
 			.collect(Collectors.toList());
-		shopImageService.saveImages(request.getProfileImages(), shopImages);
+		shopImageService.saveImagesSync(files, shopImages);
+	}
 
-		// 가격 이미지 저장
-		List<PriceImage> priceImages = request.getPriceImages().stream()
-			.map(file -> PriceImage.builder().shopInfo(shopInfo).build())
+	public void savePriceImages(List<MultipartFile> files, Shop shop) {
+		List<PriceImage> priceImages = files.stream()
+			.map(file -> {
+				PriceImage priceImage = PriceImage.builder().build();
+				shop.addPriceImage(priceImage);
+				return priceImage;
+			})
 			.collect(Collectors.toList());
-		priceImageService.saveImages(request.getPriceImages(), priceImages);
-
-		priceImages.forEach(shopInfo::addPriceImage);
-
-		// 영업 시간 저장
-		saveWorkHours(savedShop, request.getWorkHours());
-
-		// 변경사항 저장
-		shopRepository.save(savedShop);
-
-		return shopMapper.toResponse(savedShop);
+		priceImageService.saveImagesSync(files, priceImages);
 	}
 
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {
@@ -309,8 +326,8 @@ public class ShopService {
 			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
 	}
 
-	private void saveWorkHours(Shop shop, List<WorkHourDto> workHourDtos) {
-		workHourDtos.forEach(dto -> {
+	private void saveWorkHours(Shop shop, List<WorkHourDto.Post> workHourDtoPosts) {
+		workHourDtoPosts.forEach(dto -> {
 			WorkHour workHour = WorkHour.builder()
 				.shop(shop)
 				.dayOfWeek(dto.getDayOfWeek())

@@ -788,17 +788,6 @@ SET shop_info_id = subquery.shop_info_id
 ) AS subquery
 WHERE shops.shop_id = subquery.shop_id;
 
--- price_image 테이블에 데이터 삽입
-INSERT INTO price_image (shop_info_id, created_at, modified_at)
-SELECT
-    si.shop_info_id,
-    CURRENT_TIMESTAMP,
-    CURRENT_TIMESTAMP
-FROM
-    shop_info si
-        JOIN shops s ON si.shop_info_id = s.shop_id
-WHERE
-    NOT EXISTS (SELECT 1 FROM price_image pi WHERE pi.shop_info_id = si.shop_info_id);
 
 
 INSERT INTO shop_liked_member (member_id, shop_id, created_at, modified_at)

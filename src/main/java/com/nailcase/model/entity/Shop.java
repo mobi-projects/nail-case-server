@@ -1,6 +1,8 @@
 package com.nailcase.model.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -22,7 +24,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,16 +74,18 @@ public class Shop extends BaseEntity {
 	@JoinColumn(name = "shop_info_id")
 	private ShopInfo shopInfo;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<WorkHour> workHours;
+	private List<WorkHour> workHours = new ArrayList<>();
 
+	@Builder.Default
 	@OrderBy("sortOrder asc")
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<TagMapping> tags;
+	private Set<TagMapping> tags = new HashSet<>();
 
-	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	@Size(min = 1, max = 5)
-	private Set<ShopImage> shopImages;
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ShopImage> shopImages = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
@@ -102,6 +105,15 @@ public class Shop extends BaseEntity {
 	@Column(name = "version", nullable = false)
 	@ColumnDefault("0")
 	private Long version = 0L;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PriceImage> priceImages = new ArrayList<>();
+
+	public void addPriceImage(PriceImage priceImage) {
+		priceImages.add(priceImage);
+		priceImage.setShop(this);
+	}
 
 	public void incrementLikes() {
 		this.likes += 1;
