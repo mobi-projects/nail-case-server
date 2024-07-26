@@ -1623,7 +1623,16 @@
   }
 };
             defs["com.nailcase.model.dto.ShopDto$Image"] = {
-  "type" : "object"
+  "type" : "object",
+  "properties" : {
+    "imageId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "imageUrl" : {
+      "type" : "string"
+    }
+  }
 };
             defs["com.nailcase.model.dto.ShopDto$MainPageResponse"] = {
   "type" : "object",
@@ -1689,7 +1698,7 @@
     "workHours" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.WorkHourDto"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.WorkHourDto$Post"
       }
     },
     "priceImages" : {
@@ -1747,7 +1756,19 @@
         "type" : "string"
       }
     },
-    "images" : {
+    "profileImages" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Image"
+      }
+    },
+    "workHours" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.WorkHourDto$Post"
+      }
+    },
+    "priceImages" : {
       "type" : "array",
       "items" : {
         "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Image"
@@ -1935,6 +1956,27 @@
       "type" : "integer",
       "format" : "int64"
     },
+    "dayOfWeek" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "isOpen" : {
+      "type" : "boolean"
+    },
+    "openTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "closeTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.WorkHourDto$Post"] = {
+  "required" : [ "closeTime", "dayOfWeek", "isOpen", "openTime" ],
+  "type" : "object",
+  "properties" : {
     "dayOfWeek" : {
       "type" : "integer",
       "format" : "int32"
@@ -19713,8 +19755,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
--H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops"</code></pre>
+"http://localhost:8081/api/v1/shops?postDto="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-registerShop-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -19736,9 +19777,9 @@ public class ShopControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         ShopControllerApi apiInstance = new ShopControllerApi();
-        Com.nailcase.model.dto.ShopDto$Post body = ; // Com.nailcase.model.dto.ShopDto$Post | 
+        com.nailcase.model.dto.ShopDto$Post postDto = ; // com.nailcase.model.dto.ShopDto$Post | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body);
+            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(postDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
@@ -19755,9 +19796,9 @@ public class ShopControllerApiExample {
 
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
-        Com.nailcase.model.dto.ShopDto$Post body = ; // Com.nailcase.model.dto.ShopDto$Post | 
+        com.nailcase.model.dto.ShopDto$Post postDto = ; // com.nailcase.model.dto.ShopDto$Post | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body);
+            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(postDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
@@ -19774,11 +19815,11 @@ public class ShopControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-Com.nailcase.model.dto.ShopDto$Post *body = ; // 
+com.nailcase.model.dto.ShopDto$Post *postDto = ; // 
 
 ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 
-[apiInstance registerShopWith:body
+[apiInstance registerShopWith:postDto
               completionHandler: ^(com.nailcase.model.dto.ShopDto$Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -19800,7 +19841,7 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
-var body = ; // {{Com.nailcase.model.dto.ShopDto$Post}} 
+var postDto = ; // {{com.nailcase.model.dto.ShopDto$Post}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -19809,7 +19850,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.registerShop(body, callback);
+api.registerShop(postDto, callback);
 </code></pre>
                             </div>
 
@@ -19834,11 +19875,11 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new ShopControllerApi();
-            var body = new Com.nailcase.model.dto.ShopDto$Post(); // Com.nailcase.model.dto.ShopDto$Post | 
+            var postDto = new com.nailcase.model.dto.ShopDto$Post(); // com.nailcase.model.dto.ShopDto$Post | 
 
             try
             {
-                com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(body);
+                com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(postDto);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -19859,10 +19900,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
-$body = ; // Com.nailcase.model.dto.ShopDto$Post | 
+$postDto = ; // com.nailcase.model.dto.ShopDto$Post | 
 
 try {
-    $result = $api_instance->registerShop($body);
+    $result = $api_instance->registerShop($postDto);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ShopControllerApi->registerShop: ', $e->getMessage(), PHP_EOL;
@@ -19879,10 +19920,10 @@ use WWW::SwaggerClient::ShopControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
-my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ShopDto$Post->new(); # Com.nailcase.model.dto.ShopDto$Post | 
+my $postDto = ; # com.nailcase.model.dto.ShopDto$Post | 
 
 eval { 
-    my $result = $api_instance->registerShop(body => $body);
+    my $result = $api_instance->registerShop(postDto => $postDto);
     print Dumper($result);
 };
 if ($@) {
@@ -19902,10 +19943,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
-body =  # Com.nailcase.model.dto.ShopDto$Post | 
+postDto =  # com.nailcase.model.dto.ShopDto$Post | 
 
 try: 
-    api_response = api_instance.register_shop(body)
+    api_response = api_instance.register_shop(postDto)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ShopControllerApi->registerShop: %s\n" % e)</code></pre>
@@ -19916,51 +19957,34 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
                             <table id="methodsubtable">
                               <tr>
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">postDto*</td>
                                 <td>
                                 
                                 
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Post"
-      }
-    }
-  },
-  "required" : true
-};
-                                  var schema = schemaWrapper.content["application/json"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
+                                    <div id="d2e199_registerShop_postDto">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    com.nailcase.model.dto.ShopDto$Post
+                                                </span>
                                 
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_registerShop_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_registerShop_body"></div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 </tr>
                             </table>
-
-
 
                           <h2>Responses</h2>
                             <h3> Status: 201 - Created </h3>
