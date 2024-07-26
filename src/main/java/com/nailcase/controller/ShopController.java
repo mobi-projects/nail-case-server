@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.response.ResponseService;
 import com.nailcase.service.ShopService;
 
@@ -47,10 +49,10 @@ public class ShopController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ShopDto.Response registerShop(
-		@Valid @RequestBody ShopDto.Post postDto,
-		@AuthenticationPrincipal Long userId
+		@Valid @ModelAttribute ShopDto.Post postDto,
+		@AuthenticationPrincipal UserPrincipal userPrincipal
 	) {
-		return shopService.registerShop(postDto, userId);
+		return shopService.registerShop(postDto, userPrincipal);
 	}
 
 	@GetMapping("/{shopId}")

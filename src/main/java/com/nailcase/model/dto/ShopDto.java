@@ -10,13 +10,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 public class ShopDto {
 	@Data
+	@NoArgsConstructor
 	public static class Post {
 		@NotBlank
 		@Size(min = 1, max = 20)
@@ -35,7 +36,7 @@ public class ShopDto {
 		private List<MultipartFile> profileImages;
 
 		@NotNull
-		private List<WorkHourDto> workHours;
+		private List<WorkHourDto.Post> workHours;
 
 		@NotNull
 		@Size(min = 1, max = 5)
@@ -73,11 +74,17 @@ public class ShopDto {
 
 		private List<String> tags;
 
-		private List<Image> images;
+		private List<Image> profileImages;
+
+		private List<WorkHourDto.Post> workHours;
+
+		private List<Image> priceImages;
+
 	}
 
-	@SuperBuilder
+	@Data
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class Image {
 		private Long imageId;
 

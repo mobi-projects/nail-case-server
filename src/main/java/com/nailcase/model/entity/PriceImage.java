@@ -13,16 +13,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Getter
 @Setter
+@Getter
 @Entity
-@SuperBuilder
-@NoArgsConstructor
 @Table(name = "price_image")
 @DiscriminatorValue("PRICE")
+@NoArgsConstructor
+@SuperBuilder
 public class PriceImage extends Image {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shop_info_id", nullable = false)
-	private ShopInfo shopInfo;
+	@JoinColumn(name = "shop_id", nullable = false)
+	private Shop shop;
+
 }

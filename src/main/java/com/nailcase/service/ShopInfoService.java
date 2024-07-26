@@ -1,16 +1,11 @@
 package com.nailcase.service;
 
-import java.util.concurrent.ExecutionException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
-import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.mapper.ShopInfoMapper;
 import com.nailcase.model.dto.ShopInfoDto;
-import com.nailcase.model.entity.PriceImage;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopInfo;
 import com.nailcase.repository.ShopInfoRepository;
@@ -93,21 +88,6 @@ public class ShopInfoService {
 		ShopInfo shopInfo = getShopInfoByShopId(shopId);
 
 		shopInfo.setPrice(requestPrice.getPrice());
-
-		shopInfo.clearPriceImages();  // 기존 이미지 모두 제거
-
-		// 새 가격 이미지 업로드
-		if (requestPrice.getPriceImage() != null) {
-			PriceImage newPriceImage = PriceImage.builder().shopInfo(shopInfo).build();
-			try {
-				ImageDto imageDto = priceImageService.uploadImage(requestPrice.getPriceImage(), newPriceImage).get();
-				newPriceImage.setBucketName(imageDto.getBucketName());
-				newPriceImage.setObjectName(imageDto.getObjectName());
-				shopInfo.addPriceImage(newPriceImage);
-			} catch (InterruptedException | ExecutionException e) {
-				throw new BusinessException(ImageErrorCode.UPLOAD_FAILURE);
-			}
-		}
 
 		ShopInfo updatedShopInfo = shopInfoRepository.saveAndFlush(shopInfo);
 
