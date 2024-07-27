@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.AuthErrorCode;
@@ -70,71 +75,24 @@ public class ShopService {
 	private final PriceImageService priceImageService;
 	private final MemberRepository memberRepository;
 	private final ShopLikedMemberRepository shopLikedMemberRepository;
+	private final ObjectMapper objectMapper;
 
 	@Transactional
-	public ShopDto.Response registerShop(ShopDto.PostResponse postResponse, UserPrincipal userPrincipal) throws
-		BusinessException {
+	public ShopDto.Response registerShop(String shopDataJson, List<MultipartFile> profileImages,
+		List<MultipartFile> priceImages, UserPrincipal userPrincipal) {
 		try {
-			NailArtist nailArtist = nailArtistRepository
-				.findById(userPrincipal.getId())
-				.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
+			ShopDto.PostRequest shopData = parseShopData(shopDataJson);
+			NailArtist nailArtist = getNailArtist(userPrincipal.getId());
+			Shop shop = createAndSaveShop(shopData, nailArtist);
 
-			Shop shop = shopMapper.postResponseToShop(postResponse);
-			shop.setNailArtist(nailArtist);
-			nailArtist.addShop(shop);
+			processShopDetails(shop, shopData, profileImages, priceImages);
 
-			Shop savedShop = shopRepository.save(shop);
-
-			// 영업 시간 저장
-			saveWorkHours(savedShop, postResponse.getRequestData().getWorkHours());
-
-			// 매장 프로필 이미지 저장
-			saveShopImages(postResponse.getProfileImages(), savedShop);
-
-			shopRepository.flush();
-
-			// 변경사항을 포함한 Shop 엔티티를 다시 조회
-			Shop refreshedShop = shopRepository.findById(savedShop.getShopId())
-				.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
-
-			// 가격 이미지 저장
-			savePriceImages(postResponse.getPriceImages(), refreshedShop);
-
+			Shop refreshedShop = refreshShop(shop.getShopId());
 			return shopMapper.toResponse(refreshedShop);
 		} catch (Exception e) {
 			log.error("샵 등록 실패", e);
 			throw new BusinessException(ShopErrorCode.REGISTRATION_FAILED, e);
 		}
-	}
-
-	public void saveShopImages(List<MultipartFile> files, Shop shop) {
-		List<ShopImage> shopImages = files.stream()
-			.map(file -> {
-				ShopImage shopImage = ShopImage.builder().build();
-				shop.addShopImage(shopImage);
-				return shopImage;
-			})
-			.collect(Collectors.toList());
-		shopImageService.saveImagesSync(files, shopImages);
-	}
-
-	public void savePriceImages(List<MultipartFile> files, Shop shop) {
-		List<PriceImage> priceImages = files.stream()
-			.map(file -> {
-				PriceImage priceImage = PriceImage.builder().build();
-				shop.addPriceImage(priceImage);
-				return priceImage;
-			})
-			.collect(Collectors.toList());
-		priceImageService.saveImagesSync(files, priceImages);
-	}
-
-	public ShopDto.Response getShop(Long shopId) throws BusinessException {
-		Shop shop = getShopById(shopId);
-		double avgRating = shopRepository.calculateShopReviewRating(shopId);
-		ShopDto.Response response = shopMapper.toResponse(shop);
-		response.setShopAvgRatings(avgRating == 0.0 ? null : avgRating);
-		return response;
 	}
 
 	@Transactional
@@ -346,4 +304,71 @@ public class ShopService {
 			.map(Shop::getShopInfo)
 			.orElseThrow(() -> new BusinessException(ShopInfoErrorCode.SHOP_INFO_NOT_FOUND));
 	}
+
+	private ShopDto.PostRequest parseShopData(String shopDataJson) throws JsonProcessingException {
+		return objectMapper.readValue(shopDataJson, ShopDto.PostRequest.class);
+	}
+
+	private NailArtist getNailArtist(Long id) {
+		return nailArtistRepository.findById(id)
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
+	}
+
+	private Shop createAndSaveShop(ShopDto.PostRequest shopData, NailArtist nailArtist) {
+		ShopDto.PostResponse postResponse = new ShopDto.PostResponse(shopData, null, null);
+		Shop shop = shopMapper.postResponseToShop(postResponse);
+		shop.setNailArtist(nailArtist);
+		nailArtist.addShop(shop);
+		return shopRepository.save(shop);
+	}
+
+	private void processShopDetails(Shop shop, ShopDto.PostRequest shopData,
+		List<MultipartFile> profileImages, List<MultipartFile> priceImages) {
+		saveWorkHours(shop, shopData.getWorkHours());
+		saveImages(shop, profileImages, this::saveShopImages);
+		shopRepository.flush();
+		saveImages(shop, priceImages, this::savePriceImages);
+	}
+
+	private <T extends MultipartFile> void saveImages(Shop shop, List<T> images,
+		BiConsumer<List<T>, Shop> saveFunction) {
+		if (images != null && !images.isEmpty()) {
+			saveFunction.accept(images, shop);
+		}
+	}
+
+	private void saveShopImages(List<MultipartFile> files, Shop shop) {
+		List<ShopImage> shopImages = createImageEntities(files, ShopImage::new, shop::addShopImage);
+		shopImageService.saveImagesSync(files, shopImages);
+	}
+
+	private void savePriceImages(List<MultipartFile> files, Shop shop) {
+		List<PriceImage> priceImages = createImageEntities(files, PriceImage::new, shop::addPriceImage);
+		priceImageService.saveImagesSync(files, priceImages);
+	}
+
+	private <T> List<T> createImageEntities(List<MultipartFile> files, Supplier<T> entityCreator,
+		Consumer<T> entityAdder) {
+		return files.stream()
+			.map(file -> {
+				T entity = entityCreator.get();
+				entityAdder.accept(entity);
+				return entity;
+			})
+			.collect(Collectors.toList());
+	}
+
+	private Shop refreshShop(Long shopId) {
+		return shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+	}
+
+	public ShopDto.Response getShop(Long shopId) throws BusinessException {
+		Shop shop = getShopById(shopId);
+		double avgRating = shopRepository.calculateShopReviewRating(shopId);
+		ShopDto.Response response = shopMapper.toResponse(shop);
+		response.setShopAvgRatings(avgRating == 0.0 ? null : avgRating);
+		return response;
+	}
+
 }
