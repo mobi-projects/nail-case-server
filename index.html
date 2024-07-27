@@ -1712,33 +1712,6 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.ShopDto$PostRequest"] = {
-  "required" : [ "address", "phone", "shopName", "workHours" ],
-  "type" : "object",
-  "properties" : {
-    "shopName" : {
-      "maxLength" : 20,
-      "minLength" : 1,
-      "type" : "string"
-    },
-    "address" : {
-      "maxLength" : 50,
-      "minLength" : 5,
-      "type" : "string"
-    },
-    "phone" : {
-      "maxLength" : 16,
-      "minLength" : 0,
-      "type" : "string"
-    },
-    "workHours" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.WorkHourDto$Post"
-      }
-    }
-  }
-};
             defs["com.nailcase.model.dto.ShopDto$Response"] = {
   "type" : "object",
   "properties" : {
@@ -2102,12 +2075,6 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
-    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -2127,6 +2094,12 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
+    },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
@@ -2181,30 +2154,7 @@
   "type" : "object",
   "properties" : {
     "shopData" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$PostRequest"
-    },
-    "profileImages" : {
-      "type" : "array",
-      "items" : {
-        "type" : "string",
-        "format" : "binary"
-      }
-    },
-    "priceImages" : {
-      "type" : "array",
-      "items" : {
-        "type" : "string",
-        "format" : "binary"
-      }
-    }
-  }
-};
-            defs["shops_body_1"] = {
-  "required" : [ "shopData" ],
-  "type" : "object",
-  "properties" : {
-    "shopData" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$PostRequest"
+      "type" : "string"
     },
     "profileImages" : {
       "type" : "array",
@@ -19828,7 +19778,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
--H "Content-Type: multipart/form-data,application/json"\
+-H "Content-Type: multipart/form-data"\
 "http://localhost:8081/api/v1/shops"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopController-registerShop-0-java">
@@ -19851,7 +19801,7 @@ public class ShopControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         ShopControllerApi apiInstance = new ShopControllerApi();
-        com.nailcase.model.dto.ShopDto$PostRequest shopData = ; // com.nailcase.model.dto.ShopDto$PostRequest | 
+        String shopData = shopData_example; // String | 
         array[byte[]] profileImages = ; // array[byte[]] | 
         array[byte[]] priceImages = ; // array[byte[]] | 
         try {
@@ -19872,7 +19822,7 @@ public class ShopControllerApiExample {
 
     public static void main(String[] args) {
         ShopControllerApi apiInstance = new ShopControllerApi();
-        com.nailcase.model.dto.ShopDto$PostRequest shopData = ; // com.nailcase.model.dto.ShopDto$PostRequest | 
+        String shopData = shopData_example; // String | 
         array[byte[]] profileImages = ; // array[byte[]] | 
         array[byte[]] priceImages = ; // array[byte[]] | 
         try {
@@ -19893,7 +19843,7 @@ public class ShopControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-com.nailcase.model.dto.ShopDto$PostRequest *shopData = ; //  (optional)
+String *shopData = shopData_example; //  (optional)
 array[byte[]] *profileImages = ; //  (optional)
 array[byte[]] *priceImages = ; //  (optional)
 
@@ -19924,7 +19874,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ShopControllerApi()
 var opts = { 
-  'shopData':  // {{com.nailcase.model.dto.ShopDto$PostRequest}} 
+  'shopData': shopData_example // {{String}} 
   'profileImages':  // {{array[byte[]]}} 
   'priceImages':  // {{array[byte[]]}} 
 };
@@ -19960,7 +19910,7 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new ShopControllerApi();
-            var shopData = new com.nailcase.model.dto.ShopDto$PostRequest(); // com.nailcase.model.dto.ShopDto$PostRequest |  (optional) 
+            var shopData = shopData_example;  // String |  (optional) 
             var profileImages = new array[byte[]](); // array[byte[]] |  (optional) 
             var priceImages = new array[byte[]](); // array[byte[]] |  (optional) 
 
@@ -19987,7 +19937,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiShopControllerApi();
-$shopData = ; // com.nailcase.model.dto.ShopDto$PostRequest | 
+$shopData = shopData_example; // String | 
 $profileImages = ; // array[byte[]] | 
 $priceImages = ; // array[byte[]] | 
 
@@ -20009,7 +19959,7 @@ use WWW::SwaggerClient::ShopControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ShopControllerApi->new();
-my $shopData = ; # com.nailcase.model.dto.ShopDto$PostRequest | 
+my $shopData = shopData_example; # String | 
 my $profileImages = []; # array[byte[]] | 
 my $priceImages = []; # array[byte[]] | 
 
@@ -20034,7 +19984,7 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ShopControllerApi()
-shopData =  # com.nailcase.model.dto.ShopDto$PostRequest |  (optional)
+shopData = shopData_example # String |  (optional)
 profileImages =  # array[byte[]] |  (optional)
 priceImages =  # array[byte[]] |  (optional)
 
@@ -20050,53 +20000,6 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">body </td>
-                                <td>
-                                
-                                
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "content" : {
-    "multipart/form-data" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/shops_body"
-      }
-    },
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/shops_body_1"
-      }
-    }
-  }
-};
-                                  var schema = schemaWrapper.content["multipart/form-data"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
-                                
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_registerShop_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_registerShop_body"></div>
-                                </td>
-                                </tr>
-                            </table>
 
                             <div class="methodsubtabletitle">Form parameters</div>
                             <table id="methodsubtable">
@@ -20112,7 +20015,7 @@ except ApiException as e:
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
-                                                      com.nailcase.model.dto.ShopDto$PostRequest
+                                                      String
                                                   </span>
                                   
                                               </div>
