@@ -40,7 +40,7 @@ public interface ShopMapper {
 
 	static List<ShopDto.Image> toShopImageDtos(List<ShopImage> shopImages) {
 		if (shopImages == null || shopImages.isEmpty()) {
-			return null;
+			return new ArrayList<>(); // 빈 리스트 반환
 		}
 
 		return shopImages.stream()
@@ -107,5 +107,13 @@ public interface ShopMapper {
 	private static String generateImageUrl(String bucket, String objectName) {
 		return "https://" + bucket + ".s3.amazonaws.com/" + objectName;
 	}
+
+	@Mapping(target = "shopName", source = "requestData.shopName")
+	@Mapping(target = "phone", source = "requestData.phone")
+	@Mapping(target = "address", source = "requestData.address")
+	@Mapping(target = "shopImages", ignore = true)
+	@Mapping(target = "priceImages", ignore = true)
+	@Mapping(target = "workHours", ignore = true)
+	Shop postResponseToShop(ShopDto.PostResponse postResponse);
 
 }

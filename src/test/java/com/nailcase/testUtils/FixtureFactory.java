@@ -312,4 +312,8 @@ public class FixtureFactory {
 			.modifiedAt(LocalDateTime.now())
 			.build();
 	}
+
+	public List<String> getBase64ImageFiles(int count) throws Exception {
+		return fileFixture.createBase64ImageFiles(count);
+	}
 }

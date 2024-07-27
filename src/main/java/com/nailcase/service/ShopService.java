@@ -72,35 +72,37 @@ public class ShopService {
 	private final ShopLikedMemberRepository shopLikedMemberRepository;
 
 	@Transactional
-	public ShopDto.Response registerShop(ShopDto.Post request, UserPrincipal userPrincipal) throws BusinessException {
+	public ShopDto.Response registerShop(ShopDto.PostResponse postResponse, UserPrincipal userPrincipal) throws
+		BusinessException {
 		try {
 			NailArtist nailArtist = nailArtistRepository
 				.findById(userPrincipal.getId())
 				.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
 
-			Shop shop = shopMapper.postDtoToShop(request);
+			Shop shop = shopMapper.postResponseToShop(postResponse);
 			shop.setNailArtist(nailArtist);
 			nailArtist.addShop(shop);
 
 			Shop savedShop = shopRepository.save(shop);
 
 			// 영업 시간 저장
-			saveWorkHours(savedShop, request.getWorkHours());
+			saveWorkHours(savedShop, postResponse.getRequestData().getWorkHours());
 
 			// 매장 프로필 이미지 저장
-			saveShopImages(request.getProfileImages(), savedShop);
+			saveShopImages(postResponse.getProfileImages(), savedShop);
 
 			shopRepository.flush();
 
 			// 변경사항을 포함한 Shop 엔티티를 다시 조회
 			Shop refreshedShop = shopRepository.findById(savedShop.getShopId())
 				.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+
 			// 가격 이미지 저장
-			savePriceImages(request.getPriceImages(), refreshedShop);
+			savePriceImages(postResponse.getPriceImages(), refreshedShop);
 
 			return shopMapper.toResponse(refreshedShop);
 		} catch (Exception e) {
-			log.error("Failed to register shop", e);
+			log.error("샵 등록 실패", e);
 			throw new BusinessException(ShopErrorCode.REGISTRATION_FAILED, e);
 		}
 	}
