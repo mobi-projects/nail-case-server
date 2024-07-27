@@ -3,6 +3,7 @@
 // import static org.assertj.core.api.Assertions.*;
 // import static org.junit.jupiter.api.Assertions.*;
 // import static org.mockito.Mockito.*;
+// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 //
 // import java.util.Arrays;
 // import java.util.List;
@@ -20,6 +21,8 @@
 // import org.springframework.data.domain.PageImpl;
 // import org.springframework.data.domain.PageRequest;
 // import org.springframework.data.domain.Pageable;
+// import org.springframework.http.MediaType;
+// import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 //
 // import com.nailcase.exception.BusinessException;
 // import com.nailcase.exception.codes.ShopErrorCode;
@@ -31,7 +34,6 @@
 // import com.nailcase.model.entity.Tag;
 // import com.nailcase.model.entity.TagMapping;
 // import com.nailcase.model.entity.WorkHour;
-// import com.nailcase.model.enums.Role;
 // import com.nailcase.repository.NailArtistRepository;
 // import com.nailcase.repository.ShopInfoRepository;
 // import com.nailcase.repository.ShopRepository;
@@ -67,26 +69,27 @@
 // 	@DisplayName("샵 동록시 ROLE MANAGER | shop 저장, shopInfo, workHour 초기화 성공 테스트")
 // 	void registerShopSuccess() throws Exception {
 // 		// Given
-// 		Shop shop = shopFixture.getShop();
+// 		Shop shop = fixtureFactory.getShopFixture().getShop();
 // 		NailArtist nailArtist = shop.getNailArtist();
 // 		Long nailArtistId = nailArtist.getNailArtistId();
 // 		ShopDto.Post request = shopToPostRequest(shop);
 // 		ShopDto.Response response = shopMapper.toResponse(shop);
+// 		String jwt = fixtureFactory.getNailArtistFixtureToBootTest().createNailArtistAndGetJwt();
 //
 // 		when(nailArtistRepository.findById(nailArtistId)).thenReturn(Optional.of(nailArtist));
 // 		when(shopRepository.save(any(Shop.class))).thenReturn(shop);
+// 		when(shopService.registerShop(any(ShopDto.Post.class), any())).thenReturn(response);
 //
-// 		// When
-// 		ShopDto.Response result = shopService.registerShop(request, nailArtistId);
+// 		String requestJson = om.writeValueAsString(request);
 //
-// 		// Then
-// 		assertThat(result)
-// 			.usingRecursiveComparison()
-// 			.isEqualTo(response);
+// 		// When & Then
+// 		mockMvc.perform(MockMvcRequestBuilders.post("/shops")
+// 				.contentType(MediaType.APPLICATION_JSON)
+// 				.content(requestJson)
+// 				.header("Authorization", "Bearer " + jwt))
+// 			.andExpect(status().isCreated());
 //
 // 		verify(nailArtistRepository).findById(nailArtistId);
-// 		assertEquals(Role.MANAGER, nailArtist.getRole());
-//
 // 		verify(shopRepository, times(1)).save(any(Shop.class));
 // 		verify(shopInfoRepository, times(1)).save(any(ShopInfo.class));
 // 		verify(workHourRepository, times(7)).save(any(WorkHour.class));

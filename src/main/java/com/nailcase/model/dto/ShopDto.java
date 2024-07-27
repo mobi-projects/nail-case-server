@@ -44,6 +44,40 @@ public class ShopDto {
 	}
 
 	@Data
+	@NoArgsConstructor
+	public static class PostRequest {
+		@NotBlank
+		@Size(min = 1, max = 20)
+		private String shopName;
+
+		@NotBlank
+		@Size(min = 5, max = 50)
+		private String address;
+
+		@NotBlank
+		@Size(max = 16)
+		private String phone;
+
+		@NotNull
+		private List<WorkHourDto.Post> workHours;
+	}
+
+	@Data
+	@NoArgsConstructor
+	public static class PostResponse {
+		private PostRequest requestData;
+		private List<MultipartFile> profileImages;
+		private List<MultipartFile> priceImages;
+
+		public PostResponse(PostRequest requestData, List<MultipartFile> profileImages,
+			List<MultipartFile> priceImages) {
+			this.requestData = requestData;
+			this.profileImages = profileImages;
+			this.priceImages = priceImages;
+		}
+	}
+
+	@Data
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Patch {
 		@NotBlank

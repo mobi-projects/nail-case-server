@@ -108,4 +108,12 @@ public interface ShopMapper {
 		return "https://" + bucket + ".s3.amazonaws.com/" + objectName;
 	}
 
+	@Mapping(target = "shopName", source = "requestData.shopName")
+	@Mapping(target = "phone", source = "requestData.phone")
+	@Mapping(target = "address", source = "requestData.address")
+	@Mapping(target = "shopImages", ignore = true)
+	@Mapping(target = "priceImages", ignore = true)
+	@Mapping(target = "workHours", ignore = true)
+	Shop postResponseToShop(ShopDto.PostResponse postResponse);
+
 }
