@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
@@ -47,14 +49,16 @@ public class ShopController {
 	@Value("${spring.data.web.pageable.default-page-size}")
 	private int pageSize;
 
-	@PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public ShopDto.Response registerShop(
-		@RequestPart(value = "shopData") @Valid ShopDto.PostRequest shopData,
+		@RequestPart("shopData") String shopDataJson,
 		@RequestPart(required = false) List<MultipartFile> profileImages,
 		@RequestPart(required = false) List<MultipartFile> priceImages,
 		@AuthenticationPrincipal UserPrincipal userPrincipal
-	) {
+	) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		ShopDto.PostRequest shopData = objectMapper.readValue(shopDataJson, ShopDto.PostRequest.class);
 		ShopDto.PostResponse postResponse = new ShopDto.PostResponse(shopData, profileImages, priceImages);
 		return shopService.registerShop(postResponse, userPrincipal);
 	}
