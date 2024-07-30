@@ -6,10 +6,11 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,26 +25,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nailcase.jwt.JwtService;
 import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
-import com.nailcase.oauth2.AuditorAwareImpl;
-import com.nailcase.oauth2.CustomOAuth2UserService;
-import com.nailcase.oauth2.handler.OAuth2LoginFailureHandler;
-import com.nailcase.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.nailcase.oauth.AuditorAwareImpl;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.NailArtistRepository;
+import com.nailcase.response.ResponseService;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
-	private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
-
-	private final CustomOAuth2UserService customOAuth2UserService;
-	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+	private final NailArtistRepository nailArtistRepository;
+	private final ResponseService responseService; // RedisTemplate 주입
+	// private final CustomOAuth2UserService customOAuth2UserService;
+	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	// private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,10 +57,8 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
-					"/static/**", "/auth/**")
+					"/static/**", "/auth/**", "/main/**")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
-				.requestMatchers("/shops/**")
-				.permitAll()
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll() // h2-console 접근 허용
 				.requestMatchers("/favicon.ico")
@@ -68,6 +67,11 @@ public class SecurityConfig {
 				.permitAll()    // 권한 관련 접근 허용
 				.requestMatchers("/demo-login/**") // 데모 테스트용
 				.permitAll()
+				.requestMatchers(HttpMethod.GET, "/shops/*/reservations")
+				.permitAll()
+				.requestMatchers(HttpMethod.PATCH, "shops/*/reservations/*/confirm", "shops/*/reservations/*/reject",
+					"shops/*/reservations/*/complete")
+				.hasRole("MANAGER")
 				.anyRequest()
 				.authenticated())    // 그 외 인증 없이 접근X
 			// .oauth2Login(oauth2 -> oauth2
@@ -81,6 +85,9 @@ public class SecurityConfig {
 			// )
 			// .logout(logout -> logout
 			// 	.logoutSuccessUrl("/"))
+			// .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+			// .addFilterBefore(exceptionTranslationFilter(), JwtAuthenticationProcessingFilter.class);
+
 			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -88,7 +95,8 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, redisTemplate); // RedisTemplate 전달
+		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, nailArtistRepository,
+			responseService); // RedisTemplate 전달
 	}
 
 	@Bean
@@ -109,7 +117,10 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.setAllowedOrigins(Arrays.asList(
+			"http://localhost:3000",
+			"https://nail-case-client.vercel.app"
+		));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");
 		configuration.addExposedHeader("*");

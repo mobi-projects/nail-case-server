@@ -4,12 +4,47 @@ on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: newtips-postgresql
+          POSTGRES_USER: postgresql
+          POSTGRES_PASSWORD: postgresql
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/newtips-postgresql
+      SPRING_DATASOURCE_USERNAME: postgresql
+      SPRING_DATASOURCE_PASSWORD: postgresql
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.AWS_BACKEND_ACCESS_KEY }}
+      CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.AWS_BACKEND_SECRET_KEY }}
+      CLOUD_AWS_S3_ENDPOINT: https://s3.ap-northeast-2.amazonaws.com
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+      KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+      KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
+
     steps:
+      - name: Test database connection
+        run: |
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=$SPRING_DATASOURCE_PASSWORD psql -h localhost -U $SPRING_DATASOURCE_USERNAME -d newtips-postgresql -c '\l'
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -25,13 +60,6 @@ jobs:
 
       - name: Start application
         run: |
-          CLOUD_AWS_CREDENTIALS_ACCESS_KEY=${{ secrets.AWS_BACKEND_ACCESS_KEY }} \
-          CLOUD_AWS_CREDENTIALS_SECRET_KEY=${{ secrets.AWS_BACKEND_SECRET_KEY }} \
-          CLOUD_AWS_S3_ENDPOINT=https://s3.ap-northeast-2.amazonaws.com \
-          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-          KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
-          KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
-          KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
           nohup ./gradlew bootRun &
           sleep 30
 

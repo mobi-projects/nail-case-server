@@ -10,8 +10,11 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.jwt.JwtService;
 import com.nailcase.model.dto.MemberDto;
+import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.NailArtist;
 import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.NailArtistRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,15 +24,18 @@ import lombok.RequiredArgsConstructor;
 public class DemoLoginController {
 	private final JwtService jwtService;
 	private final MemberRepository memberRepository;
+	private final NailArtistRepository nailArtistRepository;
 
 	@GetMapping(value = "/member", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MemberDto> loginUser() {
-		Member member = memberRepository.findByEmail("user@example.com")
+		Member member = memberRepository.findByEmail("member@example.com")
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
 		MemberDto memberDto = MemberDto.fromEntity(member);
-		String accessToken = jwtService.createAccessToken(member.getEmail(), member.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(member.getEmail());
+		String accessToken = jwtService.createAccessToken(member.getEmail(), member.getMemberId(),
+			member.getRole());
+		String refreshToken = jwtService.createRefreshToken(member.getEmail(), member.getMemberId(), member.getRole());
+		jwtService.updateRefreshToken(member.getEmail(), refreshToken, member.getRole());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)
@@ -37,14 +43,18 @@ public class DemoLoginController {
 			.body(memberDto);
 	}
 
-	@GetMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MemberDto> loginAdmin() {
-		Member admin = memberRepository.findByEmail("owner@example.com")
+	@GetMapping(value = "/manager", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<NailArtistDto> loginAdmin() {
+		NailArtist manager = nailArtistRepository.findByEmail("manager@example.com")
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-		MemberDto adminDto = MemberDto.fromEntity(admin);
-		String accessToken = jwtService.createAccessToken(admin.getEmail(), admin.getMemberId());
-		String refreshToken = jwtService.createRefreshToken(admin.getEmail());
+		NailArtistDto adminDto = NailArtistDto.fromEntity(manager);
+		String accessToken = jwtService.createAccessToken(manager.getEmail(), manager.getNailArtistId(),
+			manager.getRole()
+		);
+		String refreshToken = jwtService.createRefreshToken(manager.getEmail(), manager.getNailArtistId(),
+			manager.getRole());
+		jwtService.updateRefreshToken(manager.getEmail(), refreshToken, manager.getRole());
 
 		return ResponseEntity.ok()
 			.header("Authorization", "Bearer " + accessToken)

@@ -22,7 +22,7 @@ public class MemberFixtureToBootTest {
 
 		memberRepository.save(member);
 
-		return jwtService.createAccessToken(member.getEmail(), member.getMemberId());
+		return jwtService.createAccessToken(member.getEmail(), member.getMemberId(), member.getRole());
 	}
 
 	public void deleteAllMembers() {

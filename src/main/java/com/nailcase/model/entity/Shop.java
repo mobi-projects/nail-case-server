@@ -1,8 +1,11 @@
 package com.nailcase.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.annotations.ColumnDefault;
 
 import com.nailcase.common.BaseEntity;
 import com.nailcase.model.dto.ShopDto;
@@ -20,6 +23,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,9 +43,14 @@ public class Shop extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopId;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "owner_id", referencedColumnName = "member_id")
-	private Member member;
+	@Setter
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id", referencedColumnName = "nail_artist_id")
+	private NailArtist nailArtist;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+	private Set<NailArtist> nailArtists = new HashSet<>();
 
 	@Column(name = "shop_name", nullable = false, length = 128)
 	private String shopName;
@@ -61,33 +70,59 @@ public class Shop extends BaseEntity {
 	@Column(name = "available_seat")
 	private Integer availableSeats = 0;
 
-	@OneToOne(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "shop_info_id")
 	private ShopInfo shopInfo;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<WorkHour> workHours;
+	private List<WorkHour> workHours = new ArrayList<>();
 
+	@Builder.Default
 	@OrderBy("sortOrder asc")
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<TagMapping> tags;
+	private Set<TagMapping> tags = new HashSet<>();
 
-	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
-	private Set<ShopImage> shopImages;
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ShopImage> shopImages = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
-	private List<NailArtist> nailArtistList = new ArrayList<>();
+	private Set<Reservation> reservationList = new HashSet<>();
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
-	private List<Reservation> reservationList = new ArrayList<>();
+	private Set<ReservationDetail> reservationDetailList = new HashSet<>();
 
 	@Builder.Default
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shop")
-	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
+	@Column(name = "likes", nullable = false)
+	@ColumnDefault("0")
+	private Long likes = 0L;
 
-	public void associateDown() {
-		this.nailArtistList.forEach(nailArtist -> nailArtist.associateDown(this));
+	@Builder.Default
+	@Version
+	@Column(name = "version", nullable = false)
+	@ColumnDefault("0")
+	private Long version = 0L;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PriceImage> priceImages = new ArrayList<>();
+
+	public void addPriceImage(PriceImage priceImage) {
+		priceImages.add(priceImage);
+		priceImage.setShop(this);
+	}
+
+	public void incrementLikes() {
+		this.likes += 1;
+	}
+
+	public void decrementLikes() {
+		if (this.likes > 0) {
+			this.likes -= 1;
+		}
 	}
 
 	public void minusAvailableSeats() {
@@ -101,6 +136,33 @@ public class Shop extends BaseEntity {
 	public void update(ShopDto.Post dto) {
 		this.shopName = dto.getShopName();
 		this.phone = dto.getPhone();
-		this.availableSeats = dto.getAvailableSeats();
 	}
+
+	public void addShopImage(ShopImage shopImage) {
+		this.shopImages.add(shopImage);
+		shopImage.setShop(this);
+	}
+
+	public void addWorkHour(WorkHour workHour) {
+		this.workHours.add(workHour);
+		workHour.setShop(this);
+	}
+
+	// 객체 받아서 직접 확인하는 메소드
+	public boolean hasNailArtist(NailArtist nailArtist) {
+		return this.nailArtists.contains(nailArtist) ||
+			(this.nailArtist != null && this.nailArtist.equals(nailArtist));
+	}
+
+	// id만 받아서 확인하는 메소드
+	public boolean hasNailArtist(Long nailArtistId) {
+		return this.nailArtists.stream()
+			.anyMatch(artist -> artist.getNailArtistId().equals(nailArtistId)) ||
+			(this.nailArtist != null && this.nailArtist.getNailArtistId().equals(nailArtistId));
+	}
+
+	public void updateShopInfo(ShopInfo shopInfo) {
+		this.shopInfo = shopInfo;
+	}
+
 }

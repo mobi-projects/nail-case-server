@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
-import com.nailcase.exception.codes.ShopInfoErrorCode;
 import com.nailcase.mapper.ShopInfoMapper;
 import com.nailcase.model.dto.ShopInfoDto;
 import com.nailcase.model.entity.Shop;
@@ -23,12 +22,11 @@ public class ShopInfoService {
 	private final ShopInfoRepository shopInfoRepository;
 	private final ShopRepository shopRepository;
 	private final ShopService shopService;
+	private final PriceImageService priceImageService;
 
 	@Transactional(readOnly = true)
 	protected ShopInfo getShopInfoByShopId(Long shopId) throws BusinessException {
-		return shopInfoRepository
-			.findByShopId(shopId)
-			.orElseThrow(() -> new BusinessException(ShopInfoErrorCode.SHOP_INFO_NOT_FOUND));
+		return shopService.getShopInfoByShopId(shopId);
 	}
 
 	@Transactional(readOnly = true)
@@ -85,18 +83,11 @@ public class ShopInfoService {
 		ShopInfoDto.Price requestPrice,
 		Long memberId
 	) throws BusinessException {
-
-		// TODO 권한 검사
-		log.debug(String.valueOf(memberId));
+		log.debug("Updating price for member: {}", memberId);
 
 		ShopInfo shopInfo = getShopInfoByShopId(shopId);
 
 		shopInfo.setPrice(requestPrice.getPrice());
-
-		/* TODO 사진로직 확인 필요
-		 * 기존 사진이 있으면 삭제
-		 * 사진 업로드
-		 */
 
 		ShopInfo updatedShopInfo = shopInfoRepository.saveAndFlush(shopInfo);
 

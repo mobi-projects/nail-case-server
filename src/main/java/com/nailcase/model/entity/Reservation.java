@@ -1,9 +1,10 @@
 package com.nailcase.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.nailcase.common.BaseEntity;
+import com.nailcase.model.enums.ReservationStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -51,10 +52,31 @@ public class Reservation extends BaseEntity {
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservation")
-	private List<ReservationDetail> reservationDetailList = new ArrayList<>();
+	private Set<ReservationDetail> reservationDetailList = new LinkedHashSet<>();
 
 	// 순환 참조를 막기 위해 한 방향으로만 관계를 맺음
 	public void associateDown() {
 		this.reservationDetailList.forEach(reservationDetail -> reservationDetail.associateDown(this));
+	}
+
+	public boolean isAccompanied() {
+		return reservationDetailList.size() > 1;
+	}
+
+	public boolean isConfirmable() {
+		return this.reservationDetailList.stream().allMatch(ReservationDetail::isConfirmable);
+	}
+
+	public void confirm() {
+		this.reservationDetailList.forEach(ReservationDetail::confirm);
+	}
+
+	public boolean isStatusUpdatable(ReservationStatus status) {
+		return this.reservationDetailList.stream()
+			.allMatch(reservationDetail -> reservationDetail.isStatusUpdatable(status));
+	}
+
+	public void updateStatus(ReservationStatus status) {
+		this.reservationDetailList.forEach(reservationDetail -> reservationDetail.updateStatus(status));
 	}
 }

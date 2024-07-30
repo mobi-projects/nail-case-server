@@ -5,14 +5,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.common.dto.ImageDto;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.CommonErrorCode;
+import com.nailcase.exception.codes.ConcurrencyErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.PostErrorCode;
+import com.nailcase.exception.codes.ShopErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
@@ -30,8 +34,11 @@ import com.nailcase.repository.PostLikedMemberRepository;
 import com.nailcase.repository.PostsRepository;
 import com.nailcase.repository.ShopRepository;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -51,7 +58,6 @@ public class PostService {
 			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
 		}
 
-
 		List<PostImage> tempImages = files.stream()
 			.map(file -> {
 				PostImage tempImage = new PostImage();
@@ -62,14 +68,27 @@ public class PostService {
 
 		List<ImageDto> savedImageDtos = postImageService.saveImages(files, tempImages);
 
-		return savedImageDtos.stream()
-			.map(savedImageDto -> PostImageDto.builder()
-				.id(savedImageDto.getId())
-				.bucketName(savedImageDto.getBucketName())
-				.objectName(savedImageDto.getObjectName())
-				.url(savedImageDto.getUrl())
-				.createdBy(savedImageDto.getCreatedBy())
-				.modifiedBy(savedImageDto.getModifiedBy())
+		List<PostImage> savedPostImages = savedImageDtos.stream()
+			.map(savedImageDto -> {
+				PostImage postImage = new PostImage();
+				postImage.setImageId(savedImageDto.getId());
+				postImage.setBucketName(savedImageDto.getBucketName());
+				postImage.setObjectName(savedImageDto.getObjectName());
+				postImage.setCreatedBy(savedImageDto.getCreatedBy());
+				postImage.setModifiedBy(savedImageDto.getModifiedBy());
+				return postImage;
+			})
+			.collect(Collectors.toList());
+
+		savedPostImages = postImageRepository.saveAll(savedPostImages);
+
+		return savedPostImages.stream()
+			.map(postImage -> PostImageDto.builder()
+				.id(postImage.getImageId())
+				.bucketName(postImage.getBucketName())
+				.objectName(postImage.getObjectName())
+				.createdBy(postImage.getCreatedBy())
+				.modifiedBy(postImage.getModifiedBy())
 				.build())
 			.collect(Collectors.toList());
 	}
@@ -241,36 +260,53 @@ public class PostService {
 		commentRepository.deleteById(commentId);
 	}
 
-	@Transactional
-	public void likePost(Long postId, Long memberId) {
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-		Member currentMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public boolean toggleLike(Long shopId, Long postId, Long memberId) {
+		try {
+			Shop shop = shopRepository.findById(shopId)
+				.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
+			Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
+			Member currentMember = memberRepository.findById(memberId)
+				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-		boolean alreadyLiked = postLikedMemberRepository.existsByPost_PostIdAndMember_MemberId(postId,
-			memberId);
+			PostLikedMember existingLike = postLikedMemberRepository.findByPost_PostIdAndMember_MemberId(postId,
+					memberId)
+				.orElse(null);
 
-		if (!alreadyLiked) {
-			PostLikedMember postLike = new PostLikedMember();
-			postLike.updatePost(post);
-			postLike.updateMember(currentMember);
-			postLikedMemberRepository.save(postLike);
-			post.incrementLikes();
+			boolean liked;
+
+			if (existingLike == null) {
+				log.info("좋아요가 없음: shopId={}, memberId={}", shopId, memberId);
+				// 좋아요가 없는 경우 추가
+				PostLikedMember newLike = new PostLikedMember();
+				newLike.updatePost(post);
+				newLike.updateMember(currentMember);
+				postLikedMemberRepository.save(newLike);
+				post.incrementLikes();
+				liked = true;
+				log.info("좋아요 추가됨: postId={}, memberId={}", postId, memberId);
+			} else {
+				log.info("좋아요가 이미 있음: postId={}, memberId={}", postId, memberId);
+				// 좋아요가 있는 경우 제거
+				postLikedMemberRepository.delete(existingLike);
+				post.decrementLikes();
+				liked = false;
+				log.info("좋아요 제거됨: postId={}, memberId={}", postId, memberId);
+			}
+
 			postRepository.save(post);
+			log.info("최종 좋아요 상태: postId={}, memberId={}, liked={}", postId, memberId, liked);
+			return liked;
+		} catch (OptimisticLockException e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			log.error("낙관적 락킹 실패 ", e);
+			throw new BusinessException(ConcurrencyErrorCode.OPTIMISTIC_LOCK_ERROR,
+				"현재 다른 사용자가 같은 작업을 수행 중입니다. 잠시 후 다시 시도해주세요.");
+		} catch (Exception e) {
+			log.error("toggle like 실행중 예상치 못한 예외 발생 : ", e);
+			throw new BusinessException(ConcurrencyErrorCode.UPDATE_FAILURE,
+				"좋아요 상태 변경 중 예기치 않은 에러가 발생했습니다.");
 		}
-	}
-
-	@Transactional
-	public void unlikePost(Long postId, Long memberId) {
-		PostLikedMember postLike = postLikedMemberRepository.findByPost_PostIdAndMember_MemberId(postId,
-				memberId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.LIKE_NOT_FOUND));
-
-		postLikedMemberRepository.delete(postLike);
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
-		post.decrementLikes();
-		postRepository.save(post);
 	}
 }

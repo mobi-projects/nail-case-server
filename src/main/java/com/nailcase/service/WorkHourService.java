@@ -1,5 +1,8 @@
 package com.nailcase.service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +17,7 @@ import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.repository.WorkHourRepository;
+import com.nailcase.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +31,11 @@ public class WorkHourService {
 	private final ShopService shopService;
 
 	@Transactional
-	public WorkHourDto updateWorkHour(Long shopId, WorkHourDto putRequest, Long memberId) {
+	public WorkHourDto updateWorkHour(Long shopId, WorkHourDto putRequest, Long nailArtistId) {
 		Shop shop = shopService.getShopById(shopId);
 
 		// TODO 샵에 속해있는 아티스트 인지 권한 검사
-		log.debug(String.valueOf(memberId));
+		log.debug(String.valueOf(nailArtistId));
 
 		WorkHour workHour = workHourRepository.findByWorkHourIdAndShop(putRequest.getWorkHourId(), shop)
 			.orElseThrow(() -> new BusinessException(WorkHourErrorCode.WORK_HOUR_NOT_FOUND));
@@ -52,5 +56,32 @@ public class WorkHourService {
 			.sorted(Comparator.comparingInt(WorkHour::getDayOfWeek))
 			.map(workHourMapper::toResponse)
 			.collect(Collectors.toList());
+	}
+
+	public WorkHour verifyBusinessDay(Collection<WorkHour> workHours, Long date) {
+		int requestingDayOfWeek = DateUtils.unixTimeStampToLocalDateTime(date).getDayOfWeek().ordinal();
+
+		WorkHour workHour = workHours.stream()
+			.filter(wH -> wH.getDayOfWeek() == requestingDayOfWeek)
+			.findFirst()
+			.orElseThrow(() -> new BusinessException(WorkHourErrorCode.WORK_HOUR_NOT_DEFINED));
+
+		if (Boolean.FALSE.equals(workHour.getIsOpen())) {
+			throw new BusinessException(WorkHourErrorCode.NOT_OPENED);
+		}
+
+		return workHour;
+	}
+
+	public void verifyTimeInOpeningHour(Collection<WorkHour> workHours, Long time) {
+		WorkHour workHour = verifyBusinessDay(workHours, time);
+		LocalDateTime requestingTime = DateUtils.unixTimeStampToLocalDateTime(time);
+
+		LocalTime requestingLocalTime = requestingTime.toLocalTime();
+		LocalTime openTime = workHour.getOpenTime().toLocalTime();
+		LocalTime closeTime = workHour.getCloseTime().toLocalTime();
+		if (!DateUtils.isLocalTimeBetween(requestingLocalTime, openTime, closeTime)) {
+			throw new BusinessException(WorkHourErrorCode.NOT_OPENED);
+		}
 	}
 }

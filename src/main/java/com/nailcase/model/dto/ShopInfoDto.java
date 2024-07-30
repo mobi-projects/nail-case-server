@@ -1,5 +1,7 @@
 package com.nailcase.model.dto;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.common.dto.BaseTimeDto;
@@ -57,7 +59,7 @@ public class ShopInfoDto {
 		private String price;
 
 		@Schema(description = "가격표 이미지", example = "image/jpeg | image/png")
-		private MultipartFile priceImg;
+		private MultipartFile priceImage;
 	}
 
 	@Data
@@ -67,7 +69,7 @@ public class ShopInfoDto {
 		private String price;
 
 		@Schema(description = "이미지 url", example = "일단은 없습니다.")
-		private String imageUrl;
+		private List<String> imageUrls;
 	}
 
 	@Data

@@ -2,6 +2,8 @@ package com.nailcase.testUtils.fixture;
 
 import static org.jeasy.random.FieldPredicates.*;
 
+import java.util.HashSet;
+
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 
@@ -20,6 +22,7 @@ public class ShopInfoFixture {
 			.randomize(named("shop"), () -> shop)
 			.randomize(named("shopId"), shop::getShopId)
 			.randomize(named("point"), () -> "123")
+			.randomize(named("priceImages"), HashSet::new)
 			.randomize(named("parkingLotCnt"), () -> 1)
 			.randomize(named("availableCnt"), () -> 2)
 			.randomize(named("info"), () -> StringGenerateFixture.makeByNumbersAndAlphabets(10))

@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -39,20 +40,24 @@ public class Review extends BaseEntity {
 	@Column(name = "review_id", nullable = false)
 	private Long reviewId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "reservation_detail_id", nullable = false)
+	private ReservationDetail reservationDetail;
 
 	// @ManyToOne
 	// @JoinColumn(name = "shop_member_id")
 	// private ShopMember shopMember;
 
 	@Schema(title = "리뷰 내용")
-	@Column(name = "contents", nullable = false, length = 32)
+	@Column(name = "contents", nullable = false, columnDefinition = "TEXT")
 	private String contents;
 
 	@Schema(title = "리뷰 평점")
@@ -67,6 +72,9 @@ public class Review extends BaseEntity {
 	@OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
 	private List<ReviewImage> reviewImages = new ArrayList<>();
+
+	@Column(name = "visit_count")
+	private Integer visitCount;
 
 	public void updateContents(String contents) {
 		this.contents = contents;
@@ -95,4 +103,14 @@ public class Review extends BaseEntity {
 		reviewImage.setReview(null);
 	}
 
+	public void setReservationDetail(ReservationDetail reservationDetail) {
+		this.reservationDetail = reservationDetail;
+		if (reservationDetail != null && reservationDetail.getReview() != this) {
+			reservationDetail.setReview(this);
+		}
+	}
+
+	public void updateVisitCount(Integer visitCount) {
+		this.visitCount = visitCount;
+	}
 }

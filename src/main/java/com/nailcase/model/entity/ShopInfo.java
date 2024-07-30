@@ -2,15 +2,11 @@ package com.nailcase.model.entity;
 
 import com.nailcase.common.BaseEntity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,13 +25,6 @@ public class ShopInfo extends BaseEntity {
 	@Column(name = "shop_info_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long shopInfoId;
-
-	@Column(name = "shop_id")
-	private Long shopId;
-
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shop_id", nullable = false, insertable = false, updatable = false)
-	private Shop shop;
 
 	@Setter
 	@Column(name = "point")
@@ -57,7 +46,5 @@ public class ShopInfo extends BaseEntity {
 	@Column(name = "price")
 	private String price;
 
-	@Setter
-	@OneToOne(mappedBy = "shopInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private PriceImage priceImage;
 }
+

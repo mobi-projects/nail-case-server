@@ -75,8 +75,11 @@ public class MonthlyArt extends BaseEntity {
 	@OrderBy("commentId asc")
 	private List<MonthlyArtComment> monthlyArtComments = new ArrayList<>();
 
+	@Builder.Default
 	@Version
-	private Long version;  // 낙관적 잠금을 위한 버전 필드
+	@Column(name = "version", nullable = false)
+	@ColumnDefault("0")
+	private Long version = 0L;
 
 	public void incrementViews(Long viewCount) {
 		this.views = viewCount;

@@ -3,9 +3,14 @@ package com.nailcase.util;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.zone.ZoneRulesException;
+
+import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.UnixTimeErrorCode;
 
 public class DateUtils {
 
@@ -52,11 +57,55 @@ public class DateUtils {
 
 	// LocalDateTime을 Unix timestamp로 변환
 	public static Long localDateTimeToUnixTimeStamp(LocalDateTime dateTime) {
-		return dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		if (dateTime == null) {
+			throw new BusinessException(UnixTimeErrorCode.NULL_DATETIME);
+		}
+		try {
+			return dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		} catch (ZoneRulesException e) {
+			throw new BusinessException(UnixTimeErrorCode.CONVERSION_ERROR);
+		}
 	}
 
-	// Unix timestamp를 LocalDateTime로 변환
-	public static LocalDateTime unixTimeStampToLocalDateTime(Long u) {
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(u), ZoneId.systemDefault());
+	/**
+	 * Unix timestamp를 LocalDateTime로 변환합니다.
+	 *
+	 * @param timestamp Unix 타임스탬프 (초 단위)
+	 * @return 변환된 LocalDateTime 객체
+	 * @throws BusinessException 타임스탬프 값이 null이거나 음수, 혹은 설정된 최대 값보다 큰 경우
+	 */
+	public static LocalDateTime unixTimeStampToLocalDateTime(Long timestamp) {
+		if (timestamp == null) {
+			throw new BusinessException(UnixTimeErrorCode.NULL_TIMESTAMP);
+		}
+		if (timestamp < 0) {
+			throw new BusinessException(UnixTimeErrorCode.NEGATIVE_TIMESTAMP);
+		}
+		// 최대 허용 가능 타임스탬프 설정 (9999년 12월 31일)
+		long maxAllowedTimestamp = 253402300799L;
+		if (timestamp > maxAllowedTimestamp) {
+			throw new BusinessException(UnixTimeErrorCode.TIMESTAMP_TOO_LARGE);
+		}
+		try {
+			return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
+		} catch (Exception e) {
+			throw new BusinessException(UnixTimeErrorCode.CONVERSION_ERROR);
+		}
+	}
+
+	// time이 start와 end 사이에 있는지 체크
+	public static boolean isLocalTimeBetween(LocalTime time, LocalTime start, LocalTime end) {
+		return time.isAfter(start) && time.isBefore(end);
+	}
+
+	// localDateTime1의 날짜와 localDateTime2의 시간을 조합하여 리턴합니다
+	public static LocalDateTime combineLocalDateTime(LocalDateTime date, LocalDateTime time) {
+		return LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+			time.getHour(), time.getMinute(), time.getSecond());
+	}
+
+	public static Long combineLocalDateTimeToUnixTimeStamp(LocalDateTime date, LocalDateTime time) {
+		return localDateTimeToUnixTimeStamp(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+			time.getHour(), time.getMinute(), time.getSecond()));
 	}
 }

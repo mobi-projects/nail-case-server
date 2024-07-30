@@ -1,9 +1,5 @@
 package com.nailcase.model.entity;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-
 import com.nailcase.common.BaseEntity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,9 +37,6 @@ public class PostLikedMember extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
-
-	@CreatedDate
-	private LocalDateTime likedAt;
 
 	public void updatePost(Post post) {
 		this.post = post;

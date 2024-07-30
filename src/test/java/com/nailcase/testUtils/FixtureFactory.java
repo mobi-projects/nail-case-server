@@ -2,6 +2,7 @@ package com.nailcase.testUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,8 @@ import com.nailcase.model.enums.TreatmentOption;
 import com.nailcase.testUtils.fixture.FileFixture;
 import com.nailcase.testUtils.fixture.MemberFixture;
 import com.nailcase.testUtils.fixture.MemberFixtureToBootTest;
+import com.nailcase.testUtils.fixture.NailArtistFixture;
+import com.nailcase.testUtils.fixture.NailArtistFixtureToBootTest;
 import com.nailcase.testUtils.fixture.ShopFixture;
 import com.nailcase.testUtils.fixture.ShopInfoFixture;
 import com.nailcase.testUtils.fixture.WorkHourFixture;
@@ -52,6 +55,7 @@ import lombok.RequiredArgsConstructor;
 public class FixtureFactory {
 
 	public static final MemberFixture memberFixture = new MemberFixture();
+	public static final NailArtistFixture nailArtistFixture = new NailArtistFixture();
 	public static final ShopFixture shopFixture = new ShopFixture();
 	public static final FileFixture fileFixture = new FileFixture();
 	public static final WorkHourFixture workHourFixture = new WorkHourFixture();
@@ -86,6 +90,7 @@ public class FixtureFactory {
 	public static final Long FIXTURE_IMAGE_ID = 1L;
 	public static final String FIXTURE_IMAGE_URL = "hello/imageUrl";
 	private final MemberFixtureToBootTest memberFixtureToBootTest;
+	private final NailArtistFixtureToBootTest nailArtistFixtureToBootTest;
 
 	public static Treatment treatment() {
 		return createTreatment(
@@ -117,8 +122,8 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_DETAIL_ID,
 			FIXTURE_SHOP_ID,
 			FIXTURE_NAIL_ARTIST_ID,
-			List.of(treatment()),
-			List.of(condition()),
+			Set.of(treatment()),
+			Set.of(condition()),
 			FIXTURE_RESERVATION_DETAIL_START_TIME,
 			FIXTURE_RESERVATION_DETAIL_END_TIME,
 			FIXTURE_RESERVATION_STATUS,
@@ -133,7 +138,6 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_REMOVE,
 			FIXTURE_RESERVATION_EXTEND,
 			FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME,
-			FIXTURE_RESERVATION_DETAIL_END_UNIX_TIME,
 			List.of(conditionPostDto()),
 			List.of(treatmentPostDto())
 		);
@@ -151,7 +155,7 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_ID,
 			FIXTURE_SHOP_ID,
 			FIXTURE_NAIL_ARTIST_ID,
-			List.of(reservationDetail())
+			Set.of(reservationDetail())
 		);
 	}
 
@@ -184,7 +188,6 @@ public class FixtureFactory {
 		RemoveOption remove,
 		boolean extend,
 		Long startTime,
-		Long endTime,
 		List<ConditionDto.Post> conditionList,
 		List<TreatmentDto.Post> treatmentList
 	) {
@@ -193,7 +196,6 @@ public class FixtureFactory {
 		reservationDetailDto.setRemove(remove);
 		reservationDetailDto.setExtend(extend);
 		reservationDetailDto.setStartTime(startTime);
-		reservationDetailDto.setEndTime(endTime);
 		reservationDetailDto.setConditionList(conditionList);
 		reservationDetailDto.setTreatmentList(treatmentList);
 		return reservationDetailDto;
@@ -243,7 +245,7 @@ public class FixtureFactory {
 		Long reservationId,
 		Long shopId,
 		Long nailArtistId,
-		List<ReservationDetail> reservationDetailList
+		Set<ReservationDetail> reservationDetailList
 	) {
 		return Reservation.builder()
 			.reservationId(reservationId)
@@ -259,8 +261,8 @@ public class FixtureFactory {
 		Long reservationDetailId,
 		Long shopId,
 		Long nailArtistId,
-		List<Treatment> treatmentList,
-		List<Condition> conditionList,
+		Set<Treatment> treatmentList,
+		Set<Condition> conditionList,
 		LocalDateTime startTime,
 		LocalDateTime endTime,
 		ReservationStatus status,
@@ -309,5 +311,9 @@ public class FixtureFactory {
 			.createdAt(LocalDateTime.now())
 			.modifiedAt(LocalDateTime.now())
 			.build();
+	}
+
+	public List<String> getBase64ImageFiles(int count) throws Exception {
+		return fileFixture.createBase64ImageFiles(count);
 	}
 }
