@@ -21,11 +21,8 @@ import com.nailcase.exception.codes.NailArtistErrorCode;
 import com.nailcase.exception.codes.TokenErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.jwt.JwtService;
-import com.nailcase.model.dto.MemberDetails;
-import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.dto.UserPrincipal;
-import com.nailcase.model.entity.Member;
-import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.dto.UserPrincipalDetails;
 import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.TokenType;
 import com.nailcase.oauth.dto.TokenResponseDto;
@@ -136,7 +133,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 			// log.info("토큰에서 추출된 정보 - 역할: {}, 사용자 ID: {}, 이메일: {}", role, userId, email);
 
-			UserPrincipal userPrincipal = createUserPrincipal(role, userId);
+			UserPrincipal userPrincipal = createUserPrincipalDetails(role, userId);
 
 			Authentication authentication = new UsernamePasswordAuthenticationToken(
 				userPrincipal, null, ((UserDetails)userPrincipal).getAuthorities());
@@ -148,18 +145,18 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		}
 	}
 
-	private UserPrincipal createUserPrincipal(Role role, Long userId) {
+	private UserPrincipalDetails createUserPrincipalDetails(Role role, Long userId) {
+		UserPrincipal userPrincipal;
 		if (role == MEMBER) {
-			Member member = memberRepository.findById(userId)
+			userPrincipal = memberRepository.findById(userId)
 				.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-			return MemberDetails.withMember(member);
 		} else if (role == MANAGER) {
-			NailArtist nailArtist = nailArtistRepository.findById(userId)
+			userPrincipal = nailArtistRepository.findById(userId)
 				.orElseThrow(() -> new BusinessException(NailArtistErrorCode.NOT_FOUND));
-			return NailArtistDetails.withNailArtist(nailArtist);
 		} else {
 			throw new BusinessException(AuthErrorCode.INVALID_USER_TYPE);
 		}
+		return UserPrincipalDetails.from(userPrincipal);
 	}
 
 	private TokenResponseDto reissueTokens(String refreshToken) {

@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nailcase.model.dto.MemberDetails;
-import com.nailcase.model.dto.NailArtistDetails;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.service.ReservationFacade;
@@ -37,18 +35,18 @@ public class ReservationController {
 	public ReservationDto.Response registerReservation(
 		@PathVariable Long shopId,
 		@RequestBody ReservationDto.Post dto,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return reservationFacade.createReservation(shopId, memberDetails.getMemberId(), dto);
+		return reservationFacade.createReservation(shopId, userId, dto);
 	}
 
 	@PatchMapping("/{reservationId}/cancel")
 	public ReservationDto.Response cancelReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return reservationFacade.updateReservationStatus(shopId, reservationId, memberDetails.getMemberId(),
+		return reservationFacade.updateReservationStatus(shopId, reservationId, userId,
 			ReservationStatus.CANCELED);
 	}
 
@@ -56,9 +54,9 @@ public class ReservationController {
 	public ReservationDto.Response rejectReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@AuthenticationPrincipal NailArtistDetails nailArtistDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return reservationFacade.updateReservationStatus(shopId, reservationId, nailArtistDetails.getNailArtistId(),
+		return reservationFacade.updateReservationStatus(shopId, reservationId, userId,
 			ReservationStatus.REJECTED);
 	}
 
@@ -66,10 +64,10 @@ public class ReservationController {
 	public ReservationDto.Response completeReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@AuthenticationPrincipal NailArtistDetails nailArtistDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		Long nailArtistId = nailArtistDetails.getNailArtistId();
-		return reservationFacade.updateReservationStatus(shopId, reservationId, nailArtistDetails.getNailArtistId(),
+
+		return reservationFacade.updateReservationStatus(shopId, reservationId, userId,
 			ReservationStatus.COMPLETED);
 	}
 
@@ -78,9 +76,9 @@ public class ReservationController {
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
 		@RequestBody ReservationDto.Confirm request,
-		@AuthenticationPrincipal NailArtistDetails nailArtistDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return reservationFacade.confirmReservation(shopId, reservationId, nailArtistDetails.getNailArtistId(),
+		return reservationFacade.confirmReservation(shopId, reservationId, userId,
 			request);
 	}
 

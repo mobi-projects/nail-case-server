@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nailcase.common.BaseEntity;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.SocialType;
 
@@ -32,7 +33,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseEntity {
+public class Member extends BaseEntity implements UserPrincipal {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,5 +73,10 @@ public class Member extends BaseEntity {
 
 	public String getRoleKey() {
 		return this.role.getKey();
+	}
+
+	@Override
+	public Long getId() {
+		return this.memberId;
 	}
 }

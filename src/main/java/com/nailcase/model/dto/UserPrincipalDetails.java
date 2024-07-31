@@ -8,21 +8,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.nailcase.model.entity.Member;
 import com.nailcase.model.enums.Role;
 
 import lombok.Getter;
 
 @Getter
-public final class MemberDetails extends User implements UserDetails, UserPrincipal {
+public final class UserPrincipalDetails extends User implements UserDetails, UserPrincipal {
 
-	private final Long memberId;
+	private final Long id;
 	private final String email;
 	private final String nickname;
 	private final Role role;
 
-	public MemberDetails(
-		Long memberId,
+	private UserPrincipalDetails(
+		Long id,
 		String email,
 		String password,
 		String nickname,
@@ -30,30 +29,30 @@ public final class MemberDetails extends User implements UserDetails, UserPrinci
 		Collection<? extends GrantedAuthority> authorities) {
 		super(email, password, authorities);
 		this.email = email;
-		this.memberId = memberId;
+		this.id = id;
 		this.nickname = nickname;
 		this.role = role;
 	}
 
-	public static MemberDetails withMember(Member member) {
-		return new MemberDetails(
-			member.getMemberId(),
-			member.getEmail(),
+	public static UserPrincipalDetails from(UserPrincipal userPrincipal) {
+		return new UserPrincipalDetails(
+			userPrincipal.getId(),
+			userPrincipal.getEmail(),
 			"",
-			member.getNickname(),
-			member.getRole(),
-			List.of(new SimpleGrantedAuthority(member.getRole().getKey()))  // getKey() 사용
+			userPrincipal.getNickname(),
+			userPrincipal.getRole(),
+			List.of(new SimpleGrantedAuthority(userPrincipal.getRole().getKey()))
 		);
 	}
 
 	@Override
 	public Long getId() {
-		return this.memberId;
+		return this.id;
 	}
 
 	@Override
-	public String getEmail() {
-		return this.email;
+	public String getNickname() {
+		return this.nickname;
 	}
 
 	@Override
@@ -62,8 +61,7 @@ public final class MemberDetails extends User implements UserDetails, UserPrinci
 	}
 
 	@Override
-	public String getNickname() {
-		return this.nickname;
+	public String getEmail() {
+		return this.email;
 	}
-
 }

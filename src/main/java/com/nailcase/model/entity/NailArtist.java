@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nailcase.common.BaseEntity;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.enums.Role;
 import com.nailcase.model.enums.SocialType;
 
@@ -34,7 +35,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class NailArtist extends BaseEntity {
+public class NailArtist extends BaseEntity implements UserPrincipal {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,5 +83,10 @@ public class NailArtist extends BaseEntity {
 	public void addShop(Shop shop) {
 		this.shops.add(shop);
 		shop.setNailArtist(this);
+	}
+
+	@Override
+	public Long getId() {
+		return this.nailArtistId;
 	}
 }
