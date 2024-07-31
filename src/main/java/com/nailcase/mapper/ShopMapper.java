@@ -64,17 +64,6 @@ public interface ShopMapper {
 			.collect(Collectors.toList());
 	}
 
-	@Mapping(
-		target = "createdAt",
-		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getCreatedAt()))"
-	)
-	@Mapping(
-		target = "modifiedAt",
-		expression = "java(DateUtils.localDateTimeToUnixTimeStamp(shop.getModifiedAt()))"
-	)
-	@Mapping(target = "ownerId", source = "nailArtist.nailArtistId")
-	@Mapping(target = "shopAvgRatings", ignore = true) // 이 부분을 추가
-	@Mapping(target = "tags", expression = "java(ShopMapper.toTagNames(shop.getTags()))")
 	@Mapping(target = "profileImages", expression = "java(ShopMapper.toShopImageDtos(shop.getShopImages()))")
 	@Mapping(target = "priceImages", expression = "java(ShopMapper.toPriceImageDtos(shop.getPriceImages()))")
 	@Mapping(target = "workHours", expression = "java(mapWorkHours(shop.getWorkHours()))")

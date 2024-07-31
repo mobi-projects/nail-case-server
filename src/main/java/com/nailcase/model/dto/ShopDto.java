@@ -4,15 +4,12 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.common.dto.BaseTimeDto;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 public class ShopDto {
@@ -88,25 +85,13 @@ public class ShopDto {
 
 	@Data
 	@NoArgsConstructor
-	@EqualsAndHashCode(callSuper = true)
-	public static class Response extends BaseTimeDto {
-		private Long shopId;
-
-		private String ownerId;
+	public static class Response {
 
 		private String shopName;
 
 		private String phone;
 
-		private String overview;
-
 		private String address;
-
-		private int availableSeats;
-
-		private Double shopAvgRatings;
-
-		private List<String> tags;
 
 		private List<Image> profileImages;
 
