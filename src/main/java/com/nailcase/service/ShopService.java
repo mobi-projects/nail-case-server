@@ -365,10 +365,7 @@ public class ShopService {
 
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {
 		Shop shop = getShopById(shopId);
-		double avgRating = shopRepository.calculateShopReviewRating(shopId);
-		ShopDto.Response response = shopMapper.toResponse(shop);
-		response.setShopAvgRatings(avgRating == 0.0 ? null : avgRating);
-		return response;
+		return shopMapper.toResponse(shop);
 	}
 
 }
