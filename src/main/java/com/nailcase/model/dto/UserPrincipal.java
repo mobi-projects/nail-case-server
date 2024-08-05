@@ -1,14 +1,16 @@
 package com.nailcase.model.dto;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.nailcase.model.enums.Role;
 
-public interface UserPrincipal {
-	Long getId();
+public interface UserPrincipal extends UserDetails {
+	Long id();
 
-	String getNickname();
+	String nickname();
 
-	String getEmail();
+	String email();
 
-	Role getRole();
+	Role role();
 
 }

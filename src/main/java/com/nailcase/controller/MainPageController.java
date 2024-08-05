@@ -25,7 +25,6 @@ public class MainPageController {
 
 	@GetMapping
 	public MainPageDto getMainPageData(@AuthenticationPrincipal Long userId) {
-
 		List<ShopDto.MainPageResponse> topPopularShops = mainPageService.getTopPopularShops(userId);
 
 		ReservationDto.MainPageResponse earliestReservation = null;

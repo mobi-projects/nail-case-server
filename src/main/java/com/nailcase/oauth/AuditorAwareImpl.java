@@ -26,8 +26,8 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
 		}
 
 		if (authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
-			log.debug("Returning auditor ID: {}", userPrincipal.getId());
-			return Optional.of(userPrincipal.getId());
+			log.debug("Returning auditor ID: {}", userPrincipal.id());
+			return Optional.of(userPrincipal.id());
 		}
 
 		log.debug("Unknown principal type: {}", authentication.getPrincipal().getClass());
