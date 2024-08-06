@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ShopInfoDto;
 import com.nailcase.service.ShopInfoService;
 
@@ -34,9 +33,9 @@ public class ShopInfoController {
 	public ShopInfoDto.Address updateAddress(
 		@PathVariable Long shopId,
 		@Valid @RequestBody ShopInfoDto.Address requestAddress,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return shopInfoService.updateAddress(shopId, requestAddress, memberDetails.getMemberId());
+		return shopInfoService.updateAddress(shopId, requestAddress, userId);
 	}
 
 	@PatchMapping("/info")
@@ -44,9 +43,9 @@ public class ShopInfoController {
 	public ShopInfoDto.Info updateInfo(
 		@PathVariable Long shopId,
 		@Valid @RequestBody ShopInfoDto.Info requestInfo,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return shopInfoService.updateInfo(shopId, requestInfo, memberDetails.getMemberId());
+		return shopInfoService.updateInfo(shopId, requestInfo, userId);
 	}
 
 	@PatchMapping("/price")
@@ -54,9 +53,9 @@ public class ShopInfoController {
 	public ShopInfoDto.PriceResponse updatePrice(
 		@PathVariable Long shopId,
 		@Valid @RequestBody ShopInfoDto.Price requestPrice,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
-		return shopInfoService.updatePrice(shopId, requestPrice, memberDetails.getMemberId());
+		return shopInfoService.updatePrice(shopId, requestPrice, userId);
 	}
 
 }

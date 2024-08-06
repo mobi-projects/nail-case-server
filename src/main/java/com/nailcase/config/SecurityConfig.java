@@ -23,12 +23,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.nailcase.jwt.JwtProcessingFilter;
 import com.nailcase.jwt.JwtService;
-import com.nailcase.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.nailcase.jwt.JwtTokenProcessor;
 import com.nailcase.oauth.AuditorAwareImpl;
-import com.nailcase.repository.MemberRepository;
-import com.nailcase.repository.NailArtistRepository;
-import com.nailcase.response.ResponseService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,13 +36,8 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+	private final JwtTokenProcessor jwtTokenProcessor;
 	private final JwtService jwtService;
-	private final MemberRepository memberRepository;
-	private final NailArtistRepository nailArtistRepository;
-	private final ResponseService responseService; // RedisTemplate 주입
-	// private final CustomOAuth2UserService customOAuth2UserService;
-	// private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-	// private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -88,15 +81,14 @@ public class SecurityConfig {
 			// .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
 			// .addFilterBefore(exceptionTranslationFilter(), JwtAuthenticationProcessingFilter.class);
 
-			.addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
 
 	@Bean
-	public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-		return new JwtAuthenticationProcessingFilter(jwtService, memberRepository, nailArtistRepository,
-			responseService); // RedisTemplate 전달
+	public JwtProcessingFilter jwtProcessingFilter() {
+		return new JwtProcessingFilter(jwtTokenProcessor, jwtService);
 	}
 
 	@Bean

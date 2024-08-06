@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.MainPageDto;
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.service.MainPageService;
@@ -25,25 +24,23 @@ public class MainPageController {
 	private final MainPageService mainPageService;
 
 	@GetMapping
-	public MainPageDto getMainPageData(@AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails != null ? memberDetails.getId() : null;
-
-		List<ShopDto.MainPageResponse> topPopularShops = mainPageService.getTopPopularShops(memberId);
+	public MainPageDto getMainPageData(@AuthenticationPrincipal Long userId) {
+		List<ShopDto.MainPageResponse> topPopularShops = mainPageService.getTopPopularShops(userId);
 
 		ReservationDto.MainPageResponse earliestReservation = null;
 		List<ShopDto.MainPageResponse> likedShops = new ArrayList<>();
 		List<ReservationDto.CompletedReservationResponse> recentlyCompletedReservations = new ArrayList<>();
 
-		if (memberId != null) {
-			earliestReservation = mainPageService.getEarliestReservationByMember(memberId)
+		if (userId != null) {
+			earliestReservation = mainPageService.getEarliestReservationByMember(userId)
 				.filter(reservation -> reservation.getDetails() != null
 					&& !reservation.getDetails().isEmpty()
 					&& reservation.getDetails()
 					.stream()
 					.allMatch(detail -> detail.getStartTime() != null))
 				.orElse(null);
-			likedShops = mainPageService.getMemberLikedShops(memberId);
-			recentlyCompletedReservations = mainPageService.getCompletedReservations(memberId);
+			likedShops = mainPageService.getMemberLikedShops(userId);
+			recentlyCompletedReservations = mainPageService.getCompletedReservations(userId);
 		}
 
 		return new MainPageDto(earliestReservation, recentlyCompletedReservations, topPopularShops, likedShops);

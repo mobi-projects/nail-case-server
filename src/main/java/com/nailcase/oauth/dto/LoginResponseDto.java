@@ -7,7 +7,6 @@ import com.nailcase.model.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
 public class LoginResponseDto {
 	private String accessToken;
@@ -16,4 +15,18 @@ public class LoginResponseDto {
 	private boolean hasShop;
 	private Role role;
 	private String profileImgUrl;
+
+	@Builder
+	public LoginResponseDto(String accessToken, String refreshToken, List<Long> shopIds, boolean hasShop, Role role,
+		String profileImgUrl) {
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+		this.shopIds = shopIds;
+		this.hasShop = hasShop;
+		this.role = role;
+		this.profileImgUrl = profileImgUrl;
+	}
+
+	public LoginResponseDto() {
+	}
 }

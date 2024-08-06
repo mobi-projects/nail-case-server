@@ -16,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.nailcase.model.dto.MemberDetails;
+import com.nailcase.model.dto.UserPrincipalDetails;
 
 @ExtendWith(MockitoExtension.class)
 public class AuditorAwareImplTest {
@@ -39,10 +39,10 @@ public class AuditorAwareImplTest {
 	@DisplayName("인증된 사용자의 ID를 반환하는 테스트")
 	public void getCurrentAuditorWithAuthenticatedUser() {
 		// Given
-		MemberDetails member = mock(MemberDetails.class);
-		when(member.getMemberId()).thenReturn(1L);
+		UserPrincipalDetails userPrincipalDetails = mock(UserPrincipalDetails.class);
+		when(userPrincipalDetails.getId()).thenReturn(1L);
 		when(authentication.isAuthenticated()).thenReturn(true);
-		when(authentication.getPrincipal()).thenReturn(member);
+		when(authentication.getPrincipal()).thenReturn(userPrincipalDetails);
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 

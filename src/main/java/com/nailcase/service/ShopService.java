@@ -82,7 +82,7 @@ public class ShopService {
 		List<MultipartFile> priceImages, UserPrincipal userPrincipal) {
 		try {
 			ShopDto.PostRequest shopData = parseShopData(shopDataJson);
-			NailArtist nailArtist = getNailArtist(userPrincipal.getId());
+			NailArtist nailArtist = getNailArtist(userPrincipal.id());
 			Shop shop = createAndSaveShop(shopData, nailArtist);
 
 			processShopDetails(shop, shopData, profileImages, priceImages);

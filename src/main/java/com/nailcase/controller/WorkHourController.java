@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.ValidationErrorCode;
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.service.WorkHourService;
 
@@ -30,12 +29,12 @@ public class WorkHourController {
 	public WorkHourDto updateWorkHour(
 		@PathVariable Long shopId,
 		@Valid @RequestBody WorkHourDto putRequest,
-		@AuthenticationPrincipal MemberDetails memberDetails
+		@AuthenticationPrincipal Long userId
 	) {
 		if (putRequest.getIsOpen() == null && putRequest.getOpenTime() == null && putRequest.getCloseTime() == null) {
 			throw new BusinessException(ValidationErrorCode.MISSING_REQUIRED_FIELD);
 		}
-		return workHourService.updateWorkHour(shopId, putRequest, memberDetails.getMemberId());
+		return workHourService.updateWorkHour(shopId, putRequest, userId);
 	}
 
 	@GetMapping

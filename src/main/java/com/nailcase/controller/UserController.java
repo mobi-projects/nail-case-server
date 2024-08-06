@@ -25,7 +25,7 @@ public class UserController {
 	public ResponseEntity<UserInfoResponse> getUserInfo(
 		@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-		UserInfoResponse userInfo = userService.getUserInfo(userPrincipal.getId(), userPrincipal.getRole());
+		UserInfoResponse userInfo = userService.getUserInfo(userPrincipal.id(), userPrincipal.role());
 		return ResponseEntity.ok(userInfo);
 	}
 }

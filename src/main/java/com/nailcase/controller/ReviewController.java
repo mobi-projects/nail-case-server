@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReviewCommentDto;
 import com.nailcase.model.dto.ReviewDto;
 import com.nailcase.model.dto.ReviewImageDto;
@@ -37,59 +36,55 @@ public class ReviewController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ReviewDto.Response registerReview(@PathVariable Long shopId, @RequestBody ReviewDto.Request request,
 		@AuthenticationPrincipal
-		MemberDetails memberDetails) {
+		Long userId) {
 
 		log.info("Uploading images for shopId: {}", shopId);
-		return reviewService.registerReview(shopId, request, memberDetails);
+		return reviewService.registerReview(shopId, request, userId);
 	}
 
 	@PutMapping("/{reviewId}")
 	public ReviewDto.Response updateReview(@PathVariable Long shopId, @PathVariable Long reviewId,
-		@RequestBody ReviewDto.Request request, @AuthenticationPrincipal MemberDetails memberDetails
+		@RequestBody ReviewDto.Request request, @AuthenticationPrincipal
+	Long userId
 	) {
 		log.info("Updating review: {} for shopId: {}", reviewId, shopId);
-		Long memberId = memberDetails.getMemberId();
-		return reviewService.updateReview(shopId, reviewId, request, memberId);
+
+		return reviewService.updateReview(shopId, reviewId, request, userId);
 	}
 
 	@DeleteMapping("/{reviewId}")
 	public void deleteReview(@PathVariable Long shopId, @PathVariable Long reviewId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
-		reviewService.deleteReview(shopId, reviewId, memberId);
+		@AuthenticationPrincipal Long userId) {
+		reviewService.deleteReview(shopId, reviewId, userId);
 	}
 
 	@PostMapping("/{reviewId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ReviewCommentDto.Response registerReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
-		@RequestBody ReviewCommentDto.Request request, @AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
-		return reviewService.registerReviewComment(shopId, reviewId, request, memberId);
+		@RequestBody ReviewCommentDto.Request request, @AuthenticationPrincipal Long userId) {
+		return reviewService.registerReviewComment(shopId, reviewId, request, userId);
 	}
 
 	@PutMapping("/{reviewId}/comments/{commentId}")
 	public ReviewCommentDto.Response updateReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
 		@PathVariable Long commentId, @RequestBody ReviewCommentDto.Request request,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
-		return reviewService.updateReviewComment(shopId, reviewId, commentId, request, memberId);
+		@AuthenticationPrincipal Long userId) {
+		return reviewService.updateReviewComment(shopId, reviewId, commentId, request, userId);
 	}
 
 	@DeleteMapping("/{reviewId}/comments/{commentId}")
 	public void deleteReviewComment(@PathVariable Long shopId, @PathVariable Long reviewId,
-		@PathVariable Long commentId, @AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
-		reviewService.deleteReviewComment(shopId, reviewId, commentId, memberId);
+		@PathVariable Long commentId, @AuthenticationPrincipal Long userId) {
+		reviewService.deleteReviewComment(shopId, reviewId, commentId, userId);
 	}
 
 	// 이미지만 업로드하는 API
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<ReviewImageDto> uploadImages(@RequestParam("files") List<MultipartFile> files,
-		@AuthenticationPrincipal MemberDetails memberDetails, @PathVariable Long shopId) {
-		Long memberId = memberDetails.getMemberId();
+		@AuthenticationPrincipal Long userId, @PathVariable Long shopId) {
 		log.info("Uploading images for shopId: {}", shopId);
-		return reviewService.uploadImages(files, memberId);
+		return reviewService.uploadImages(files, userId);
 	}
 
 	@PostMapping("/{reviewId}/images")
@@ -102,10 +97,9 @@ public class ReviewController {
 
 	@DeleteMapping("/{reviewId}/images/{imageId}")
 	public void removeImageFromReview(@PathVariable Long reviewId, @PathVariable Long imageId,
-		@PathVariable String shopId, @AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getMemberId();
+		@PathVariable String shopId, @AuthenticationPrincipal Long userId) {
 		log.info("Removing image: {} from post: {}", imageId, reviewId);
-		reviewService.removeImageFromReview(reviewId, imageId, memberId);
+		reviewService.removeImageFromReview(reviewId, imageId, userId);
 	}
 
 	@GetMapping

@@ -83,4 +83,5 @@ public class NailArtist extends BaseEntity {
 		this.shops.add(shop);
 		shop.setNailArtist(this);
 	}
+
 }

@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.dto.UserPrincipal;
@@ -128,10 +127,10 @@ public class ShopController {
 	@PostMapping("/{shopId}/toggle-like")
 	public boolean toggleLikeShop(
 		@PathVariable Long shopId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getId();
-		log.info("toggleLike shop: {} for shopId: {}", memberId, shopId);
-		return shopService.toggleLike(shopId, memberId);
+		@AuthenticationPrincipal Long userId) {
+
+		log.info("toggleLike shop: {} for shopId: {}", userId, shopId);
+		return shopService.toggleLike(shopId, userId);
 	}
 
 }

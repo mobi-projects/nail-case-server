@@ -13,11 +13,9 @@ import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ImageErrorCode;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ReviewMapper;
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.ReviewCommentDto;
 import com.nailcase.model.dto.ReviewDto;
 import com.nailcase.model.dto.ReviewImageDto;
-import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Review;
@@ -48,14 +46,12 @@ public class ReviewService {
 	private final ReviewMapper reviewMapper;
 
 	@Transactional
-	public ReviewDto.Response registerReview(Long shopId, ReviewDto.Request request, MemberDetails memberDetails) {
+	public ReviewDto.Response registerReview(Long shopId, ReviewDto.Request request,
+		Long userId) {
 		Shop shop = shopRepository.findById(shopId)
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 
-		UserPrincipal.validateMember(memberDetails);
-		Long memberId = memberDetails.getId();
-
-		Member member = memberRepository.findById(memberId)
+		Member member = memberRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
 		ReservationDetail reservationDetail = reservationDetailRepository.findById(request.getReservationDetailId())
@@ -63,7 +59,7 @@ public class ReviewService {
 
 		// 리뷰 대상 예약의 날짜를 기준으로 방문 횟수 계산
 		Integer visitCount = reservationDetailRepository.countVisitsByMemberAndShop(
-			memberId,
+			userId,
 			shopId,
 			reservationDetail.getStartTime()
 		);
