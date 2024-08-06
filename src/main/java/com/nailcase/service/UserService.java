@@ -32,7 +32,9 @@ public class UserService {
 		Member member = memberRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 		return UserInfoResponse.builder()
+			.userId(member.getMemberId())
 			.profileImage(member.getProfileImgUrl())
+			.nickName(member.getNickname())
 			.role(member.getRole())
 			.build();
 	}
@@ -41,10 +43,12 @@ public class UserService {
 		NailArtist nailArtist = nailArtistRepository.findByIdWithShop(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 		return UserInfoResponse.builder()
+			.userId(nailArtist.getNailArtistId())
 			.shopId(nailArtist.getShop() != null ? nailArtist.getShop().getShopId() : null)
 			.shopName(nailArtist.getShop() != null ? nailArtist.getShop().getShopName() : null)
 			.profileImage(nailArtist.getProfileImgUrl())
 			.role(nailArtist.getRole())
+			.nickName(nailArtist.getNickname())
 			.build();
 	}
 

@@ -12,4 +12,6 @@ public class UserInfoResponse {
 	private String shopName;
 	private String profileImage;
 	private Role role;
+	private Long userId;
+	private String nickName;
 }
