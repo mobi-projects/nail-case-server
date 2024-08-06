@@ -1,6 +1,7 @@
 package com.nailcase.model.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,4 +86,32 @@ public class MonthlyArtDto {
 		}
 
 	}
+
+	@Data
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	public static class ImageDto {
+		private Long imageId; // 이미지 ID 목록
+		private String imageUrl;
+
+		public static List<MonthlyArtDto.ImageDto> toImageResponse(MonthlyArt monthlyArt) {
+			if (monthlyArt == null) {
+				return Collections.emptyList();
+			}
+			return monthlyArt.getMonthlyArtImages().stream()
+				.map(
+					image ->
+					{
+						ImageDto imageDto = new ImageDto();
+						imageDto.setImageId(image.getImageId());
+						imageDto.setImageUrl(generateImageUrl(image.getBucketName(), image.getObjectName()));
+						return imageDto;
+					}).collect(Collectors.toList());
+		}
+
+		private static String generateImageUrl(String bucket, String objectName) {
+			return "https://" + bucket + ".s3.amazonaws.com/" + objectName;
+		}
+
+	}
+
 }

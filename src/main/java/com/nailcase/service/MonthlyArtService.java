@@ -1,6 +1,8 @@
 package com.nailcase.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,7 @@ public class MonthlyArtService {
 	private final BitmapService bitmapService;
 
 	@Transactional
-	public List<MonthlyArtImageDto> uploadImages(List<MultipartFile> files, Long managerId) {
+	public List<MonthlyArtImageDto> uploadImages(List<MultipartFile> files) {
 		if (files.size() > 6) {
 			throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED, "이달의 아트 게시물당 최대 5개의 이미지만 업로드할 수 있습니다.");
 		}
@@ -50,7 +52,6 @@ public class MonthlyArtService {
 		List<MonthlyArtImage> tempImages = files.stream()
 			.map(file -> {
 				MonthlyArtImage tempImage = new MonthlyArtImage();
-				tempImage.setCreatedBy(managerId);
 				return tempImage;
 			})
 			.collect(Collectors.toList());
@@ -240,5 +241,72 @@ public class MonthlyArtService {
 			.orElseThrow(() -> new BusinessException(PostErrorCode.NOT_FOUND));
 		monthlyArt.decrementLikes();
 		monthlyArtRepository.save(monthlyArt);
+	}
+
+	public List<MonthlyArtDto.ImageDto> getListImageOfMonthlyArts(Long shopId) {
+		Optional<MonthlyArt> latestMonthlyArtWithImage = monthlyArtRepository.findLatestByShop_ShopId(shopId);
+		return latestMonthlyArtWithImage
+			.map(MonthlyArtDto.ImageDto::toImageResponse)
+			.orElse(Collections
+				.emptyList());
+	}
+
+	@Transactional
+	public List<MonthlyArtDto.ImageDto> updateMonthlyArtOnlyImages(Long shopId, List<MultipartFile> newFiles,
+		List<Long> removeIds, List<Long> keepIds) {
+		Shop shop = shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+
+		MonthlyArt monthlyArt = monthlyArtRepository.findLatestByShop_ShopId(shopId)
+			.orElseGet(() -> {
+				MonthlyArt newMonthlyArt = MonthlyArt.builder()
+					.title(null)
+					.contents(null)
+					.shop(shop)
+					.build();
+				return monthlyArtRepository.saveAndFlush(newMonthlyArt);
+			});
+		List<MonthlyArtImage> currentImages = monthlyArt.getMonthlyArtImages();
+
+		// 삭제할 이미지 처리
+		if (removeIds != null && !removeIds.isEmpty()) {
+			currentImages.removeIf(image -> removeIds.contains(image.getImageId()));
+			monthlyArtImageRepository.deleteAllById(removeIds);
+		}
+
+		// 유지할 이미지만 필터링
+		List<MonthlyArtImage> updatedImages = currentImages.stream()
+			.filter(image -> keepIds == null || keepIds.contains(image.getImageId()))
+			.collect(Collectors.toList());
+
+		// 새 이미지 업로드 및 추가
+		if (newFiles != null && !newFiles.isEmpty()) {
+			int totalImagesCount = updatedImages.size() + newFiles.size();
+			if (totalImagesCount > 6) {
+				throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED,
+					"이달의 아트 게시물당 최대 6개의 이미지만 업로드할 수 있습니다.");
+			}
+
+			List<MonthlyArtImage> tempImages = newFiles.stream()
+				.map(file -> new MonthlyArtImage())
+				.collect(Collectors.toList());
+
+			List<ImageDto> savedImageDtos = monthlyArtImageService.saveImages(newFiles, tempImages);
+
+			List<MonthlyArtImage> newMonthlyArtImages = savedImageDtos.stream()
+				.map(savedImageDto -> MonthlyArtImage.builder()
+					.imageId(savedImageDto.getId())
+					.bucketName(savedImageDto.getBucketName())
+					.objectName(savedImageDto.getObjectName())
+					.monthlyArt(monthlyArt)
+					.build())
+				.collect(Collectors.toList());
+
+			updatedImages.addAll(newMonthlyArtImages);
+		}
+		// MonthlyArt에 업데이트된 이미지 목록 설정
+		monthlyArt.setMonthlyArtImages(updatedImages);
+		monthlyArtRepository.save(monthlyArt);
+		return MonthlyArtDto.ImageDto.toImageResponse(monthlyArt);
 	}
 }
