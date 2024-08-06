@@ -1,11 +1,14 @@
 package com.nailcase.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
+import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.NailArtistRepository;
@@ -32,7 +35,9 @@ public class UserService {
 		Member member = memberRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 		return UserInfoResponse.builder()
+			.userId(member.getMemberId())
 			.profileImage(member.getProfileImgUrl())
+			.nickName(member.getNickname())
 			.role(member.getRole())
 			.build();
 	}
@@ -41,10 +46,12 @@ public class UserService {
 		NailArtist nailArtist = nailArtistRepository.findByIdWithShop(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 		return UserInfoResponse.builder()
-			.shopId(nailArtist.getShop() != null ? nailArtist.getShop().getShopId() : null)
-			.shopName(nailArtist.getShop() != null ? nailArtist.getShop().getShopName() : null)
+			.userId(nailArtist.getNailArtistId())
+			.shopId(Optional.ofNullable(nailArtist.getShop()).map(Shop::getShopId).orElse(null))
+			.shopName(Optional.ofNullable(nailArtist.getShop()).map(Shop::getShopName).orElse(null))
 			.profileImage(nailArtist.getProfileImgUrl())
 			.role(nailArtist.getRole())
+			.nickName(nailArtist.getNickname())
 			.build();
 	}
 
