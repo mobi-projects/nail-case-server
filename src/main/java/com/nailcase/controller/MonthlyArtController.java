@@ -3,6 +3,7 @@ package com.nailcase.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,10 +35,8 @@ public class MonthlyArtController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<MonthlyArtImageDto> uploadImages(
 		@RequestParam("files") List<MultipartFile> files,
-		@AuthenticationPrincipal Long userId,
 		@PathVariable Long shopId) {
-		log.info("Uploading images for shopId: {} by userId: {}", shopId, userId);
-		return monthlyArtService.uploadImages(files, userId);
+		return monthlyArtService.uploadImages(files);
 	}
 
 	@PostMapping
@@ -102,5 +101,19 @@ public class MonthlyArtController {
 		@AuthenticationPrincipal Long userId) {
 		log.info("Unliking monthly art: {} for shopId: {} by userId: {}", monthlyArtId, shopId, userId);
 		monthlyArtService.unlikeMonthlyArt(monthlyArtId, userId);
+	}
+
+	@GetMapping("/images")
+	public List<MonthlyArtDto.ImageDto> listMonthlyArt(
+		@PathVariable Long shopId) {
+		return monthlyArtService.getListImageOfMonthlyArts(shopId);
+	}
+
+	@PutMapping("/images")
+	public ResponseEntity<?> updateImages(@PathVariable Long shopId,
+		@RequestParam("newImages") List<MultipartFile> newFiles,
+		@RequestParam(value = "removeIds", required = false) List<Long> removeIds,
+		@RequestParam(value = "keepIds", required = false) List<Long> keepIds) {
+		return ResponseEntity.ok(monthlyArtService.updateMonthlyArtOnlyImages(shopId, newFiles, removeIds, keepIds));
 	}
 }
