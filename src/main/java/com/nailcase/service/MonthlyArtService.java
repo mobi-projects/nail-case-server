@@ -270,8 +270,12 @@ public class MonthlyArtService {
 
 		// 삭제할 이미지 처리
 		if (removeIds != null && !removeIds.isEmpty()) {
-			currentImages.removeIf(image -> removeIds.contains(image.getImageId()));
-			monthlyArtImageRepository.deleteAllById(removeIds);
+			List<MonthlyArtImage> imagesToRemove = currentImages.stream()
+				.filter(image -> removeIds.contains(image.getImageId()))
+				.collect(Collectors.toList());
+
+			currentImages.removeAll(imagesToRemove);
+			monthlyArtImageRepository.deleteAll(imagesToRemove);
 		}
 
 		// 유지할 이미지만 필터링
@@ -282,7 +286,7 @@ public class MonthlyArtService {
 		// 새 이미지 업로드 및 추가
 		if (newFiles != null && !newFiles.isEmpty()) {
 			int totalImagesCount = updatedImages.size() + newFiles.size();
-			if (totalImagesCount > 6) {
+			if (totalImagesCount > 10) {
 				throw new BusinessException(ImageErrorCode.IMAGE_LIMIT_EXCEEDED,
 					"이달의 아트 게시물당 최대 6개의 이미지만 업로드할 수 있습니다.");
 			}
