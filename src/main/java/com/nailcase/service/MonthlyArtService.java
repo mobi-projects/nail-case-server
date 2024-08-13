@@ -317,4 +317,5 @@ public class MonthlyArtService {
 		monthlyArtRepository.save(monthlyArt);
 		return MonthlyArtDto.ImageDto.toImageResponse(monthlyArt);
 	}
+
 }
