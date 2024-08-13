@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class MonthlyArtService {
+	private static final Logger log = LoggerFactory.getLogger(MonthlyArtService.class);
 	private final MonthlyArtRepository monthlyArtRepository;
 	private final MonthlyArtImageRepository monthlyArtImageRepository;
 	private final MonthlyArtImageService monthlyArtImageService;
@@ -276,6 +279,7 @@ public class MonthlyArtService {
 
 			currentImages.removeAll(imagesToRemove);
 			monthlyArtImageRepository.deleteAll(imagesToRemove);
+			log.info("Removed images: {}", imagesToRemove);
 		}
 
 		// 유지할 이미지만 필터링
