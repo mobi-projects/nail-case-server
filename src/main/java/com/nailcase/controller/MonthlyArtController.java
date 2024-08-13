@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nailcase.model.dto.MonthlyArtDto;
 import com.nailcase.model.dto.MonthlyArtImageDto;
 import com.nailcase.service.MonthlyArtService;
+import com.nailcase.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MonthlyArtController {
 	private final MonthlyArtService monthlyArtService;
+	private final StringUtils stringUtils;
 
 	@PostMapping("/images")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -112,8 +114,13 @@ public class MonthlyArtController {
 	@PutMapping("/images")
 	public ResponseEntity<?> updateImages(@PathVariable Long shopId,
 		@RequestParam(value = "newImages", required = false) List<MultipartFile> newFiles,
-		@RequestParam(value = "removeIds", required = false) List<Long> removeIds,
-		@RequestParam(value = "keepIds", required = false) List<Long> keepIds) {
+		@RequestParam(value = "removeIds", required = false) String removeIdsString,
+		@RequestParam(value = "keepIds", required = false) String keepIdsString) {
+
+		List<Long> removeIds = stringUtils.parseStringToLongList(removeIdsString);
+		List<Long> keepIds = stringUtils.parseStringToLongList(keepIdsString);
+
 		return ResponseEntity.ok(monthlyArtService.updateMonthlyArtOnlyImages(shopId, newFiles, removeIds, keepIds));
 	}
+
 }
