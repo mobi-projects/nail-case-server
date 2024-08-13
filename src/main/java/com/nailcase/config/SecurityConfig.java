@@ -121,7 +121,7 @@ public class SecurityConfig {
 			"http://localhost:3000",
 			"https://nail-case-client.vercel.app"
 		));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");
 		configuration.addExposedHeader("*");
 		configuration.setAllowCredentials(true);
