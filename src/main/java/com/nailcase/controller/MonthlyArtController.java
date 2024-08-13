@@ -111,7 +111,7 @@ public class MonthlyArtController {
 
 	@PutMapping("/images")
 	public ResponseEntity<?> updateImages(@PathVariable Long shopId,
-		@RequestParam("newImages") List<MultipartFile> newFiles,
+		@RequestParam(value = "newImages", required = false) List<MultipartFile> newFiles,
 		@RequestParam(value = "removeIds", required = false) List<Long> removeIds,
 		@RequestParam(value = "keepIds", required = false) List<Long> keepIds) {
 		return ResponseEntity.ok(monthlyArtService.updateMonthlyArtOnlyImages(shopId, newFiles, removeIds, keepIds));
