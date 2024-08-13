@@ -2062,12 +2062,6 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
-    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -2087,6 +2081,12 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
+    },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
@@ -5927,8 +5927,8 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         array[byte[]] newImages = ; // array[byte[]] | 
-        array[Long] removeIds = ; // array[Long] | 
-        array[Long] keepIds = ; // array[Long] | 
+        String removeIds = removeIds_example; // String | 
+        String keepIds = keepIds_example; // String | 
         try {
             Object result = apiInstance.updateImages(shopId, newImages, removeIds, keepIds);
             System.out.println(result);
@@ -5949,8 +5949,8 @@ public class MonthlyArtControllerApiExample {
         MonthlyArtControllerApi apiInstance = new MonthlyArtControllerApi();
         Long shopId = 789; // Long | 
         array[byte[]] newImages = ; // array[byte[]] | 
-        array[Long] removeIds = ; // array[Long] | 
-        array[Long] keepIds = ; // array[Long] | 
+        String removeIds = removeIds_example; // String | 
+        String keepIds = keepIds_example; // String | 
         try {
             Object result = apiInstance.updateImages(shopId, newImages, removeIds, keepIds);
             System.out.println(result);
@@ -5971,8 +5971,8 @@ public class MonthlyArtControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 array[byte[]] *newImages = ; // 
-array[Long] *removeIds = ; //  (optional)
-array[Long] *keepIds = ; //  (optional)
+String *removeIds = removeIds_example; //  (optional)
+String *keepIds = keepIds_example; //  (optional)
 
 MonthlyArtControllerApi *apiInstance = [[MonthlyArtControllerApi alloc] init];
 
@@ -6004,8 +6004,8 @@ var api = new NailCaseApi.MonthlyArtControllerApi()
 var shopId = 789; // {{Long}} 
 var newImages = ; // {{array[byte[]]}} 
 var opts = { 
-  'removeIds': , // {{array[Long]}} 
-  'keepIds':  // {{array[Long]}} 
+  'removeIds': removeIds_example, // {{String}} 
+  'keepIds': keepIds_example // {{String}} 
 };
 var callback = function(error, data, response) {
   if (error) {
@@ -6041,8 +6041,8 @@ namespace Example
             var apiInstance = new MonthlyArtControllerApi();
             var shopId = 789;  // Long | 
             var newImages = new array[byte[]](); // array[byte[]] | 
-            var removeIds = new array[Long](); // array[Long] |  (optional) 
-            var keepIds = new array[Long](); // array[Long] |  (optional) 
+            var removeIds = removeIds_example;  // String |  (optional) 
+            var keepIds = keepIds_example;  // String |  (optional) 
 
             try
             {
@@ -6069,8 +6069,8 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiMonthlyArtControllerApi();
 $shopId = 789; // Long | 
 $newImages = ; // array[byte[]] | 
-$removeIds = ; // array[Long] | 
-$keepIds = ; // array[Long] | 
+$removeIds = removeIds_example; // String | 
+$keepIds = keepIds_example; // String | 
 
 try {
     $result = $api_instance->updateImages($shopId, $newImages, $removeIds, $keepIds);
@@ -6092,8 +6092,8 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::MonthlyArtControllerApi->new();
 my $shopId = 789; # Long | 
 my $newImages = []; # array[byte[]] | 
-my $removeIds = []; # array[Long] | 
-my $keepIds = []; # array[Long] | 
+my $removeIds = removeIds_example; # String | 
+my $keepIds = keepIds_example; # String | 
 
 eval { 
     my $result = $api_instance->updateImages(shopId => $shopId, newImages => $newImages, removeIds => $removeIds, keepIds => $keepIds);
@@ -6118,8 +6118,8 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.MonthlyArtControllerApi()
 shopId = 789 # Long | 
 newImages =  # array[byte[]] | 
-removeIds =  # array[Long] |  (optional)
-keepIds =  # array[Long] |  (optional)
+removeIds = removeIds_example # String |  (optional)
+keepIds = keepIds_example # String |  (optional)
 
 try: 
     api_response = api_instance.update_images(shopId, newImages, removeIds=removeIds, keepIds=keepIds)
@@ -6200,11 +6200,8 @@ except ApiException as e:
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
-                                                    array[Long]
+                                                    String
                                                 </span>
-                                                    <span class="format">
-                                                        (int64)
-                                                    </span>
                                 
                                             </div>
                                         </div>
@@ -6219,11 +6216,8 @@ except ApiException as e:
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
-                                                    array[Long]
+                                                    String
                                                 </span>
-                                                    <span class="format">
-                                                        (int64)
-                                                    </span>
                                 
                                             </div>
                                         </div>
