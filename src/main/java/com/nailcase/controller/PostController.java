@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nailcase.model.dto.MemberDetails;
 import com.nailcase.model.dto.PostCommentDto;
 import com.nailcase.model.dto.PostDto;
 import com.nailcase.model.dto.PostImageDto;
@@ -145,9 +144,9 @@ public class PostController {
 	public boolean toggleLikePost(
 		@PathVariable Long shopId,
 		@PathVariable Long announcementId,
-		@AuthenticationPrincipal MemberDetails memberDetails) {
-		Long memberId = memberDetails.getId();
-		log.info("toggleLike post: {} for shopId: {}", memberId, shopId);
-		return postService.toggleLike(shopId, announcementId, memberId);
+		@AuthenticationPrincipal Long userId) {
+
+		log.info("toggleLike post: {} for shopId: {}", userId, shopId);
+		return postService.toggleLike(shopId, announcementId, userId);
 	}
 }
