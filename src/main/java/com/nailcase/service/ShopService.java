@@ -216,14 +216,6 @@ public class ShopService {
 			.forEach(workHourRepository::save);
 	}
 
-	public List<Shop> findTopPopularShops(Pageable pageable) {
-		return shopRepository.findTopShopsByPopularityCriteria(pageable).getContent();
-	}
-
-	public List<Shop> findMemberLikedShops(Long memberId, Pageable pageable) {
-		return shopRepository.findLikedShopsByMember(memberId, pageable).getContent();
-	}
-
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean toggleLike(Long shopId, Long memberId) {
 		try {

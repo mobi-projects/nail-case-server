@@ -69,11 +69,6 @@ public interface ShopMapper {
 	@Mapping(target = "workHours", expression = "java(mapWorkHours(shop.getWorkHours()))")
 	ShopDto.Response toResponse(Shop shop);
 
-	@Mapping(target = "id", source = "shopId")
-	@Mapping(target = "name", source = "shopName")
-	@Mapping(target = "overview", source = "overview")
-	ShopDto.MainPageResponse toMainPageResponse(Shop shop);
-
 	@Mapping(target = "shopName", source = "shopName")
 	@Mapping(target = "phone", source = "phone")
 	@Mapping(target = "address", source = "address")

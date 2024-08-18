@@ -1,8 +1,6 @@
 package com.nailcase.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nailcase.model.dto.MainPageDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.service.MainPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +24,8 @@ public class MainPageController {
 
 	@GetMapping
 	public MainPageDto getMainPageData(@AuthenticationPrincipal Long userId) {
-		List<ShopDto.MainPageResponse> topPopularShops = mainPageService.getTopPopularShops(userId);
 
-		ReservationDto.MainPageResponse earliestReservation = null;
-		List<ShopDto.MainPageResponse> likedShops = new ArrayList<>();
-		List<ReservationDto.CompletedReservationResponse> recentlyCompletedReservations = new ArrayList<>();
+		ReservationDto.MainPageResponse earliestReservation;
 
 		if (userId != null) {
 			earliestReservation = mainPageService.getEarliestReservationByMember(userId)
@@ -39,11 +35,16 @@ public class MainPageController {
 					.stream()
 					.allMatch(detail -> detail.getStartTime() != null))
 				.orElse(null);
-			likedShops = mainPageService.getMemberLikedShops(userId);
-			recentlyCompletedReservations = mainPageService.getCompletedReservations(userId);
+			return new MainPageDto(earliestReservation);
+		} else {
+			return new MainPageDto(null);
 		}
+	}
 
-		return new MainPageDto(earliestReservation, recentlyCompletedReservations, topPopularShops, likedShops);
+	@GetMapping("/shopsList")
+	public ShopDto.InfiniteScrollResponse getTopPopularShops(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		Pageable pageable) {
+		return mainPageService.getTopPopularShops(userPrincipal, pageable);
 	}
 
 }
