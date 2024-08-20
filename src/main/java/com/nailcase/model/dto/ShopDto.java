@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -110,11 +111,27 @@ public class ShopDto {
 		private String imageUrl;
 	}
 
+	@Builder
 	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class MainPageResponse {
-		private Long id;
-		private String name;
-		private String overview;
+		private Long shopId;
+		private String shopName;
 		private boolean likedByUser;  // 사용자가 매장을 좋아요 했는지 여부
 	}
+
+	@Builder
+	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class InfiniteScrollResponse {
+		private List<MainPageResponse> shopList;
+		private int pageNumber;
+		private int pageSize;
+		private long totalElements;
+		private int totalPages;
+		private boolean last;
+	}
+
 }

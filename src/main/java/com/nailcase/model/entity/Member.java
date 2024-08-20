@@ -73,4 +73,5 @@ public class Member extends BaseEntity {
 	public String getRoleKey() {
 		return this.role.getKey();
 	}
+
 }

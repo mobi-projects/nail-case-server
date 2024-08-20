@@ -82,7 +82,7 @@ public class ShopService {
 		List<MultipartFile> priceImages, UserPrincipal userPrincipal) {
 		try {
 			ShopDto.PostRequest shopData = parseShopData(shopDataJson);
-			NailArtist nailArtist = getNailArtist(userPrincipal.getId());
+			NailArtist nailArtist = getNailArtist(userPrincipal.id());
 			Shop shop = createAndSaveShop(shopData, nailArtist);
 
 			processShopDetails(shop, shopData, profileImages, priceImages);
@@ -214,14 +214,6 @@ public class ShopService {
 		IntStream.range(0, 7)
 			.mapToObj(i -> WorkHour.builder().shop(shop).dayOfWeek(i).build())
 			.forEach(workHourRepository::save);
-	}
-
-	public List<Shop> findTopPopularShops(Pageable pageable) {
-		return shopRepository.findTopShopsByPopularityCriteria(pageable).getContent();
-	}
-
-	public List<Shop> findMemberLikedShops(Long memberId, Pageable pageable) {
-		return shopRepository.findLikedShopsByMember(memberId, pageable).getContent();
 	}
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)

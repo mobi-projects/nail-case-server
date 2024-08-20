@@ -1,18 +1,16 @@
 package com.nailcase.repository;
 
 import static com.nailcase.model.entity.QReview.*;
-import static com.nailcase.model.entity.QShop.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QReservationDetail;
 import com.nailcase.model.entity.QReview;
@@ -20,6 +18,7 @@ import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -50,56 +49,6 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 				.or(shop.address.contains(keyword)));
 
 		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
-	}
-
-	@Override
-	public Page<Shop> findTopShopsByPopularityCriteria(Pageable pageable) {
-		QShop qShop = shop;
-		List<Shop> shops = queryFactory.selectFrom(qShop)
-			.orderBy(qShop.likes.desc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
-
-		// null 체크 및 빈 리스트로 대체
-		shops = (shops != null) ? shops : new ArrayList<>();
-
-		JPAQuery<Long> countQuery = queryFactory
-			.select(qShop.count())
-			.from(qShop);
-
-		return PageableExecutionUtils.getPage(shops, pageable, () -> {
-			Long count = countQuery.fetchOne();
-			return count != null ? count : 0L;
-		});
-	}
-
-	@Override
-	public Page<Shop> findLikedShopsByMember(Long memberId, Pageable pageable) {
-		QShop qShop = shop;
-
-		QShopLikedMember qShopLikedMember = QShopLikedMember.shopLikedMember;
-
-		List<Shop> shops = queryFactory
-			.select(qShopLikedMember.shop)
-			.from(qShopLikedMember)
-			.where(qShopLikedMember.member.memberId.eq(memberId))
-			.join(qShopLikedMember.shop, qShop)
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
-
-		// shops가 null이면 빈 리스트로 초기화
-		shops = (shops != null) ? shops : new ArrayList<>();
-
-		long total = Optional.ofNullable(queryFactory
-				.select(qShopLikedMember.count())
-				.from(qShopLikedMember)
-				.where(qShopLikedMember.member.memberId.eq(memberId))
-				.fetchOne())
-			.orElse(0L);
-
-		return new PageImpl<>(shops, pageable, total);
 	}
 
 	@Override
@@ -141,4 +90,31 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 			.orElse(0.0);  // Optional을 사용하여 null 처리
 	}
 
+	@Override
+	public Page<ShopDto.MainPageResponse> getTopPopularShops(Long memberId, Pageable pageable) {
+		QShop shop = QShop.shop;
+		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
+
+		// 1. 상점 정보와 좋아요 여부를 함께 조회
+		List<ShopDto.MainPageResponse> shops = queryFactory
+			.select(Projections.constructor(ShopDto.MainPageResponse.class,
+				shop.shopId,
+				shop.shopName,
+				shopLikedMember.member.memberId.eq(memberId).as("likedByUser")))
+			.from(shop)
+			.leftJoin(shopLikedMember).on(shop.shopId.eq(shopLikedMember.shop.shopId)
+				.and(shopLikedMember.member.memberId.eq(memberId)))
+			.orderBy(shop.likes.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		// 2. 전체 개수를 구하는 쿼리
+		JPAQuery<Long> countQuery = queryFactory
+			.select(shop.count())
+			.from(shop);
+
+		// 3. Page 객체 생성 및 반환
+		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
+	}
 }
