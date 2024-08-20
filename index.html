@@ -731,24 +731,6 @@
   "properties" : {
     "recentReservation" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$MainPageResponse"
-    },
-    "topPopularShops" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$MainPageResponse"
-      }
-    },
-    "likedShops" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$MainPageResponse"
-      }
-    },
-    "max3RecentlyCompletedReservation" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$CompletedReservationResponse"
-      }
     }
   }
 };
@@ -1278,37 +1260,6 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.ReservationDto$CompletedReservationResponse"] = {
-  "type" : "object",
-  "properties" : {
-    "reservationId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "shop" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$CompletedReservationResponse$ShopInfo"
-    },
-    "startTime" : {
-      "type" : "integer",
-      "format" : "int64"
-    }
-  }
-};
-            defs["com.nailcase.model.dto.ReservationDto$CompletedReservationResponse$ShopInfo"] = {
-  "type" : "object",
-  "properties" : {
-    "id" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "name" : {
-      "type" : "string"
-    },
-    "image" : {
-      "type" : "string"
-    }
-  }
-};
             defs["com.nailcase.model.dto.ReservationDto$Confirm"] = {
   "type" : "object",
   "properties" : {
@@ -1646,17 +1597,44 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.ShopDto$MainPageResponse"] = {
+            defs["com.nailcase.model.dto.ShopDto$InfiniteScrollResponse"] = {
   "type" : "object",
   "properties" : {
-    "id" : {
+    "shopList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$MainPageResponse"
+      }
+    },
+    "pageNumber" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "pageSize" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "totalElements" : {
       "type" : "integer",
       "format" : "int64"
     },
-    "name" : {
-      "type" : "string"
+    "totalPages" : {
+      "type" : "integer",
+      "format" : "int32"
     },
-    "overview" : {
+    "last" : {
+      "type" : "boolean"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ShopDto$MainPageResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "shopName" : {
       "type" : "string"
     },
     "likedByUser" : {
@@ -2028,6 +2006,27 @@
     }
   }
 };
+            defs["org.springdoc.core.converters.models.Pageable"] = {
+  "type" : "object",
+  "properties" : {
+    "page" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "size" : {
+      "minimum" : 1,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "sort" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    }
+  }
+};
             defs["org.springdoc.core.converters.models.SortObject"] = {
   "type" : "object",
   "properties" : {
@@ -2051,16 +2050,22 @@
             defs["org.springframework.data.domain.PageCom.nailcase.model.dto.ShopDto$Response"] = {
   "type" : "object",
   "properties" : {
-    "totalPages" : {
-      "type" : "integer",
-      "format" : "int32"
-    },
     "totalElements" : {
       "type" : "integer",
       "format" : "int64"
     },
+    "totalPages" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
+    },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
     },
     "size" : {
       "type" : "integer",
@@ -2082,12 +2087,6 @@
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
     },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
-    },
     "numberOfElements" : {
       "type" : "integer",
       "format" : "int32"
@@ -2100,6 +2099,9 @@
             defs["PageableObject"] = {
   "type" : "object",
   "properties" : {
+    "unpaged" : {
+      "type" : "boolean"
+    },
     "paged" : {
       "type" : "boolean"
     },
@@ -2110,9 +2112,6 @@
     "pageSize" : {
       "type" : "integer",
       "format" : "int32"
-    },
-    "unpaged" : {
-      "type" : "boolean"
     },
     "offset" : {
       "type" : "integer",
@@ -2192,6 +2191,9 @@
                   <li class="nav-header" data-group="MainPageController"><a href="#api-MainPageController">API Methods - MainPageController</a></li>
                     <li data-group="MainPageController" data-name="getMainPageData" class="">
                       <a href="#api-MainPageController-getMainPageData">getMainPageData</a>
+                    </li>
+                    <li data-group="MainPageController" data-name="getTopPopularShops" class="">
+                      <a href="#api-MainPageController-getTopPopularShops">getTopPopularShops</a>
                     </li>
                   <li class="nav-header" data-group="MonthlyArtController"><a href="#api-MonthlyArtController">API Methods - MonthlyArtController</a></li>
                     <li data-group="MonthlyArtController" data-name="deleteMonthlyArt" class="">
@@ -3922,6 +3924,325 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-getMainPageData-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-MainPageController-getTopPopularShops">
+                      <article id="api-MainPageController-getTopPopularShops-0" data-group="User" data-name="getTopPopularShops" data-version="0">
+                        <div class="pull-left">
+                          <h1>getTopPopularShops</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/main/shopsList</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-MainPageController-getTopPopularShops-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-java">Java</a></li>
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-MainPageController-getTopPopularShops-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-MainPageController-getTopPopularShops-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-MainPageController-getTopPopularShops-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-MainPageController-getTopPopularShops-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+\
+-H "Accept: */*"\
+"http://localhost:8081/api/v1/main/shopsList?pageable="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.MainPageControllerApi;
+
+import java.io.File;
+import java.util.*;
+
+public class MainPageControllerApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        // Configure OAuth2 access token for authorization: oauth2-key
+        OAuth oauth2-key = (OAuth) defaultClient.getAuthentication("oauth2-key");
+        oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
+
+        MainPageControllerApi apiInstance = new MainPageControllerApi();
+        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
+        try {
+            com.nailcase.model.dto.ShopDto$InfiniteScrollResponse result = apiInstance.getTopPopularShops(pageable);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MainPageControllerApi#getTopPopularShops");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.MainPageControllerApi;
+
+public class MainPageControllerApiExample {
+
+    public static void main(String[] args) {
+        MainPageControllerApi apiInstance = new MainPageControllerApi();
+        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
+        try {
+            com.nailcase.model.dto.ShopDto$InfiniteScrollResponse result = apiInstance.getTopPopularShops(pageable);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MainPageControllerApi#getTopPopularShops");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+org.springdoc.core.converters.models.Pageable *pageable = ; // 
+
+MainPageControllerApi *apiInstance = [[MainPageControllerApi alloc] init];
+
+[apiInstance getTopPopularShopsWith:pageable
+              completionHandler: ^(com.nailcase.model.dto.ShopDto$InfiniteScrollResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var NailCaseApi = require('nail_case_api');
+var defaultClient = NailCaseApi.ApiClient.instance;
+
+
+// Configure OAuth2 access token for authorization: oauth2-key
+var oauth2-key = defaultClient.authentications['oauth2-key'];
+oauth2-key.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new NailCaseApi.MainPageControllerApi()
+var pageable = ; // {{org.springdoc.core.converters.models.Pageable}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getTopPopularShops(pageable, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getTopPopularShopsExample
+    {
+        public void main()
+        {
+
+            // Configure OAuth2 access token for authorization: oauth2-key
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new MainPageControllerApi();
+            var pageable = new org.springdoc.core.converters.models.Pageable(); // org.springdoc.core.converters.models.Pageable | 
+
+            try
+            {
+                com.nailcase.model.dto.ShopDto$InfiniteScrollResponse result = apiInstance.getTopPopularShops(pageable);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling MainPageControllerApi.getTopPopularShops: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: oauth2-key
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\ApiMainPageControllerApi();
+$pageable = ; // org.springdoc.core.converters.models.Pageable | 
+
+try {
+    $result = $api_instance->getTopPopularShops($pageable);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling MainPageControllerApi->getTopPopularShops: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::MainPageControllerApi;
+
+# Configure OAuth2 access token for authorization: oauth2-key
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::MainPageControllerApi->new();
+my $pageable = ; # org.springdoc.core.converters.models.Pageable | 
+
+eval { 
+    my $result = $api_instance->getTopPopularShops(pageable => $pageable);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling MainPageControllerApi->getTopPopularShops: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-MainPageController-getTopPopularShops-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: oauth2-key
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.MainPageControllerApi()
+pageable =  # org.springdoc.core.converters.models.Pageable | 
+
+try: 
+    api_response = api_instance.get_top_popular_shops(pageable)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling MainPageControllerApi->getTopPopularShops: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">pageable*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_getTopPopularShops_pageable">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    org.springdoc.core.converters.models.Pageable
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getTopPopularShops-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getTopPopularShops-200-schema">
+                                  <div id='responses-getTopPopularShops-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$InfiniteScrollResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["*/*"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getTopPopularShops-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getTopPopularShops-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getTopPopularShops-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
