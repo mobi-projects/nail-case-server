@@ -18,7 +18,10 @@ import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -91,7 +94,7 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 	}
 
 	@Override
-	public Page<ShopDto.MainPageResponse> getTopPopularShops(Long memberId, Pageable pageable) {
+	public Page<ShopDto.MainPageResponse> getTopPopularShops(Optional<Long> memberId, Pageable pageable) {
 		QShop shop = QShop.shop;
 		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
 
@@ -100,10 +103,17 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 			.select(Projections.constructor(ShopDto.MainPageResponse.class,
 				shop.shopId,
 				shop.shopName,
-				shopLikedMember.member.memberId.eq(memberId).as("likedByUser")))
+				ExpressionUtils.as(
+					JPAExpressions.selectOne()
+						.from(shopLikedMember)
+						.where(shopLikedMember.shop.shopId.eq(shop.shopId)
+							.and(memberId.isPresent()
+								? shopLikedMember.member.memberId.eq(memberId.get())
+								: Expressions.FALSE))
+						.exists(),
+					"likedByUser"
+				)))
 			.from(shop)
-			.leftJoin(shopLikedMember).on(shop.shopId.eq(shopLikedMember.shop.shopId)
-				.and(shopLikedMember.member.memberId.eq(memberId)))
 			.orderBy(shop.likes.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -117,4 +127,5 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 		// 3. Page 객체 생성 및 반환
 		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
 	}
+
 }

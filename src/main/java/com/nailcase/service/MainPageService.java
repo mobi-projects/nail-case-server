@@ -14,7 +14,6 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.entity.Member;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopLikedMemberRepository;
@@ -56,19 +55,15 @@ public class MainPageService {
 		return reservationService.findRecentlyCompletedReservationByCustomer(member);
 	}
 
-	public ShopDto.InfiniteScrollResponse getTopPopularShops(UserPrincipal userPrincipal, Pageable pageable) {
+	public ShopDto.InfiniteScrollResponse getTopPopularShops(Optional<Long> memberId, Pageable pageable) {
 		// 1. 인기순으로 정렬된 페이지 요청 생성
-		if (userPrincipal.role() == com.nailcase.model.enums.Role.MANAGER) {
-			throw new BusinessException(UserErrorCode.ONLY_MEMBER_PAGE);
-		}
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
 			Sort.by("likes").descending());
 
 		// 2. 정렬된 shop 목록 조회
-		Long memberId = userPrincipal.id();
 		Page<ShopDto.MainPageResponse> topPopularShops = shopRepository.getTopPopularShops(memberId, sortedPageable);
 
-		// 5. InfiniteScrollResponse 생성 및 반환
+		// 3. InfiniteScrollResponse 생성 및 반환
 		return ShopDto.InfiniteScrollResponse.builder()
 			.shopList(topPopularShops.getContent())
 			.last(topPopularShops.isLast())

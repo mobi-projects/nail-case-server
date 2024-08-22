@@ -11,7 +11,7 @@ import com.nailcase.model.entity.Shop;
 public interface ShopQuerydslRepository {
 	Page<Shop> searchShop(String param, Pageable pageable);
 
-	Page<ShopDto.MainPageResponse> getTopPopularShops(Long memberId, Pageable pageable);
+	Page<ShopDto.MainPageResponse> getTopPopularShops(Optional<Long> memberId, Pageable pageable);
 
 	Optional<Shop> findByShopIdAndNailArtistsAndWorkHours(Long shopId);
 
