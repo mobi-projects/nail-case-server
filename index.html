@@ -2061,12 +2061,6 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
-    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -2087,6 +2081,12 @@
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
     },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
+    },
     "numberOfElements" : {
       "type" : "integer",
       "format" : "int32"
@@ -2099,9 +2099,6 @@
             defs["PageableObject"] = {
   "type" : "object",
   "properties" : {
-    "unpaged" : {
-      "type" : "boolean"
-    },
     "paged" : {
       "type" : "boolean"
     },
@@ -2112,6 +2109,9 @@
     "pageSize" : {
       "type" : "integer",
       "format" : "int32"
+    },
+    "unpaged" : {
+      "type" : "boolean"
     },
     "offset" : {
       "type" : "integer",
