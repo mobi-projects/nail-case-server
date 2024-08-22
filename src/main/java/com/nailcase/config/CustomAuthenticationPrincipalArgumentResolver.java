@@ -1,5 +1,9 @@
 package com.nailcase.config;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -24,21 +28,57 @@ public class CustomAuthenticationPrincipalArgumentResolver implements HandlerMet
 	public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer,
 		@NotNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null) {
-			return null;
+		if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+			return handleAnonymousUser(parameter);
 		}
 
 		Object principal = authentication.getPrincipal();
+		if (!(principal instanceof UserPrincipal)) {
+			return handleAnonymousUser(parameter);
+		}
+
+		UserPrincipal userPrincipal = (UserPrincipal)principal;
 		Class<?> parameterType = parameter.getParameterType();
 
-		if (parameterType.equals(Long.class)) {
-			return ((UserPrincipal)principal).id();
+		if (parameterType.equals(Optional.class)) {
+			return handleOptionalType(parameter, userPrincipal);
+		} else if (parameterType.equals(Long.class)) {
+			return userPrincipal.id();
 		} else if (parameterType.equals(Role.class)) {
-			return ((UserPrincipal)principal).role();
+			return userPrincipal.role();
 		} else if (parameterType.equals(UserPrincipal.class)) {
-			return principal;
+			return userPrincipal;
 		}
 
 		throw new IllegalArgumentException("지원하지 않는 타입: " + parameterType);
+	}
+
+	private Object handleAnonymousUser(MethodParameter parameter) {
+		Class<?> parameterType = parameter.getParameterType();
+		if (parameterType.equals(Optional.class)) {
+			return Optional.empty();
+		} else if (parameterType.equals(Long.class) || parameterType.equals(Role.class) || parameterType.equals(
+			UserPrincipal.class)) {
+			return null;
+		}
+		throw new IllegalArgumentException("익명 사용자에 대해 지원하지 않는 타입: " + parameterType);
+	}
+
+	private Object handleOptionalType(MethodParameter parameter, UserPrincipal userPrincipal) {
+		Type genericType = parameter.getGenericParameterType();
+		if (genericType instanceof ParameterizedType) {
+			Type[] actualTypeArguments = ((ParameterizedType)genericType).getActualTypeArguments();
+			if (actualTypeArguments.length == 1) {
+				Class<?> actualTypeArgument = (Class<?>)actualTypeArguments[0];
+				if (actualTypeArgument.equals(Long.class)) {
+					return Optional.of(userPrincipal.id());
+				} else if (actualTypeArgument.equals(Role.class)) {
+					return Optional.of(userPrincipal.role());
+				} else if (actualTypeArgument.equals(UserPrincipal.class)) {
+					return Optional.of(userPrincipal);
+				}
+			}
+		}
+		throw new IllegalArgumentException("지원하지 않는 Optional 타입: " + genericType);
 	}
 }

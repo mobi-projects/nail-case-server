@@ -1,5 +1,7 @@
 package com.nailcase.controller;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nailcase.model.dto.MainPageDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.service.MainPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,9 +43,10 @@ public class MainPageController {
 	}
 
 	@GetMapping("/shopsList")
-	public ShopDto.InfiniteScrollResponse getTopPopularShops(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	public ShopDto.InfiniteScrollResponse getTopPopularShops(
+		@AuthenticationPrincipal(expression = "principal?.id") Long memberId,
 		Pageable pageable) {
-		return mainPageService.getTopPopularShops(userPrincipal, pageable);
+		return mainPageService.getTopPopularShops(Optional.ofNullable(memberId), pageable);
 	}
 
 }
