@@ -36,7 +36,7 @@ public class ReviewDto {
 		private String contents;
 		private Double rating;
 		private boolean accompaniedIn;
-		private List<TreatmentOption> treatmentOptions;
+		private TreatmentOption treatmentOptions;
 		private List<ConditionOption> conditionOptions;
 		private Integer visitCount;
 		private Long createdAt;

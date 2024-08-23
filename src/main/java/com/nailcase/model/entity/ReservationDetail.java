@@ -58,9 +58,9 @@ public class ReservationDetail extends BaseEntity {
 	@JoinColumn(name = "reservation_id")
 	private Reservation reservation;
 
-	@Builder.Default
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservationDetail")
-	private Set<Treatment> treatmentList = new HashSet<>();
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "treatment_id")
+	private Treatment treatment;
 
 	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservationDetail")
@@ -104,7 +104,6 @@ public class ReservationDetail extends BaseEntity {
 	public void associateDown(Reservation reservation) {
 		this.reservation = reservation;
 		this.conditionList.forEach(condition -> condition.associateDown(this));
-		this.treatmentList.forEach(treatment -> treatment.associateDown(this));
 	}
 
 	public void updateArtist(NailArtist nailArtist) {

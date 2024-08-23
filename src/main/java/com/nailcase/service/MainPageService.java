@@ -18,6 +18,8 @@ import com.nailcase.model.entity.Member;
 import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopLikedMemberRepository;
 import com.nailcase.repository.ShopRepository;
+import com.nailcase.util.StringUtils;
+import com.querydsl.core.Tuple;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +39,6 @@ public class MainPageService {
 			.orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 		ReservationDto.MainPageResponse response = reservationService.findEarliestReservationByCustomer(member);
 
-		System.out.println("response = " + response);
 		if (response == null || response.getDetails() == null || response.getDetails().isEmpty()) {
 			return Optional.empty();
 		}
@@ -60,10 +61,31 @@ public class MainPageService {
 		Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
 			Sort.by("likes").descending());
 
-		// 2. 정렬된 shop 목록 조회
-		Page<ShopDto.MainPageResponse> topPopularShops = shopRepository.getTopPopularShops(memberId, sortedPageable);
+		// 2. 정렬된 shop 목록 조회 (raw 데이터)
+		Page<Tuple> topPopularShopsRaw = shopRepository.getTopPopularShops(memberId, sortedPageable);
 
-		// 3. InfiniteScrollResponse 생성 및 반환
+		// 3. raw 데이터를 MainPageResponse로 변환
+		Page<ShopDto.MainPageResponse> topPopularShops = topPopularShopsRaw.map(tuple -> {
+			Long shopId = tuple.get(0, Long.class);
+			String shopName = tuple.get(1, String.class);
+			String bucketName = tuple.get(2, String.class);
+			String objectName = tuple.get(3, String.class);
+			Boolean likedByUser = tuple.get(4, Boolean.class);
+
+			String shopImageUrl = null;
+			if (bucketName != null && objectName != null) {
+				shopImageUrl = StringUtils.generateImageUrl(bucketName, objectName);
+			}
+
+			return ShopDto.MainPageResponse.builder()
+				.shopId(shopId)
+				.shopName(shopName)
+				.shopImageUrl(shopImageUrl)
+				.likedByUser(likedByUser != null && likedByUser)
+				.build();
+		});
+
+		// 4. InfiniteScrollResponse 생성 및 반환
 		return ShopDto.InfiniteScrollResponse.builder()
 			.shopList(topPopularShops.getContent())
 			.last(topPopularShops.isLast())

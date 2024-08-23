@@ -84,7 +84,7 @@ public class Shop extends BaseEntity {
 	private Set<TagMapping> tags = new HashSet<>();
 
 	@Builder.Default
-	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ShopImage> shopImages = new ArrayList<>();
 
 	@Builder.Default

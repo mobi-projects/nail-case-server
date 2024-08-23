@@ -18,7 +18,6 @@ public interface TreatmentMapper {
 	@Mapping(target = "createdBy", ignore = true)
 	@Mapping(target = "modifiedBy", ignore = true)
 	@Mapping(target = "treatmentId", ignore = true)
-	@Mapping(target = "reservationDetail", ignore = true)
 	Treatment toEntity(TreatmentDto.Post post);
 
 	@Mapping(

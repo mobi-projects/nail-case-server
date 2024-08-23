@@ -23,4 +23,8 @@ public class StringUtils {
 			throw new IllegalArgumentException("Invalid format for ids: " + idsString, e);
 		}
 	}
+
+	public static String generateImageUrl(String bucket, String objectName) {
+		return "https://" + bucket + ".s3.amazonaws.com/" + objectName;
+	}
 }

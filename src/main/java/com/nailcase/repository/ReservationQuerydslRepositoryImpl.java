@@ -16,10 +16,16 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.nailcase.model.entity.QMember;
+import com.nailcase.model.entity.QReservation;
+import com.nailcase.model.entity.QReservationDetail;
+import com.nailcase.model.entity.QShop;
+import com.nailcase.model.entity.QShopImage;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.ReservationStatus;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +46,8 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.fetchJoin()
 			.leftJoin(reservationDetail.nailArtist, nailArtist)
 			.fetchJoin()
+			.leftJoin(reservationDetail.treatment, treatment)  // Treatment를 여기서 조인
+			.fetchJoin()
 			.where(reservation.shop.shopId.eq(shopId),
 				reservationDetail.startTime.between(startDate, endDate),
 				reservationDetail.status.eq(status))
@@ -56,15 +64,17 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.where(condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
 			.fetch();
 
-		queryFactory.selectFrom(treatment)
-			.where(treatment.reservationDetail.reservationDetailId.in(reservationDetailIdList))
-			.fetch();
-
 		return reservationList;
 	}
 
 	// 아직 시술 받기전 예약들
 	public List<Reservation> fetchUpcomingReservationWithReservationDetails(Long memberId, Pageable pageable) {
+		QReservation reservation = QReservation.reservation;
+		QReservationDetail reservationDetail = QReservationDetail.reservationDetail;
+		QMember member = QMember.member;
+		QShop shop = QShop.shop;
+		QShopImage shopImage = QShopImage.shopImage;
+
 		// 먼저 조건에 맞는 Reservation ID들과 해당하는 가장 빠른 startTime을 가져옵니다.
 		List<Tuple> reservationIdsWithStartTime = queryFactory
 			.select(reservation.reservationId, reservationDetail.startTime.min())
@@ -87,16 +97,23 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 		// 그 다음 가져온 ID들을 사용하여 필요한 데이터를 한 번에 조회합니다.
 		return queryFactory
 			.selectFrom(reservation)
+			.distinct()
 			.leftJoin(reservation.customer, member).fetchJoin()
 			.leftJoin(reservation.shop, shop).fetchJoin()
 			.leftJoin(shop.nailArtist).fetchJoin()
 			.leftJoin(reservation.nailArtist).fetchJoin()
 			.leftJoin(reservation.reservationDetailList, reservationDetail).fetchJoin()
-			.leftJoin(reservationDetail.treatmentList).fetchJoin()
+			.leftJoin(reservationDetail.treatment).fetchJoin()
 			.leftJoin(reservationDetail.conditionList).fetchJoin()
+			.leftJoin(shop.shopImages, shopImage)
+			.on(shopImage.imageId.eq(
+				JPAExpressions
+					.select(shopImage.imageId.min())
+					.from(shopImage)
+					.where(shopImage.shop.eq(shop))
+			))
 			.where(reservation.reservationId.in(reservationIds))
 			.orderBy(reservation.reservationId.asc())
-			.distinct()
 			.fetch();
 	}
 

@@ -1,7 +1,9 @@
 package com.nailcase.mapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -108,7 +110,8 @@ public interface ReservationMapper {
 
 	default List<String> getTreatmentOptions(List<ReservationDetail> details) {
 		return details.stream()
-			.flatMap(detail -> detail.getTreatmentList().stream())
+			.map(ReservationDetail::getTreatment)
+			.filter(Objects::nonNull)
 			.map(treatment -> treatment.getOption().name())
 			.distinct()
 			.collect(Collectors.toList());
@@ -149,8 +152,8 @@ public interface ReservationMapper {
 		detailInfo.setTreatmentOptions(getTreatmentOptions(List.of(reservationDetail)));
 		detailInfo.setRemoveOption(getRemoveOption(List.of(reservationDetail)));
 		detailInfo.setConditionOptions(getConditionOptions(List.of(reservationDetail)));
-		detailInfo.setAccompanied(reservationDetail.getReservation().isAccompanied());
 		detailInfo.setStatus(reservationDetail.getStatus().name()); // Setting the status
+		detailInfo.setEstimatedPrice(null); // Setting the estimated price
 		return detailInfo;
 	}
 
@@ -171,14 +174,13 @@ public interface ReservationMapper {
 						null);
 				info.setEndTime(
 					detail.getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()) : null);
-				info.setTreatmentOptions(detail.getTreatmentList() != null ? detail.getTreatmentList().stream()
-					.map(treatment -> treatment.getOption().name())
-					.collect(Collectors.toList()) : new ArrayList<>());
+				info.setTreatmentOptions(detail.getTreatment() != null
+					? Collections.singletonList(detail.getTreatment().getOption().name())
+					: new ArrayList<>());
 				info.setRemoveOption(detail.getRemove() != null ? detail.getRemove().name() : null);
 				info.setConditionOptions(detail.getConditionList() != null ? detail.getConditionList().stream()
 					.map(condition -> condition.getOption().name())
 					.collect(Collectors.toList()) : new ArrayList<>());
-				info.setAccompanied(isAccompanied);
 				info.setStatus(detail.getStatus() != null ? detail.getStatus().name() : null);
 				return info;
 			})

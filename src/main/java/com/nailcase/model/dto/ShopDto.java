@@ -118,6 +118,7 @@ public class ShopDto {
 	public static class MainPageResponse {
 		private Long shopId;
 		private String shopName;
+		private String shopImageUrl;  // 추가된 필드
 		private boolean likedByUser;  // 사용자가 매장을 좋아요 했는지 여부
 	}
 

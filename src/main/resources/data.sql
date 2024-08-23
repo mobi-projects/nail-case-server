@@ -615,16 +615,23 @@ WHERE NOT EXISTS (
     RETURNING reservation_detail_id, reservation_id, created_at
     ),
     inserted_treatments AS (
-INSERT INTO treatments (reservation_detail_id, option, image_id, image_url, created_at, modified_at)
+INSERT INTO treatments (option, image_id, image_url, created_at, modified_at)
 SELECT
-    ird.reservation_detail_id,
     (ARRAY['AOM', 'CARE', 'ONE'])[floor(random() * 3 + 1)] AS option,
     floor(random() * 1000 + 1)::int AS image_id,
     '' AS image_url,
     ird.created_at,
     ird.created_at
 FROM inserted_reservation_details ird
-    RETURNING treatment_id, reservation_detail_id
+    RETURNING treatment_id, created_at
+    ),
+    updated_reservation_details AS (
+UPDATE reservation_details rd
+SET treatment_id = it.treatment_id
+FROM inserted_treatments it
+WHERE rd.reservation_detail_id IN (SELECT reservation_detail_id FROM inserted_reservation_details)
+  AND rd.created_at = it.created_at
+    RETURNING rd.reservation_detail_id
     ),
     inserted_conditions AS (
 INSERT INTO conditions (reservation_detail_id, option, created_at, modified_at)
