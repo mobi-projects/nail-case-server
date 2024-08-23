@@ -10,16 +10,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QReservationDetail;
 import com.nailcase.model.entity.QReview;
 import com.nailcase.model.entity.QShop;
+import com.nailcase.model.entity.QShopImage;
 import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -94,15 +94,33 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 	}
 
 	@Override
-	public Page<ShopDto.MainPageResponse> getTopPopularShops(Optional<Long> memberId, Pageable pageable) {
+	public Page<Tuple> getTopPopularShops(Optional<Long> memberId, Pageable pageable) {
 		QShop shop = QShop.shop;
 		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
+		QShopImage shopImage = QShopImage.shopImage;
 
-		// 1. 상점 정보와 좋아요 여부를 함께 조회
-		List<ShopDto.MainPageResponse> shops = queryFactory
-			.select(Projections.constructor(ShopDto.MainPageResponse.class,
-				shop.shopId,
+		// 1. 상점 정보와 좋아요 여부, 대표 이미지 정보를 함께 조회
+		List<Tuple> shopsRaw = queryFactory
+			.select(shop.shopId,
 				shop.shopName,
+				ExpressionUtils.as(
+					JPAExpressions
+						.select(shopImage.bucketName)
+						.from(shopImage)
+						.where(shopImage.shop.eq(shop))
+						.orderBy(shopImage.imageId.asc())
+						.limit(1),
+					"shopImageBucketName"
+				),
+				ExpressionUtils.as(
+					JPAExpressions
+						.select(shopImage.objectName)
+						.from(shopImage)
+						.where(shopImage.shop.eq(shop))
+						.orderBy(shopImage.imageId.asc())
+						.limit(1),
+					"shopImageObjectName"
+				),
 				ExpressionUtils.as(
 					JPAExpressions.selectOne()
 						.from(shopLikedMember)
@@ -112,7 +130,7 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 								: Expressions.FALSE))
 						.exists(),
 					"likedByUser"
-				)))
+				))
 			.from(shop)
 			.orderBy(shop.likes.desc())
 			.offset(pageable.getOffset())
@@ -125,7 +143,7 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 			.from(shop);
 
 		// 3. Page 객체 생성 및 반환
-		return PageableExecutionUtils.getPage(shops, pageable, countQuery::fetchOne);
+		return PageableExecutionUtils.getPage(shopsRaw, pageable, countQuery::fetchOne);
 	}
 
 }

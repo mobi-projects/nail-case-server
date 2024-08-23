@@ -84,6 +84,7 @@ public class ReservationDto {
 		public static class ShopInfo {
 			private Long id;
 			private String name;
+			private String shopImageUrl;
 		}
 
 		@Data
@@ -94,8 +95,8 @@ public class ReservationDto {
 			private List<String> treatmentOptions;
 			private String removeOption;
 			private List<String> conditionOptions;
-			private boolean accompanied;
 			private String status;
+			private Integer estimatedPrice;
 
 			@Override
 			public boolean equals(Object o) {

@@ -12,7 +12,6 @@ import com.nailcase.model.dto.ReviewDto;
 import com.nailcase.model.entity.Condition;
 import com.nailcase.model.entity.Review;
 import com.nailcase.model.entity.ReviewImage;
-import com.nailcase.model.entity.Treatment;
 import com.nailcase.model.enums.ConditionOption;
 import com.nailcase.model.enums.TreatmentOption;
 
@@ -49,10 +48,8 @@ public interface ReviewMapper {
 		}
 	}
 
-	default List<TreatmentOption> mapTreatmentOptions(Review review) {
-		return review.getReservationDetail().getTreatmentList().stream()
-			.map(Treatment::getOption)
-			.collect(Collectors.toList());
+	default TreatmentOption mapTreatmentOptions(Review review) {
+		return review.getReservationDetail().getTreatment().getOption();
 	}
 
 	default List<ConditionOption> mapConditionOptions(Review review) {

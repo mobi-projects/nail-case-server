@@ -122,7 +122,7 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_DETAIL_ID,
 			FIXTURE_SHOP_ID,
 			FIXTURE_NAIL_ARTIST_ID,
-			Set.of(treatment()),
+			treatment(),
 			Set.of(condition()),
 			FIXTURE_RESERVATION_DETAIL_START_TIME,
 			FIXTURE_RESERVATION_DETAIL_END_TIME,
@@ -261,7 +261,7 @@ public class FixtureFactory {
 		Long reservationDetailId,
 		Long shopId,
 		Long nailArtistId,
-		Set<Treatment> treatmentList,
+		Treatment treatmentList,
 		Set<Condition> conditionList,
 		LocalDateTime startTime,
 		LocalDateTime endTime,
@@ -273,7 +273,7 @@ public class FixtureFactory {
 			.reservationDetailId(reservationDetailId)
 			.shop(Shop.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
 			.nailArtist(NailArtist.builder().nailArtistId(nailArtistId).build())
-			.treatmentList(treatmentList)
+			.treatment(treatmentList)
 			.conditionList(conditionList)
 			.startTime(startTime)
 			.endTime(endTime)

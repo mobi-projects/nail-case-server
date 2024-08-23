@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -31,11 +33,13 @@ import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.repository.ReservationDetailRepository;
 import com.nailcase.repository.ReservationRepository;
 import com.nailcase.util.DateUtils;
+import com.nailcase.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,9 +138,18 @@ public class ReservationService {
 					response.getDetails()
 						.stream()
 						.anyMatch(detail -> detail.getStartTime() == null)) {
-					System.out.println("response = " + response);
 					return null;
 				}
+
+				// Shop 이미지 URL 설정
+				if (response.getShop() != null && reservation.getShop() != null &&
+					!reservation.getShop().getShopImages().isEmpty()) {
+					ShopImage firstImage = reservation.getShop().getShopImages().iterator().next();
+					String imageUrl = StringUtils.generateImageUrl(firstImage.getBucketName(),
+						firstImage.getObjectName());
+					response.getShop().setShopImageUrl(imageUrl);
+				}
+
 				return response;
 			})
 			.orElse(null);
@@ -202,16 +215,15 @@ public class ReservationService {
 				detailInfo.setReservationDetailsId(detail.getReservationDetailId());  // ID 추가
 				detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
 				detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
-				detailInfo.setTreatmentOptions(detail.getTreatmentList().stream()
+				detailInfo.setTreatmentOptions(Optional.ofNullable(detail.getTreatment())
 					.map(treatment -> treatment.getOption().name())
-					.distinct()
-					.collect(Collectors.toList()));
+					.map(Collections::singletonList)
+					.orElse(Collections.emptyList()));
 				detailInfo.setRemoveOption(detail.getRemove().name());
 				detailInfo.setConditionOptions(detail.getConditionList().stream()
 					.map(condition -> condition.getOption().name())
 					.distinct()
 					.collect(Collectors.toList()));
-				detailInfo.setAccompanied(detail.getReservation().isAccompanied());
 				detailInfo.setStatus(detail.getStatus().name());  // status를 null이 아닌 값으로 설정
 				return detailInfo;
 			})
@@ -404,16 +416,14 @@ public class ReservationService {
 				detailInfo.setReservationDetailsId(detail.getReservationDetailId());
 				detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
 				detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
-				detailInfo.setTreatmentOptions(detail.getTreatmentList().stream()
-					.map(treatment -> treatment.getOption().name())
-					.distinct()
-					.collect(Collectors.toList()));
+				detailInfo.setTreatmentOptions(Optional.ofNullable(detail.getTreatment())
+					.map(treatment -> Collections.singletonList(treatment.getOption().name()))
+					.orElse(Collections.emptyList()));
 				detailInfo.setRemoveOption(detail.getRemove().name());
 				detailInfo.setConditionOptions(detail.getConditionList().stream()
 					.map(condition -> condition.getOption().name())
 					.distinct()
 					.collect(Collectors.toList()));
-				detailInfo.setAccompanied(isAccompanied);
 				detailInfo.setStatus(detail.getStatus().name());
 				return detailInfo;
 			})
