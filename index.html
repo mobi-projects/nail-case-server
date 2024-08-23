@@ -1319,11 +1319,12 @@
         "type" : "string"
       }
     },
-    "accompanied" : {
-      "type" : "boolean"
-    },
     "status" : {
       "type" : "string"
+    },
+    "estimatedPrice" : {
+      "type" : "integer",
+      "format" : "int32"
     }
   }
 };
@@ -1335,6 +1336,9 @@
       "format" : "int64"
     },
     "name" : {
+      "type" : "string"
+    },
+    "shopImageUrl" : {
       "type" : "string"
     }
   }
@@ -1505,11 +1509,8 @@
       "type" : "boolean"
     },
     "treatmentOptions" : {
-      "type" : "array",
-      "items" : {
-        "type" : "string",
-        "enum" : [ "AOM", "CARE", "ONE", "MEMBER_IMAGE" ]
-      }
+      "type" : "string",
+      "enum" : [ "AOM", "CARE", "ONE", "MEMBER_IMAGE" ]
     },
     "conditionOptions" : {
       "type" : "array",
@@ -1635,6 +1636,9 @@
       "format" : "int64"
     },
     "shopName" : {
+      "type" : "string"
+    },
+    "shopImageUrl" : {
       "type" : "string"
     },
     "likedByUser" : {
@@ -2061,6 +2065,12 @@
     "pageable" : {
       "$ref" : "#/components/schemas/PageableObject"
     },
+    "first" : {
+      "type" : "boolean"
+    },
+    "last" : {
+      "type" : "boolean"
+    },
     "size" : {
       "type" : "integer",
       "format" : "int32"
@@ -2080,12 +2090,6 @@
       "items" : {
         "$ref" : "#/components/schemas/org.springdoc.core.converters.models.SortObject"
       }
-    },
-    "first" : {
-      "type" : "boolean"
-    },
-    "last" : {
-      "type" : "boolean"
     },
     "numberOfElements" : {
       "type" : "integer",
