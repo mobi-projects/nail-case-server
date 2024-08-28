@@ -397,6 +397,293 @@ WHERE s.shop_name = '네일몰 강남점'
     WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
 );
 
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '박지현', 'park@example.com', 'MANAGER',
+       'https://example.com/images/park_profile.jpg',
+       'KAKAO', '4567890123', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'park@example.com');
+
+-- Step 2: shops 테이블에 데이터를 삽입 (관리자의 nail_artist_id 사용)
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일 스튜디오 더 로즈', '025551234', 3, '강남구 신사동 663-16 KR 서울특별시 강남구 가로수길 43 2층',
+       '네일 스튜디오 더 로즈에서 여러분의 아름다움을 꽃피워드리겠습니다. 고급스러운 분위기와 전문적인 서비스로 여러분을 기다리고 있습니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'park@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일 스튜디오 더 로즈');
+
+-- 네일 스튜디오 더 로즈의 WorkHour 데이터 삽입
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:00:00'::time AS open_time, '20:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 2, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 3, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 4, true, '10:00:00', '20:00:00'
+         UNION ALL SELECT 5, true, '10:00:00', '21:00:00'
+         UNION ALL SELECT 6, true, '11:00:00', '19:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일 스튜디오 더 로즈'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 뷰티풀 핑거 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '이미란', 'lee@example.com', 'MANAGER',
+       'https://example.com/images/lee_profile.jpg',
+       'KAKAO', '7890123456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'lee@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '뷰티풀 핑거', '025557890', 4, '서울특별시 강남구 역삼동 823-24 2층',
+       '뷰티풀 핑거에서 당신의 손끝을 아름답게 만들어드립니다. 최신 트렌드와 개성 있는 디자인으로 여러분을 맞이합니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'lee@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '뷰티풀 핑거');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '11:00:00'::time AS open_time, '21:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 2, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 3, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 4, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 5, true, '11:00:00', '22:00:00'
+         UNION ALL SELECT 6, true, '12:00:00', '20:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '뷰티풀 핑거'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+-- 네일아트 퀸 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '최예진', 'choi@example.com', 'MANAGER',
+       'https://example.com/images/choi_profile.jpg',
+       'KAKAO', '2345678901', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'choi@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일아트 퀸', '025559876', 2, '서울특별시 서초구 서초동 1303-22 3층',
+       '네일아트 퀸에서 여러분의 손톱을 왕비의 손처럼 아름답게 꾸며드립니다. 고급스러운 서비스와 섬세한 디자인으로 여러분을 기다립니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'choi@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일아트 퀸');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:30:00'::time AS open_time, '20:30:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:30:00', '20:30:00'
+         UNION ALL SELECT 2, true, '10:30:00', '20:30:00'
+         UNION ALL SELECT 3, true, '10:30:00', '20:30:00'
+         UNION ALL SELECT 4, true, '10:30:00', '20:30:00'
+         UNION ALL SELECT 5, true, '10:30:00', '21:30:00'
+         UNION ALL SELECT 6, false, '00:00:00', '00:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일아트 퀸'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+-- 네일 팩토리 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '송민주', 'song@example.com', 'MANAGER',
+       'https://example.com/images/song_profile.jpg',
+       'KAKAO', '8901234567', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'song@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일 팩토리', '025553456', 5, '서울특별시 강남구 청담동 89-4 1층',
+       '네일 팩토리에서 당신만의 특별한 네일 디자인을 만들어보세요. 다양한 스타일과 최신 트렌드를 한 곳에서 경험할 수 있습니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'song@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일 팩토리');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '09:30:00'::time AS open_time, '21:30:00'::time AS close_time
+         UNION ALL SELECT 1, true, '09:30:00', '21:30:00'
+         UNION ALL SELECT 2, true, '09:30:00', '21:30:00'
+         UNION ALL SELECT 3, true, '09:30:00', '21:30:00'
+         UNION ALL SELECT 4, true, '09:30:00', '21:30:00'
+         UNION ALL SELECT 5, true, '09:30:00', '22:00:00'
+         UNION ALL SELECT 6, true, '10:00:00', '20:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일 팩토리'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 6. 글램 네일 스튜디오 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '정아영', 'jung@example.com', 'MANAGER',
+       'https://example.com/images/jung_profile.jpg',
+       'KAKAO', '1234567890', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'jung@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '글램 네일 스튜디오', '025554321', 3, '서울특별시 강남구 신사동 663-16 2층',
+       '글램 네일 스튜디오에서 화려하고 세련된 네일아트를 경험해보세요. 최신 트렌드와 고급 제품으로 여러분의 스타일을 완성시켜 드립니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'jung@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '글램 네일 스튜디오');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:00:00'::time AS open_time, '22:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 2, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 3, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 4, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 5, true, '10:00:00', '23:00:00'
+         UNION ALL SELECT 6, true, '11:00:00', '21:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '글램 네일 스튜디오'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 7. 프렌치 네일 살롱 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '김서연', 'kim2@example.com', 'MANAGER',
+       'https://example.com/images/kim2_profile.jpg',
+       'KAKAO', '9876543210', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'kim2@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '프렌치 네일 살롱', '025558765', 4, '서울특별시 서초구 방배동 450-3 1층',
+       '프렌치 네일 살롱에서 클래식하고 세련된 프렌치 네일을 만나보세요. 정교한 기술과 고급 재료로 오래 유지되는 네일아트를 제공합니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'kim2@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '프렌치 네일 살롱');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '11:00:00'::time AS open_time, '20:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '11:00:00', '20:00:00'
+         UNION ALL SELECT 2, true, '11:00:00', '20:00:00'
+         UNION ALL SELECT 3, true, '11:00:00', '20:00:00'
+         UNION ALL SELECT 4, true, '11:00:00', '20:00:00'
+         UNION ALL SELECT 5, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 6, false, '00:00:00', '00:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '프렌치 네일 살롱'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 8. 네일 아트 갤러리 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '이지은', 'lee2@example.com', 'MANAGER',
+       'https://example.com/images/lee2_profile.jpg',
+       'KAKAO', '5432109876', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'lee2@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일 아트 갤러리', '025559999', 5, '서울특별시 강남구 청담동 121-5 3층',
+       '네일 아트 갤러리에서 당신의 손톱을 캔버스 삼아 예술 작품을 만들어보세요. 독창적인 디자인과 섬세한 기술로 유니크한 네일아트를 선사합니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'lee2@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일 아트 갤러리');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '12:00:00'::time AS open_time, '21:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '12:00:00', '21:00:00'
+         UNION ALL SELECT 2, true, '12:00:00', '21:00:00'
+         UNION ALL SELECT 3, true, '12:00:00', '21:00:00'
+         UNION ALL SELECT 4, true, '12:00:00', '21:00:00'
+         UNION ALL SELECT 5, true, '12:00:00', '22:00:00'
+         UNION ALL SELECT 6, true, '13:00:00', '20:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일 아트 갤러리'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 9. 젤네일 스페셜리스트 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '박소연', 'park2@example.com', 'MANAGER',
+       'https://example.com/images/park2_profile.jpg',
+       'KAKAO', '6789012345', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'park2@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '젤네일 스페셜리스트', '025551111', 3, '서울특별시 강남구 삼성동 159-1 코엑스몰 3층',
+       '젤네일 스페셜리스트에서 오래 지속되는 완벽한 젤네일을 경험해보세요. 손톱 건강을 고려한 프리미엄 젤 제품으로 안전하고 아름다운 네일아트를 제공합니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'park2@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '젤네일 스페셜리스트');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:30:00'::time AS open_time, '21:30:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:30:00', '21:30:00'
+         UNION ALL SELECT 2, true, '10:30:00', '21:30:00'
+         UNION ALL SELECT 3, true, '10:30:00', '21:30:00'
+         UNION ALL SELECT 4, true, '10:30:00', '21:30:00'
+         UNION ALL SELECT 5, true, '10:30:00', '22:00:00'
+         UNION ALL SELECT 6, true, '11:00:00', '21:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '젤네일 스페셜리스트'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
+-- 10. 네일 & 스파 힐링센터 데이터 삽입
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '최다혜', 'choi2@example.com', 'MANAGER',
+       'https://example.com/images/choi2_profile.jpg',
+       'KAKAO', '3456789012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'choi2@example.com');
+
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일 & 스파 힐링센터', '025552222', 6, '서울특별시 서초구 반포동 107-6 4층',
+       '네일 & 스파 힐링센터에서 네일케어와 함께 온전한 휴식을 취해보세요. 편안한 분위기에서 고급 네일아트와 스파 서비스를 동시에 즐길 수 있습니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'choi2@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일 & 스파 힐링센터');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '10:00:00'::time AS open_time, '22:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 2, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 3, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 4, true, '10:00:00', '22:00:00'
+         UNION ALL SELECT 5, true, '10:00:00', '23:00:00'
+         UNION ALL SELECT 6, true, '11:00:00', '21:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일 & 스파 힐링센터'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
+
 
 
 -- 태그 생성
@@ -415,7 +702,36 @@ VALUES
     ('세련된 디자인', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ON CONFLICT (tag_name) DO NOTHING;
 
+INSERT INTO nail_artists (nickname, email, role, profile_img_url, social_type, social_id, created_at, modified_at)
+SELECT '임지영', 'lim@example.com', 'MANAGER',
+       'https://example.com/images/lim_profile.jpg',
+       'KAKAO', '5678901234', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    WHERE NOT EXISTS (SELECT 1 FROM nail_artists WHERE email = 'lim@example.com');
 
+INSERT INTO shops (shop_name, phone, available_seat, address, overview, created_at, modified_at, owner_id)
+SELECT '네일 디자인 연구소', '025557777', 4, '서울특별시 용산구 이태원동 34-16 3층',
+       '네일 디자인 연구소는 끊임없는 연구와 혁신으로 새로운 네일 트렌드를 만들어갑니다. 독특하고 창의적인 디자인을 원하시는 분들께 추천드립니다.',
+       CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, n.nail_artist_id
+FROM nail_artists n
+WHERE n.email = 'lim@example.com'
+  AND NOT EXISTS (SELECT 1 FROM shops s WHERE s.shop_name = '네일 디자인 연구소');
+
+INSERT INTO work_hours (shop_id, day_of_week, is_open, open_time, close_time, created_at, modified_at)
+SELECT s.shop_id, day_of_week, is_open, open_time, close_time, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM (
+         SELECT 0 AS day_of_week, true AS is_open, '11:00:00'::time AS open_time, '21:00:00'::time AS close_time
+         UNION ALL SELECT 1, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 2, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 3, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 4, true, '11:00:00', '21:00:00'
+         UNION ALL SELECT 5, true, '11:00:00', '22:00:00'
+         UNION ALL SELECT 6, true, '12:00:00', '20:00:00'
+     ) AS temp, shops s
+WHERE s.shop_name = '네일 디자인 연구소'
+  AND NOT EXISTS (
+    SELECT 1 FROM work_hours
+    WHERE shop_id = s.shop_id AND day_of_week = temp.day_of_week
+);
 -- Shop 1에 태그 매핑
 INSERT INTO tag_mapping (shop_id, tag_id, sort_order)
 SELECT 1, 1, 1  -- 태그 1
