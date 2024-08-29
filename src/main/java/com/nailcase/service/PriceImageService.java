@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -11,6 +12,7 @@ import com.nailcase.common.dto.ImageDto;
 import com.nailcase.model.entity.PriceImage;
 import com.nailcase.repository.PriceImageRepository;
 
+@Transactional
 @Service
 public class PriceImageService extends ImageService<PriceImage> {
 	private final PriceImageRepository priceImageRepository;

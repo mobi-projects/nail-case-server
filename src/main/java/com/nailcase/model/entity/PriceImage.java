@@ -23,7 +23,7 @@ import lombok.experimental.SuperBuilder;
 public class PriceImage extends Image {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "shop_id", nullable = false)
+	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
 }

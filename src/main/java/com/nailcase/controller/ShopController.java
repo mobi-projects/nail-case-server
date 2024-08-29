@@ -26,8 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.dto.UserPrincipal;
-import com.nailcase.response.ResponseService;
 import com.nailcase.service.ShopService;
 
 import jakarta.validation.Valid;
@@ -41,20 +39,19 @@ import lombok.extern.slf4j.Slf4j;
 public class ShopController {
 
 	private final ShopService shopService;
-	private final ResponseService responseService;
 
 	@Value("${spring.data.web.pageable.default-page-size}")
 	private int pageSize;
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public ShopDto.Response registerShop(
+	public ShopDto.ShopRegiResponse registerShop(
 		@RequestPart("shopData") String shopDataJson,
 		@RequestPart(required = false) List<MultipartFile> profileImages,
 		@RequestPart(required = false) List<MultipartFile> priceImages,
-		@AuthenticationPrincipal UserPrincipal userPrincipal
+		@AuthenticationPrincipal Long id
 	) {
-		return shopService.registerShop(shopDataJson, profileImages, priceImages, userPrincipal);
+		return shopService.registerShop(shopDataJson, profileImages, priceImages, id);
 	}
 
 	@GetMapping("/{shopId}")

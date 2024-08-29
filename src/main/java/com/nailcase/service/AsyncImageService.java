@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nailcase.common.Image;
@@ -15,32 +16,33 @@ import com.nailcase.common.dto.ImageDto;
 
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class AsyncImageService {
 
 	private final ImageService imageService;
 
-	@Async
+	@Async("asyncTaskExecutor")
 	public <T extends Image> CompletableFuture<ImageDto> saveImageAsync(MultipartFile file, T image,
 		JpaRepository<T, Long> imageRepository) {
 		ImageDto savedImageDto = imageService.saveImage(file, image, imageRepository);
 		return CompletableFuture.completedFuture(savedImageDto);
 	}
 
-	@Async
+	@Async("asyncTaskExecutor")
 	public CompletableFuture<Void> uploadImageAsync(MultipartFile file, String objectName) {
 		imageService.uploadImage(file, objectName);
 		return CompletableFuture.completedFuture(null);
 	}
 
-	@Async
+	@Async("asyncTaskExecutor")
 	public CompletableFuture<Void> deleteImageAsync(String objectName) {
 		imageService.deleteImage(objectName);
 		return CompletableFuture.completedFuture(null);
 	}
 
-	@Async
+	@Async("asyncTaskExecutor")
 	public <T extends Image> CompletableFuture<List<ImageDto>> saveImagesAsync(List<MultipartFile> files,
 		List<T> images, JpaRepository<T, Long> imageRepository) {
 		List<CompletableFuture<ImageDto>> futures = new ArrayList<>();
