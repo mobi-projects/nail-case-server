@@ -1738,6 +1738,21 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.ShopDto$ShopRegiResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "hasShop" : {
+      "type" : "boolean"
+    },
+    "shopIds" : {
+      "type" : "array",
+      "items" : {
+        "type" : "integer",
+        "format" : "int64"
+      }
+    }
+  }
+};
             defs["com.nailcase.model.dto.ShopInfoDto$Address"] = {
   "required" : [ "address", "point" ],
   "type" : "object",
@@ -20861,7 +20876,7 @@ public class ShopControllerApiExample {
         array[byte[]] profileImages = ; // array[byte[]] | 
         array[byte[]] priceImages = ; // array[byte[]] | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(shopData, profileImages, priceImages);
+            com.nailcase.model.dto.ShopDto$ShopRegiResponse result = apiInstance.registerShop(shopData, profileImages, priceImages);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
@@ -20882,7 +20897,7 @@ public class ShopControllerApiExample {
         array[byte[]] profileImages = ; // array[byte[]] | 
         array[byte[]] priceImages = ; // array[byte[]] | 
         try {
-            com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(shopData, profileImages, priceImages);
+            com.nailcase.model.dto.ShopDto$ShopRegiResponse result = apiInstance.registerShop(shopData, profileImages, priceImages);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ShopControllerApi#registerShop");
@@ -20908,7 +20923,7 @@ ShopControllerApi *apiInstance = [[ShopControllerApi alloc] init];
 [apiInstance registerShopWith:shopData
     profileImages:profileImages
     priceImages:priceImages
-              completionHandler: ^(com.nailcase.model.dto.ShopDto$Response output, NSError* error) {
+              completionHandler: ^(com.nailcase.model.dto.ShopDto$ShopRegiResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -20972,7 +20987,7 @@ namespace Example
 
             try
             {
-                com.nailcase.model.dto.ShopDto$Response result = apiInstance.registerShop(shopData, profileImages, priceImages);
+                com.nailcase.model.dto.ShopDto$ShopRegiResponse result = apiInstance.registerShop(shopData, profileImages, priceImages);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -21140,7 +21155,7 @@ except ApiException as e:
   "content" : {
     "*/*" : {
       "schema" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$Response"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ShopDto$ShopRegiResponse"
       }
     }
   }
