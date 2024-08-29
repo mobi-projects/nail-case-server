@@ -24,10 +24,12 @@ public class MonthlyArtQuerydslRepositoryImpl implements MonthlyArtQuerydslRepos
 		QMonthlyArtImage monthlyArtImage = QMonthlyArtImage.monthlyArtImage;
 
 		return Optional.ofNullable(queryFactory
-			.selectFrom(monthlyArt)
+			.selectDistinct(monthlyArt)
+			.from(monthlyArt)
 			.leftJoin(monthlyArt.shop, shop).fetchJoin()
 			.leftJoin(monthlyArt.monthlyArtImages, monthlyArtImage).fetchJoin()
 			.where(monthlyArt.shop.shopId.eq(shopId))
+			.orderBy(monthlyArt.monthlyArtId.desc())
 			.orderBy(monthlyArt.createdAt.desc())
 			.fetchFirst());
 	}

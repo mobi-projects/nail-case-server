@@ -1,5 +1,6 @@
 package com.nailcase.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -269,8 +270,9 @@ public class MonthlyArtService {
 					.build();
 				return monthlyArtRepository.saveAndFlush(newMonthlyArt);
 			});
+		System.out.println("monthlyArt = " + monthlyArt.getMonthlyArtId());
 		List<MonthlyArtImage> currentImages = monthlyArt.getMonthlyArtImages();
-
+		System.out.println("currentImages = " + currentImages);
 		// 삭제할 이미지 처리
 		if (removeIds != null && !removeIds.isEmpty()) {
 			List<MonthlyArtImage> imagesToRemove = currentImages.stream()
@@ -307,6 +309,7 @@ public class MonthlyArtService {
 					.bucketName(savedImageDto.getBucketName())
 					.objectName(savedImageDto.getObjectName())
 					.monthlyArt(monthlyArt)
+					.createdAt(LocalDateTime.now())  // 여기에 추가
 					.build())
 				.collect(Collectors.toList());
 

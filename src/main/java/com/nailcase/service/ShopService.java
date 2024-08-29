@@ -4,9 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -31,7 +28,6 @@ import com.nailcase.exception.codes.UserErrorCode;
 import com.nailcase.mapper.ShopMapper;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ShopDto;
-import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.dto.WorkHourDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
@@ -53,7 +49,6 @@ import com.nailcase.repository.TagRepository;
 import com.nailcase.repository.WorkHourRepository;
 import com.nailcase.util.DateUtils;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +58,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ShopService {
-	private final EntityManager entityManager;
 	private final ShopMapper shopMapper = ShopMapper.INSTANCE;
 	private final ShopRepository shopRepository;
 	private final NailArtistRepository nailArtistRepository;
@@ -78,17 +72,26 @@ public class ShopService {
 	private final ObjectMapper objectMapper;
 
 	@Transactional
-	public ShopDto.Response registerShop(String shopDataJson, List<MultipartFile> profileImages,
-		List<MultipartFile> priceImages, UserPrincipal userPrincipal) {
+	public ShopDto.ShopRegiResponse registerShop(String shopDataJson, List<MultipartFile> profileImages,
+		List<MultipartFile> priceImages, Long id) {
 		try {
 			ShopDto.PostRequest shopData = parseShopData(shopDataJson);
-			NailArtist nailArtist = getNailArtist(userPrincipal.id());
-			Shop shop = createAndSaveShop(shopData, nailArtist);
+			NailArtist nailArtist = getNailArtist(id);
+			ShopDto.PostResponse postResponse = new ShopDto.PostResponse(shopData, profileImages, priceImages);
+			Shop shop = shopMapper.postResponseToShop(postResponse);
+			shop.setNailArtist(nailArtist);
+			nailArtist.addShop(shop);
+			profileImages.forEach(file -> shopImageService.uploadImage(file, ShopImage.builder().shop(shop).build()));
+			priceImages.forEach(file -> priceImageService.uploadImage(file, PriceImage.builder().shop(shop).build()));
 
-			processShopDetails(shop, shopData, profileImages, priceImages);
+			shopRepository.flush();
+			List<Long> shopIds = nailArtist.getShops().stream()
+				.map(Shop::getShopId)
+				.toList();
 
-			Shop refreshedShop = refreshShop(shop.getShopId());
-			return shopMapper.toResponse(refreshedShop);
+			return ShopDto.ShopRegiResponse.builder()
+				.hasShop(true)
+				.shopIds(shopIds).build();
 		} catch (Exception e) {
 			log.error("샵 등록 실패", e);
 			throw new BusinessException(ShopErrorCode.REGISTRATION_FAILED, e);
@@ -304,55 +307,6 @@ public class ShopService {
 	private NailArtist getNailArtist(Long id) {
 		return nailArtistRepository.findById(id)
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
-	}
-
-	private Shop createAndSaveShop(ShopDto.PostRequest shopData, NailArtist nailArtist) {
-		ShopDto.PostResponse postResponse = new ShopDto.PostResponse(shopData, null, null);
-		Shop shop = shopMapper.postResponseToShop(postResponse);
-		shop.setNailArtist(nailArtist);
-		nailArtist.addShop(shop);
-		return shopRepository.save(shop);
-	}
-
-	private void processShopDetails(Shop shop, ShopDto.PostRequest shopData,
-		List<MultipartFile> profileImages, List<MultipartFile> priceImages) {
-		saveWorkHours(shop, shopData.getWorkHours());
-		saveImages(shop, profileImages, this::saveShopImages);
-		shopRepository.flush();
-		saveImages(shop, priceImages, this::savePriceImages);
-	}
-
-	private <T extends MultipartFile> void saveImages(Shop shop, List<T> images,
-		BiConsumer<List<T>, Shop> saveFunction) {
-		if (images != null && !images.isEmpty()) {
-			saveFunction.accept(images, shop);
-		}
-	}
-
-	private void saveShopImages(List<MultipartFile> files, Shop shop) {
-		List<ShopImage> shopImages = createImageEntities(files, ShopImage::new, shop::addShopImage);
-		shopImageService.saveImagesSync(files, shopImages);
-	}
-
-	private void savePriceImages(List<MultipartFile> files, Shop shop) {
-		List<PriceImage> priceImages = createImageEntities(files, PriceImage::new, shop::addPriceImage);
-		priceImageService.saveImagesSync(files, priceImages);
-	}
-
-	private <T> List<T> createImageEntities(List<MultipartFile> files, Supplier<T> entityCreator,
-		Consumer<T> entityAdder) {
-		return files.stream()
-			.map(file -> {
-				T entity = entityCreator.get();
-				entityAdder.accept(entity);
-				return entity;
-			})
-			.collect(Collectors.toList());
-	}
-
-	private Shop refreshShop(Long shopId) {
-		return shopRepository.findById(shopId)
-			.orElseThrow(() -> new BusinessException(ShopErrorCode.SHOP_NOT_FOUND));
 	}
 
 	public ShopDto.Response getShop(Long shopId) throws BusinessException {

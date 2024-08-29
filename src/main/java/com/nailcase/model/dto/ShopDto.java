@@ -135,4 +135,14 @@ public class ShopDto {
 		private boolean last;
 	}
 
+	@Builder
+	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class ShopRegiResponse {
+		private boolean hasShop;
+		private List<Long> shopIds;
+
+	}
+
 }

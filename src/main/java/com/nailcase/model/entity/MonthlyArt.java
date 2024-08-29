@@ -67,7 +67,7 @@ public class MonthlyArt extends BaseEntity {
 
 	@Builder.Default
 	@Setter
-	@OneToMany(mappedBy = "monthlyArt", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "monthlyArt", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<MonthlyArtImage> monthlyArtImages = new ArrayList<>();
 
 	@Builder.Default
