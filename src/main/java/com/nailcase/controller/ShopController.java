@@ -55,8 +55,8 @@ public class ShopController {
 	}
 
 	@GetMapping("/{shopId}")
-	public ShopDto.Response getShopById(@PathVariable Long shopId) {
-		return shopService.getShop(shopId);
+	public ShopDto.Response getShopById(@PathVariable Long shopId, @AuthenticationPrincipal Long userId) {
+		return shopService.getShop(shopId, userId);
 	}
 
 	@GetMapping("/search/{keyword}")
