@@ -69,6 +69,12 @@ public interface ShopMapper {
 	@Mapping(target = "workHours", expression = "java(mapWorkHours(shop.getWorkHours()))")
 	ShopDto.Response toResponse(Shop shop);
 
+	@Mapping(target = "profileImages", expression = "java(ShopMapper.toShopImageDtos(shop.getShopImages()))")
+	@Mapping(target = "priceImages", expression = "java(ShopMapper.toPriceImageDtos(shop.getPriceImages()))")
+	@Mapping(target = "workHours", expression = "java(mapWorkHours(shop.getWorkHours()))")
+	@Mapping(target = "likedByUser", source = "isLiked")
+	ShopDto.Response toResponseWithLiked(Shop shop, boolean isLiked);
+
 	@Mapping(target = "shopName", source = "shopName")
 	@Mapping(target = "phone", source = "phone")
 	@Mapping(target = "address", source = "address")

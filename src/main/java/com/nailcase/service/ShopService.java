@@ -309,9 +309,14 @@ public class ShopService {
 			.orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_CREDENTIALS));
 	}
 
-	public ShopDto.Response getShop(Long shopId) throws BusinessException {
+	public ShopDto.Response getShop(Long shopId, Long memberId) throws BusinessException {
 		Shop shop = getShopById(shopId);
-		return shopMapper.toResponse(shop);
+		if (memberId != null) {
+			boolean isLiked = shopRepository.isShopLikedByMember(shopId, memberId);
+			return shopMapper.toResponseWithLiked(shop, isLiked);
+		} else {
+			return shopMapper.toResponse(shop);
+		}
 	}
 
 }

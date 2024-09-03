@@ -146,4 +146,18 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 		return PageableExecutionUtils.getPage(shopsRaw, pageable, countQuery::fetchOne);
 	}
 
+	@Override
+	public boolean isShopLikedByMember(Long shopId, Long memberId) {
+		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
+
+		Integer fetchOne = queryFactory
+			.selectOne()
+			.from(shopLikedMember)
+			.where(shopLikedMember.shop.shopId.eq(shopId)
+				.and(shopLikedMember.member.memberId.eq(memberId)))
+			.fetchFirst();  // limit(1).fetchOne() 대신 fetchFirst() 사용
+
+		return fetchOne != null;
+	}
+
 }

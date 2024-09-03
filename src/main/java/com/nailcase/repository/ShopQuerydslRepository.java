@@ -17,4 +17,5 @@ public interface ShopQuerydslRepository {
 
 	double calculateShopReviewRating(Long shopId);
 
+	boolean isShopLikedByMember(Long shopId, Long memberId);
 }

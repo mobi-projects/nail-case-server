@@ -94,12 +94,13 @@ public class ShopDto {
 
 		private String address;
 
+		private boolean likedByUser;
+
 		private List<Image> profileImages;
 
 		private List<WorkHourDto.Post> workHours;
 
 		private List<Image> priceImages;
-
 	}
 
 	@Data
