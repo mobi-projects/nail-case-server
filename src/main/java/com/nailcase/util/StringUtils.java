@@ -1,5 +1,7 @@
 package com.nailcase.util;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,7 @@ public class StringUtils {
 	}
 
 	public static String generateImageUrl(String bucket, String objectName) {
-		return "https://" + bucket + ".s3.amazonaws.com/" + objectName;
+		// object 한글 인코딩
+		return "https://" + bucket + ".s3.amazonaws.com/" + URLEncoder.encode(objectName, StandardCharsets.UTF_8);
 	}
 }

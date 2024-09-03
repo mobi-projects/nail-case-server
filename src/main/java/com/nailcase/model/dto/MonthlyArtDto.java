@@ -9,6 +9,7 @@ import com.nailcase.model.entity.MonthlyArt;
 import com.nailcase.model.entity.MonthlyArtComment;
 import com.nailcase.model.entity.MonthlyArtImage;
 import com.nailcase.util.DateUtils;
+import com.nailcase.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -103,13 +104,10 @@ public class MonthlyArtDto {
 					{
 						ImageDto imageDto = new ImageDto();
 						imageDto.setImageId(image.getImageId());
-						imageDto.setImageUrl(generateImageUrl(image.getBucketName(), image.getObjectName()));
+						imageDto.setImageUrl(
+							StringUtils.generateImageUrl(image.getBucketName(), image.getObjectName()));
 						return imageDto;
 					}).collect(Collectors.toList());
-		}
-
-		private static String generateImageUrl(String bucket, String objectName) {
-			return "https://" + bucket + ".s3.amazonaws.com/" + objectName;
 		}
 
 	}
