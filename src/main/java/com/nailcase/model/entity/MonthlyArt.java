@@ -46,11 +46,11 @@ public class MonthlyArt extends BaseEntity {
 	private Shop shop;
 
 	@Schema(title = "이달의 아트 제목")
-	@Column(name = "title", nullable = false, length = 32)
+	@Column(name = "title", length = 32)
 	private String title;
 
 	@Schema(title = "이달의 아트 내용")
-	@Column(name = "contents", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "contents", columnDefinition = "TEXT")
 	private String contents;
 
 	@Builder.Default
