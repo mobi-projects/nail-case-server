@@ -270,9 +270,7 @@ public class MonthlyArtService {
 					.build();
 				return monthlyArtRepository.saveAndFlush(newMonthlyArt);
 			});
-		System.out.println("monthlyArt = " + monthlyArt.getMonthlyArtId());
 		List<MonthlyArtImage> currentImages = monthlyArt.getMonthlyArtImages();
-		System.out.println("currentImages = " + currentImages);
 		// 삭제할 이미지 처리
 		if (removeIds != null && !removeIds.isEmpty()) {
 			List<MonthlyArtImage> imagesToRemove = currentImages.stream()
