@@ -54,10 +54,6 @@ public class ReservationDetail extends BaseEntity {
 	@JoinColumn(name = "nail_artist_id")
 	private NailArtist nailArtist;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "reservation_id")
-	private Reservation reservation;
-
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "treatment_id")
 	private Treatment treatment;
@@ -99,11 +95,6 @@ public class ReservationDetail extends BaseEntity {
 
 	public void updateStatus(ReservationStatus status) {
 		this.status = status;
-	}
-
-	public void associateDown(Reservation reservation) {
-		this.reservation = reservation;
-		this.conditionList.forEach(condition -> condition.associateDown(this));
 	}
 
 	public void updateArtist(NailArtist nailArtist) {

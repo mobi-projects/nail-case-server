@@ -4,34 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.nailcase.model.enums.RemoveOption;
 import com.nailcase.model.enums.ReservationStatus;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ReservationDto {
 	@Data
 	public static class Post {
-
+		// 기존 ReservationDto.Post의 메서드를 유지
+		@Setter
+		@NotNull
 		private Long shopId;
 
+		@Getter
 		@NotNull
-		private List<ReservationDetailDto.Post> reservationDetailList = new ArrayList<>();
+		private Long startTime;
 
-		public void setShopId(Long shopId) {
-			this.shopId = shopId;
-			reservationDetailList.forEach(reservationDetailDto -> reservationDetailDto.setShopId(shopId));
-		}
+		@NotNull
+		private RemoveOption remove;
 
-		public Long getStartTime() {
-			return reservationDetailList.getFirst().getStartTime();
-		}
+		@NotNull
+		private Boolean extend;
 
-		public List<Long> getNailArtistIds() {
-			return reservationDetailList.stream().map(ReservationDetailDto.Post::getNailArtistId)
-				.filter(Objects::nonNull)
-				.toList();
-		}
+		@NotNull
+		private List<ConditionDto.Post> conditionList;
+
+		@NotNull
+		private TreatmentDto.Post treatment;
+
 	}
 
 	@Data
@@ -45,7 +49,7 @@ public class ReservationDto {
 	@Data
 	public static class Confirm {
 
-		private List<ReservationDetailDto.Confirm> reservationDetailList = new ArrayList<>();
+		private ReservationDetailDto.Confirm reservationDetail;
 	}
 
 	@Data
@@ -53,9 +57,32 @@ public class ReservationDto {
 
 		private Long reservationId;
 
-		private String nickname;
+		private ReservationDetailDto.Response reservationDetail;
 
-		private List<ReservationDetailDto.Response> reservationDetailList = new ArrayList<>();
+		private Long createdAt;
+
+		private Long modifiedAt;
+	}
+
+	@Data
+	public static class RegisterResponse {
+		private Long reservationId;
+
+		private Long reservationDetailId;
+
+		private RemoveOption remove;
+
+		private Boolean extend;
+
+		private ReservationStatus status;
+
+		private Long startTime;
+
+		private Long endTime;
+
+		private List<ConditionDto.Response> conditionList;
+
+		private TreatmentDto.Response treatment;
 
 		private Long createdAt;
 

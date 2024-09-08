@@ -20,14 +20,6 @@ public interface ConditionMapper {
 	@Mapping(target = "createdBy", ignore = true)
 	@Mapping(target = "modifiedBy", ignore = true)
 	Condition toEntity(ConditionDto.Post dto);
-
-	@Mapping(
-		target = "createdAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( condition.getCreatedAt() ) )"
-	)
-	@Mapping(
-		target = "modifiedAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( condition.getModifiedAt() ) )"
-	)
+	
 	ConditionDto.Response toResponse(Condition condition);
 }

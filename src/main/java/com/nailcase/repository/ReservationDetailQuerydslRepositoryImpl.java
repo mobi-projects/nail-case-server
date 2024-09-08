@@ -66,8 +66,8 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 			.where(
 				reservation.customer.memberId.eq(memberId),
 				shop.shopId.eq(shopId),
-				reservation.reservationDetailList.any().status.eq(ReservationStatus.CONFIRMED),
-				reservation.reservationDetailList.any().startTime.loe(reservationDate)
+				reservation.reservationDetail.status.eq(ReservationStatus.CONFIRMED),
+				reservation.reservationDetail.startTime.loe(reservationDate)
 			)
 			.fetch().size());
 	}

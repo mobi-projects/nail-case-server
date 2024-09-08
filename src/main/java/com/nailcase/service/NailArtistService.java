@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nailcase.exception.BusinessException;
-import com.nailcase.exception.codes.NailArtistErrorCode;
 import com.nailcase.model.entity.NailArtist;
 
 import lombok.RequiredArgsConstructor;
@@ -17,11 +15,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class NailArtistService {
-	public void verifyArtistsExistenceInShop(List<Long> nailArtistIds, Collection<NailArtist> nailArtists) {
-		if (notContainsAnyArtistIds(nailArtistIds, nailArtists)) {
-			throw new BusinessException(NailArtistErrorCode.NOT_FOUND);
-		}
-	}
 
 	private boolean notContainsAnyArtistIds(List<Long> nailArtistIds, Collection<NailArtist> nailArtists) {
 		if (nailArtistIds == null || nailArtistIds.isEmpty()) {

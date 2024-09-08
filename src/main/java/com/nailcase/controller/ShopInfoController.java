@@ -38,7 +38,7 @@ public class ShopInfoController {
 		return shopInfoService.updateAddress(shopId, requestAddress, userId);
 	}
 
-	@PatchMapping("/info")
+	@PatchMapping
 	@Operation(summary = "샵의 가격 정보를 수정합니다.")
 	public ShopInfoDto.Info updateInfo(
 		@PathVariable Long shopId,

@@ -19,13 +19,5 @@ public class ConditionDto {
 		private Long conditionId;
 
 		private ConditionOption option;
-
-		private Long createdAt;
-
-		private Long modifiedAt;
-
-		private String createdBy;
-
-		private String modifiedBy;
 	}
 }

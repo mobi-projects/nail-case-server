@@ -1,5 +1,6 @@
 package com.nailcase.mapper;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mapstruct.BeforeMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,33 +21,21 @@ import com.nailcase.model.entity.Shop;
 import com.nailcase.util.DateUtils;
 
 @Mapper(
-	uses = {ReservationDetailMapper.class, ShopMapper.class},
-	imports = {DateUtils.class, Shop.class, Member.class},
+	uses = {ReservationDetailMapper.class, ShopMapper.class, TreatmentMapper.class},
+	imports = {DateUtils.class, Shop.class, Member.class, Collections.class, LocalDateTime.class, Objects.class},
 	componentModel = "spring",
 	injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface ReservationMapper {
 
-	@BeforeMapping
-	default void beforeMapping(Long shopId, ReservationDto.Post dto) {
-		dto.setShopId(shopId);
-		dto.getReservationDetailList().forEach(detailDto -> detailDto.setShopId(shopId));
-	}
-
-	@Mapping(
-		target = "shop",
-		expression = "java( Shop.builder().shopId(dto.getShopId()).build() )"
-	)
-	@Mapping(
-		target = "customer",
-		expression = "java( Member.builder().memberId(memberId).build() )"
-	)
+	@Mapping(target = "shop", expression = "java( Shop.builder().shopId(shopId).build() )")
+	@Mapping(target = "customer", expression = "java( Member.builder().memberId(memberId).build() )")
+	@Mapping(target = "reservationDetail", source = "dto", qualifiedByName = "dtoToReservationDetail")
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "modifiedAt", ignore = true)
 	@Mapping(target = "createdBy", ignore = true)
 	@Mapping(target = "modifiedBy", ignore = true)
 	@Mapping(target = "reservationId", ignore = true)
-	@Mapping(target = "nailArtist", ignore = true)
 	Reservation toEntity(Long shopId, Long memberId, ReservationDto.Post dto);
 
 	@Mapping(
@@ -58,17 +46,28 @@ public interface ReservationMapper {
 		target = "modifiedAt",
 		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservation.getModifiedAt() ) )"
 	)
-	@Mapping(target = "nickname", source = "customer.nickname")
 	ReservationDto.Response toResponse(Reservation reservation);
+
+	@Mapping(target = "reservationDetailId", source = "reservationDetail.reservationDetailId")
+	@Mapping(target = "remove", source = "reservationDetail.remove")
+	@Mapping(target = "extend", source = "reservationDetail.extend")
+	@Mapping(target = "status", source = "reservationDetail.status")
+	@Mapping(target = "startTime", expression = "java( reservation.getReservationDetail().getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getStartTime()) : null )")
+	@Mapping(target = "endTime", expression = "java( reservation.getReservationDetail().getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getEndTime()) : null )")
+	@Mapping(target = "conditionList", source = "reservationDetail.conditionList")
+	@Mapping(target = "treatment", source = "reservationDetail.treatment")
+	@Mapping(target = "createdAt", expression = "java( DateUtils.localDateTimeToUnixTimeStamp(reservation.getCreatedAt()) )")
+	@Mapping(target = "modifiedAt", expression = "java( DateUtils.localDateTimeToUnixTimeStamp(reservation.getModifiedAt()) )")
+	ReservationDto.RegisterResponse toRegisterResponse(Reservation reservation);
 
 	@Mapping(target = "reservationId", source = "reservationId")
 	@Mapping(target = "shop", source = "shop", qualifiedByName = "mapShopInfo")
-	@Mapping(target = "details", expression = "java(mapReservationDetails(reservation.getReservationDetailList(), reservation))")
+	@Mapping(target = "details", expression = "java(Collections.singletonList(mapReservationDetail(reservation.getReservationDetail())))")
 	ReservationDto.MainPageResponse toMainPageResponse(Reservation reservation);
 
 	@Mapping(target = "reservationId", source = "reservationId")
 	@Mapping(target = "shop", source = "shop", qualifiedByName = "mapShopInfoForCompleted")
-	@Mapping(target = "startTime", expression = "java(getEarliestStartTime(reservation.getReservationDetailList()))")
+	@Mapping(target = "startTime", expression = "java(getStartTime(reservation.getReservationDetail()))")
 	ReservationDto.CompletedReservationResponse toCompletedReservationResponse(Reservation reservation);
 
 	@Named("mapShopInfo")
@@ -157,35 +156,34 @@ public interface ReservationMapper {
 		return detailInfo;
 	}
 
-	@Named("mapReservationDetails")
-	default List<ReservationDto.MainPageResponse.ReservationDetailInfo> mapReservationDetails(
-		Set<ReservationDetail> details, Reservation reservation) {
-		if (details == null || details.isEmpty()) {
-			return new ArrayList<>();
+	@Named("mapReservationDetail")
+	default ReservationDto.MainPageResponse.ReservationDetailInfo mapReservationDetail(ReservationDetail detail) {
+		if (detail == null) {
+			return null;
 		}
-		boolean isAccompanied = reservation.isAccompanied();
 
-		return details.stream()
-			.map(detail -> {
-				ReservationDto.MainPageResponse.ReservationDetailInfo info = new ReservationDto.MainPageResponse.ReservationDetailInfo();
-				info.setReservationDetailsId(detail.getReservationDetailId());
-				info.setStartTime(
-					detail.getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()) :
-						null);
-				info.setEndTime(
-					detail.getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()) : null);
-				info.setTreatmentOptions(detail.getTreatment() != null
-					? Collections.singletonList(detail.getTreatment().getOption().name())
-					: new ArrayList<>());
-				info.setRemoveOption(detail.getRemove() != null ? detail.getRemove().name() : null);
-				info.setConditionOptions(detail.getConditionList() != null ? detail.getConditionList().stream()
-					.map(condition -> condition.getOption().name())
-					.collect(Collectors.toList()) : new ArrayList<>());
-				info.setStatus(detail.getStatus() != null ? detail.getStatus().name() : null);
-				return info;
-			})
-			.filter(info -> info.getStartTime() != null) // endTime은 null이어도 괜찮습니다.
-			.collect(Collectors.toList());
+		ReservationDto.MainPageResponse.ReservationDetailInfo info = new ReservationDto.MainPageResponse.ReservationDetailInfo();
+		info.setReservationDetailsId(detail.getReservationDetailId());
+		info.setStartTime(
+			detail.getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()) : null);
+		info.setEndTime(
+			detail.getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()) : null);
+		info.setTreatmentOptions(detail.getTreatment() != null
+			? Collections.singletonList(detail.getTreatment().getOption().name())
+			: new ArrayList<>());
+		info.setRemoveOption(detail.getRemove() != null ? detail.getRemove().name() : null);
+		info.setConditionOptions(detail.getConditionList() != null ? detail.getConditionList().stream()
+			.map(condition -> condition.getOption().name())
+			.collect(Collectors.toList()) : new ArrayList<>());
+		info.setStatus(detail.getStatus() != null ? detail.getStatus().name() : null);
+
+		return info.getStartTime() != null ? info : null;
 	}
 
+	@Named("getStartTime")
+	default Long getStartTime(ReservationDetail detail) {
+		return detail != null && detail.getStartTime() != null
+			? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime())
+			: null;
+	}
 }

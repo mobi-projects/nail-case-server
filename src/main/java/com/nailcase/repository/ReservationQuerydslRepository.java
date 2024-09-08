@@ -14,5 +14,5 @@ public interface ReservationQuerydslRepository {
 
 	List<Reservation> fetchUpcomingReservationWithReservationDetails(Long memberId, Pageable pageable);
 
-	List<Reservation> fetchCompletedReservationDetailsWithMemberAndShop(Long memberId, Pageable pageable);
+	List<Reservation> fetchCompletedReservationsWithDetailAndShop(Long memberId, Pageable pageable);
 }

@@ -35,7 +35,6 @@ public class ReviewDto {
 		private String nickname;
 		private String contents;
 		private Double rating;
-		private boolean accompaniedIn;
 		private TreatmentOption treatmentOptions;
 		private List<ConditionOption> conditionOptions;
 		private Integer visitCount;
