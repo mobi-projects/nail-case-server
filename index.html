@@ -709,20 +709,6 @@
     "option" : {
       "type" : "string",
       "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
-    },
-    "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "createdBy" : {
-      "type" : "string"
-    },
-    "modifiedBy" : {
-      "type" : "string"
     }
   }
 };
@@ -1149,51 +1135,10 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.ReservationDetailDto$Post"] = {
-  "required" : [ "conditionList", "extend", "remove", "startTime", "treatmentList" ],
-  "type" : "object",
-  "properties" : {
-    "shopId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "nailArtistId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "startTime" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "remove" : {
-      "type" : "string",
-      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
-    },
-    "extend" : {
-      "type" : "boolean"
-    },
-    "conditionList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Post"
-      }
-    },
-    "treatmentList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Post"
-      }
-    }
-  }
-};
             defs["com.nailcase.model.dto.ReservationDetailDto$Response"] = {
   "type" : "object",
   "properties" : {
     "reservationDetailId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "nailArtistId" : {
       "type" : "integer",
       "format" : "int64"
     },
@@ -1222,19 +1167,8 @@
         "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Response"
       }
     },
-    "treatmentList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
-      }
-    },
-    "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
+    "treatment" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
     }
   }
 };
@@ -1263,11 +1197,8 @@
             defs["com.nailcase.model.dto.ReservationDto$Confirm"] = {
   "type" : "object",
   "properties" : {
-    "reservationDetailList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Confirm"
-      }
+    "reservationDetail" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Confirm"
     }
   }
 };
@@ -1344,27 +1275,79 @@
   }
 };
             defs["com.nailcase.model.dto.ReservationDto$Post"] = {
-  "required" : [ "reservationDetailList" ],
+  "required" : [ "conditionList", "extend", "remove", "shopId", "startTime", "treatment" ],
   "type" : "object",
   "properties" : {
     "shopId" : {
       "type" : "integer",
       "format" : "int64"
     },
-    "reservationDetailList" : {
+    "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "remove" : {
+      "type" : "string",
+      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
+    },
+    "extend" : {
+      "type" : "boolean"
+    },
+    "conditionList" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Post"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Post"
       }
     },
-    "nailArtistIds" : {
-      "type" : "array",
-      "items" : {
-        "type" : "integer",
-        "format" : "int64"
-      }
+    "treatment" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Post"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$RegisterResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "reservationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationDetailId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "remove" : {
+      "type" : "string",
+      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
+    },
+    "extend" : {
+      "type" : "boolean"
+    },
+    "status" : {
+      "type" : "string",
+      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED", "COMPLETED" ]
     },
     "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "endTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "conditionList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Response"
+      }
+    },
+    "treatment" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
+    },
+    "createdAt" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "modifiedAt" : {
       "type" : "integer",
       "format" : "int64"
     }
@@ -1377,14 +1360,8 @@
       "type" : "integer",
       "format" : "int64"
     },
-    "nickname" : {
-      "type" : "string"
-    },
-    "reservationDetailList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Response"
-      }
+    "reservationDetail" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Response"
     },
     "createdAt" : {
       "type" : "integer",
@@ -1504,9 +1481,6 @@
     "rating" : {
       "type" : "number",
       "format" : "double"
-    },
-    "accompaniedIn" : {
-      "type" : "boolean"
     },
     "treatmentOptions" : {
       "type" : "string",
@@ -1892,9 +1866,6 @@
     "imageId" : {
       "type" : "integer",
       "format" : "int64"
-    },
-    "imageUrl" : {
-      "type" : "string"
     }
   }
 };
@@ -1910,20 +1881,6 @@
       "format" : "int64"
     },
     "imageUrl" : {
-      "type" : "string"
-    },
-    "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "createdBy" : {
-      "type" : "string"
-    },
-    "modifiedBy" : {
       "type" : "string"
     }
   }
@@ -13652,7 +13609,7 @@ public class ReservationControllerApiExample {
         Long endDate = 789; // Long | 
         String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startDate, endDate, status);
+            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -13674,7 +13631,7 @@ public class ReservationControllerApiExample {
         Long endDate = 789; // Long | 
         String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startDate, endDate, status);
+            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -13702,7 +13659,7 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
     startDate:startDate
     endDate:endDate
     status:status
-              completionHandler: ^(array[com.nailcase.model.dto.ReservationDto$Response] output, NSError* error) {
+              completionHandler: ^(array[com.nailcase.model.dto.ReservationDto$RegisterResponse] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -13768,7 +13725,7 @@ namespace Example
 
             try
             {
-                array[com.nailcase.model.dto.ReservationDto$Response] result = apiInstance.listReservation(shopId, startDate, endDate, status);
+                array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, startDate, endDate, status);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -13970,7 +13927,7 @@ except ApiException as e:
       "schema" : {
         "type" : "array",
         "items" : {
-          "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$Response"
+          "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$RegisterResponse"
         },
         "x-content-type" : "*/*"
       }
@@ -14066,7 +14023,7 @@ public class ReservationControllerApiExample {
         Com.nailcase.model.dto.ReservationDto$Post body = ; // Com.nailcase.model.dto.ReservationDto$Post | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.registerReservation(body, shopId);
+            com.nailcase.model.dto.ReservationDto$RegisterResponse result = apiInstance.registerReservation(body, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#registerReservation");
@@ -14086,7 +14043,7 @@ public class ReservationControllerApiExample {
         Com.nailcase.model.dto.ReservationDto$Post body = ; // Com.nailcase.model.dto.ReservationDto$Post | 
         Long shopId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.registerReservation(body, shopId);
+            com.nailcase.model.dto.ReservationDto$RegisterResponse result = apiInstance.registerReservation(body, shopId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#registerReservation");
@@ -14110,7 +14067,7 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance registerReservationWith:body
     shopId:shopId
-              completionHandler: ^(com.nailcase.model.dto.ReservationDto$Response output, NSError* error) {
+              completionHandler: ^(com.nailcase.model.dto.ReservationDto$RegisterResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -14171,7 +14128,7 @@ namespace Example
 
             try
             {
-                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.registerReservation(body, shopId);
+                com.nailcase.model.dto.ReservationDto$RegisterResponse result = apiInstance.registerReservation(body, shopId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -14347,7 +14304,7 @@ except ApiException as e:
   "content" : {
     "*/*" : {
       "schema" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$Response"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$RegisterResponse"
       }
     }
   }
@@ -23712,7 +23669,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/shops/{shopId}/info/info</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/shops/{shopId}/info</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -23737,7 +23694,7 @@ except ApiException as e:
 \
 -H "Accept: */*"\
 -H "Content-Type: application/json"\
-"http://localhost:8081/api/v1/shops/{shopId}/info/info"</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/info"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ShopInfoController-updateInfo-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
