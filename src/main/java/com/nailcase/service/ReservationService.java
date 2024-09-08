@@ -55,20 +55,20 @@ public class ReservationService {
 	private final ReservationDetailRepository reservationDetailRepository;
 
 	@Transactional
-	public ReservationDto.Response createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
-		// startTime, endTime 비교 유효성 검사
+	public ReservationDto.RegisterResponse createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
+		// startTime 유효성 검사
 		LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(dto.getStartTime());
 		// 예약 초과인지 여부 검토
 		validateReservationAvailability(shopId, startTime);
 
 		// 예약 생성
 		Reservation reservation = reservationMapper.toEntity(shopId, memberId, dto);
-		reservation.associateDown();
 		Reservation savedReservation = reservationRepository.save(reservation);
-		return reservationMapper.toResponse(savedReservation);
+		return reservationMapper.toRegisterResponse(savedReservation);
 	}
 
-	public List<ReservationDto.Response> listReservation(Long shopId, Long startUnixTimeStamp, Long endUnixTimeStamp,
+	public List<ReservationDto.RegisterResponse> listReservation(Long shopId, Long startUnixTimeStamp,
+		Long endUnixTimeStamp,
 		ReservationStatus status) {
 		LocalDateTime start = LocalDate.now().atTime(LocalTime.MIN);
 		LocalDateTime startDate = startUnixTimeStamp != null
@@ -86,7 +86,7 @@ public class ReservationService {
 			reservationRepository.findReservationListWithinDateRange(shopId, startDate, endDate, status);
 
 		return reservationList.stream()
-			.map(reservationMapper::toResponse)
+			.map(reservationMapper::toRegisterResponse)
 			.toList();
 	}
 
@@ -122,11 +122,6 @@ public class ReservationService {
 		return tempAvailableSeats > 0;
 	}
 
-	private boolean isUpdatable(ReservationDto.Patch dto, Reservation reservation) {
-		return reservation.getReservationDetailList().stream()
-			.anyMatch(reservationDetail -> reservationDetail.isStatusUpdatable(dto.getStatus()));
-	}
-
 	public ReservationDto.MainPageResponse findEarliestReservationByCustomer(Member member) {
 		Pageable pageable = PageRequest.of(0, 1);
 		return reservationRepository.fetchUpcomingReservationWithReservationDetails(member.getMemberId(), pageable)
@@ -157,13 +152,13 @@ public class ReservationService {
 
 	public List<ReservationDto.CompletedReservationResponse> findRecentlyCompletedReservationByCustomer(Member member) {
 		Pageable pageable = PageRequest.of(0, 3);
-		return reservationRepository.fetchCompletedReservationDetailsWithMemberAndShop(member.getMemberId(), pageable)
+		return reservationRepository.fetchCompletedReservationsWithDetailAndShop(member.getMemberId(), pageable)
 			.stream()
 			.sorted(Comparator.comparing(reservation ->
-				reservation.getReservationDetailList().stream()
-					.map(ReservationDetail::getStartTime)
-					.max(LocalDateTime::compareTo)
-					.orElse(LocalDateTime.MIN)))
+				reservation.getReservationDetail() != null
+					? reservation.getReservationDetail().getStartTime()
+					: LocalDateTime.MIN
+			))
 			.limit(3)
 			.map(this::convertToCompletedReservationResponse)
 			.collect(Collectors.toList());
@@ -173,7 +168,7 @@ public class ReservationService {
 		ReservationDto.CompletedReservationResponse response = new ReservationDto.CompletedReservationResponse();
 		response.setReservationId(reservation.getReservationId());
 		response.setShop(convertToCompletedShopInfo(reservation.getShop()));
-		response.setStartTime(getEarliestStartTime(reservation.getReservationDetailList()));
+		response.setStartTime(getStartTime(reservation.getReservationDetail()));
 		return response;
 	}
 
@@ -199,12 +194,10 @@ public class ReservationService {
 			.orElse(null);
 	}
 
-	private Long getEarliestStartTime(Set<ReservationDetail> details) {
-		return details.stream()
-			.map(ReservationDetail::getStartTime)
-			.min(LocalDateTime::compareTo)
-			.map(DateUtils::localDateTimeToUnixTimeStamp)
-			.orElse(null);
+	private Long getStartTime(ReservationDetail detail) {
+		return detail != null && detail.getStartTime() != null
+			? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime())
+			: null;
 	}
 
 	private List<ReservationDto.MainPageResponse.ReservationDetailInfo> convertToReservationDetailInfoList(
@@ -401,49 +394,48 @@ public class ReservationService {
 			.orElse(null);
 	}
 
-	public ReservationDto.MainPageResponse convertToMainPageResponse(Reservation reservation) {
-		ReservationDto.MainPageResponse response = new ReservationDto.MainPageResponse();
-		response.setReservationId(reservation.getReservationId());
-
-		boolean isAccompanied = reservation.isAccompanied();
-		System.out.println("isAccompanied = " + isAccompanied);
-
-		// 예약 상세 목록에서 각 항목을 변환
-		List<ReservationDto.MainPageResponse.ReservationDetailInfo> details = reservation.getReservationDetailList()
-			.stream()
-			.map(detail -> {
-				ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
-				detailInfo.setReservationDetailsId(detail.getReservationDetailId());
-				detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
-				detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
-				detailInfo.setTreatmentOptions(Optional.ofNullable(detail.getTreatment())
-					.map(treatment -> Collections.singletonList(treatment.getOption().name()))
-					.orElse(Collections.emptyList()));
-				detailInfo.setRemoveOption(detail.getRemove().name());
-				detailInfo.setConditionOptions(detail.getConditionList().stream()
-					.map(condition -> condition.getOption().name())
-					.distinct()
-					.collect(Collectors.toList()));
-				detailInfo.setStatus(detail.getStatus().name());
-				return detailInfo;
-			})
-			.collect(Collectors.toList());
-
-		// 중복 제거
-		List<ReservationDto.MainPageResponse.ReservationDetailInfo> uniqueDetails = details.stream()
-			.distinct()
-			.collect(Collectors.toList());
-
-		response.setDetails(uniqueDetails);
-
-		// Shop 정보 설정
-		ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
-		shopInfo.setId(reservation.getShop().getShopId());
-		shopInfo.setName(reservation.getShop().getShopName());
-		response.setShop(shopInfo);
-
-		return response;
-	}
+	// public ReservationDto.MainPageResponse convertToMainPageResponse(Reservation reservation) {
+	// 	ReservationDto.MainPageResponse response = new ReservationDto.MainPageResponse();
+	// 	response.setReservationId(reservation.getReservationId());
+	//
+	// 	boolean isAccompanied = reservation.isAccompanied();
+	//
+	// 	// 예약 상세 목록에서 각 항목을 변환
+	// 	List<ReservationDto.MainPageResponse.ReservationDetailInfo> details = reservation.getReservationDetailList()
+	// 		.stream()
+	// 		.map(detail -> {
+	// 			ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
+	// 			detailInfo.setReservationDetailsId(detail.getReservationDetailId());
+	// 			detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
+	// 			detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
+	// 			detailInfo.setTreatmentOptions(Optional.ofNullable(detail.getTreatment())
+	// 				.map(treatment -> Collections.singletonList(treatment.getOption().name()))
+	// 				.orElse(Collections.emptyList()));
+	// 			detailInfo.setRemoveOption(detail.getRemove().name());
+	// 			detailInfo.setConditionOptions(detail.getConditionList().stream()
+	// 				.map(condition -> condition.getOption().name())
+	// 				.distinct()
+	// 				.collect(Collectors.toList()));
+	// 			detailInfo.setStatus(detail.getStatus().name());
+	// 			return detailInfo;
+	// 		})
+	// 		.collect(Collectors.toList());
+	//
+	// 	// 중복 제거
+	// 	List<ReservationDto.MainPageResponse.ReservationDetailInfo> uniqueDetails = details.stream()
+	// 		.distinct()
+	// 		.collect(Collectors.toList());
+	//
+	// 	response.setDetails(uniqueDetails);
+	//
+	// 	// Shop 정보 설정
+	// 	ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
+	// 	shopInfo.setId(reservation.getShop().getShopId());
+	// 	shopInfo.setName(reservation.getShop().getShopName());
+	// 	response.setShop(shopInfo);
+	//
+	// 	return response;
+	// }
 
 	@Transactional
 	public ReservationDto.Response updateReservationStatus(Shop shop, Long reservationId, Long memberId,
@@ -477,22 +469,23 @@ public class ReservationService {
 			throw new BusinessException(ReservationErrorCode.NOT_UPDATABLE_USER);
 		}
 
-		Map<Long, List<ReservationDetail>> reservationDetailGroupById = reservation.getReservationDetailList()
-			.stream()
-			.collect(Collectors.groupingBy(ReservationDetail::getReservationDetailId));
-
-		List<ReservationDetailDto.Confirm> reservationDetailDtoList = request.getReservationDetailList();
-		for (ReservationDetailDto.Confirm reservationDetailDto : reservationDetailDtoList) {
-			Long reservationDetailId = reservationDetailDto.getReservationDetailId();
-			LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getStartTime());
-			LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getEndTime());
-
-			ReservationDetail reservationDetail = reservationDetailGroupById.get(reservationDetailId).getFirst();
-			if (!reservationDetail.isReservationTimeUpdatable(startTime, endTime)) {
-				throw new BusinessException(ReservationErrorCode.INVALID_TIME);
-			}
-			reservationDetail.updateReservationTime(startTime, endTime);
+		ReservationDetail reservationDetail = reservation.getReservationDetail();
+		if (reservationDetail == null) {
+			throw new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND);
 		}
+
+		ReservationDetailDto.Confirm reservationDetailDto = request.getReservationDetail();
+		if (reservationDetailDto == null) {
+			throw new BusinessException(CommonErrorCode.BAD_REQUEST);
+		}
+
+		LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getStartTime());
+		LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getEndTime());
+
+		if (!reservationDetail.isReservationTimeUpdatable(startTime, endTime)) {
+			throw new BusinessException(ReservationErrorCode.INVALID_TIME);
+		}
+		reservationDetail.updateReservationTime(startTime, endTime);
 
 		if (!reservation.isConfirmable()) {
 			throw new BusinessException(ReservationErrorCode.END_TIME_NOT_SET);

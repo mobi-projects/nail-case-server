@@ -1,8 +1,5 @@
 package com.nailcase.model.entity;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.nailcase.common.BaseEntity;
 import com.nailcase.model.enums.ReservationStatus;
 
@@ -15,11 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -41,7 +37,6 @@ public class Reservation extends BaseEntity {
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
-	// 외부 방문 고객인 경우?
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member customer;
@@ -50,33 +45,31 @@ public class Reservation extends BaseEntity {
 	@JoinColumn(name = "nail_artist_id")
 	private NailArtist nailArtist;
 
-	@Builder.Default
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservation")
-	private Set<ReservationDetail> reservationDetailList = new LinkedHashSet<>();
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "reservation_detail_id")
+	private ReservationDetail reservationDetail;
 
-	// 순환 참조를 막기 위해 한 방향으로만 관계를 맺음
-	public void associateDown() {
-		this.reservationDetailList.forEach(reservationDetail -> reservationDetail.associateDown(this));
-	}
-
-	public boolean isAccompanied() {
-		return reservationDetailList.size() > 1;
+	public void setReservationDetail(ReservationDetail reservationDetail) {
+		this.reservationDetail = reservationDetail;
 	}
 
 	public boolean isConfirmable() {
-		return this.reservationDetailList.stream().allMatch(ReservationDetail::isConfirmable);
+		return this.reservationDetail != null && this.reservationDetail.isConfirmable();
 	}
 
 	public void confirm() {
-		this.reservationDetailList.forEach(ReservationDetail::confirm);
+		if (this.reservationDetail != null) {
+			this.reservationDetail.confirm();
+		}
 	}
 
 	public boolean isStatusUpdatable(ReservationStatus status) {
-		return this.reservationDetailList.stream()
-			.allMatch(reservationDetail -> reservationDetail.isStatusUpdatable(status));
+		return this.reservationDetail != null && this.reservationDetail.isStatusUpdatable(status);
 	}
 
 	public void updateStatus(ReservationStatus status) {
-		this.reservationDetailList.forEach(reservationDetail -> reservationDetail.updateStatus(status));
+		if (this.reservationDetail != null) {
+			this.reservationDetail.updateStatus(status);
+		}
 	}
 }

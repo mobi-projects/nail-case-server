@@ -866,21 +866,8 @@ WITH RECURSIVE shop_range AS (
     ) m,
     generate_series(1, 200)
     ),
-    inserted_reservations AS (
-INSERT INTO reservations (shop_id, member_id, created_at, modified_at)
-SELECT
-    shop_id,
-    member_id,
-    created_at,
-    created_at
-FROM reservation_data
-WHERE rn <= 200
-ORDER BY shop_id, created_at
-    RETURNING reservation_id, shop_id, created_at
-    ),
     reservation_details_data AS (
 SELECT
-    r.reservation_id,
     r.shop_id,
     r.created_at AS start_time,
     na.nail_artist_id,
@@ -888,8 +875,9 @@ SELECT
     (ARRAY['IN_SHOP', 'ELSE_WHERE', 'NO_NEED'])[floor(random() * 3 + 1)] AS remove,
     r.created_at + (ARRAY[INTERVAL '30 minutes', INTERVAL '1 hour', INTERVAL '2 hours'])[floor(random() * 3 + 1)] AS end_time,
     random() < 0.3 AS extend,
-    gs.num AS detail_num
-FROM inserted_reservations r
+    r.member_id,
+    r.created_at AS reservation_created_at
+FROM reservation_data r
     CROSS JOIN LATERAL (
     SELECT nail_artist_id
     FROM nail_artists
@@ -897,38 +885,47 @@ FROM inserted_reservations r
     ORDER BY random()
     LIMIT 1
     ) na
-    CROSS JOIN LATERAL (
-    SELECT generate_series(1, 1 + floor(random() * 2)::int) AS num
-    ) gs
     JOIN work_hours wh ON wh.shop_id = r.shop_id AND wh.day_of_week = EXTRACT(DOW FROM r.created_at)
 WHERE r.created_at::time BETWEEN wh.open_time AND wh.close_time
+  AND r.rn <= 200
     ),
     inserted_reservation_details AS (
-INSERT INTO reservation_details (reservation_id, shop_id, status, remove, start_time, end_time, created_at, modified_at, extend, nail_artist_id)
+INSERT INTO reservation_details (shop_id, status, remove, start_time, end_time, created_at, modified_at, extend, nail_artist_id)
 SELECT
-    rd.reservation_id,
-    rd.shop_id,
-    rd.status,
-    rd.remove,
-    rd.start_time,
-    CASE WHEN rd.status = 'CONFIRMED' THEN rd.end_time ELSE NULL END,
-    rd.start_time - INTERVAL '1 day',
-    rd.start_time - INTERVAL '1 day',
-    rd.extend,
-    rd.nail_artist_id
-FROM reservation_details_data rd
+    shop_id,
+    status,
+    remove,
+    start_time,
+    CASE WHEN status = 'CONFIRMED' THEN end_time ELSE NULL END,
+    start_time - INTERVAL '1 day',
+    start_time - INTERVAL '1 day',
+    extend,
+    nail_artist_id
+FROM reservation_details_data
 WHERE NOT EXISTS (
     SELECT 1
     FROM reservation_details existing
-    WHERE existing.nail_artist_id = rd.nail_artist_id
-  AND existing.reservation_id != rd.reservation_id
+    WHERE existing.nail_artist_id = reservation_details_data.nail_artist_id
   AND (
-    (existing.start_time <= rd.start_time AND existing.end_time > rd.start_time)
-   OR (existing.start_time < rd.end_time AND existing.end_time >= rd.end_time)
-   OR (rd.start_time <= existing.start_time AND rd.end_time >= existing.end_time)
+    (existing.start_time <= reservation_details_data.start_time AND existing.end_time > reservation_details_data.start_time)
+   OR (existing.start_time < reservation_details_data.end_time AND existing.end_time >= reservation_details_data.end_time)
+   OR (reservation_details_data.start_time <= existing.start_time AND reservation_details_data.end_time >= existing.end_time)
     )
     )
-    RETURNING reservation_detail_id, reservation_id, created_at
+    RETURNING reservation_detail_id, shop_id, created_at
+    ),
+    inserted_reservations AS (
+INSERT INTO reservations (shop_id, member_id, nail_artist_id, reservation_detail_id, created_at, modified_at)
+SELECT
+    rdd.shop_id,
+    rdd.member_id,
+    rdd.nail_artist_id,
+    ird.reservation_detail_id,
+    rdd.reservation_created_at,
+    rdd.reservation_created_at
+FROM inserted_reservation_details ird
+    JOIN reservation_details_data rdd ON ird.shop_id = rdd.shop_id AND ird.created_at = rdd.start_time - INTERVAL '1 day'
+    RETURNING reservation_id
     ),
     inserted_treatments AS (
 INSERT INTO treatments (option, image_id, image_url, created_at, modified_at)
@@ -964,16 +961,10 @@ SELECT
     (SELECT COUNT(*) FROM reservation_details) AS reservation_details_count,
     (SELECT COUNT(*) FROM treatments) AS treatments_count,
     (SELECT COUNT(*) FROM conditions) AS conditions_count;
--- 먼저 reservation_details가 없는 reservation을 찾습니다.
-WITH reservations_without_details AS (
-    SELECT r.reservation_id
-    FROM reservations r
-             LEFT JOIN reservation_details rd ON r.reservation_id = rd.reservation_id
-    WHERE rd.reservation_id IS NULL
-)
--- 그 다음, 해당 reservation을 삭제합니다.
+
+-- reservation_details가 없는 reservation을 삭제합니다.
 DELETE FROM reservations
-WHERE reservation_id IN (SELECT reservation_id FROM reservations_without_details);
+WHERE reservation_id NOT IN (SELECT DISTINCT reservation_id FROM reservation_details);
 
 -- 삭제 후 각 테이블의 레코드 수를 확인합니다.
 SELECT
@@ -981,7 +972,6 @@ SELECT
     (SELECT COUNT(*) FROM reservation_details) AS reservation_details_count,
     (SELECT COUNT(*) FROM treatments) AS treatments_count,
     (SELECT COUNT(*) FROM conditions) AS conditions_count;
-
 
 -- 리뷰 데이터 삽입
 INSERT INTO review (shop_id, member_id, reservation_detail_id, contents, rating, created_at, modified_at)

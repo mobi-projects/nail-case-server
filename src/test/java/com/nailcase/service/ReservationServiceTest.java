@@ -1,7 +1,5 @@
 package com.nailcase.service;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -167,7 +165,7 @@ class ReservationServiceTest {
 			reservationId,
 			FixtureFactory.FIXTURE_SHOP_ID,
 			FixtureFactory.FIXTURE_NAIL_ARTIST_ID,
-			Set.of(FixtureFactory.reservationDetail())
+			FixtureFactory.reservationDetail()
 		);
 	}
 }

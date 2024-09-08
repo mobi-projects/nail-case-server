@@ -104,9 +104,7 @@ public class FixtureFactory {
 	public static TreatmentDto.Post treatmentPostDto() {
 		return createTreatmentPostDto(
 			FIXTURE_TREATMENT_OPTION,
-			FIXTURE_IMAGE_ID,
-			FIXTURE_IMAGE_URL
-		);
+			FIXTURE_IMAGE_ID);
 	}
 
 	public static Condition condition() {
@@ -139,7 +137,7 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_EXTEND,
 			FIXTURE_RESERVATION_DETAIL_START_UNIX_TIME,
 			List.of(conditionPostDto()),
-			List.of(treatmentPostDto())
+			treatmentPostDto()
 		);
 	}
 
@@ -155,14 +153,14 @@ public class FixtureFactory {
 			FIXTURE_RESERVATION_ID,
 			FIXTURE_SHOP_ID,
 			FIXTURE_NAIL_ARTIST_ID,
-			Set.of(reservationDetail())
+			reservationDetail()
 		);
 	}
 
 	public static ReservationDto.Post reservationPostDto() {
 		return createReservationPostDto(
 			FIXTURE_SHOP_ID,
-			List.of(reservationDetailPostDto())
+			reservationDetailPostDto()
 		);
 	}
 
@@ -175,11 +173,10 @@ public class FixtureFactory {
 
 	public static ReservationDto.Post createReservationPostDto(
 		Long shopId,
-		List<ReservationDetailDto.Post> reservationDetailList
+		ReservationDetailDto.Post reservationDetail
 	) {
 		ReservationDto.Post reservationDto = new ReservationDto.Post();
 		reservationDto.setShopId(shopId);
-		reservationDto.setReservationDetailList(reservationDetailList);
 		return reservationDto;
 	}
 
@@ -189,7 +186,7 @@ public class FixtureFactory {
 		boolean extend,
 		Long startTime,
 		List<ConditionDto.Post> conditionList,
-		List<TreatmentDto.Post> treatmentList
+		TreatmentDto.Post treatmentList
 	) {
 		ReservationDetailDto.Post reservationDetailDto = new ReservationDetailDto.Post();
 		reservationDetailDto.setShopId(shopId);
@@ -197,7 +194,7 @@ public class FixtureFactory {
 		reservationDetailDto.setExtend(extend);
 		reservationDetailDto.setStartTime(startTime);
 		reservationDetailDto.setConditionList(conditionList);
-		reservationDetailDto.setTreatmentList(treatmentList);
+		reservationDetailDto.setTreatment(treatmentList);
 		return reservationDetailDto;
 	}
 
@@ -211,13 +208,11 @@ public class FixtureFactory {
 
 	public static TreatmentDto.Post createTreatmentPostDto(
 		TreatmentOption option,
-		Long imageId,
-		String imageUrl
+		Long imageId
 	) {
 		TreatmentDto.Post treatmentDto = new TreatmentDto.Post();
 		treatmentDto.setOption(option);
 		treatmentDto.setImageId(imageId);
-		treatmentDto.setImageUrl(imageUrl);
 		return treatmentDto;
 	}
 
@@ -245,13 +240,13 @@ public class FixtureFactory {
 		Long reservationId,
 		Long shopId,
 		Long nailArtistId,
-		Set<ReservationDetail> reservationDetailList
+		ReservationDetail reservationDetail
 	) {
 		return Reservation.builder()
 			.reservationId(reservationId)
 			.shop(Shop.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
 			.nailArtist(NailArtist.builder().nailArtistId(nailArtistId).build())
-			.reservationDetailList(reservationDetailList)
+			.reservationDetail(reservationDetail)
 			.createdAt(LocalDateTime.now())
 			.modifiedAt(LocalDateTime.now())
 			.build();

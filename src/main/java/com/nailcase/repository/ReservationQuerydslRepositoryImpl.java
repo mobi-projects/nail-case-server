@@ -1,7 +1,6 @@
 package com.nailcase.repository;
 
 import static com.nailcase.model.entity.QCondition.*;
-import static com.nailcase.model.entity.QMember.*;
 import static com.nailcase.model.entity.QNailArtist.*;
 import static com.nailcase.model.entity.QReservation.*;
 import static com.nailcase.model.entity.QReservationDetail.*;
@@ -9,7 +8,6 @@ import static com.nailcase.model.entity.QShop.*;
 import static com.nailcase.model.entity.QTreatment.*;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +38,7 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 	public List<Reservation> findReservationListWithinDateRange(Long shopId, LocalDateTime startDate,
 		LocalDateTime endDate, ReservationStatus status) {
 		List<Reservation> reservationList = queryFactory.selectFrom(reservation)
-			.leftJoin(reservation.reservationDetailList, reservationDetail)
+			.leftJoin(reservation.reservationDetail, reservationDetail)
 			.fetchJoin()
 			.leftJoin(reservation.shop, shop)
 			.fetchJoin()
@@ -55,8 +53,7 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.fetch();
 
 		List<Long> reservationDetailIdList = reservationList.stream()
-			.map(Reservation::getReservationDetailList)
-			.flatMap(Collection::stream)
+			.map(Reservation::getReservationDetail)
 			.map(ReservationDetail::getReservationDetailId)
 			.toList();
 
@@ -79,7 +76,7 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 		List<Tuple> reservationIdsWithStartTime = queryFactory
 			.select(reservation.reservationId, reservationDetail.startTime.min())
 			.from(reservation)
-			.join(reservation.reservationDetailList, reservationDetail)
+			.join(reservation.reservationDetail, reservationDetail)
 			.where(reservation.customer.memberId.eq(memberId)
 				.and(reservationDetail.startTime.after(LocalDateTime.now()))
 				.and(reservationDetail.status.in(ReservationStatus.PENDING, ReservationStatus.CONFIRMED))
@@ -102,7 +99,7 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.leftJoin(reservation.shop, shop).fetchJoin()
 			.leftJoin(shop.nailArtist).fetchJoin()
 			.leftJoin(reservation.nailArtist).fetchJoin()
-			.leftJoin(reservation.reservationDetailList, reservationDetail).fetchJoin()
+			.leftJoin(reservation.reservationDetail, reservationDetail).fetchJoin()
 			.leftJoin(reservationDetail.treatment).fetchJoin()
 			.leftJoin(reservationDetail.conditionList).fetchJoin()
 			.leftJoin(shop.shopImages, shopImage)
@@ -119,11 +116,12 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 
 	// 시술 받은 후 예약들
 	@Override
-	public List<Reservation> fetchCompletedReservationDetailsWithMemberAndShop(Long memberId, Pageable pageable) {
-		List<Long> reservationIds = queryFactory
-			.select(reservation.reservationId)
-			.from(reservation)
-			.join(reservation.reservationDetailList, reservationDetail)
+	public List<Reservation> fetchCompletedReservationsWithDetailAndShop(Long memberId, Pageable pageable) {
+		return queryFactory
+			.selectFrom(reservation)
+			.join(reservation.reservationDetail, reservationDetail).fetchJoin()
+			.join(reservation.shop, shop).fetchJoin()
+			.leftJoin(reservation.nailArtist, nailArtist).fetchJoin()
 			.where(reservation.customer.memberId.eq(memberId)
 				.and(reservationDetail.startTime.before(LocalDateTime.now()))
 				.and(reservationDetail.status.eq(ReservationStatus.CONFIRMED))
@@ -131,17 +129,6 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 			.orderBy(reservationDetail.startTime.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
-			.fetch();
-
-		return queryFactory
-			.selectFrom(reservation)
-			.leftJoin(reservation.customer, member).fetchJoin()
-			.leftJoin(reservation.shop, shop).fetchJoin()
-			.leftJoin(shop.nailArtist).fetchJoin()
-			.leftJoin(reservation.nailArtist).fetchJoin()
-			.leftJoin(reservation.reservationDetailList, reservationDetail).fetchJoin()
-			.where(reservation.reservationId.in(reservationIds))
-			.orderBy(reservationDetail.startTime.desc())
 			.fetch();
 	}
 }

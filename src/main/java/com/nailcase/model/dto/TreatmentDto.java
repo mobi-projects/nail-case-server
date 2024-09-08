@@ -14,7 +14,6 @@ public class TreatmentDto {
 
 		private Long imageId;
 
-		private String imageUrl;
 	}
 
 	@Data
@@ -25,13 +24,5 @@ public class TreatmentDto {
 		private Long imageId;
 
 		private String imageUrl;
-
-		private Long createdAt;
-
-		private Long modifiedAt;
-
-		private String createdBy;
-
-		private String modifiedBy;
 	}
 }

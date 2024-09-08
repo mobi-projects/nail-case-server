@@ -15,8 +15,6 @@ public class ReservationDetailDto {
 
 		private Long shopId;
 
-		private Long nailArtistId;
-
 		@NotNull
 		private Long startTime;
 
@@ -30,7 +28,7 @@ public class ReservationDetailDto {
 		private List<ConditionDto.Post> conditionList;
 
 		@NotNull
-		private List<TreatmentDto.Post> treatmentList;
+		private TreatmentDto.Post treatment;
 	}
 
 	@Data
@@ -58,9 +56,6 @@ public class ReservationDetailDto {
 
 		private Long reservationDetailId;
 
-		// TODO: nailArtistId -> nailArtistName
-		private Long nailArtistId;
-
 		private RemoveOption remove;
 
 		private Boolean extend;
@@ -73,10 +68,7 @@ public class ReservationDetailDto {
 
 		private List<ConditionDto.Response> conditionList;
 
-		private List<TreatmentDto.Response> treatmentList;
+		private TreatmentDto.Response treatment;
 
-		private Long createdAt;
-
-		private Long modifiedAt;
 	}
 }

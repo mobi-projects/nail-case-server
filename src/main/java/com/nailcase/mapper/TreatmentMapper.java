@@ -20,13 +20,5 @@ public interface TreatmentMapper {
 	@Mapping(target = "treatmentId", ignore = true)
 	Treatment toEntity(TreatmentDto.Post post);
 
-	@Mapping(
-		target = "createdAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( treatment.getCreatedAt() ) )"
-	)
-	@Mapping(
-		target = "modifiedAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( treatment.getModifiedAt() ) )"
-	)
 	TreatmentDto.Response toResponse(Treatment treatment);
 }

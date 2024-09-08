@@ -1,10 +1,14 @@
 package com.nailcase.mapper;
 
+import java.time.LocalDateTime;
+
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import com.nailcase.model.dto.ReservationDetailDto;
+import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Shop;
@@ -18,28 +22,15 @@ import com.nailcase.util.DateUtils;
 )
 public interface ReservationDetailMapper {
 
-	@Mapping(
-		target = "shop",
-		expression = "java( Shop.builder().shopId(dto.getShopId()).build() )"
-	)
-	@Mapping(
-		target = "nailArtist",
-		expression = "java( dto.getNailArtistId() != null ? NailArtist.builder().nailArtistId(dto.getNailArtistId()).build() : null )"
-	)
-	@Mapping(
-		target = "startTime",
-		expression = "java( DateUtils.unixTimeStampToLocalDateTime( dto.getStartTime() ) )"
-	)
+	@Named("dtoToReservationDetail")
+	@Mapping(target = "startTime", source = "startTime", qualifiedByName = "longToLocalDateTime")
+	@Mapping(target = "shop", expression = "java( Shop.builder().shopId(dto.getShopId()).build() )")
+	@Mapping(target = "treatment", source = "treatment")
 	@Mapping(target = "reservationDetailId", ignore = true)
-	@Mapping(target = "reservation", ignore = true)
-	@Mapping(target = "status", ignore = true)
-	@Mapping(target = "createdAt", ignore = true)
-	@Mapping(target = "modifiedAt", ignore = true)
-	@Mapping(target = "createdBy", ignore = true)
-	@Mapping(target = "modifiedBy", ignore = true)
+	@Mapping(target = "status", constant = "PENDING")
 	@Mapping(target = "endTime", ignore = true)
 	@Mapping(target = "review", ignore = true)
-	ReservationDetail toEntity(ReservationDetailDto.Post dto);
+	ReservationDetail toEntity(ReservationDto.Post dto);
 
 	@Mapping(
 		target = "startTime",
@@ -49,14 +40,10 @@ public interface ReservationDetailMapper {
 		target = "endTime",
 		expression = "java( reservationDetail.getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp( reservationDetail.getEndTime() ) : null )"
 	)
-	@Mapping(
-		target = "createdAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservationDetail.getCreatedAt() ) )"
-	)
-	@Mapping(
-		target = "modifiedAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservationDetail.getModifiedAt() ) )"
-	)
-	@Mapping(target = "nailArtistId", source = "nailArtist.nailArtistId")
 	ReservationDetailDto.Response toResponse(ReservationDetail reservationDetail);
+
+	@Named("longToLocalDateTime")
+	default LocalDateTime longToLocalDateTime(Long timestamp) {
+		return timestamp != null ? DateUtils.unixTimeStampToLocalDateTime(timestamp) : null;
+	}
 }

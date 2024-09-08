@@ -32,7 +32,7 @@ public class ReservationController {
 	private final ReservationFacade reservationFacade;
 
 	@PostMapping
-	public ReservationDto.Response registerReservation(
+	public ReservationDto.RegisterResponse registerReservation(
 		@PathVariable Long shopId,
 		@RequestBody ReservationDto.Post dto,
 		@AuthenticationPrincipal Long userId
@@ -84,7 +84,7 @@ public class ReservationController {
 
 	//TODO MANAGER
 	@GetMapping
-	public List<ReservationDto.Response> listReservation(
+	public List<ReservationDto.RegisterResponse> listReservation(
 		@PathVariable Long shopId,
 		@RequestParam(required = false) Long startDate,
 		@RequestParam(required = false) Long endDate,
