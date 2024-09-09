@@ -19,7 +19,6 @@ import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -99,50 +98,39 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
 		QShopImage shopImage = QShopImage.shopImage;
 
-		// 1. 상점 정보와 좋아요 여부, 대표 이미지 정보를 함께 조회
 		List<Tuple> shopsRaw = queryFactory
 			.select(shop.shopId,
 				shop.shopName,
-				ExpressionUtils.as(
-					JPAExpressions
-						.select(shopImage.bucketName)
-						.from(shopImage)
-						.where(shopImage.shop.eq(shop))
-						.orderBy(shopImage.imageId.asc())
-						.limit(1),
-					"shopImageBucketName"
-				),
-				ExpressionUtils.as(
-					JPAExpressions
-						.select(shopImage.objectName)
-						.from(shopImage)
-						.where(shopImage.shop.eq(shop))
-						.orderBy(shopImage.imageId.asc())
-						.limit(1),
-					"shopImageObjectName"
-				),
-				ExpressionUtils.as(
-					JPAExpressions.selectOne()
-						.from(shopLikedMember)
-						.where(shopLikedMember.shop.shopId.eq(shop.shopId)
-							.and(memberId.isPresent()
-								? shopLikedMember.member.memberId.eq(memberId.get())
-								: Expressions.FALSE))
-						.exists(),
-					"likedByUser"
-				))
+				JPAExpressions
+					.select(shopImage.bucketName)
+					.from(shopImage)
+					.where(shopImage.shop.eq(shop))
+					.orderBy(shopImage.imageId.asc())
+					.limit(1),
+				JPAExpressions
+					.select(shopImage.objectName)
+					.from(shopImage)
+					.where(shopImage.shop.eq(shop))
+					.orderBy(shopImage.imageId.asc())
+					.limit(1),
+				JPAExpressions
+					.selectOne()
+					.from(shopLikedMember)
+					.where(shopLikedMember.shop.shopId.eq(shop.shopId)
+						.and(memberId.isPresent()
+							? shopLikedMember.member.memberId.eq(memberId.get())
+							: Expressions.asBoolean(false)))
+					.exists())
 			.from(shop)
 			.orderBy(shop.likes.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		// 2. 전체 개수를 구하는 쿼리
 		JPAQuery<Long> countQuery = queryFactory
 			.select(shop.count())
 			.from(shop);
 
-		// 3. Page 객체 생성 및 반환
 		return PageableExecutionUtils.getPage(shopsRaw, pageable, countQuery::fetchOne);
 	}
 
