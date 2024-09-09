@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,6 +72,7 @@ public class ShopService {
 	private final MemberRepository memberRepository;
 	private final ShopLikedMemberRepository shopLikedMemberRepository;
 	private final ObjectMapper objectMapper;
+	private final TransactionTemplate transactionTemplate;
 
 	@Transactional
 	public ShopDto.ShopRegiResponse registerShop(String shopDataJson, List<MultipartFile> profileImages,
@@ -80,11 +83,19 @@ public class ShopService {
 			ShopDto.PostResponse postResponse = new ShopDto.PostResponse(shopData, profileImages, priceImages);
 			Shop shop = shopMapper.postResponseToShop(postResponse);
 			shop.setNailArtist(nailArtist);
-			nailArtist.addShop(shop);
-			profileImages.forEach(file -> shopImageService.uploadImage(file, ShopImage.builder().shop(shop).build()));
-			priceImages.forEach(file -> priceImageService.uploadImage(file, PriceImage.builder().shop(shop).build()));
 
-			shopRepository.flush();
+			// WorkHour와 Shop의 관계 설정
+			shop.getWorkHours().forEach(workHour -> workHour.setShop(shop));
+
+			// Shop을 먼저 저장
+			Shop savedShop = shopRepository.save(shop);
+
+			// 이미지 저장 (새로운 트랜잭션에서 실행)
+			saveImagesInNewTransaction(savedShop, profileImages, priceImages);
+
+			// NailArtist에 Shop 추가
+			nailArtist.addShop(savedShop);
+
 			List<Long> shopIds = nailArtist.getShops().stream()
 				.map(Shop::getShopId)
 				.toList();
@@ -96,6 +107,31 @@ public class ShopService {
 			log.error("샵 등록 실패", e);
 			throw new BusinessException(ShopErrorCode.REGISTRATION_FAILED, e);
 		}
+	}
+
+	private void saveImagesInNewTransaction(Shop shop, List<MultipartFile> profileImages,
+		List<MultipartFile> priceImages) {
+		transactionTemplate.execute((TransactionCallback<Void>)status -> {
+			try {
+				// Shop 이미지 저장
+				List<ShopImage> shopImages = profileImages.stream()
+					.map(file -> ShopImage.builder().shop(shop).build())
+					.collect(Collectors.toList());
+				shopImageService.saveImagesSync(profileImages, shopImages);
+
+				// 가격 이미지 저장
+				List<PriceImage> priceImageEntities = priceImages.stream()
+					.map(file -> PriceImage.builder().shop(shop).build())
+					.collect(Collectors.toList());
+				priceImageService.saveImagesSync(priceImages, priceImageEntities);
+
+				return null;
+			} catch (Exception e) {
+				status.setRollbackOnly();
+				log.error("이미지 저장 실패", e);
+				return null;
+			}
+		});
 	}
 
 	@Transactional
