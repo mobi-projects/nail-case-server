@@ -83,6 +83,23 @@ public interface ShopMapper {
 	@Mapping(target = "workHours", ignore = true)
 	Shop postDtoToShop(ShopDto.Post dto);
 
+	default List<WorkHour> mapWorkHourDtoToWorkHour(List<WorkHourDto.Post> workHourDtos) {
+		if (workHourDtos == null) {
+			return new ArrayList<>();
+		}
+		return workHourDtos.stream()
+			.map(dto -> {
+
+				return WorkHour.builder()
+					.dayOfWeek(dto.getDayOfWeek())
+					.isOpen(dto.getIsOpen())
+					.openTime(DateUtils.unixTimeStampToLocalDateTime(dto.getOpenTime()))
+					.closeTime(DateUtils.unixTimeStampToLocalDateTime(dto.getCloseTime()))
+					.build();
+			})
+			.collect(Collectors.toList());
+	}
+
 	default List<WorkHourDto.Post> mapWorkHours(List<WorkHour> workHours) {
 		return workHours.stream()
 			.map(workHourData -> WorkHourDto.Post.builder()
@@ -103,7 +120,7 @@ public interface ShopMapper {
 	@Mapping(target = "address", source = "requestData.address")
 	@Mapping(target = "shopImages", ignore = true)
 	@Mapping(target = "priceImages", ignore = true)
-	@Mapping(target = "workHours", ignore = true)
+	@Mapping(target = "workHours", expression = "java(mapWorkHourDtoToWorkHour(postResponse.getRequestData().getWorkHours()))")
 	Shop postResponseToShop(ShopDto.PostResponse postResponse);
 
 }
