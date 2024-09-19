@@ -1305,10 +1305,6 @@
       "type" : "integer",
       "format" : "int64"
     },
-    "reservationDetailId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
     "remove" : {
       "type" : "string",
       "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
@@ -1336,14 +1332,6 @@
     },
     "treatment" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
-    },
-    "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
     }
   }
 };
@@ -1356,14 +1344,6 @@
     },
     "reservationDetail" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Response"
-    },
-    "createdAt" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "modifiedAt" : {
-      "type" : "integer",
-      "format" : "int64"
     }
   }
 };
@@ -13576,7 +13556,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
-"http://localhost:8081/api/v1/shops/{shopId}/reservations?startDate=&endDate=&status="</code></pre>
+"http://localhost:8081/api/v1/shops/{shopId}/reservations?startDate=&endDate=&status=&pageable="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-listReservation-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -13599,11 +13579,12 @@ public class ReservationControllerApiExample {
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
+        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
         Long startDate = 789; // Long | 
         Long endDate = 789; // Long | 
         String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, startDate, endDate, status);
+            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -13621,11 +13602,12 @@ public class ReservationControllerApiExample {
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
+        org.springdoc.core.converters.models.Pageable pageable = ; // org.springdoc.core.converters.models.Pageable | 
         Long startDate = 789; // Long | 
         Long endDate = 789; // Long | 
         String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, startDate, endDate, status);
+            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -13643,13 +13625,15 @@ public class ReservationControllerApiExample {
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
+org.springdoc.core.converters.models.Pageable *pageable = ; // 
 Long *startDate = 789; //  (optional)
 Long *endDate = 789; //  (optional)
-String *status = status_example; //  (optional) (default to CONFIRMED)
+String *status = status_example; //  (optional)
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance listReservationWith:shopId
+    pageable:pageable
     startDate:startDate
     endDate:endDate
     status:status
@@ -13675,6 +13659,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
+var pageable = ; // {{org.springdoc.core.converters.models.Pageable}} 
 var opts = { 
   'startDate': 789, // {{Long}} 
   'endDate': 789, // {{Long}} 
@@ -13687,7 +13672,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.listReservation(shopId, opts, callback);
+api.listReservation(shopId, pageable, opts, callback);
 </code></pre>
                             </div>
 
@@ -13713,13 +13698,14 @@ namespace Example
 
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
+            var pageable = new org.springdoc.core.converters.models.Pageable(); // org.springdoc.core.converters.models.Pageable | 
             var startDate = 789;  // Long |  (optional) 
             var endDate = 789;  // Long |  (optional) 
-            var status = status_example;  // String |  (optional)  (default to CONFIRMED)
+            var status = status_example;  // String |  (optional) 
 
             try
             {
-                array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, startDate, endDate, status);
+                array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -13741,12 +13727,13 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
+$pageable = ; // org.springdoc.core.converters.models.Pageable | 
 $startDate = 789; // Long | 
 $endDate = 789; // Long | 
 $status = status_example; // String | 
 
 try {
-    $result = $api_instance->listReservation($shopId, $startDate, $endDate, $status);
+    $result = $api_instance->listReservation($shopId, $pageable, $startDate, $endDate, $status);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->listReservation: ', $e->getMessage(), PHP_EOL;
@@ -13764,12 +13751,13 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
+my $pageable = ; # org.springdoc.core.converters.models.Pageable | 
 my $startDate = 789; # Long | 
 my $endDate = 789; # Long | 
 my $status = status_example; # String | 
 
 eval { 
-    my $result = $api_instance->listReservation(shopId => $shopId, startDate => $startDate, endDate => $endDate, status => $status);
+    my $result = $api_instance->listReservation(shopId => $shopId, pageable => $pageable, startDate => $startDate, endDate => $endDate, status => $status);
     print Dumper($result);
 };
 if ($@) {
@@ -13790,12 +13778,13 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
 shopId = 789 # Long | 
+pageable =  # org.springdoc.core.converters.models.Pageable | 
 startDate = 789 # Long |  (optional)
 endDate = 789 # Long |  (optional)
-status = status_example # String |  (optional) (default to CONFIRMED)
+status = status_example # String |  (optional)
 
 try: 
-    api_response = api_instance.list_reservation(shopId, startDate=startDate, endDate=endDate, status=status)
+    api_response = api_instance.list_reservation(shopId, pageable, startDate=startDate, endDate=endDate, status=status)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->listReservation: %s\n" % e)</code></pre>
@@ -13893,6 +13882,25 @@ except ApiException as e:
                                                 </span>
                                 
                                             </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">pageable*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_listReservation_pageable">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    org.springdoc.core.converters.models.Pageable
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
                                         </div>
                                     </div>
                                 </td>
