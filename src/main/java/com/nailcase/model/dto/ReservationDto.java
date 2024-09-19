@@ -49,7 +49,14 @@ public class ReservationDto {
 	@Data
 	public static class Confirm {
 
-		private ReservationDetailDto.Confirm reservationDetail;
+		@NotNull
+		private Long reservationDetailId;
+
+		@NotNull
+		private Long endTime;
+
+		@NotNull
+		private String price;
 	}
 
 	@Data

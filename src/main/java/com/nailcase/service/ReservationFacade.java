@@ -2,6 +2,7 @@ package com.nailcase.service;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,8 @@ public class ReservationFacade {
 	}
 
 	@Transactional
-	public ReservationDto.Response confirmReservation(Long shopId, Long reservationId, Long memberId,
+	public ReservationDto.Response confirmReservation(Long shopId, Long reservationId,
+		@AuthenticationPrincipal Long memberId,
 		ReservationDto.Confirm dto) {
 		Shop shop = shopService.getShopById(shopId);
 		return reservationService.confirmReservation(shop, reservationId, memberId, dto);

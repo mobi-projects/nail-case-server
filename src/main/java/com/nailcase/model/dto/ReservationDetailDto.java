@@ -40,18 +40,6 @@ public class ReservationDetailDto {
 	}
 
 	@Data
-	public static class Confirm {
-
-		@NotNull
-		private Long reservationDetailId;
-
-		private Long startTime;
-
-		@NotNull
-		private Long endTime;
-	}
-
-	@Data
 	public static class Response {
 
 		private Long reservationDetailId;
@@ -65,6 +53,8 @@ public class ReservationDetailDto {
 		private Long startTime;
 
 		private Long endTime;
+
+		private String price;
 
 		private List<ConditionDto.Response> conditionList;
 

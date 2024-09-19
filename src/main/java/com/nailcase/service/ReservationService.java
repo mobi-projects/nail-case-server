@@ -26,7 +26,6 @@ import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.mapper.ReservationMapper;
 import com.nailcase.model.dto.NailArtistDto;
-import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.NailArtist;
@@ -474,18 +473,21 @@ public class ReservationService {
 			throw new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND);
 		}
 
-		ReservationDetailDto.Confirm reservationDetailDto = request.getReservationDetail();
-		if (reservationDetailDto == null) {
+		if (request == null) {
 			throw new BusinessException(CommonErrorCode.BAD_REQUEST);
 		}
 
-		LocalDateTime startTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getStartTime());
-		LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(reservationDetailDto.getEndTime());
+		LocalDateTime endTime = DateUtils.unixTimeStampToLocalDateTime(request.getEndTime());
+		String price = request.getPrice();
 
-		if (!reservationDetail.isReservationTimeUpdatable(startTime, endTime)) {
+		if (!reservationDetail.isReservationTimeUpdatable(endTime)) {
 			throw new BusinessException(ReservationErrorCode.INVALID_TIME);
 		}
-		reservationDetail.updateReservationTime(startTime, endTime);
+		reservationDetail.updateReservationTime(endTime);
+
+		if (price != null) {
+			reservationDetail.updatePrice(price);
+		}
 
 		if (!reservation.isConfirmable()) {
 			throw new BusinessException(ReservationErrorCode.END_TIME_NOT_SET);
