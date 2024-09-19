@@ -78,10 +78,17 @@ public class ReservationDetail extends BaseEntity {
 	@Column(name = "remove", nullable = false, length = 16)
 	private RemoveOption remove;
 
+	@Column(name = "price")
+	private String price;
+
 	@OneToOne(mappedBy = "reservationDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Review review;
 
 	private boolean extend;
+
+	public void updatePrice(String price) {
+		this.price = price;
+	}
 
 	public boolean isStatusUpdatable(ReservationStatus status) {
 		if (ReservationStatus.getNotUpdateable().contains(this.status)) {
@@ -110,29 +117,16 @@ public class ReservationDetail extends BaseEntity {
 		}
 	}
 
-	public void updateReservationTime(LocalDateTime newStartTime, LocalDateTime newEndTime) {
-		if (newStartTime != null) {
-			this.startTime = newStartTime;
-		}
+	public void updateReservationTime(LocalDateTime newEndTime) {
 		if (newEndTime != null) {
 			this.endTime = newEndTime;
 		}
 	}
 
-	public boolean isReservationTimeUpdatable(LocalDateTime newStartTime, LocalDateTime newEndTime) {
-		if (newStartTime == null && newEndTime == null) {
-			return false;
-		}
-		if (newStartTime != null && newEndTime != null) {
-			return newStartTime.isBefore(newEndTime);
-		}
-		if (newStartTime == null) {
-			return startTime.isBefore(newEndTime);
-		}
-		if (endTime == null) {
-			return false;
-		}
-		return newStartTime.isBefore(endTime);
+	public boolean isReservationTimeUpdatable(LocalDateTime newEndTime) {
+		System.out.println("this.startTime = " + this.startTime);
+		LocalDateTime now = LocalDateTime.now();
+		return newEndTime.isAfter(this.startTime) && newEndTime.isAfter(now);
 	}
 
 	public boolean isConfirmable() {
