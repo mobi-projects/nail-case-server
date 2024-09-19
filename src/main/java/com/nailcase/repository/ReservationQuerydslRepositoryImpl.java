@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +24,7 @@ import com.nailcase.model.entity.QShopImage;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.ReservationStatus;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,33 +38,59 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<Reservation> findReservationListWithinDateRange(Long shopId, LocalDateTime startDate,
-		LocalDateTime endDate, ReservationStatus status) {
-		List<Reservation> reservationList = queryFactory.selectFrom(reservation)
+	public Page<Reservation> findReservationListWithinDateRange(Long shopId, LocalDateTime startDate,
+		LocalDateTime endDate, ReservationStatus status, Pageable pageable) {
+		BooleanBuilder builder = new BooleanBuilder();
+
+		// shopId 조건은 항상 적용
+		builder.and(reservation.shop.shopId.eq(shopId));
+
+		// startDate와 endDate가 모두 제공된 경우에만 날짜 범위 조건 적용
+		if (startDate != null && endDate != null) {
+			builder.and(reservationDetail.startTime.between(startDate, endDate));
+		}
+
+		// status가 제공된 경우에만 상태 조건 적용
+		if (status != null) {
+			builder.and(reservationDetail.status.eq(status));
+		}
+
+		// 전체 카운트 쿼리
+		long total = queryFactory
+			.selectFrom(reservation)
+			.where(builder)
+			.fetchCount();
+
+		// 페이지네이션이 적용된 쿼리
+		List<Reservation> reservationList = queryFactory
+			.selectFrom(reservation)
 			.leftJoin(reservation.reservationDetail, reservationDetail)
 			.fetchJoin()
 			.leftJoin(reservation.shop, shop)
 			.fetchJoin()
 			.leftJoin(reservationDetail.nailArtist, nailArtist)
 			.fetchJoin()
-			.leftJoin(reservationDetail.treatment, treatment)  // Treatment를 여기서 조인
+			.leftJoin(reservationDetail.treatment, treatment)
 			.fetchJoin()
-			.where(reservation.shop.shopId.eq(shopId),
-				reservationDetail.startTime.between(startDate, endDate),
-				reservationDetail.status.eq(status))
+			.where(builder)
 			.orderBy(reservationDetail.startTime.asc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch();
 
-		List<Long> reservationDetailIdList = reservationList.stream()
-			.map(Reservation::getReservationDetail)
-			.map(ReservationDetail::getReservationDetailId)
-			.toList();
+		// 연관된 조건 데이터 조회
+		if (!reservationList.isEmpty()) {
+			List<Long> reservationDetailIdList = reservationList.stream()
+				.map(Reservation::getReservationDetail)
+				.map(ReservationDetail::getReservationDetailId)
+				.toList();
 
-		queryFactory.selectFrom(condition)
-			.where(condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
-			.fetch();
+			queryFactory.selectFrom(condition)
+				.where(condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
+				.fetch();
+		}
 
-		return reservationList;
+		return new PageImpl<>(reservationList, pageable, total);
 	}
 
 	// 아직 시술 받기전 예약들

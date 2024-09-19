@@ -66,16 +66,11 @@ public class ReservationDto {
 
 		private ReservationDetailDto.Response reservationDetail;
 
-		private Long createdAt;
-
-		private Long modifiedAt;
 	}
 
 	@Data
 	public static class RegisterResponse {
 		private Long reservationId;
-
-		private Long reservationDetailId;
 
 		private RemoveOption remove;
 
@@ -91,9 +86,6 @@ public class ReservationDto {
 
 		private TreatmentDto.Response treatment;
 
-		private Long createdAt;
-
-		private Long modifiedAt;
 	}
 
 	@Data
