@@ -20,4 +20,11 @@ public class ConditionDto {
 
 		private ConditionOption option;
 	}
+
+	@Data
+	public static class pageResponse {
+
+		private ConditionOption option;
+		
+	}
 }

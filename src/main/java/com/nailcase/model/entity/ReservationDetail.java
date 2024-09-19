@@ -1,9 +1,9 @@
 package com.nailcase.model.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
@@ -59,8 +59,9 @@ public class ReservationDetail extends BaseEntity {
 	private Treatment treatment;
 
 	@Builder.Default
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservationDetail")
-	private Set<Condition> conditionList = new HashSet<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "reservation_detail_id")
+	private List<Condition> conditionList = new ArrayList<>();
 
 	@Column(name = "start_time", nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
