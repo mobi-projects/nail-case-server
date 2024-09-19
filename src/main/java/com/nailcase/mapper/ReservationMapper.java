@@ -38,17 +38,8 @@ public interface ReservationMapper {
 	@Mapping(target = "reservationId", ignore = true)
 	Reservation toEntity(Long shopId, Long memberId, ReservationDto.Post dto);
 
-	@Mapping(
-		target = "createdAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservation.getCreatedAt() ) )"
-	)
-	@Mapping(
-		target = "modifiedAt",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservation.getModifiedAt() ) )"
-	)
 	ReservationDto.Response toResponse(Reservation reservation);
 
-	@Mapping(target = "reservationDetailId", source = "reservationDetail.reservationDetailId")
 	@Mapping(target = "remove", source = "reservationDetail.remove")
 	@Mapping(target = "extend", source = "reservationDetail.extend")
 	@Mapping(target = "status", source = "reservationDetail.status")
@@ -56,8 +47,6 @@ public interface ReservationMapper {
 	@Mapping(target = "endTime", expression = "java( reservation.getReservationDetail().getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getEndTime()) : null )")
 	@Mapping(target = "conditionList", source = "reservationDetail.conditionList")
 	@Mapping(target = "treatment", source = "reservationDetail.treatment")
-	@Mapping(target = "createdAt", expression = "java( DateUtils.localDateTimeToUnixTimeStamp(reservation.getCreatedAt()) )")
-	@Mapping(target = "modifiedAt", expression = "java( DateUtils.localDateTimeToUnixTimeStamp(reservation.getModifiedAt()) )")
 	ReservationDto.RegisterResponse toRegisterResponse(Reservation reservation);
 
 	@Mapping(target = "reservationId", source = "reservationId")

@@ -16,6 +16,7 @@ import java.util.stream.LongStream;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -67,8 +68,8 @@ public class ReservationService {
 	}
 
 	public List<ReservationDto.RegisterResponse> listReservation(Long shopId, Long startUnixTimeStamp,
-		Long endUnixTimeStamp,
-		ReservationStatus status) {
+		Long endUnixTimeStamp, ReservationStatus status, Pageable pageable) {
+
 		LocalDateTime start = LocalDate.now().atTime(LocalTime.MIN);
 		LocalDateTime startDate = startUnixTimeStamp != null
 			? DateUtils.unixTimeStampToLocalDateTime(startUnixTimeStamp)
@@ -77,12 +78,8 @@ public class ReservationService {
 			? DateUtils.unixTimeStampToLocalDateTime(endUnixTimeStamp)
 			: start.plusMonths(1);
 
-		if (startDate.plusMonths(1).isBefore(endDate)) {
-			throw new BusinessException(ReservationErrorCode.INVALID_TIME_RANGE);
-		}
-
-		List<Reservation> reservationList =
-			reservationRepository.findReservationListWithinDateRange(shopId, startDate, endDate, status);
+		Page<Reservation> reservationList = reservationRepository.findReservationListWithinDateRange(
+			shopId, startDate, endDate, status, pageable);
 
 		return reservationList.stream()
 			.map(reservationMapper::toRegisterResponse)

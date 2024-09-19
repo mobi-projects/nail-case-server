@@ -3,6 +3,7 @@ package com.nailcase.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -88,11 +89,11 @@ public class ReservationController {
 		@PathVariable Long shopId,
 		@RequestParam(required = false) Long startDate,
 		@RequestParam(required = false) Long endDate,
-		@RequestParam(required = false, defaultValue = "CONFIRMED") ReservationStatus status
-	) {
+		@RequestParam(required = false) ReservationStatus status,
+		Pageable pageable) {
 		// TODO: 예약 조회할때 shop 에 권한있는 사람일 때 목록 조회 가능
 		// TODO: 예약을 위해 예약 조회할때에는 정보가 간소화 되어야 함
-		return reservationService.listReservation(shopId, startDate, endDate, status);
+		return reservationService.listReservation(shopId, startDate, endDate, status, pageable);
 	}
 
 	@GetMapping("/{reservationId}")

@@ -101,27 +101,24 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 		List<Tuple> shopsRaw = queryFactory
 			.select(shop.shopId,
 				shop.shopName,
-				JPAExpressions
-					.select(shopImage.bucketName)
-					.from(shopImage)
-					.where(shopImage.shop.eq(shop))
-					.orderBy(shopImage.imageId.asc())
-					.limit(1),
-				JPAExpressions
-					.select(shopImage.objectName)
-					.from(shopImage)
-					.where(shopImage.shop.eq(shop))
-					.orderBy(shopImage.imageId.asc())
-					.limit(1),
+				shopImage.bucketName,
+				shopImage.objectName,
 				JPAExpressions
 					.selectOne()
 					.from(shopLikedMember)
-					.where(shopLikedMember.shop.shopId.eq(shop.shopId)
+					.where(shopLikedMember.shop.eq(shop)
 						.and(memberId.isPresent()
 							? shopLikedMember.member.memberId.eq(memberId.get())
 							: Expressions.asBoolean(false)))
 					.exists())
 			.from(shop)
+			.leftJoin(shopImage).on(shopImage.shop.eq(shop))
+			.where(shopImage.imageId.eq(
+				JPAExpressions
+					.select(shopImage.imageId.min())
+					.from(shopImage)
+					.where(shopImage.shop.eq(shop))
+			))
 			.orderBy(shop.likes.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
