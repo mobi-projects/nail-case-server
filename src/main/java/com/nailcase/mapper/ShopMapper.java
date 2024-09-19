@@ -88,15 +88,12 @@ public interface ShopMapper {
 			return new ArrayList<>();
 		}
 		return workHourDtos.stream()
-			.map(dto -> {
-
-				return WorkHour.builder()
-					.dayOfWeek(dto.getDayOfWeek())
-					.isOpen(dto.getIsOpen())
-					.openTime(DateUtils.unixTimeStampToLocalDateTime(dto.getOpenTime()))
-					.closeTime(DateUtils.unixTimeStampToLocalDateTime(dto.getCloseTime()))
-					.build();
-			})
+			.map(dto -> WorkHour.builder()
+				.dayOfWeek(dto.getDayOfWeek())
+				.isOpen(dto.getIsOpen())
+				.openTime(DateUtils.unixTimeStampToLocalDateTime(dto.getOpenTime()))
+				.closeTime(DateUtils.unixTimeStampToLocalDateTime(dto.getCloseTime()))
+				.build())
 			.collect(Collectors.toList());
 	}
 

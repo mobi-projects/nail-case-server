@@ -59,7 +59,7 @@ public class WorkHourService {
 	}
 
 	public WorkHour verifyBusinessDay(Collection<WorkHour> workHours, Long date) {
-		int requestingDayOfWeek = DateUtils.unixTimeStampToLocalDateTime(date).getDayOfWeek().ordinal();
+		int requestingDayOfWeek = (DateUtils.unixTimeStampToLocalDateTime(date).getDayOfWeek().getValue() % 7);
 
 		WorkHour workHour = workHours.stream()
 			.filter(wH -> wH.getDayOfWeek() == requestingDayOfWeek)
