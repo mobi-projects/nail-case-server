@@ -1117,24 +1117,6 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.ReservationDetailDto$Confirm"] = {
-  "required" : [ "endTime", "reservationDetailId" ],
-  "type" : "object",
-  "properties" : {
-    "reservationDetailId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "startTime" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "endTime" : {
-      "type" : "integer",
-      "format" : "int64"
-    }
-  }
-};
             defs["com.nailcase.model.dto.ReservationDetailDto$Response"] = {
   "type" : "object",
   "properties" : {
@@ -1160,6 +1142,9 @@
     "endTime" : {
       "type" : "integer",
       "format" : "int64"
+    },
+    "price" : {
+      "type" : "string"
     },
     "conditionList" : {
       "type" : "array",
@@ -1195,10 +1180,19 @@
   }
 };
             defs["com.nailcase.model.dto.ReservationDto$Confirm"] = {
+  "required" : [ "endTime", "price", "reservationDetailId" ],
   "type" : "object",
   "properties" : {
-    "reservationDetail" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Confirm"
+    "reservationDetailId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "endTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "price" : {
+      "type" : "string"
     }
   }
 };
