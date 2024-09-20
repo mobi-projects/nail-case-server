@@ -41,6 +41,10 @@ public class Reservation extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member customer;
 
+	// 예약자명
+	@Column(name = "customer_name")
+	private String customerName;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "nail_artist_id")
 	private NailArtist nailArtist;
@@ -61,6 +65,10 @@ public class Reservation extends BaseEntity {
 		if (this.reservationDetail != null) {
 			this.reservationDetail.confirm();
 		}
+	}
+
+	public void updateNickname(String nickname) {
+		this.customerName = nickname;
 	}
 
 	public boolean isStatusUpdatable(ReservationStatus status) {
