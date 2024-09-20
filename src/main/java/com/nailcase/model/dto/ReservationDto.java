@@ -76,6 +76,8 @@ public class ReservationDto {
 
 		private Boolean extend;
 
+		private String customerName;
+
 		private ReservationStatus status;
 
 		private Long startTime;

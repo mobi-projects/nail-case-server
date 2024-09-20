@@ -29,6 +29,7 @@ import com.nailcase.mapper.ReservationMapper;
 import com.nailcase.model.dto.NailArtistDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.MonthlyArtImage;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
@@ -36,6 +37,9 @@ import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.ReservationStatus;
+import com.nailcase.model.enums.Role;
+import com.nailcase.repository.MemberRepository;
+import com.nailcase.repository.MonthlyArtImageRepository;
 import com.nailcase.repository.ReservationDetailRepository;
 import com.nailcase.repository.ReservationRepository;
 import com.nailcase.util.DateUtils;
@@ -53,6 +57,8 @@ public class ReservationService {
 	private final ReservationMapper reservationMapper;
 	private final ReservationRepository reservationRepository;
 	private final ReservationDetailRepository reservationDetailRepository;
+	private final MemberRepository memberRepository;
+	private final MonthlyArtImageRepository monthlyArtImageRepository;
 
 	@Transactional
 	public ReservationDto.RegisterResponse createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
@@ -61,8 +67,18 @@ public class ReservationService {
 		// 예약 초과인지 여부 검토
 		validateReservationAvailability(shopId, startTime);
 
+		// 멤버 조회
+		Member member = memberRepository.findByMemberIdAndRole(memberId, Role.MEMBER)
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+
+		// MonthlyArtImage 조회
+		MonthlyArtImage monthlyArtImage = monthlyArtImageRepository.findByImageId(dto.getTreatment().getImageId())
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+
 		// 예약 생성
-		Reservation reservation = reservationMapper.toEntity(shopId, memberId, dto);
+		Reservation reservation = reservationMapper.toEntity(shopId, memberId, member.getNickname(), dto,
+			monthlyArtImage);
+
 		Reservation savedReservation = reservationRepository.save(reservation);
 		return reservationMapper.toRegisterResponse(savedReservation);
 	}
@@ -80,12 +96,7 @@ public class ReservationService {
 		Page<Reservation> reservationPage = reservationRepository.findReservationListWithinDateRange(
 			shopId, startDate, endDate, status, pageable);
 
-		ReservationDto.pageableResponse pageableResponse = reservationMapper.toPageableResponse(reservationPage);
-		log.debug("Response: {}", pageableResponse);
-		pageableResponse.getReservationList().forEach(r ->
-			log.debug("Reservation {}: conditions: {}", r.getReservationId(), r.getConditionList())
-		);
-		return pageableResponse;
+		return reservationMapper.toPageableResponse(reservationPage);
 	}
 
 	public ReservationDto.Response viewReservation(Long shopId, Long reservationId) {

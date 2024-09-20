@@ -11,6 +11,8 @@ public class ConditionDto {
 
 		@NotNull
 		private ConditionOption option;
+
+		private Long monthlyArtImageId;
 	}
 
 	@Data
@@ -25,6 +27,6 @@ public class ConditionDto {
 	public static class pageResponse {
 
 		private ConditionOption option;
-		
+
 	}
 }

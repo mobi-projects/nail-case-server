@@ -17,10 +17,14 @@ import com.nailcase.model.dto.ConditionDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Condition;
 import com.nailcase.model.entity.Member;
+import com.nailcase.model.entity.MonthlyArtImage;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Shop;
+import com.nailcase.model.entity.Treatment;
+import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.util.DateUtils;
+import com.nailcase.util.StringUtils;
 
 @Mapper(
 	uses = {ReservationDetailMapper.class, ShopMapper.class, TreatmentMapper.class},
@@ -32,13 +36,15 @@ public interface ReservationMapper {
 
 	@Mapping(target = "shop", expression = "java( Shop.builder().shopId(shopId).build() )")
 	@Mapping(target = "customer", expression = "java( Member.builder().memberId(memberId).build() )")
-	@Mapping(target = "reservationDetail", source = "dto", qualifiedByName = "dtoToReservationDetail")
+	@Mapping(target = "reservationDetail", expression = "java( dtoToReservationDetail(dto, monthlyArtImage) )")
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "modifiedAt", ignore = true)
 	@Mapping(target = "createdBy", ignore = true)
 	@Mapping(target = "modifiedBy", ignore = true)
 	@Mapping(target = "reservationId", ignore = true)
-	Reservation toEntity(Long shopId, Long memberId, ReservationDto.Post dto);
+	@Mapping(target = "customerName", source = "nickname")
+	Reservation toEntity(Long shopId, Long memberId, String nickname, ReservationDto.Post dto,
+		MonthlyArtImage monthlyArtImage);
 
 	ReservationDto.Response toResponse(Reservation reservation);
 
@@ -123,5 +129,33 @@ public interface ReservationMapper {
 		response.setTotalPages(reservationPage.getTotalPages());
 		response.setLast(reservationPage.isLast());
 		return response;
+	}
+
+	@Named("dtoToReservationDetail")
+	default ReservationDetail dtoToReservationDetail(ReservationDto.Post dto, MonthlyArtImage monthlyArtImage) {
+		if (dto == null) {
+			return null;
+		}
+
+		String imageUrl = StringUtils.generateImageUrl(monthlyArtImage.getBucketName(),
+			monthlyArtImage.getObjectName());
+		Treatment treatment = Treatment.builder()
+			.option(dto.getTreatment().getOption())
+			.imageId(monthlyArtImage.getImageId())
+			.imageUrl(imageUrl)
+			.build();
+
+		return ReservationDetail.builder()
+			.startTime(DateUtils.unixTimeStampToLocalDateTime(dto.getStartTime()))
+			.status(ReservationStatus.PENDING)
+			.remove(dto.getRemove())
+			.extend(dto.getExtend())
+			.treatment(treatment)
+			.conditionList(dto.getConditionList().stream()
+				.map(conditionDto -> Condition.builder()
+					.option(conditionDto.getOption())
+					.build())
+				.collect(Collectors.toList()))
+			.build();
 	}
 }
