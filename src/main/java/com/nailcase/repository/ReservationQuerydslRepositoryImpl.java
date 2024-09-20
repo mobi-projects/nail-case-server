@@ -22,7 +22,6 @@ import com.nailcase.model.entity.QReservationDetail;
 import com.nailcase.model.entity.QShop;
 import com.nailcase.model.entity.QShopImage;
 import com.nailcase.model.entity.Reservation;
-import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.ReservationStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
@@ -64,31 +63,17 @@ public class ReservationQuerydslRepositoryImpl implements ReservationQuerydslRep
 		// 페이지네이션이 적용된 쿼리
 		List<Reservation> reservationList = queryFactory
 			.selectFrom(reservation)
-			.leftJoin(reservation.reservationDetail, reservationDetail)
-			.fetchJoin()
-			.leftJoin(reservation.shop, shop)
-			.fetchJoin()
-			.leftJoin(reservationDetail.nailArtist, nailArtist)
-			.fetchJoin()
-			.leftJoin(reservationDetail.treatment, treatment)
-			.fetchJoin()
+			.leftJoin(reservation.reservationDetail, reservationDetail).fetchJoin()
+			.leftJoin(reservation.shop, shop).fetchJoin()
+			.leftJoin(reservationDetail.nailArtist, nailArtist).fetchJoin()
+			.leftJoin(reservationDetail.treatment, treatment).fetchJoin()
+			.leftJoin(reservationDetail.conditionList, condition).fetchJoin()
 			.where(builder)
-			.orderBy(reservationDetail.startTime.asc())
+			.orderBy(reservationDetail.startTime.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
+			.distinct()
 			.fetch();
-
-		// 연관된 조건 데이터 조회
-		if (!reservationList.isEmpty()) {
-			List<Long> reservationDetailIdList = reservationList.stream()
-				.map(Reservation::getReservationDetail)
-				.map(ReservationDetail::getReservationDetailId)
-				.toList();
-
-			queryFactory.selectFrom(condition)
-				.where(condition.reservationDetail.reservationDetailId.in(reservationDetailIdList))
-				.fetch();
-		}
 
 		return new PageImpl<>(reservationList, pageable, total);
 	}

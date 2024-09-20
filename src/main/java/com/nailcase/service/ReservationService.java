@@ -67,7 +67,7 @@ public class ReservationService {
 		return reservationMapper.toRegisterResponse(savedReservation);
 	}
 
-	public List<ReservationDto.RegisterResponse> listReservation(Long shopId, Long startUnixTimeStamp,
+	public ReservationDto.pageableResponse listReservation(Long shopId, Long startUnixTimeStamp,
 		Long endUnixTimeStamp, ReservationStatus status, Pageable pageable) {
 
 		LocalDateTime start = LocalDate.now().atTime(LocalTime.MIN);
@@ -77,13 +77,15 @@ public class ReservationService {
 		LocalDateTime endDate = endUnixTimeStamp != null
 			? DateUtils.unixTimeStampToLocalDateTime(endUnixTimeStamp)
 			: start.plusMonths(1);
-
-		Page<Reservation> reservationList = reservationRepository.findReservationListWithinDateRange(
+		Page<Reservation> reservationPage = reservationRepository.findReservationListWithinDateRange(
 			shopId, startDate, endDate, status, pageable);
 
-		return reservationList.stream()
-			.map(reservationMapper::toRegisterResponse)
-			.toList();
+		ReservationDto.pageableResponse pageableResponse = reservationMapper.toPageableResponse(reservationPage);
+		log.debug("Response: {}", pageableResponse);
+		pageableResponse.getReservationList().forEach(r ->
+			log.debug("Reservation {}: conditions: {}", r.getReservationId(), r.getConditionList())
+		);
+		return pageableResponse;
 	}
 
 	public ReservationDto.Response viewReservation(Long shopId, Long reservationId) {

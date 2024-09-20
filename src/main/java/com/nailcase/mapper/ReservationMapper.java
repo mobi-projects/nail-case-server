@@ -5,15 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.data.domain.Page;
 
+import com.nailcase.model.dto.ConditionDto;
 import com.nailcase.model.dto.ReservationDto;
+import com.nailcase.model.entity.Condition;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
@@ -45,19 +47,25 @@ public interface ReservationMapper {
 	@Mapping(target = "status", source = "reservationDetail.status")
 	@Mapping(target = "startTime", expression = "java( reservation.getReservationDetail().getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getStartTime()) : null )")
 	@Mapping(target = "endTime", expression = "java( reservation.getReservationDetail().getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getEndTime()) : null )")
-	@Mapping(target = "conditionList", source = "reservationDetail.conditionList")
+	@Mapping(target = "conditionList", expression = "java(mapConditionList(reservation.getReservationDetail().getConditionList()))")
 	@Mapping(target = "treatment", source = "reservationDetail.treatment")
 	ReservationDto.RegisterResponse toRegisterResponse(Reservation reservation);
+
+	default List<ConditionDto.pageResponse> mapConditionList(List<Condition> conditions) {
+		if (conditions == null) {
+			return Collections.emptyList();
+		}
+		return conditions.stream()
+			.map(this::toConditionResponse)
+			.collect(Collectors.toList());
+	}
+
+	ConditionDto.pageResponse toConditionResponse(Condition condition);
 
 	@Mapping(target = "reservationId", source = "reservationId")
 	@Mapping(target = "shop", source = "shop", qualifiedByName = "mapShopInfo")
 	@Mapping(target = "details", expression = "java(Collections.singletonList(mapReservationDetail(reservation.getReservationDetail())))")
 	ReservationDto.MainPageResponse toMainPageResponse(Reservation reservation);
-
-	@Mapping(target = "reservationId", source = "reservationId")
-	@Mapping(target = "shop", source = "shop", qualifiedByName = "mapShopInfoForCompleted")
-	@Mapping(target = "startTime", expression = "java(getStartTime(reservation.getReservationDetail()))")
-	ReservationDto.CompletedReservationResponse toCompletedReservationResponse(Reservation reservation);
 
 	@Named("mapShopInfo")
 	default ReservationDto.MainPageResponse.ShopInfo mapShopInfo(Shop shop) {
@@ -78,71 +86,6 @@ public interface ReservationMapper {
 
 	default String getFirstShopImage(Shop shop) {
 		return null;
-	}
-
-	default Long getEarliestStartTime(Set<ReservationDetail> details) {
-		return details.stream()
-			.map(ReservationDetail::getStartTime)
-			.min(java.time.LocalDateTime::compareTo)
-			.map(DateUtils::localDateTimeToUnixTimeStamp)
-			.orElse(null);
-	}
-
-	default Long getLatestEndTime(List<ReservationDetail> details) {
-		return details.stream()
-			.map(ReservationDetail::getEndTime)
-			.max(java.time.LocalDateTime::compareTo)
-			.map(DateUtils::localDateTimeToUnixTimeStamp)
-			.orElse(null);
-	}
-
-	default List<String> getTreatmentOptions(List<ReservationDetail> details) {
-		return details.stream()
-			.map(ReservationDetail::getTreatment)
-			.filter(Objects::nonNull)
-			.map(treatment -> treatment.getOption().name())
-			.distinct()
-			.collect(Collectors.toList());
-	}
-
-	default String getRemoveOption(List<ReservationDetail> details) {
-		return details.isEmpty() ? null : details.get(0).getRemove().name();
-	}
-
-	default List<String> getConditionOptions(List<ReservationDetail> details) {
-		return details.stream()
-			.flatMap(detail -> detail.getConditionList().stream())
-			.map(condition -> condition.getOption().name())
-			.distinct()
-			.collect(Collectors.toList());
-	}
-
-	@Named("mapShopInfoForCompletedReservation")
-	default ReservationDto.CompletedReservationResponse.ShopInfo mapShopInfoForCompletedReservation(Shop shop) {
-		ReservationDto.CompletedReservationResponse.ShopInfo shopInfo = new ReservationDto.CompletedReservationResponse.ShopInfo();
-		shopInfo.setId(shop.getShopId());
-		shopInfo.setName(shop.getShopName());
-		return shopInfo;
-	}
-
-	default List<ReservationDto.MainPageResponse.ReservationDetailInfo> toReservationDetailInfoList(
-		List<ReservationDetail> reservationDetails) {
-		return reservationDetails.stream()
-			.map(this::toReservationDetailInfo)
-			.collect(Collectors.toList());
-	}
-
-	default ReservationDto.MainPageResponse.ReservationDetailInfo toReservationDetailInfo(
-		ReservationDetail reservationDetail) {
-		ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
-		detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(reservationDetail.getStartTime()));
-		detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(reservationDetail.getEndTime()));
-		detailInfo.setTreatmentOptions(getTreatmentOptions(List.of(reservationDetail)));
-		detailInfo.setRemoveOption(getRemoveOption(List.of(reservationDetail)));
-		detailInfo.setConditionOptions(getConditionOptions(List.of(reservationDetail)));
-		detailInfo.setStatus(reservationDetail.getStatus().name()); // Setting the status
-		detailInfo.setEstimatedPrice(null); // Setting the estimated price
-		return detailInfo;
 	}
 
 	@Named("mapReservationDetail")
@@ -169,10 +112,16 @@ public interface ReservationMapper {
 		return info.getStartTime() != null ? info : null;
 	}
 
-	@Named("getStartTime")
-	default Long getStartTime(ReservationDetail detail) {
-		return detail != null && detail.getStartTime() != null
-			? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime())
-			: null;
+	default ReservationDto.pageableResponse toPageableResponse(Page<Reservation> reservationPage) {
+		ReservationDto.pageableResponse response = new ReservationDto.pageableResponse();
+		response.setReservationList(reservationPage.getContent().stream()
+			.map(this::toRegisterResponse)
+			.collect(Collectors.toList()));
+		response.setPageNumber(reservationPage.getNumber());
+		response.setPageSize(reservationPage.getSize());
+		response.setTotalElements(reservationPage.getTotalElements());
+		response.setTotalPages(reservationPage.getTotalPages());
+		response.setLast(reservationPage.isLast());
+		return response;
 	}
 }

@@ -82,10 +82,19 @@ public class ReservationDto {
 
 		private Long endTime;
 
-		private List<ConditionDto.Response> conditionList;
+		private List<ConditionDto.pageResponse> conditionList;
 
 		private TreatmentDto.Response treatment;
+	}
 
+	@Data
+	public static class pageableResponse {
+		private List<ReservationDto.RegisterResponse> reservationList;
+		private int pageNumber;
+		private int pageSize;
+		private long totalElements;
+		private int totalPages;
+		private boolean last;
 	}
 
 	@Data

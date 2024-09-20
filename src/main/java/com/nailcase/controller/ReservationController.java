@@ -1,11 +1,14 @@
 package com.nailcase.controller;
 
+import java.beans.PropertyEditorSupport;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +31,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ReservationController {
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(ReservationStatus.class, new PropertyEditorSupport() {
+			@Override
+			public void setAsText(String text) throws IllegalArgumentException {
+				setValue(ReservationStatus.valueOf(text.toUpperCase()));
+			}
+		});
+	}
 
 	private final ReservationService reservationService;
 	private final ReservationFacade reservationFacade;
@@ -85,7 +98,7 @@ public class ReservationController {
 
 	//TODO MANAGER
 	@GetMapping
-	public List<ReservationDto.RegisterResponse> listReservation(
+	public ReservationDto.pageableResponse listReservation(
 		@PathVariable Long shopId,
 		@RequestParam(required = false) Long startDate,
 		@RequestParam(required = false) Long endDate,
