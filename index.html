@@ -696,6 +696,10 @@
     "option" : {
       "type" : "string",
       "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
+    },
+    "monthlyArtImageId" : {
+      "type" : "integer",
+      "format" : "int64"
     }
   }
 };
@@ -1320,6 +1324,9 @@
     },
     "extend" : {
       "type" : "boolean"
+    },
+    "customerName" : {
+      "type" : "string"
     },
     "status" : {
       "type" : "string",
