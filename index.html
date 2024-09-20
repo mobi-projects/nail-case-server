@@ -712,6 +712,15 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.ConditionDto$pageResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "option" : {
+      "type" : "string",
+      "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
+    }
+  }
+};
             defs["com.nailcase.model.dto.MainPageDto"] = {
   "type" : "object",
   "properties" : {
@@ -1327,7 +1336,7 @@
     "conditionList" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Response"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$pageResponse"
       }
     },
     "treatment" : {
@@ -1344,6 +1353,36 @@
     },
     "reservationDetail" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Response"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$pageableResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "reservationList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$RegisterResponse"
+      }
+    },
+    "pageNumber" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "pageSize" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "totalElements" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "totalPages" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "last" : {
+      "type" : "boolean"
     }
   }
 };
@@ -13584,7 +13623,7 @@ public class ReservationControllerApiExample {
         Long endDate = 789; // Long | 
         String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
+            com.nailcase.model.dto.ReservationDto$pageableResponse result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -13607,7 +13646,7 @@ public class ReservationControllerApiExample {
         Long endDate = 789; // Long | 
         String status = status_example; // String | 
         try {
-            array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
+            com.nailcase.model.dto.ReservationDto$pageableResponse result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#listReservation");
@@ -13637,7 +13676,7 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
     startDate:startDate
     endDate:endDate
     status:status
-              completionHandler: ^(array[com.nailcase.model.dto.ReservationDto$RegisterResponse] output, NSError* error) {
+              completionHandler: ^(com.nailcase.model.dto.ReservationDto$pageableResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -13705,7 +13744,7 @@ namespace Example
 
             try
             {
-                array[com.nailcase.model.dto.ReservationDto$RegisterResponse] result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
+                com.nailcase.model.dto.ReservationDto$pageableResponse result = apiInstance.listReservation(shopId, pageable, startDate, endDate, status);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -13927,11 +13966,7 @@ except ApiException as e:
   "content" : {
     "*/*" : {
       "schema" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$RegisterResponse"
-        },
-        "x-content-type" : "*/*"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$pageableResponse"
       }
     }
   }
