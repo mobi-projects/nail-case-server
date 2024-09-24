@@ -72,12 +72,17 @@ public class ReservationService {
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 
 		// MonthlyArtImage 조회
-		MonthlyArtImage monthlyArtImage = monthlyArtImageRepository.findByImageId(dto.getTreatment().getImageId())
-			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
+		MonthlyArtImage monthlyArtImage = Optional.ofNullable(dto.getTreatment().getImageId())
+			.flatMap(monthlyArtImageRepository::findByImageId)
+			.orElse(null);
 
-		// 예약 생성
+		if (monthlyArtImage == null && dto.getTreatment().getImageId() != null) {
+			throw new BusinessException(CommonErrorCode.NOT_FOUND);
+		}
 		Reservation reservation = reservationMapper.toEntity(shopId, memberId, member.getNickname(), dto,
 			monthlyArtImage);
+
+		// 예약 생성
 
 		Reservation savedReservation = reservationRepository.save(reservation);
 		return reservationMapper.toRegisterResponse(savedReservation);
