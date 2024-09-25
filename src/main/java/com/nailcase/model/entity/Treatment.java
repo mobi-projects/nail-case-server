@@ -41,4 +41,12 @@ public class Treatment extends BaseEntity {
 	@Column(name = "image_url")
 	private String imageUrl;
 
+	public void updateImageId(Long imageId) {
+		this.imageId = imageId;
+	}
+
+	public void updateImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
 }
