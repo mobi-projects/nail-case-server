@@ -269,7 +269,7 @@ public class FixtureFactory {
 			.shop(Shop.builder().shopId(shopId).availableSeats(FIXTURE_AVAILABLE_SEATS).build())
 			.nailArtist(NailArtist.builder().nailArtistId(nailArtistId).build())
 			.treatment(treatmentList)
-			.conditionList(conditionList)
+			.conditionList(null)
 			.startTime(startTime)
 			.endTime(endTime)
 			.status(status)

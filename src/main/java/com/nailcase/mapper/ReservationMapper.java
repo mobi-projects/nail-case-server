@@ -137,13 +137,16 @@ public interface ReservationMapper {
 			return null;
 		}
 
-		String imageUrl = StringUtils.generateImageUrl(monthlyArtImage.getBucketName(),
-			monthlyArtImage.getObjectName());
 		Treatment treatment = Treatment.builder()
 			.option(dto.getTreatment().getOption())
-			.imageId(monthlyArtImage.getImageId())
-			.imageUrl(imageUrl)
 			.build();
+
+		if (monthlyArtImage != null) {
+			String imageUrl = StringUtils.generateImageUrl(monthlyArtImage.getBucketName(),
+				monthlyArtImage.getObjectName());
+			treatment.updateImageId(monthlyArtImage.getImageId());
+			treatment.updateImageUrl(imageUrl);
+		}
 
 		return ReservationDetail.builder()
 			.startTime(DateUtils.unixTimeStampToLocalDateTime(dto.getStartTime()))
