@@ -706,10 +706,6 @@
             defs["com.nailcase.model.dto.ConditionDto$Response"] = {
   "type" : "object",
   "properties" : {
-    "conditionId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
     "option" : {
       "type" : "string",
       "enum" : [ "REPAIR", "AS", "WOUND_CARE", "CORRECTION" ]
@@ -1130,46 +1126,6 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.ReservationDetailDto$Response"] = {
-  "type" : "object",
-  "properties" : {
-    "reservationDetailId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "remove" : {
-      "type" : "string",
-      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
-    },
-    "extend" : {
-      "type" : "boolean"
-    },
-    "status" : {
-      "type" : "string",
-      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED", "COMPLETED" ]
-    },
-    "startTime" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "endTime" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
-    "price" : {
-      "type" : "string"
-    },
-    "conditionList" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Response"
-      }
-    },
-    "treatment" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
-    }
-  }
-};
             defs["com.nailcase.model.dto.ReservationDto$Available"] = {
   "type" : "object",
   "properties" : {
@@ -1358,8 +1314,47 @@
       "type" : "integer",
       "format" : "int64"
     },
-    "reservationDetail" : {
-      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDetailDto$Response"
+    "remove" : {
+      "type" : "string",
+      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
+    },
+    "extend" : {
+      "type" : "boolean"
+    },
+    "status" : {
+      "type" : "string",
+      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED", "COMPLETED" ]
+    },
+    "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "endTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "price" : {
+      "type" : "string"
+    },
+    "customerName" : {
+      "type" : "string"
+    },
+    "conditionList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Response"
+      }
+    },
+    "treatment" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$cancelReasonRequest"] = {
+  "type" : "object",
+  "properties" : {
+    "cancelReason" : {
+      "type" : "string"
     }
   }
 };
@@ -1390,6 +1385,71 @@
     },
     "last" : {
       "type" : "boolean"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$viewResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "reservationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "remove" : {
+      "type" : "string",
+      "enum" : [ "IN_SHOP", "ELSE_WHERE", "NO_NEED" ]
+    },
+    "extend" : {
+      "type" : "boolean"
+    },
+    "status" : {
+      "type" : "string",
+      "enum" : [ "PENDING", "CANCELED", "REJECTED", "CONFIRMED", "COMPLETED" ]
+    },
+    "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "endTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "price" : {
+      "type" : "string"
+    },
+    "customerName" : {
+      "type" : "string"
+    },
+    "conditionList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ConditionDto$Response"
+      }
+    },
+    "treatment" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
+    },
+    "workHourInfo" : {
+      "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$viewResponse$WorkHourInfo"
+    },
+    "cancelReason" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["com.nailcase.model.dto.ReservationDto$viewResponse$WorkHourInfo"] = {
+  "type" : "object",
+  "properties" : {
+    "isOpen" : {
+      "type" : "boolean"
+    },
+    "openTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "closeTime" : {
+      "type" : "integer",
+      "format" : "int64"
     }
   }
 };
@@ -12097,6 +12157,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
+-H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}/cancel"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-cancelReservation-0-java">
@@ -12121,8 +12182,9 @@ public class ReservationControllerApiExample {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
+        Com.nailcase.model.dto.ReservationDto$cancelReasonRequest body = ; // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId);
+            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId, body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#cancelReservation");
@@ -12141,8 +12203,9 @@ public class ReservationControllerApiExample {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
+        Com.nailcase.model.dto.ReservationDto$cancelReasonRequest body = ; // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId);
+            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId, body);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#cancelReservation");
@@ -12161,11 +12224,13 @@ public class ReservationControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *reservationId = 789; // 
+Com.nailcase.model.dto.ReservationDto$cancelReasonRequest *body = ; //  (optional)
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance cancelReservationWith:shopId
     reservationId:reservationId
+    body:body
               completionHandler: ^(com.nailcase.model.dto.ReservationDto$Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -12189,7 +12254,9 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
 var reservationId = 789; // {{Long}} 
-
+var opts = { 
+  'body':  // {{Com.nailcase.model.dto.ReservationDto$cancelReasonRequest}} 
+};
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -12197,7 +12264,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.cancelReservation(shopId, reservationId, callback);
+api.cancelReservation(shopIdreservationId, opts, callback);
 </code></pre>
                             </div>
 
@@ -12224,10 +12291,11 @@ namespace Example
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
             var reservationId = 789;  // Long | 
+            var body = new Com.nailcase.model.dto.ReservationDto$cancelReasonRequest(); // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest |  (optional) 
 
             try
             {
-                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId);
+                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId, body);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -12250,9 +12318,10 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
 $reservationId = 789; // Long | 
+$body = ; // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
 
 try {
-    $result = $api_instance->cancelReservation($shopId, $reservationId);
+    $result = $api_instance->cancelReservation($shopId, $reservationId, $body);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->cancelReservation: ', $e->getMessage(), PHP_EOL;
@@ -12271,9 +12340,10 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
 my $reservationId = 789; # Long | 
+my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ReservationDto$cancelReasonRequest->new(); # Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
 
 eval { 
-    my $result = $api_instance->cancelReservation(shopId => $shopId, reservationId => $reservationId);
+    my $result = $api_instance->cancelReservation(shopId => $shopId, reservationId => $reservationId, body => $body);
     print Dumper($result);
 };
 if ($@) {
@@ -12295,9 +12365,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.ReservationControllerApi()
 shopId = 789 # Long | 
 reservationId = 789 # Long | 
+body =  # Com.nailcase.model.dto.ReservationDto$cancelReasonRequest |  (optional)
 
 try: 
-    api_response = api_instance.cancel_reservation(shopId, reservationId)
+    api_response = api_instance.cancel_reservation(shopId, reservationId, body=body)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->cancelReservation: %s\n" % e)</code></pre>
@@ -12359,6 +12430,48 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body </td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$cancelReasonRequest"
+      }
+    }
+  }
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_cancelReservation_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_cancelReservation_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
@@ -14794,7 +14907,7 @@ public class ReservationControllerApiExample {
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.viewReservation(shopId, reservationId);
+            com.nailcase.model.dto.ReservationDto$viewResponse result = apiInstance.viewReservation(shopId, reservationId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#viewReservation");
@@ -14814,7 +14927,7 @@ public class ReservationControllerApiExample {
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.viewReservation(shopId, reservationId);
+            com.nailcase.model.dto.ReservationDto$viewResponse result = apiInstance.viewReservation(shopId, reservationId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#viewReservation");
@@ -14838,7 +14951,7 @@ ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance viewReservationWith:shopId
     reservationId:reservationId
-              completionHandler: ^(com.nailcase.model.dto.ReservationDto$Response output, NSError* error) {
+              completionHandler: ^(com.nailcase.model.dto.ReservationDto$viewResponse output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -14899,7 +15012,7 @@ namespace Example
 
             try
             {
-                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.viewReservation(shopId, reservationId);
+                com.nailcase.model.dto.ReservationDto$viewResponse result = apiInstance.viewReservation(shopId, reservationId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -15054,7 +15167,7 @@ except ApiException as e:
   "content" : {
     "*/*" : {
       "schema" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$Response"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$viewResponse"
       }
     }
   }
