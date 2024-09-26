@@ -47,6 +47,11 @@ public class ReservationDto {
 	}
 
 	@Data
+	public static class cancelReasonRequest {
+		private String cancelReason;
+	}
+
+	@Data
 	public static class Confirm {
 
 		@NotNull
@@ -64,7 +69,59 @@ public class ReservationDto {
 
 		private Long reservationId;
 
-		private ReservationDetailDto.Response reservationDetail;
+		private RemoveOption remove;
+
+		private Boolean extend;
+
+		private ReservationStatus status;
+
+		private Long startTime;
+
+		private Long endTime;
+
+		private String price;
+
+		private String customerName;
+
+		private List<ConditionDto.Response> conditionList;
+
+		private TreatmentDto.Response treatment;
+
+	}
+
+	@Data
+	public static class viewResponse {
+
+		private Long reservationId;
+
+		private RemoveOption remove;
+
+		private Boolean extend;
+
+		private ReservationStatus status;
+
+		private Long startTime;
+
+		private Long endTime;
+
+		private String price;
+
+		private String customerName;
+
+		private List<ConditionDto.Response> conditionList;
+
+		private TreatmentDto.Response treatment;
+
+		private WorkHourInfo workHourInfo;
+
+		private String cancelReason;
+
+		@Data
+		public static class WorkHourInfo {
+			private Boolean isOpen;
+			private Long openTime;
+			private Long closeTime;
+		}
 
 	}
 

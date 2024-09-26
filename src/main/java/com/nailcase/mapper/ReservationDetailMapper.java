@@ -7,7 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import com.nailcase.model.dto.ReservationDetailDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.ReservationDetail;
@@ -31,16 +30,6 @@ public interface ReservationDetailMapper {
 	@Mapping(target = "endTime", ignore = true)
 	@Mapping(target = "review", ignore = true)
 	ReservationDetail toEntity(ReservationDto.Post dto);
-
-	@Mapping(
-		target = "startTime",
-		expression = "java( DateUtils.localDateTimeToUnixTimeStamp( reservationDetail.getStartTime() ) )"
-	)
-	@Mapping(
-		target = "endTime",
-		expression = "java( reservationDetail.getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp( reservationDetail.getEndTime() ) : null )"
-	)
-	ReservationDetailDto.Response toResponse(ReservationDetail reservationDetail);
 
 	@Named("longToLocalDateTime")
 	default LocalDateTime longToLocalDateTime(Long timestamp) {

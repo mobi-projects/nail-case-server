@@ -104,10 +104,10 @@ public class ReservationService {
 		return reservationMapper.toPageableResponse(reservationPage);
 	}
 
-	public ReservationDto.Response viewReservation(Long shopId, Long reservationId) {
+	public ReservationDto.viewResponse viewReservation(Long shopId, Long reservationId) {
 		return reservationRepository.findById(reservationId)
 			.filter(reservation -> reservation.getShop().getShopId().equals(shopId))
-			.map(reservationMapper::toResponse)
+			.map(reservationMapper::toDetailedResponse)
 			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 	}
 
@@ -469,6 +469,30 @@ public class ReservationService {
 		if (reservation.isStatusUpdatable(status)) {
 			reservation.updateStatus(status);
 		}
+
+		return reservationMapper.toResponse(reservation);
+	}
+
+	@Transactional
+	public ReservationDto.Response updateReservationStatus(Shop shop, Long reservationId, Long memberId,
+		ReservationStatus status, String cancelReason) {
+
+		Reservation reservation = reservationRepository.findByIdWithReservationDetail(reservationId)
+			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
+
+		if (status.equals(ReservationStatus.CANCELED) && !reservation.getCustomer().getMemberId().equals(memberId)) {
+			throw new BusinessException(ReservationErrorCode.NOT_UPDATABLE_USER);
+		}
+
+		if ((status.equals(ReservationStatus.REJECTED) || status.equals(ReservationStatus.COMPLETED))
+			&& !shop.hasNailArtist(memberId)) {
+			throw new BusinessException(ReservationErrorCode.NOT_UPDATABLE_USER);
+		}
+
+		if (reservation.isStatusUpdatable(status)) {
+			reservation.updateStatus(status);
+		}
+		reservation.updateCancelReason(cancelReason);
 
 		return reservationMapper.toResponse(reservation);
 	}

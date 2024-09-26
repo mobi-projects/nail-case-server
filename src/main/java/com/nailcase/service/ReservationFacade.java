@@ -40,6 +40,15 @@ public class ReservationFacade {
 	public ReservationDto.Response updateReservationStatus(Long shopId, Long reservationId, Long memberId,
 		ReservationStatus status) {
 		Shop shop = shopService.getShopById(shopId);
+
+		return reservationService.updateReservationStatus(shop, reservationId, memberId, status);
+	}
+
+	@Transactional
+	public ReservationDto.Response updateReservationToCancel(Long shopId, Long reservationId, Long memberId,
+		ReservationStatus status, ReservationDto.cancelReasonRequest cancelReasonRequest) {
+		Shop shop = shopService.getShopById(shopId);
+
 		return reservationService.updateReservationStatus(shop, reservationId, memberId, status);
 	}
 

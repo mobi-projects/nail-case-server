@@ -22,6 +22,7 @@ import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.Treatment;
+import com.nailcase.model.entity.WorkHour;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.util.DateUtils;
 import com.nailcase.util.StringUtils;
@@ -48,25 +49,50 @@ public interface ReservationMapper {
 
 	ReservationDto.Response toResponse(Reservation reservation);
 
+	@Mapping(target = "reservationId", source = "reservationId")
 	@Mapping(target = "remove", source = "reservationDetail.remove")
 	@Mapping(target = "extend", source = "reservationDetail.extend")
 	@Mapping(target = "status", source = "reservationDetail.status")
 	@Mapping(target = "startTime", expression = "java( reservation.getReservationDetail().getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getStartTime()) : null )")
 	@Mapping(target = "endTime", expression = "java( reservation.getReservationDetail().getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getEndTime()) : null )")
+	@Mapping(target = "price", source = "reservationDetail.price")
+	@Mapping(target = "customerName", source = "customerName")
 	@Mapping(target = "conditionList", expression = "java(mapConditionList(reservation.getReservationDetail().getConditionList()))")
+	@Mapping(target = "treatment", source = "reservationDetail.treatment")
+	@Mapping(target = "workHourInfo", expression = "java(mapWorkHourInfo(reservation))")
+	@Mapping(target = "cancelReason", source = "cancelReason")
+	ReservationDto.viewResponse toDetailedResponse(Reservation reservation);
+
+	@Mapping(target = "remove", source = "reservationDetail.remove")
+	@Mapping(target = "extend", source = "reservationDetail.extend")
+	@Mapping(target = "status", source = "reservationDetail.status")
+	@Mapping(target = "startTime", expression = "java( reservation.getReservationDetail().getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getStartTime()) : null )")
+	@Mapping(target = "endTime", expression = "java( reservation.getReservationDetail().getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getEndTime()) : null )")
+	@Mapping(target = "conditionList", expression = "java(mapConditionListToPageResponse(reservation.getReservationDetail().getConditionList()))")
 	@Mapping(target = "treatment", source = "reservationDetail.treatment")
 	ReservationDto.RegisterResponse toRegisterResponse(Reservation reservation);
 
-	default List<ConditionDto.pageResponse> mapConditionList(List<Condition> conditions) {
+	default List<ConditionDto.pageResponse> mapConditionListToPageResponse(List<Condition> conditions) {
 		if (conditions == null) {
-			return Collections.emptyList();
+			return null;
+		}
+		return conditions.stream()
+			.map(this::toConditionPageResponse)
+			.collect(Collectors.toList());
+	}
+
+	ConditionDto.pageResponse toConditionPageResponse(Condition condition);
+
+	default List<ConditionDto.Response> mapConditionList(List<Condition> conditions) {
+		if (conditions == null) {
+			return null;
 		}
 		return conditions.stream()
 			.map(this::toConditionResponse)
 			.collect(Collectors.toList());
 	}
 
-	ConditionDto.pageResponse toConditionResponse(Condition condition);
+	ConditionDto.Response toConditionResponse(Condition condition);
 
 	@Mapping(target = "reservationId", source = "reservationId")
 	@Mapping(target = "shop", source = "shop", qualifiedByName = "mapShopInfo")
@@ -161,4 +187,36 @@ public interface ReservationMapper {
 				.collect(Collectors.toList()))
 			.build();
 	}
+
+	@Named("mapWorkHourInfo")
+	default ReservationDto.viewResponse.WorkHourInfo mapWorkHourInfo(Reservation reservation) {
+		if (reservation == null || reservation.getShop() == null ||
+			reservation.getShop().getWorkHours() == null ||
+			reservation.getReservationDetail() == null ||
+			reservation.getReservationDetail().getStartTime() == null) {
+			return null;
+		}
+
+		List<WorkHour> workHours = reservation.getShop().getWorkHours();
+		LocalDateTime reservationTime = reservation.getReservationDetail().getStartTime();
+
+		int dayOfWeek = reservationTime.getDayOfWeek().getValue() % 7; // 0 (Sunday) to 6 (Saturday)
+
+		WorkHour workHour = workHours.stream()
+			.filter(wh -> wh.getDayOfWeek() == dayOfWeek)
+			.findFirst()
+			.orElse(null);
+
+		if (workHour == null) {
+			return null;
+		}
+
+		ReservationDto.viewResponse.WorkHourInfo workHourInfo = new ReservationDto.viewResponse.WorkHourInfo();
+		workHourInfo.setIsOpen(workHour.getIsOpen());
+		workHourInfo.setOpenTime(DateUtils.localDateTimeToUnixTimeStamp(workHour.getOpenTime()));
+		workHourInfo.setCloseTime(DateUtils.localDateTimeToUnixTimeStamp(workHour.getCloseTime()));
+
+		return workHourInfo;
+	}
+
 }
