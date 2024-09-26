@@ -18,8 +18,6 @@ public class ConditionDto {
 	@Data
 	public static class Response {
 
-		private Long conditionId;
-
 		private ConditionOption option;
 	}
 

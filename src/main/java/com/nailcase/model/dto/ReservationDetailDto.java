@@ -3,7 +3,6 @@ package com.nailcase.model.dto;
 import java.util.List;
 
 import com.nailcase.model.enums.RemoveOption;
-import com.nailcase.model.enums.ReservationStatus;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -39,26 +38,4 @@ public class ReservationDetailDto {
 		private Long nailArtistId;
 	}
 
-	@Data
-	public static class Response {
-
-		private Long reservationDetailId;
-
-		private RemoveOption remove;
-
-		private Boolean extend;
-
-		private ReservationStatus status;
-
-		private Long startTime;
-
-		private Long endTime;
-
-		private String price;
-
-		private List<ConditionDto.Response> conditionList;
-
-		private TreatmentDto.Response treatment;
-
-	}
 }

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ReservationController {
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(ReservationStatus.class, new PropertyEditorSupport() {
@@ -58,10 +58,11 @@ public class ReservationController {
 	public ReservationDto.Response cancelReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@AuthenticationPrincipal Long userId
+		@AuthenticationPrincipal Long userId,
+		@RequestBody(required = false) ReservationDto.cancelReasonRequest cancelReasonRequest
 	) {
-		return reservationFacade.updateReservationStatus(shopId, reservationId, userId,
-			ReservationStatus.CANCELED);
+		return reservationFacade.updateReservationToCancel(shopId, reservationId, userId,
+			ReservationStatus.CANCELED, cancelReasonRequest);
 	}
 
 	@PatchMapping("/{reservationId}/reject")
@@ -110,7 +111,7 @@ public class ReservationController {
 	}
 
 	@GetMapping("/{reservationId}")
-	public ReservationDto.Response viewReservation(@PathVariable Long shopId, @PathVariable Long reservationId) {
+	public ReservationDto.viewResponse viewReservation(@PathVariable Long shopId, @PathVariable Long reservationId) {
 		return reservationService.viewReservation(shopId, reservationId);
 	}
 

@@ -38,7 +38,7 @@ public class Treatment extends BaseEntity {
 	@Column(name = "image_id")
 	private Long imageId;
 
-	@Column(name = "image_url")
+	@Column(name = "image_url", length = 1000)
 	private String imageUrl;
 
 	public void updateImageId(Long imageId) {

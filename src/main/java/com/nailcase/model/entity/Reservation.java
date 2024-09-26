@@ -53,6 +53,13 @@ public class Reservation extends BaseEntity {
 	@JoinColumn(name = "reservation_detail_id")
 	private ReservationDetail reservationDetail;
 
+	@Column(name = "cancel_reason", length = 2048)
+	private String cancelReason;
+
+	public void updateCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+
 	public void setReservationDetail(ReservationDetail reservationDetail) {
 		this.reservationDetail = reservationDetail;
 	}
