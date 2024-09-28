@@ -110,6 +110,28 @@ public class Shop extends BaseEntity {
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PriceImage> priceImages = new ArrayList<>();
 
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<ShopLikedMember> likedMembers = new HashSet<>();
+
+	public void addLikedMember(Member member) {
+		ShopLikedMember shopLikedMember = new ShopLikedMember(this, member);
+		this.likedMembers.add(shopLikedMember);
+		this.likes++;
+	}
+
+	public void removeLikedMember(Member member) {
+		this.likedMembers.removeIf(liked -> liked.getMember().equals(member));
+		if (this.likes > 0) {
+			this.likes--;
+		}
+	}
+
+	public boolean isLikedByMember(Member member) {
+		return this.likedMembers.stream()
+			.anyMatch(liked -> liked.getMember().equals(member));
+	}
+
 	public void addPriceImage(PriceImage priceImage) {
 		priceImages.add(priceImage);
 		priceImage.setShop(this);

@@ -28,6 +28,9 @@ public class StringUtils {
 
 	public static String generateImageUrl(String bucket, String objectName) {
 		// object 한글 인코딩
+		if (objectName == null || objectName.isEmpty()) {
+			return null;
+		}
 		return "https://" + bucket + ".s3.amazonaws.com/" + URLEncoder.encode(objectName, StandardCharsets.UTF_8);
 	}
 }

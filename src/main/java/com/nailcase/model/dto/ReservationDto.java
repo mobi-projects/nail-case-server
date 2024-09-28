@@ -55,9 +55,6 @@ public class ReservationDto {
 	public static class Confirm {
 
 		@NotNull
-		private Long reservationDetailId;
-
-		@NotNull
 		private Long endTime;
 
 		@NotNull
@@ -86,6 +83,8 @@ public class ReservationDto {
 		private List<ConditionDto.Response> conditionList;
 
 		private TreatmentDto.Response treatment;
+
+		private String cancelReason;
 
 	}
 

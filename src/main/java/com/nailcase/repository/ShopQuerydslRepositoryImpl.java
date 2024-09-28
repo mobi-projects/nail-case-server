@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import com.nailcase.model.dto.ShopDto;
 import com.nailcase.model.entity.QNailArtist;
 import com.nailcase.model.entity.QReservationDetail;
 import com.nailcase.model.entity.QReview;
@@ -18,8 +19,7 @@ import com.nailcase.model.entity.QShopImage;
 import com.nailcase.model.entity.QShopLikedMember;
 import com.nailcase.model.entity.QWorkHour;
 import com.nailcase.model.entity.Shop;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -93,35 +93,25 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 	}
 
 	@Override
-	public Page<Tuple> getTopPopularShops(Optional<Long> memberId, Pageable pageable) {
+	public Page<ShopDto.MainPageBeforeResponse> getTopPopularShops(Optional<Long> memberId, Pageable pageable) {
 		QShop shop = QShop.shop;
-		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
 		QShopImage shopImage = QShopImage.shopImage;
+		QShopLikedMember shopLikedMember = QShopLikedMember.shopLikedMember;
 
-		List<Tuple> shopsRaw = queryFactory
-			.select(shop.shopId,
+		List<ShopDto.MainPageBeforeResponse> shopsRaw = queryFactory
+			.select(Projections.constructor(ShopDto.MainPageBeforeResponse.class,
+				shop.shopId,
 				shop.shopName,
-				JPAExpressions
-					.select(shopImage.bucketName)
-					.from(shopImage)
-					.where(shopImage.shop.eq(shop))
-					.orderBy(shopImage.imageId.asc())
-					.limit(1),
-				JPAExpressions
-					.select(shopImage.objectName)
-					.from(shopImage)
-					.where(shopImage.shop.eq(shop))
-					.orderBy(shopImage.imageId.asc())
-					.limit(1),
+				shopImage.bucketName,
+				shopImage.objectName,
 				JPAExpressions
 					.selectOne()
 					.from(shopLikedMember)
 					.where(shopLikedMember.shop.eq(shop)
-						.and(memberId.isPresent()
-							? shopLikedMember.member.memberId.eq(memberId.get())
-							: Expressions.asBoolean(false)))
-					.exists())
+						.and(shopLikedMember.member.memberId.eq(memberId.orElse(-1L))))
+					.exists()))
 			.from(shop)
+			.leftJoin(shopImage).on(shopImage.shop.eq(shop))
 			.orderBy(shop.likes.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())

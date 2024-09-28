@@ -127,6 +127,18 @@ public class ShopDto {
 	@Data
 	@NoArgsConstructor
 	@AllArgsConstructor
+	public static class MainPageBeforeResponse {
+		private Long shopId;
+		private String shopName;
+		private String bucketName;
+		private String objectName;
+		private boolean likedByUser;
+	}
+
+	@Builder
+	@Data
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class InfiniteScrollResponse {
 		private List<MainPageResponse> shopList;
 		private int pageNumber;

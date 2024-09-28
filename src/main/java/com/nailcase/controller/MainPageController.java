@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nailcase.model.dto.MainPageDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.dto.ShopDto;
+import com.nailcase.repository.MemberRepository;
 import com.nailcase.service.MainPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MainPageController {
 	private final MainPageService mainPageService;
+	private final MemberRepository memberRepository;
 
 	@GetMapping
 	public MainPageDto getMainPageData(@AuthenticationPrincipal Long userId) {
@@ -48,5 +50,4 @@ public class MainPageController {
 		Pageable pageable) {
 		return mainPageService.getTopPopularShops(Optional.ofNullable(memberId), pageable);
 	}
-
 }

@@ -47,6 +47,16 @@ public interface ReservationMapper {
 	Reservation toEntity(Long shopId, Long memberId, String nickname, ReservationDto.Post dto,
 		MonthlyArtImage monthlyArtImage);
 
+	@Mapping(target = "remove", source = "reservationDetail.remove")
+	@Mapping(target = "extend", source = "reservationDetail.extend")
+	@Mapping(target = "status", source = "reservationDetail.status")
+	@Mapping(target = "startTime", expression = "java( reservation.getReservationDetail().getStartTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getStartTime()) : null )")
+	@Mapping(target = "endTime", expression = "java( reservation.getReservationDetail().getEndTime() != null ? DateUtils.localDateTimeToUnixTimeStamp(reservation.getReservationDetail().getEndTime()) : null )")
+	@Mapping(target = "price", source = "reservationDetail.price")
+	@Mapping(target = "customerName", source = "customerName")
+	@Mapping(target = "conditionList", expression = "java(mapConditionList(reservation.getReservationDetail().getConditionList()))")
+	@Mapping(target = "treatment", source = "reservationDetail.treatment")
+	@Mapping(target = "cancelReason", source = "cancelReason")
 	ReservationDto.Response toResponse(Reservation reservation);
 
 	@Mapping(target = "reservationId", source = "reservationId")

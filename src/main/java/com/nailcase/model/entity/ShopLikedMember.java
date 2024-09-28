@@ -38,6 +38,11 @@ public class ShopLikedMember extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
+	public ShopLikedMember(Shop shop, Member member) {
+		this.shop = shop;
+		this.member = member;
+	}
+
 	public void updateShop(Shop shop) {
 		this.shop = shop;
 	}
