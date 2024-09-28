@@ -1149,13 +1149,9 @@
   }
 };
             defs["com.nailcase.model.dto.ReservationDto$Confirm"] = {
-  "required" : [ "endTime", "price", "reservationDetailId" ],
+  "required" : [ "endTime", "price" ],
   "type" : "object",
   "properties" : {
-    "reservationDetailId" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
     "endTime" : {
       "type" : "integer",
       "format" : "int64"
@@ -1347,6 +1343,9 @@
     },
     "treatment" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
+    },
+    "cancelReason" : {
+      "type" : "string"
     }
   }
 };
