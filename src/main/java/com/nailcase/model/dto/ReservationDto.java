@@ -55,9 +55,6 @@ public class ReservationDto {
 	public static class Confirm {
 
 		@NotNull
-		private Long reservationDetailId;
-
-		@NotNull
 		private Long endTime;
 
 		@NotNull
