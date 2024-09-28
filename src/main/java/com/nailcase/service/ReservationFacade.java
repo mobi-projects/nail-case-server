@@ -49,14 +49,15 @@ public class ReservationFacade {
 		ReservationStatus status, ReservationDto.cancelReasonRequest cancelReasonRequest) {
 		Shop shop = shopService.getShopById(shopId);
 
-		return reservationService.updateReservationStatus(shop, reservationId, memberId, status);
+		return reservationService.updateReservationStatus(shop, reservationId, memberId, status,
+			cancelReasonRequest.getCancelReason());
 	}
 
 	@Transactional
 	public ReservationDto.Response confirmReservation(Long shopId, Long reservationId,
-		@AuthenticationPrincipal Long memberId,
+		@AuthenticationPrincipal Long userId,
 		ReservationDto.Confirm dto) {
 		Shop shop = shopService.getShopById(shopId);
-		return reservationService.confirmReservation(shop, reservationId, memberId, dto);
+		return reservationService.confirmReservation(shop, reservationId, userId, dto);
 	}
 }

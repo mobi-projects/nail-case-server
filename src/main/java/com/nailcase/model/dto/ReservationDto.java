@@ -84,6 +84,8 @@ public class ReservationDto {
 
 		private TreatmentDto.Response treatment;
 
+		private String cancelReason;
+
 	}
 
 	@Data
