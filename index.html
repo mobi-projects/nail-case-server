@@ -1303,6 +1303,14 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.ReservationDto$RejectReasonRequest"] = {
+  "type" : "object",
+  "properties" : {
+    "rejectReason" : {
+      "type" : "string"
+    }
+  }
+};
             defs["com.nailcase.model.dto.ReservationDto$Response"] = {
   "type" : "object",
   "properties" : {
@@ -1344,14 +1352,6 @@
     "treatment" : {
       "$ref" : "#/components/schemas/com.nailcase.model.dto.TreatmentDto$Response"
     },
-    "cancelReason" : {
-      "type" : "string"
-    }
-  }
-};
-            defs["com.nailcase.model.dto.ReservationDto$cancelReasonRequest"] = {
-  "type" : "object",
-  "properties" : {
     "cancelReason" : {
       "type" : "string"
     }
@@ -12156,7 +12156,6 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
--H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}/cancel"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-cancelReservation-0-java">
@@ -12181,9 +12180,8 @@ public class ReservationControllerApiExample {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
-        Com.nailcase.model.dto.ReservationDto$cancelReasonRequest body = ; // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId, body);
+            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#cancelReservation");
@@ -12202,9 +12200,8 @@ public class ReservationControllerApiExample {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
-        Com.nailcase.model.dto.ReservationDto$cancelReasonRequest body = ; // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId, body);
+            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#cancelReservation");
@@ -12223,13 +12220,11 @@ public class ReservationControllerApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 Long *shopId = 789; // 
 Long *reservationId = 789; // 
-Com.nailcase.model.dto.ReservationDto$cancelReasonRequest *body = ; //  (optional)
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
 [apiInstance cancelReservationWith:shopId
     reservationId:reservationId
-    body:body
               completionHandler: ^(com.nailcase.model.dto.ReservationDto$Response output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -12253,9 +12248,7 @@ oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 var api = new NailCaseApi.ReservationControllerApi()
 var shopId = 789; // {{Long}} 
 var reservationId = 789; // {{Long}} 
-var opts = { 
-  'body':  // {{Com.nailcase.model.dto.ReservationDto$cancelReasonRequest}} 
-};
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -12263,7 +12256,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.cancelReservation(shopIdreservationId, opts, callback);
+api.cancelReservation(shopId, reservationId, callback);
 </code></pre>
                             </div>
 
@@ -12290,11 +12283,10 @@ namespace Example
             var apiInstance = new ReservationControllerApi();
             var shopId = 789;  // Long | 
             var reservationId = 789;  // Long | 
-            var body = new Com.nailcase.model.dto.ReservationDto$cancelReasonRequest(); // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest |  (optional) 
 
             try
             {
-                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId, body);
+                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.cancelReservation(shopId, reservationId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -12317,10 +12309,9 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
 $shopId = 789; // Long | 
 $reservationId = 789; // Long | 
-$body = ; // Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
 
 try {
-    $result = $api_instance->cancelReservation($shopId, $reservationId, $body);
+    $result = $api_instance->cancelReservation($shopId, $reservationId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->cancelReservation: ', $e->getMessage(), PHP_EOL;
@@ -12339,10 +12330,9 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
 my $shopId = 789; # Long | 
 my $reservationId = 789; # Long | 
-my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ReservationDto$cancelReasonRequest->new(); # Com.nailcase.model.dto.ReservationDto$cancelReasonRequest | 
 
 eval { 
-    my $result = $api_instance->cancelReservation(shopId => $shopId, reservationId => $reservationId, body => $body);
+    my $result = $api_instance->cancelReservation(shopId => $shopId, reservationId => $reservationId);
     print Dumper($result);
 };
 if ($@) {
@@ -12364,10 +12354,9 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.ReservationControllerApi()
 shopId = 789 # Long | 
 reservationId = 789 # Long | 
-body =  # Com.nailcase.model.dto.ReservationDto$cancelReasonRequest |  (optional)
 
 try: 
-    api_response = api_instance.cancel_reservation(shopId, reservationId, body=body)
+    api_response = api_instance.cancel_reservation(shopId, reservationId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->cancelReservation: %s\n" % e)</code></pre>
@@ -12429,48 +12418,6 @@ except ApiException as e:
                             </table>
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">body </td>
-                                <td>
-                                
-                                
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$cancelReasonRequest"
-      }
-    }
-  }
-};
-                                  var schema = schemaWrapper.content["application/json"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
-                                
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_cancelReservation_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_cancelReservation_body"></div>
-                                </td>
-                                </tr>
-                            </table>
 
 
 
@@ -14528,6 +14475,7 @@ except ApiException as e:
  -H "Authorization: Bearer [[accessToken]]"\
 \
 -H "Accept: */*"\
+-H "Content-Type: application/json"\
 "http://localhost:8081/api/v1/shops/{shopId}/reservations/{reservationId}/reject"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-ReservationController-rejectReservation-0-java">
@@ -14550,10 +14498,11 @@ public class ReservationControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         ReservationControllerApi apiInstance = new ReservationControllerApi();
+        Com.nailcase.model.dto.ReservationDto$RejectReasonRequest body = ; // Com.nailcase.model.dto.ReservationDto$RejectReasonRequest | 
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.rejectReservation(shopId, reservationId);
+            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.rejectReservation(body, shopId, reservationId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#rejectReservation");
@@ -14570,10 +14519,11 @@ public class ReservationControllerApiExample {
 
     public static void main(String[] args) {
         ReservationControllerApi apiInstance = new ReservationControllerApi();
+        Com.nailcase.model.dto.ReservationDto$RejectReasonRequest body = ; // Com.nailcase.model.dto.ReservationDto$RejectReasonRequest | 
         Long shopId = 789; // Long | 
         Long reservationId = 789; // Long | 
         try {
-            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.rejectReservation(shopId, reservationId);
+            com.nailcase.model.dto.ReservationDto$Response result = apiInstance.rejectReservation(body, shopId, reservationId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ReservationControllerApi#rejectReservation");
@@ -14590,12 +14540,14 @@ public class ReservationControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+Com.nailcase.model.dto.ReservationDto$RejectReasonRequest *body = ; // 
 Long *shopId = 789; // 
 Long *reservationId = 789; // 
 
 ReservationControllerApi *apiInstance = [[ReservationControllerApi alloc] init];
 
-[apiInstance rejectReservationWith:shopId
+[apiInstance rejectReservationWith:body
+    shopId:shopId
     reservationId:reservationId
               completionHandler: ^(com.nailcase.model.dto.ReservationDto$Response output, NSError* error) {
                             if (output) {
@@ -14618,6 +14570,7 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.ReservationControllerApi()
+var body = ; // {{Com.nailcase.model.dto.ReservationDto$RejectReasonRequest}} 
 var shopId = 789; // {{Long}} 
 var reservationId = 789; // {{Long}} 
 
@@ -14628,7 +14581,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.rejectReservation(shopId, reservationId, callback);
+api.rejectReservation(bodyshopIdreservationId, callback);
 </code></pre>
                             </div>
 
@@ -14653,12 +14606,13 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new ReservationControllerApi();
+            var body = new Com.nailcase.model.dto.ReservationDto$RejectReasonRequest(); // Com.nailcase.model.dto.ReservationDto$RejectReasonRequest | 
             var shopId = 789;  // Long | 
             var reservationId = 789;  // Long | 
 
             try
             {
-                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.rejectReservation(shopId, reservationId);
+                com.nailcase.model.dto.ReservationDto$Response result = apiInstance.rejectReservation(body, shopId, reservationId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -14679,11 +14633,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiReservationControllerApi();
+$body = ; // Com.nailcase.model.dto.ReservationDto$RejectReasonRequest | 
 $shopId = 789; // Long | 
 $reservationId = 789; // Long | 
 
 try {
-    $result = $api_instance->rejectReservation($shopId, $reservationId);
+    $result = $api_instance->rejectReservation($body, $shopId, $reservationId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ReservationControllerApi->rejectReservation: ', $e->getMessage(), PHP_EOL;
@@ -14700,11 +14655,12 @@ use WWW::SwaggerClient::ReservationControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ReservationControllerApi->new();
+my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.ReservationDto$RejectReasonRequest->new(); # Com.nailcase.model.dto.ReservationDto$RejectReasonRequest | 
 my $shopId = 789; # Long | 
 my $reservationId = 789; # Long | 
 
 eval { 
-    my $result = $api_instance->rejectReservation(shopId => $shopId, reservationId => $reservationId);
+    my $result = $api_instance->rejectReservation(body => $body, shopId => $shopId, reservationId => $reservationId);
     print Dumper($result);
 };
 if ($@) {
@@ -14724,11 +14680,12 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.ReservationControllerApi()
+body =  # Com.nailcase.model.dto.ReservationDto$RejectReasonRequest | 
 shopId = 789 # Long | 
 reservationId = 789 # Long | 
 
 try: 
-    api_response = api_instance.reject_reservation(shopId, reservationId)
+    api_response = api_instance.reject_reservation(body, shopId, reservationId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ReservationControllerApi->rejectReservation: %s\n" % e)</code></pre>
@@ -14790,6 +14747,49 @@ except ApiException as e:
                             </table>
 
 
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.ReservationDto$RejectReasonRequest"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_rejectReservation_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_rejectReservation_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
 
