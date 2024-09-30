@@ -58,21 +58,21 @@ public class ReservationController {
 	public ReservationDto.Response cancelReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@AuthenticationPrincipal Long userId,
-		@RequestBody(required = false) ReservationDto.cancelReasonRequest cancelReasonRequest
+		@AuthenticationPrincipal Long userId
 	) {
-		return reservationFacade.updateReservationToCancel(shopId, reservationId, userId,
-			ReservationStatus.CANCELED, cancelReasonRequest);
+		return reservationFacade.updateReservationStatus(shopId, reservationId, userId,
+			ReservationStatus.CANCELED);
 	}
 
 	@PatchMapping("/{reservationId}/reject")
 	public ReservationDto.Response rejectReservation(
 		@PathVariable Long shopId,
 		@PathVariable Long reservationId,
-		@AuthenticationPrincipal Long userId
+		@AuthenticationPrincipal Long userId,
+		@RequestBody ReservationDto.RejectReasonRequest request
 	) {
-		return reservationFacade.updateReservationStatus(shopId, reservationId, userId,
-			ReservationStatus.REJECTED);
+		return reservationFacade.updateReservationWitchReject(shopId, reservationId, userId,
+			ReservationStatus.REJECTED, request);
 	}
 
 	@PatchMapping("/{reservationId}/complete")

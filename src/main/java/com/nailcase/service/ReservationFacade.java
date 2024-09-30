@@ -45,12 +45,12 @@ public class ReservationFacade {
 	}
 
 	@Transactional
-	public ReservationDto.Response updateReservationToCancel(Long shopId, Long reservationId, Long memberId,
-		ReservationStatus status, ReservationDto.cancelReasonRequest cancelReasonRequest) {
+	public ReservationDto.Response updateReservationWitchReject(Long shopId, Long reservationId, Long memberId,
+		ReservationStatus status, ReservationDto.RejectReasonRequest cancelReasonRequest) {
 		Shop shop = shopService.getShopById(shopId);
 
 		return reservationService.updateReservationStatus(shop, reservationId, memberId, status,
-			cancelReasonRequest.getCancelReason());
+			cancelReasonRequest.getRejectReason());
 	}
 
 	@Transactional

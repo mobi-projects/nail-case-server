@@ -47,8 +47,8 @@ public class ReservationDto {
 	}
 
 	@Data
-	public static class cancelReasonRequest {
-		private String cancelReason;
+	public static class RejectReasonRequest {
+		private String rejectReason;
 	}
 
 	@Data
