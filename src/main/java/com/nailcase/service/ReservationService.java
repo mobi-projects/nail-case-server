@@ -27,6 +27,7 @@ import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.mapper.ReservationMapper;
 import com.nailcase.model.dto.NailArtistDto;
+import com.nailcase.model.dto.NotificationDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.MonthlyArtImage;
@@ -36,6 +37,7 @@ import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.entity.ShopImage;
 import com.nailcase.model.entity.WorkHour;
+import com.nailcase.model.enums.NotificationType;
 import com.nailcase.model.enums.ReservationStatus;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.MemberRepository;
@@ -59,6 +61,7 @@ public class ReservationService {
 	private final ReservationDetailRepository reservationDetailRepository;
 	private final MemberRepository memberRepository;
 	private final MonthlyArtImageRepository monthlyArtImageRepository;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public ReservationDto.RegisterResponse createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
@@ -85,6 +88,17 @@ public class ReservationService {
 		// 예약 생성
 
 		Reservation savedReservation = reservationRepository.save(reservation);
+
+		sendNotification(
+			memberId,
+			savedReservation.getShop().getNailArtists().iterator().next().getNailArtistId(),
+			"새로운 예약 요청",
+			"새로운 예약 요청이 도착했습니다.",
+			NotificationType.RESERVATION_REQUEST,
+			Role.MEMBER,
+			Role.MANAGER
+		);
+
 		return reservationMapper.toRegisterResponse(savedReservation);
 	}
 
@@ -470,6 +484,27 @@ public class ReservationService {
 			reservation.updateStatus(status);
 		}
 
+		if (status == ReservationStatus.CANCELED) {
+			sendNotification(
+				memberId,
+				shop.getNailArtists().iterator().next().getNailArtistId(),
+				"예약 취소",
+				"예약이 취소되었습니다.",
+				NotificationType.RESERVATION_CANCEL,
+				Role.MEMBER,
+				Role.MANAGER
+			);
+		} else if (status == ReservationStatus.REJECTED) {
+			sendNotification(
+				memberId,
+				reservation.getCustomer().getMemberId(),
+				"예약 거절",
+				"예약이 거절되었습니다.",
+				NotificationType.RESERVATION_REJECT,
+				Role.MANAGER,
+				Role.MEMBER
+			);
+		}
 		return reservationMapper.toResponse(reservation);
 	}
 
@@ -494,6 +529,29 @@ public class ReservationService {
 		}
 		reservation.updateCancelReason(cancelReason);
 
+		NotificationDto.Request notificationRequest = new NotificationDto.Request();
+		notificationRequest.setSenderId(memberId);
+		if (status == ReservationStatus.CANCELED) {
+			sendNotification(
+				memberId,
+				shop.getNailArtists().iterator().next().getNailArtistId(),
+				"예약 취소",
+				"예약이 취소되었습니다.",
+				NotificationType.RESERVATION_CANCEL,
+				Role.MEMBER,
+				Role.MANAGER
+			);
+		} else if (status == ReservationStatus.REJECTED) {
+			sendNotification(
+				memberId,
+				reservation.getCustomer().getMemberId(),
+				"예약 거절",
+				"예약이 거절되었습니다.",
+				NotificationType.RESERVATION_REJECT,
+				Role.MANAGER,
+				Role.MEMBER
+			);
+		}
 		return reservationMapper.toResponse(reservation);
 	}
 
@@ -534,7 +592,31 @@ public class ReservationService {
 
 		reservation.confirm();
 
+		// 예약 승인 알림 생성 및 전송
+		sendNotification(
+			memberId,
+			reservation.getCustomer().getMemberId(),
+			"예약 승인",
+			"예약이 승인되었습니다.",
+			NotificationType.RESERVATION_APPROVE,
+			Role.MANAGER,
+			Role.MEMBER
+		);
+
 		return reservationMapper.toResponse(reservation);
+	}
+
+	private void sendNotification(Long senderId, Long receiverId, String title, String content,
+		NotificationType notificationType, Role senderType, Role receiverType) {
+		NotificationDto.Request notificationRequest = new NotificationDto.Request();
+		notificationRequest.setSenderId(senderId);
+		notificationRequest.setReceiverId(receiverId);
+		notificationRequest.setTitle(title);
+		notificationRequest.setContent(content);
+		notificationRequest.setNotificationType(notificationType);
+		notificationRequest.setSenderType(senderType);
+		notificationRequest.setReceiverType(receiverType);
+		notificationService.sendNotification(notificationRequest);
 	}
 
 }
