@@ -7,15 +7,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -36,55 +34,37 @@ public class Notification extends BaseEntity {
 	@Column(name = "content", length = 2048)
 	private String content;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sender_member_id")
-	private Member senderMember;
+	private Long senderId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sender_nail_artist_id")
-	private NailArtist senderNailArtist;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "receiver_member_id")
-	private Member receiverMember;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "receiver_nail_artist_id")
-	private NailArtist receiverNailArtist;
+	private Long receiverId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "notification_type")
 	private NotificationType notificationType;
 
-	// 발신자 설정 메서드
-	public void updateSender(Object sender) {
-		if (sender instanceof Member) {
-			this.senderMember = (Member)sender;
-		} else if (sender instanceof NailArtist) {
-			this.senderNailArtist = (NailArtist)sender;
-		} else {
-			throw new IllegalArgumentException("Invalid sender type");
-		}
+	// 읽었는지 여부 필드
+	@Builder.Default
+	@Column(name = "is_read")
+	private boolean isRead = false;
+
+	// 보냄처리 여부
+	@Builder.Default
+	@Column(name = "is_sent")
+	private boolean isSent = false;
+
+	public void markAsSent() {
+		this.isSent = true;
 	}
 
-	// 수신자 설정 메서드
-	public void updateReceiver(Object receiver) {
-		if (receiver instanceof Member) {
-			this.receiverMember = (Member)receiver;
-		} else if (receiver instanceof NailArtist) {
-			this.receiverNailArtist = (NailArtist)receiver;
-		} else {
-			throw new IllegalArgumentException("Invalid receiver type");
-		}
+	public void read() {
+		this.isRead = true;
 	}
 
-	// 발신자 조회 메서드
-	public Object getSender() {
-		return senderMember != null ? senderMember : senderNailArtist;
+	public void updateSender(Long senderId) {
+		this.senderId = senderId;
 	}
 
-	// 수신자 조회 메서드
-	public Object getReceiver() {
-		return receiverMember != null ? receiverMember : receiverNailArtist;
+	public void updateReceiver(Long receiverId) {
+		this.receiverId = receiverId;
 	}
 }

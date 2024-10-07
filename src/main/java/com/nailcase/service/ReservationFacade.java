@@ -49,7 +49,7 @@ public class ReservationFacade {
 		ReservationStatus status, ReservationDto.RejectReasonRequest cancelReasonRequest) {
 		Shop shop = shopService.getShopById(shopId);
 
-		return reservationService.updateReservationStatus(shop, reservationId, memberId, status,
+		return reservationService.updateReservationStatusToReject(shop, reservationId, memberId, status,
 			cancelReasonRequest.getRejectReason());
 	}
 

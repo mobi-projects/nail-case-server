@@ -25,7 +25,7 @@ public class NotificationController {
 
 	@GetMapping("/subscribe")
 	public SseEmitter subscribe(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return notificationService.connectNotification(userPrincipal.id(), userPrincipal.role());
+		return notificationService.connectNotification(userPrincipal);
 	}
 
 	@GetMapping("/list")
