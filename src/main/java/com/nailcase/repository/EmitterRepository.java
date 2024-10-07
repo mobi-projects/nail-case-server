@@ -14,22 +14,18 @@ import lombok.extern.slf4j.Slf4j;
 public class EmitterRepository {
 	private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>();
 
-	public SseEmitter save(Long userId, SseEmitter sseEmitter) {
-		emitterMap.put(getKey(userId), sseEmitter);
-		log.info("Saved SseEmitter for {}", userId);
+	public SseEmitter save(String emitterKey, SseEmitter sseEmitter) {
+		emitterMap.put(emitterKey, sseEmitter);
+		log.info("Saved SseEmitter for key: {}", emitterKey);
 		return sseEmitter;
 	}
 
-	public Optional<SseEmitter> get(Long userId) {
-		return Optional.ofNullable(emitterMap.get(getKey(userId)));
+	public Optional<SseEmitter> get(String emitterKey) {
+		return Optional.ofNullable(emitterMap.get(emitterKey));
 	}
 
-	public void delete(Long userId) {
-		emitterMap.remove(getKey(userId));
-		log.info("Deleted SseEmitter for {}", userId);
-	}
-
-	private String getKey(Long userId) {
-		return "Emitter:UID:" + userId;
+	public void delete(String emitterKey) {
+		emitterMap.remove(emitterKey);
+		log.info("Deleted SseEmitter for key: {}", emitterKey);
 	}
 }

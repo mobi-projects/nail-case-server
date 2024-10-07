@@ -16,12 +16,14 @@ import java.util.stream.LongStream;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nailcase.common.ReservationEvent;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ReservationErrorCode;
@@ -44,6 +46,7 @@ import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.MonthlyArtImageRepository;
 import com.nailcase.repository.ReservationDetailRepository;
 import com.nailcase.repository.ReservationRepository;
+import com.nailcase.repository.ShopRepository;
 import com.nailcase.util.DateUtils;
 import com.nailcase.util.StringUtils;
 
@@ -61,7 +64,8 @@ public class ReservationService {
 	private final ReservationDetailRepository reservationDetailRepository;
 	private final MemberRepository memberRepository;
 	private final MonthlyArtImageRepository monthlyArtImageRepository;
-	private final NotificationService notificationService;
+	private final ApplicationEventPublisher eventPublisher;
+	private final ShopRepository shopRepository;
 
 	@Transactional
 	public ReservationDto.RegisterResponse createReservation(Long shopId, Long memberId, ReservationDto.Post dto) {
@@ -86,18 +90,16 @@ public class ReservationService {
 			monthlyArtImage);
 
 		// 예약 생성
+		Shop shop = shopRepository.findById(shopId)
+			.orElseThrow(() -> new BusinessException(CommonErrorCode.NOT_FOUND));
 
+		NailArtist nailArtist = shop.getNailArtist();
+		reservation.updateNailArtist(nailArtist);
 		Reservation savedReservation = reservationRepository.save(reservation);
 
-		sendNotification(
-			memberId,
-			savedReservation.getShop().getNailArtists().iterator().next().getNailArtistId(),
-			"새로운 예약 요청",
-			"새로운 예약 요청이 도착했습니다.",
-			NotificationType.RESERVATION_REQUEST,
-			Role.MEMBER,
-			Role.MANAGER
-		);
+		String notificationContent = String.format("%s님이 예약을 요청하였습니다.", member.getNickname());
+		eventPublisher.publishEvent(
+			new ReservationEvent(savedReservation, NotificationType.RESERVATION_REQUEST, notificationContent));
 
 		return reservationMapper.toRegisterResponse(savedReservation);
 	}
@@ -422,49 +424,6 @@ public class ReservationService {
 			.orElse(null);
 	}
 
-	// public ReservationDto.MainPageResponse convertToMainPageResponse(Reservation reservation) {
-	// 	ReservationDto.MainPageResponse response = new ReservationDto.MainPageResponse();
-	// 	response.setReservationId(reservation.getReservationId());
-	//
-	// 	boolean isAccompanied = reservation.isAccompanied();
-	//
-	// 	// 예약 상세 목록에서 각 항목을 변환
-	// 	List<ReservationDto.MainPageResponse.ReservationDetailInfo> details = reservation.getReservationDetailList()
-	// 		.stream()
-	// 		.map(detail -> {
-	// 			ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
-	// 			detailInfo.setReservationDetailsId(detail.getReservationDetailId());
-	// 			detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
-	// 			detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
-	// 			detailInfo.setTreatmentOptions(Optional.ofNullable(detail.getTreatment())
-	// 				.map(treatment -> Collections.singletonList(treatment.getOption().name()))
-	// 				.orElse(Collections.emptyList()));
-	// 			detailInfo.setRemoveOption(detail.getRemove().name());
-	// 			detailInfo.setConditionOptions(detail.getConditionList().stream()
-	// 				.map(condition -> condition.getOption().name())
-	// 				.distinct()
-	// 				.collect(Collectors.toList()));
-	// 			detailInfo.setStatus(detail.getStatus().name());
-	// 			return detailInfo;
-	// 		})
-	// 		.collect(Collectors.toList());
-	//
-	// 	// 중복 제거
-	// 	List<ReservationDto.MainPageResponse.ReservationDetailInfo> uniqueDetails = details.stream()
-	// 		.distinct()
-	// 		.collect(Collectors.toList());
-	//
-	// 	response.setDetails(uniqueDetails);
-	//
-	// 	// Shop 정보 설정
-	// 	ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
-	// 	shopInfo.setId(reservation.getShop().getShopId());
-	// 	shopInfo.setName(reservation.getShop().getShopName());
-	// 	response.setShop(shopInfo);
-	//
-	// 	return response;
-	// }
-
 	@Transactional
 	public ReservationDto.Response updateReservationStatus(Shop shop, Long reservationId, Long memberId,
 		ReservationStatus status) {
@@ -485,32 +444,20 @@ public class ReservationService {
 		}
 
 		if (status == ReservationStatus.CANCELED) {
-			sendNotification(
-				memberId,
-				shop.getNailArtists().iterator().next().getNailArtistId(),
-				"예약 취소",
-				"예약이 취소되었습니다.",
-				NotificationType.RESERVATION_CANCEL,
-				Role.MEMBER,
-				Role.MANAGER
-			);
-		} else if (status == ReservationStatus.REJECTED) {
-			sendNotification(
-				memberId,
-				reservation.getCustomer().getMemberId(),
-				"예약 거절",
-				"예약이 거절되었습니다.",
-				NotificationType.RESERVATION_REJECT,
-				Role.MANAGER,
-				Role.MEMBER
-			);
+			memberRepository.findById(memberId)
+				.ifPresent(member -> {
+					String content = String.format("%s님이 예약을 취소하였습니다.", member.getNickname());
+					eventPublisher.publishEvent(
+						new ReservationEvent(reservation, NotificationType.RESERVATION_CANCEL, content));
+				});
 		}
+
 		return reservationMapper.toResponse(reservation);
 	}
 
 	@Transactional
-	public ReservationDto.Response updateReservationStatus(Shop shop, Long reservationId, Long memberId,
-		ReservationStatus status, String cancelReason) {
+	public ReservationDto.Response updateReservationStatusToReject(Shop shop, Long reservationId, Long memberId,
+		ReservationStatus status, String rejectReason) {
 
 		Reservation reservation = reservationRepository.findByIdWithReservationDetail(reservationId)
 			.orElseThrow(() -> new BusinessException(ReservationErrorCode.RESERVATION_NOT_FOUND));
@@ -527,30 +474,15 @@ public class ReservationService {
 		if (reservation.isStatusUpdatable(status)) {
 			reservation.updateStatus(status);
 		}
-		reservation.updateCancelReason(cancelReason);
+		reservation.updateRejectReason(rejectReason);
 
 		NotificationDto.Request notificationRequest = new NotificationDto.Request();
 		notificationRequest.setSenderId(memberId);
-		if (status == ReservationStatus.CANCELED) {
-			sendNotification(
-				memberId,
-				shop.getNailArtists().iterator().next().getNailArtistId(),
-				"예약 취소",
-				"예약이 취소되었습니다.",
-				NotificationType.RESERVATION_CANCEL,
-				Role.MEMBER,
-				Role.MANAGER
-			);
-		} else if (status == ReservationStatus.REJECTED) {
-			sendNotification(
-				memberId,
-				reservation.getCustomer().getMemberId(),
-				"예약 거절",
-				"예약이 거절되었습니다.",
-				NotificationType.RESERVATION_REJECT,
-				Role.MANAGER,
-				Role.MEMBER
-			);
+
+		if (status.equals(ReservationStatus.REJECTED)) {
+			String notificationContent = String.format("%s에서 예약을 거절하였습니다.", shop.getShopName());
+			eventPublisher.publishEvent(
+				new ReservationEvent(reservation, NotificationType.RESERVATION_REJECT, notificationContent));
 		}
 		return reservationMapper.toResponse(reservation);
 	}
@@ -592,31 +524,11 @@ public class ReservationService {
 
 		reservation.confirm();
 
-		// 예약 승인 알림 생성 및 전송
-		sendNotification(
-			memberId,
-			reservation.getCustomer().getMemberId(),
-			"예약 승인",
-			"예약이 승인되었습니다.",
-			NotificationType.RESERVATION_APPROVE,
-			Role.MANAGER,
-			Role.MEMBER
-		);
+		String notificationContent = String.format("%s에서 예약을 승인하였습니다.", shop.getShopName());
+		eventPublisher.publishEvent(
+			new ReservationEvent(reservation, NotificationType.RESERVATION_APPROVE, notificationContent));
 
 		return reservationMapper.toResponse(reservation);
-	}
-
-	private void sendNotification(Long senderId, Long receiverId, String title, String content,
-		NotificationType notificationType, Role senderType, Role receiverType) {
-		NotificationDto.Request notificationRequest = new NotificationDto.Request();
-		notificationRequest.setSenderId(senderId);
-		notificationRequest.setReceiverId(receiverId);
-		notificationRequest.setTitle(title);
-		notificationRequest.setContent(content);
-		notificationRequest.setNotificationType(notificationType);
-		notificationRequest.setSenderType(senderType);
-		notificationRequest.setReceiverType(receiverType);
-		notificationService.sendNotification(notificationRequest);
 	}
 
 }

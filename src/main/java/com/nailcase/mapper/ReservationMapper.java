@@ -44,6 +44,7 @@ public interface ReservationMapper {
 	@Mapping(target = "modifiedBy", ignore = true)
 	@Mapping(target = "reservationId", ignore = true)
 	@Mapping(target = "customerName", source = "nickname")
+	@Mapping(target = "nailArtist", ignore = true)
 	Reservation toEntity(Long shopId, Long memberId, String nickname, ReservationDto.Post dto,
 		MonthlyArtImage monthlyArtImage);
 
@@ -56,7 +57,7 @@ public interface ReservationMapper {
 	@Mapping(target = "customerName", source = "customerName")
 	@Mapping(target = "conditionList", expression = "java(mapConditionList(reservation.getReservationDetail().getConditionList()))")
 	@Mapping(target = "treatment", source = "reservationDetail.treatment")
-	@Mapping(target = "cancelReason", source = "cancelReason")
+	@Mapping(target = "rejectReason", source = "rejectReason")
 	ReservationDto.Response toResponse(Reservation reservation);
 
 	@Mapping(target = "reservationId", source = "reservationId")
@@ -70,7 +71,7 @@ public interface ReservationMapper {
 	@Mapping(target = "conditionList", expression = "java(mapConditionList(reservation.getReservationDetail().getConditionList()))")
 	@Mapping(target = "treatment", source = "reservationDetail.treatment")
 	@Mapping(target = "workHourInfo", expression = "java(mapWorkHourInfo(reservation))")
-	@Mapping(target = "cancelReason", source = "cancelReason")
+	@Mapping(target = "rejectReason", source = "rejectReason")
 	ReservationDto.viewResponse toDetailedResponse(Reservation reservation);
 
 	@Mapping(target = "remove", source = "reservationDetail.remove")

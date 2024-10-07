@@ -54,10 +54,10 @@ public class Reservation extends BaseEntity {
 	private ReservationDetail reservationDetail;
 
 	@Column(name = "cancel_reason", length = 2048)
-	private String cancelReason;
+	private String rejectReason;
 
-	public void updateCancelReason(String cancelReason) {
-		this.cancelReason = cancelReason;
+	public void updateRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
 	}
 
 	public void setReservationDetail(ReservationDetail reservationDetail) {
@@ -86,5 +86,9 @@ public class Reservation extends BaseEntity {
 		if (this.reservationDetail != null) {
 			this.reservationDetail.updateStatus(status);
 		}
+	}
+
+	public void updateNailArtist(NailArtist nailArtist) {
+		this.nailArtist = nailArtist;
 	}
 }

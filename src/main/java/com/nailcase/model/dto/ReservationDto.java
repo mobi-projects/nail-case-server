@@ -84,7 +84,7 @@ public class ReservationDto {
 
 		private TreatmentDto.Response treatment;
 
-		private String cancelReason;
+		private String rejectReason;
 
 	}
 
@@ -113,7 +113,7 @@ public class ReservationDto {
 
 		private WorkHourInfo workHourInfo;
 
-		private String cancelReason;
+		private String rejectReason;
 
 		@Data
 		public static class WorkHourInfo {
