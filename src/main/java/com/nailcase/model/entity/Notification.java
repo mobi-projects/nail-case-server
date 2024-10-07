@@ -33,9 +33,6 @@ public class Notification extends BaseEntity {
 	@Column(name = "notification_id")
 	private Long notificationId;
 
-	@Column(name = "title", length = 128)
-	private String title;
-
 	@Column(name = "content", length = 2048)
 	private String content;
 

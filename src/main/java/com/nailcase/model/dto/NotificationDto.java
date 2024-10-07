@@ -18,7 +18,6 @@ public class NotificationDto {
 	public static class Request {
 		private Long senderId;
 		private Long receiverId;
-		private String title;
 		private String content;
 		private NotificationType notificationType;
 		private Role senderType;
@@ -30,7 +29,6 @@ public class NotificationDto {
 	@NoArgsConstructor(access = AccessLevel.PUBLIC)
 	public static class Response {
 		private Long notificationId;
-		private String title;
 		private String content;
 		private NotificationType notificationType;
 		private SenderInfo sender;
@@ -57,7 +55,6 @@ public class NotificationDto {
 		@Builder
 		public static class GetListResponse {
 			private Long id;
-			private String title;
 			private String content;
 			private NotificationType notificationType;
 			private LocalDateTime createdAt;

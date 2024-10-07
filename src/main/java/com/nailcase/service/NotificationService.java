@@ -92,7 +92,6 @@ public class NotificationService {
 
 	private Notification createNotification(NotificationDto.Request request) {
 		Notification notification = Notification.builder()
-			.title(request.getTitle())
 			.content(request.getContent())
 			.notificationType(request.getNotificationType())
 			.build();
@@ -145,7 +144,6 @@ public class NotificationService {
 	private NotificationDto.Response.GetListResponse convertToDto(Notification notification) {
 		return NotificationDto.Response.GetListResponse.builder()
 			.id(notification.getNotificationId())
-			.title(notification.getTitle())
 			.content(notification.getContent())
 			.notificationType(notification.getNotificationType())
 			.createdAt(notification.getCreatedAt())
