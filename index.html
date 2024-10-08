@@ -968,10 +968,14 @@
     }
   }
 };
-            defs["com.nailcase.model.dto.NotificationDto$Response$GetListResponse"] = {
+            defs["com.nailcase.model.dto.NotificationDto$Response"] = {
   "type" : "object",
   "properties" : {
-    "id" : {
+    "notificationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "reservationId" : {
       "type" : "integer",
       "format" : "int64"
     },
@@ -982,9 +986,28 @@
       "type" : "string",
       "enum" : [ "RESERVATION_REQUEST", "RESERVATION_CANCEL", "RESERVATION_APPROVE", "RESERVATION_REJECT" ]
     },
-    "createdAt" : {
-      "type" : "string",
-      "format" : "date-time"
+    "senderId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "receiverId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "sendDateTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "startTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "endTime" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
+    "read" : {
+      "type" : "boolean"
     }
   }
 };
@@ -7881,7 +7904,7 @@ public class NotificationControllerApiExample {
         Integer page = 56; // Integer | 
         Integer size = 56; // Integer | 
         try {
-            array[com.nailcase.model.dto.NotificationDto$Response$GetListResponse] result = apiInstance.getNotifications(page, size);
+            array[com.nailcase.model.dto.NotificationDto$Response] result = apiInstance.getNotifications(page, size);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationControllerApi#getNotifications");
@@ -7901,7 +7924,7 @@ public class NotificationControllerApiExample {
         Integer page = 56; // Integer | 
         Integer size = 56; // Integer | 
         try {
-            array[com.nailcase.model.dto.NotificationDto$Response$GetListResponse] result = apiInstance.getNotifications(page, size);
+            array[com.nailcase.model.dto.NotificationDto$Response] result = apiInstance.getNotifications(page, size);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationControllerApi#getNotifications");
@@ -7925,7 +7948,7 @@ NotificationControllerApi *apiInstance = [[NotificationControllerApi alloc] init
 
 [apiInstance getNotificationsWith:page
     size:size
-              completionHandler: ^(array[com.nailcase.model.dto.NotificationDto$Response$GetListResponse] output, NSError* error) {
+              completionHandler: ^(array[com.nailcase.model.dto.NotificationDto$Response] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -7987,7 +8010,7 @@ namespace Example
 
             try
             {
-                array[com.nailcase.model.dto.NotificationDto$Response$GetListResponse] result = apiInstance.getNotifications(page, size);
+                array[com.nailcase.model.dto.NotificationDto$Response] result = apiInstance.getNotifications(page, size);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -8138,7 +8161,7 @@ except ApiException as e:
       "schema" : {
         "type" : "array",
         "items" : {
-          "$ref" : "#/components/schemas/com.nailcase.model.dto.NotificationDto$Response$GetListResponse"
+          "$ref" : "#/components/schemas/com.nailcase.model.dto.NotificationDto$Response"
         },
         "x-content-type" : "*/*"
       }
