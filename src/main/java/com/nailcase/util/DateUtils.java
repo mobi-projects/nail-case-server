@@ -67,6 +67,17 @@ public class DateUtils {
 		}
 	}
 
+	public static Long localDateTimeToUnixTimeStampWithNull(LocalDateTime dateTime) {
+		if (dateTime == null) {
+			return null;
+		}
+		try {
+			return dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		} catch (ZoneRulesException e) {
+			throw new BusinessException(UnixTimeErrorCode.CONVERSION_ERROR);
+		}
+	}
+
 	/**
 	 * Unix timestamp를 LocalDateTime로 변환합니다.
 	 *

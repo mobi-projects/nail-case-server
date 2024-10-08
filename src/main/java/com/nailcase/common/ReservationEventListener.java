@@ -1,5 +1,6 @@
 package com.nailcase.common;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.enums.NotificationType;
 import com.nailcase.service.NotificationService;
+import com.nailcase.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,10 +52,16 @@ public class ReservationEventListener {
 			}
 
 			NotificationDto.Request notificationRequest = new NotificationDto.Request();
+			notificationRequest.setReservationId(reservation.getReservationId());
 			notificationRequest.setSenderId(senderId);
 			notificationRequest.setReceiverId(receiverId);
 			notificationRequest.setContent(content);
 			notificationRequest.setNotificationType(notificationType);
+			notificationRequest.setSendDateTime(DateUtils.localDateTimeToUnixTimeStampWithNull(LocalDateTime.now()));
+			notificationRequest.setStartTime(
+				DateUtils.localDateTimeToUnixTimeStampWithNull(event.getStartTime()));
+			notificationRequest.setEndTime(
+				DateUtils.localDateTimeToUnixTimeStampWithNull(event.getEndTime()));
 
 			log.info("Sending notification: sender={}, receiver={}, type={}", senderId, receiverId, notificationType);
 			notificationService.sendNotificationToClient(notificationRequest);

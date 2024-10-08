@@ -29,11 +29,11 @@ public class NotificationController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<List<NotificationDto.Response.GetListResponse>> getNotifications(
+	public ResponseEntity<List<NotificationDto.Response>> getNotifications(
 		@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "20") int size) {
-		List<NotificationDto.Response.GetListResponse> notifications = notificationService.getNotifications(
+		List<NotificationDto.Response> notifications = notificationService.getNotifications(
 			userPrincipal.id(), userPrincipal.role(), page, size);
 		return ResponseEntity.ok(notifications);
 	}

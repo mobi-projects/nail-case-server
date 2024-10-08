@@ -1,7 +1,5 @@
 package com.nailcase.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,5 +12,5 @@ public interface NotificationQuerydslRepository {
 
 	Page<Notification> findByNailArtistReceiverId(Long nailArtistId, Pageable pageable);
 
-	List<Notification> findByTypeAndReceiverId(Long receiverId, Role role);
+	Notification findByTypeAndReceiverIdWithNotSent(Long receiverId, Role role);
 }

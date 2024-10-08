@@ -1,6 +1,7 @@
 package com.nailcase.service;
 
 import static com.nailcase.exception.codes.NotificationErrorCode.*;
+import static com.nailcase.exception.codes.ReservationErrorCode.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,10 +20,13 @@ import com.nailcase.exception.BusinessException;
 import com.nailcase.model.dto.NotificationDto;
 import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.entity.Notification;
+import com.nailcase.model.entity.ReservationDetail;
 import com.nailcase.model.enums.NotificationType;
 import com.nailcase.model.enums.Role;
 import com.nailcase.repository.EmitterRepository;
 import com.nailcase.repository.NotificationRepository;
+import com.nailcase.repository.ReservationDetailRepository;
+import com.nailcase.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,7 @@ public class NotificationService {
 	private final EmitterRepository emitterRepository;
 	private final NotificationRepository notificationRepository;
 	private final NotificationPersistenceService notificationPersistenceService;
+	private final ReservationDetailRepository reservationDetailRepository;
 
 	public SseEmitter connectNotification(UserPrincipal userPrincipal) {
 		String emitterKey = generateEmitterKey(userPrincipal.id(), userPrincipal.role());
@@ -47,11 +52,9 @@ public class NotificationService {
 		sseEmitter.onTimeout(() -> emitterRepository.delete(emitterKey));
 
 		try {
-			sseEmitter.send(SseEmitter.event().id("").name(NOTIFICATION_NAME).data("Connection completed"));
-
-			// 미전송 알림 전송
+			// 미전송 알림 즉시 전송
 			sendUnsentNotifications(userPrincipal.id(), userPrincipal.role(), sseEmitter);
-		} catch (IOException exception) {
+		} catch (Exception exception) {
 			emitterRepository.delete(emitterKey);
 			throw new BusinessException(NOTIFICATION_CONNECTION_ERROR);
 		}
@@ -59,19 +62,17 @@ public class NotificationService {
 	}
 
 	private void sendUnsentNotifications(Long userId, Role role, SseEmitter emitter) {
-		List<Notification> unsentNotifications = notificationRepository.findByTypeAndReceiverId(userId, role);
-		for (Notification notification : unsentNotifications) {
-			try {
-				NotificationDto.Response response = convertToResponse(notification);
-				emitter.send(SseEmitter.event()
-					.id(notification.getNotificationId().toString())
-					.name(NOTIFICATION_NAME)
-					.data(response));
-				notification.updateSent();
-				notificationPersistenceService.saveNotification(notification);
-			} catch (IOException e) {
-				log.error("Failed to send unsent notification: {}", notification.getNotificationId(), e);
-			}
+		Notification unsentNotifications = notificationRepository.findByTypeAndReceiverIdWithNotSent(userId, role);
+		try {
+			NotificationDto.Response response = convertToResponse(unsentNotifications);
+			emitter.send(SseEmitter.event()
+				.id(unsentNotifications.getNotificationId().toString())
+				.name(NOTIFICATION_NAME)
+				.data(response));
+			unsentNotifications.updateSent();
+			notificationPersistenceService.saveNotification(unsentNotifications);
+		} catch (IOException e) {
+			log.error("Failed to send unsent notification: {}", unsentNotifications.getNotificationId(), e);
 		}
 	}
 
@@ -82,7 +83,7 @@ public class NotificationService {
 		notification = notificationPersistenceService.saveNotification(notification);
 		log.info("Notification saved with ID: {}", notification.getNotificationId());
 
-		boolean sent = sendToClient(request.getReceiverId(), notification);
+		boolean sent = sendToClient(request, notification);
 		if (sent) {
 			notification.updateSent();
 			notification = notificationPersistenceService.saveNotification(notification);
@@ -92,22 +93,22 @@ public class NotificationService {
 				notification.getNotificationId());
 		}
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void sendNotificationToClient(NotificationDto.Request request) {
 		processAndSendNotification(request);
 	}
 
-	private boolean sendToClient(Long userId, Notification notification) {
+	private boolean sendToClient(NotificationDto.Request request, Notification notification) {
 		Role role;
-		if (notification.getNotificationType() == NotificationType.RESERVATION_REQUEST
-			|| notification.getNotificationType() == NotificationType.RESERVATION_CANCEL) {
+		if (request.getNotificationType() == NotificationType.RESERVATION_REQUEST
+			|| request.getNotificationType() == NotificationType.RESERVATION_CANCEL) {
 			role = Role.MANAGER;
 		} else {
 			role = Role.MEMBER;
 		}
 
-		String emitterKey = generateEmitterKey(userId, role);
+		String emitterKey = generateEmitterKey(request.getReceiverId(), role);
 		return emitterRepository.get(emitterKey).map(sseEmitter -> {
 			try {
 				NotificationDto.Response response = convertToResponse(notification);
@@ -118,16 +119,18 @@ public class NotificationService {
 					.id(id)
 					.name(NOTIFICATION_NAME)
 					.data(response));
-				log.info("Notification sent successfully to user: {}, ID: {}", userId, id);
+				log.info("Notification sent successfully to user: {}, ID: {}", request.getReceiverId(), id);
 				return true;
 			} catch (IOException exception) {
 				emitterRepository.delete(emitterKey);
-				log.error("Failed to send notification: {} to user: {}", notification.getNotificationId(), userId,
+				log.error("Failed to send notification: {} to user: {}", notification.getNotificationId(),
+					request.getReceiverId(),
 					exception);
 				return false;
 			}
 		}).orElseGet(() -> {
-			log.info("No active connection for user: {}. Notification ID: {} saved for later delivery.", userId,
+			log.info("No active connection for user: {}. Notification ID: {} saved for later delivery.",
+				request.getReceiverId(),
 				notification.getNotificationId());
 			return false;
 		});
@@ -138,16 +141,18 @@ public class NotificationService {
 	}
 
 	private Notification createNotification(NotificationDto.Request request) {
-
+		ReservationDetail reservationDetail = reservationDetailRepository.findById(request.getReservationId())
+			.orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND));
 		return Notification.builder()
 			.content(request.getContent())
 			.senderId(request.getSenderId())
 			.receiverId(request.getReceiverId())
 			.notificationType(request.getNotificationType())
+			.reservationDetail(reservationDetail)
 			.build();
 	}
 
-	public List<NotificationDto.Response.GetListResponse> getNotifications(Long userId, Role role, int page, int size) {
+	public List<NotificationDto.Response> getNotifications(Long userId, Role role, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		Page<Notification> notificationPage;
 
@@ -158,17 +163,8 @@ public class NotificationService {
 		}
 
 		return notificationPage.getContent().stream()
-			.map(this::convertToDto)
+			.map(this::convertToResponse)
 			.collect(Collectors.toList());
-	}
-
-	private NotificationDto.Response.GetListResponse convertToDto(Notification notification) {
-		return NotificationDto.Response.GetListResponse.builder()
-			.id(notification.getNotificationId())
-			.content(notification.getContent())
-			.notificationType(notification.getNotificationType())
-			.createdAt(notification.getCreatedAt())
-			.build();
 	}
 
 	private NotificationDto.Response convertToResponse(Notification notification) {
@@ -176,9 +172,14 @@ public class NotificationService {
 		response.setNotificationId(notification.getNotificationId());
 		response.setContent(notification.getContent());
 		response.setNotificationType(notification.getNotificationType());
-		response.setSendDateTime(notification.getCreatedAt());
+		response.setSendDateTime(DateUtils.localDateTimeToUnixTimeStamp(notification.getCreatedAt()));
 		response.setSenderId(notification.getSenderId());
 		response.setReceiverId(notification.getReceiverId());
+		response.setRead(notification.isRead());
+		response.setReservationId(notification.getReservationDetail().getReservationDetailId());
+		response.setStartTime(
+			DateUtils.localDateTimeToUnixTimeStamp(notification.getReservationDetail().getStartTime()));
+		response.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(notification.getReservationDetail().getEndTime()));
 
 		return response;
 	}

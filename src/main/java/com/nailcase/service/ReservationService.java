@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -98,8 +97,14 @@ public class ReservationService {
 		Reservation savedReservation = reservationRepository.save(reservation);
 
 		String notificationContent = String.format("%s님이 예약을 요청하였습니다.", member.getNickname());
-		eventPublisher.publishEvent(
-			new ReservationEvent(savedReservation, NotificationType.RESERVATION_REQUEST, notificationContent));
+		ReservationEvent reservationEvent = ReservationEvent.builder()
+			.reservation(savedReservation)
+			.notificationType(NotificationType.RESERVATION_REQUEST)
+			.content(notificationContent)
+			.startTime(startTime)
+			.endTime(null).build();
+
+		eventPublisher.publishEvent(reservationEvent);
 
 		return reservationMapper.toRegisterResponse(savedReservation);
 	}
@@ -202,13 +207,6 @@ public class ReservationService {
 		return response;
 	}
 
-	private ReservationDto.MainPageResponse.ShopInfo convertToShopInfo(Shop shop) {
-		ReservationDto.MainPageResponse.ShopInfo shopInfo = new ReservationDto.MainPageResponse.ShopInfo();
-		shopInfo.setId(shop.getShopId());
-		shopInfo.setName(shop.getShopName());
-		return shopInfo;
-	}
-
 	private ReservationDto.CompletedReservationResponse.ShopInfo convertToCompletedShopInfo(Shop shop) {
 		ReservationDto.CompletedReservationResponse.ShopInfo shopInfo = new ReservationDto.CompletedReservationResponse.ShopInfo();
 		shopInfo.setId(shop.getShopId());
@@ -228,29 +226,6 @@ public class ReservationService {
 		return detail != null && detail.getStartTime() != null
 			? DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime())
 			: null;
-	}
-
-	private List<ReservationDto.MainPageResponse.ReservationDetailInfo> convertToReservationDetailInfoList(
-		List<ReservationDetail> details) {
-		return details.stream()
-			.map(detail -> {
-				ReservationDto.MainPageResponse.ReservationDetailInfo detailInfo = new ReservationDto.MainPageResponse.ReservationDetailInfo();
-				detailInfo.setReservationDetailsId(detail.getReservationDetailId());  // ID 추가
-				detailInfo.setStartTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getStartTime()));
-				detailInfo.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(detail.getEndTime()));
-				detailInfo.setTreatmentOptions(Optional.ofNullable(detail.getTreatment())
-					.map(treatment -> treatment.getOption().name())
-					.map(Collections::singletonList)
-					.orElse(Collections.emptyList()));
-				detailInfo.setRemoveOption(detail.getRemove().name());
-				detailInfo.setConditionOptions(detail.getConditionList().stream()
-					.map(condition -> condition.getOption().name())
-					.distinct()
-					.collect(Collectors.toList()));
-				detailInfo.setStatus(detail.getStatus().name());  // status를 null이 아닌 값으로 설정
-				return detailInfo;
-			})
-			.collect(Collectors.toList());
 	}
 
 	public List<ReservationDto.Available> listAvailableTime(Shop shop, Long[] artistIds, WorkHour workHour, Long date) {
@@ -446,9 +421,15 @@ public class ReservationService {
 		if (status == ReservationStatus.CANCELED) {
 			memberRepository.findById(memberId)
 				.ifPresent(member -> {
-					String content = String.format("%s님이 예약을 취소하였습니다.", member.getNickname());
-					eventPublisher.publishEvent(
-						new ReservationEvent(reservation, NotificationType.RESERVATION_CANCEL, content));
+					String notificationContent = String.format("%s님이 예약을 취소하였습니다.", member.getNickname());
+					ReservationEvent reservationEvent = ReservationEvent.builder()
+						.reservation(reservation)
+						.notificationType(NotificationType.RESERVATION_CANCEL)
+						.content(notificationContent)
+						.startTime(reservation.getReservationDetail().getStartTime())
+						.endTime(null).build();
+
+					eventPublisher.publishEvent(reservationEvent);
 				});
 		}
 
@@ -481,8 +462,14 @@ public class ReservationService {
 
 		if (status.equals(ReservationStatus.REJECTED)) {
 			String notificationContent = String.format("%s에서 예약을 거절하였습니다.", shop.getShopName());
-			eventPublisher.publishEvent(
-				new ReservationEvent(reservation, NotificationType.RESERVATION_REJECT, notificationContent));
+			ReservationEvent reservationEvent = ReservationEvent.builder()
+				.reservation(reservation)
+				.notificationType(NotificationType.RESERVATION_REJECT)
+				.content(notificationContent)
+				.startTime(reservation.getReservationDetail().getStartTime())
+				.endTime(null).build();
+
+			eventPublisher.publishEvent(reservationEvent);
 		}
 		return reservationMapper.toResponse(reservation);
 	}
@@ -525,9 +512,14 @@ public class ReservationService {
 		reservation.confirm();
 
 		String notificationContent = String.format("%s에서 예약을 승인하였습니다.", shop.getShopName());
-		eventPublisher.publishEvent(
-			new ReservationEvent(reservation, NotificationType.RESERVATION_APPROVE, notificationContent));
+		ReservationEvent reservationEvent = ReservationEvent.builder()
+			.reservation(reservation)
+			.notificationType(NotificationType.RESERVATION_APPROVE)
+			.content(notificationContent)
+			.startTime(reservation.getReservationDetail().getStartTime())
+			.endTime(endTime).build();
 
+		eventPublisher.publishEvent(reservationEvent);
 		return reservationMapper.toResponse(reservation);
 	}
 

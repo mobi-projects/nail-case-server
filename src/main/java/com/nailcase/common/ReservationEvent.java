@@ -1,21 +1,21 @@
 package com.nailcase.common;
 
+import java.time.LocalDateTime;
+
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.enums.NotificationType;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ReservationEvent {
 
 	private final Reservation reservation;
 	private final NotificationType notificationType;
 	private final String content;
-
-	public ReservationEvent(Reservation reservation, NotificationType notificationType, String content) {
-		this.reservation = reservation;
-		this.notificationType = notificationType;
-		this.content = content;
-	}
+	private final LocalDateTime startTime;
+	private final LocalDateTime endTime;
 
 }

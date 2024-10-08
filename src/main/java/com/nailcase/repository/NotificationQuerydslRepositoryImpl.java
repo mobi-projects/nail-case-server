@@ -35,6 +35,7 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 		// 쿼리 실행
 		List<Notification> results = queryFactory.selectFrom(notification)
 			.where(condition)
+			.leftJoin(notification.reservationDetail).fetchJoin()
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
@@ -56,6 +57,7 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 		// 쿼리 실행
 		List<Notification> results = queryFactory.selectFrom(notification)
 			.where(condition)
+			.leftJoin(notification.reservationDetail).fetchJoin()
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
@@ -66,7 +68,7 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 	}
 
 	@Override
-	public List<Notification> findByTypeAndReceiverId(Long receiverId, Role role) {
+	public Notification findByTypeAndReceiverIdWithNotSent(Long receiverId, Role role) {
 		QNotification notification = QNotification.notification;
 		BooleanExpression condition = role == Role.MANAGER ?
 			notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
@@ -75,9 +77,13 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 
 		return queryFactory.selectFrom(notification)
 			.where(notification.receiverId.eq(receiverId)
-				.and(condition))
-			.fetch();
-
+					.and(condition),
+				notification.isSent.eq(false)
+				, notification.isRead.eq(false)
+			)
+			.leftJoin(notification.reservationDetail).fetchJoin()
+			.orderBy(notification.createdAt.desc())
+			.fetchFirst();
 	}
 
 }
