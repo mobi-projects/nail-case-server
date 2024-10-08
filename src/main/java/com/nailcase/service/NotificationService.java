@@ -56,15 +56,14 @@ public class NotificationService {
 	// 클라이언트로의 실시간 전송을 위한 별도의 메서드
 	public void sendNotificationToClient(NotificationDto.Request request) {
 		Notification notification = createNotification(request);
+		notification = notificationPersistenceService.saveNotification(notification);
 		boolean sent = sendToClient(request.getReceiverId(), notification);
 		if (sent) {
 			notification.markAsSent();
-			log.info("Notification marked as sent and saved");
+			notificationPersistenceService.saveNotification(notification);
 		} else {
-			log.error("알림이 전송되지 않았습니다. ");
+			log.error("알림이 전송되지 않았습니다.");
 		}
-		notificationPersistenceService.saveNotification(notification); // 별도의 트랜잭션으로 저장 호출
-
 	}
 
 	private boolean sendToClient(Long userId, Notification notification) {

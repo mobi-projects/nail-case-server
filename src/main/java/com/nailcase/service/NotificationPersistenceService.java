@@ -2,8 +2,8 @@ package com.nailcase.service;
 
 import static com.nailcase.exception.codes.NotificationErrorCode.*;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.model.entity.Notification;
@@ -19,11 +19,12 @@ public class NotificationPersistenceService {
 
 	private final NotificationRepository notificationRepository;
 
-	@Async
-	public void saveNotification(Notification notification) {
+	@Transactional
+	public Notification saveNotification(Notification notification) {
 		try {
-			notificationRepository.save(notification);
-			log.info("Notification successfully saved: {}", notification);
+			Notification savedNotification = notificationRepository.save(notification);
+			log.info("Notification successfully saved: {}", savedNotification);
+			return savedNotification;
 		} catch (Exception e) {
 			log.error("Failed to save notification", e);
 			throw new BusinessException(NOTIFICATION_CONNECTION_ERROR);
