@@ -28,7 +28,6 @@ public class Notification extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "notification_id")
 	private Long notificationId;
 
 	@Column(name = "content", length = 2048)
@@ -52,7 +51,7 @@ public class Notification extends BaseEntity {
 	@Column(name = "is_sent")
 	private boolean isSent = false;
 
-	public void markAsSent() {
+	public void updateSent() {
 		this.isSent = true;
 	}
 

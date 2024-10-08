@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.nailcase.exception.BusinessException;
@@ -46,6 +48,9 @@ public class NotificationService {
 
 		try {
 			sseEmitter.send(SseEmitter.event().id("").name(NOTIFICATION_NAME).data("Connection completed"));
+
+			// 미전송 알림 전송
+			sendUnsentNotifications(userPrincipal.id(), userPrincipal.role(), sseEmitter);
 		} catch (IOException exception) {
 			emitterRepository.delete(emitterKey);
 			throw new BusinessException(NOTIFICATION_CONNECTION_ERROR);
@@ -53,17 +58,44 @@ public class NotificationService {
 		return sseEmitter;
 	}
 
+	private void sendUnsentNotifications(Long userId, Role role, SseEmitter emitter) {
+		List<Notification> unsentNotifications = notificationRepository.findByTypeAndReceiverId(userId, role);
+		for (Notification notification : unsentNotifications) {
+			try {
+				NotificationDto.Response response = convertToResponse(notification);
+				emitter.send(SseEmitter.event()
+					.id(notification.getNotificationId().toString())
+					.name(NOTIFICATION_NAME)
+					.data(response));
+				notification.updateSent();
+				notificationPersistenceService.saveNotification(notification);
+			} catch (IOException e) {
+				log.error("Failed to send unsent notification: {}", notification.getNotificationId(), e);
+			}
+		}
+	}
+
 	// 클라이언트로의 실시간 전송을 위한 별도의 메서드
-	public void sendNotificationToClient(NotificationDto.Request request) {
+	@Transactional
+	public void processAndSendNotification(NotificationDto.Request request) {
 		Notification notification = createNotification(request);
 		notification = notificationPersistenceService.saveNotification(notification);
+		log.info("Notification saved with ID: {}", notification.getNotificationId());
+
 		boolean sent = sendToClient(request.getReceiverId(), notification);
 		if (sent) {
-			notification.markAsSent();
-			notificationPersistenceService.saveNotification(notification);
+			notification.updateSent();
+			notification = notificationPersistenceService.saveNotification(notification);
+			log.info("Notification marked as sent and updated with ID: {}", notification.getNotificationId());
 		} else {
-			log.error("알림이 전송되지 않았습니다.");
+			log.info("Notification saved but not sent. ID: {}. It will be available when the user connects.",
+				notification.getNotificationId());
 		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void sendNotificationToClient(NotificationDto.Request request) {
+		processAndSendNotification(request);
 	}
 
 	private boolean sendToClient(Long userId, Notification notification) {
@@ -79,19 +111,24 @@ public class NotificationService {
 		return emitterRepository.get(emitterKey).map(sseEmitter -> {
 			try {
 				NotificationDto.Response response = convertToResponse(notification);
+				String id = (notification.getNotificationId() != null) ?
+					notification.getNotificationId().toString() :
+					"temp-" + System.currentTimeMillis();
 				sseEmitter.send(SseEmitter.event()
-					.id(notification.getNotificationId().toString())
+					.id(id)
 					.name(NOTIFICATION_NAME)
 					.data(response));
+				log.info("Notification sent successfully to user: {}, ID: {}", userId, id);
 				return true;
 			} catch (IOException exception) {
 				emitterRepository.delete(emitterKey);
-				log.error("Failed to send notification: {}", notification.getNotificationId(), exception);
+				log.error("Failed to send notification: {} to user: {}", notification.getNotificationId(), userId,
+					exception);
 				return false;
 			}
 		}).orElseGet(() -> {
-			log.info("No emitter found for user: {} with NotificationType : {}", userId,
-				notification.getNotificationType());
+			log.info("No active connection for user: {}. Notification ID: {} saved for later delivery.", userId,
+				notification.getNotificationId());
 			return false;
 		});
 	}

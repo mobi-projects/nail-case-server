@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 import com.nailcase.model.entity.Notification;
 import com.nailcase.model.entity.QNotification;
 import com.nailcase.model.enums.NotificationType;
+import com.nailcase.model.enums.Role;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +63,21 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 		// 페이징 처리
 		return PageableExecutionUtils.getPage(results, pageable,
 			() -> queryFactory.selectFrom(notification).where(condition).fetchCount());
+	}
+
+	@Override
+	public List<Notification> findByTypeAndReceiverId(Long receiverId, Role role) {
+		QNotification notification = QNotification.notification;
+		BooleanExpression condition = role == Role.MANAGER ?
+			notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
+				NotificationType.RESERVATION_CANCEL) :
+			notification.notificationType.in(NotificationType.RESERVATION_APPROVE, NotificationType.RESERVATION_REJECT);
+
+		return queryFactory.selectFrom(notification)
+			.where(notification.receiverId.eq(receiverId)
+				.and(condition))
+			.fetch();
+
 	}
 
 }

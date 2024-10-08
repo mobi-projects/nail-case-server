@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.nailcase.model.enums.Role;
+
 @Component
 public class StringUtils {
 
@@ -33,4 +35,9 @@ public class StringUtils {
 		}
 		return "https://" + bucket + ".s3.amazonaws.com/" + URLEncoder.encode(objectName, StandardCharsets.UTF_8);
 	}
+
+	public String generateEmitterKey(Long userId, Role role) {
+		return "Emitter:UID:" + userId + ":ROLE:" + role;
+	}
+
 }

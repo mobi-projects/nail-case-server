@@ -16,17 +16,19 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class NotificationPersistenceService {
-
 	private final NotificationRepository notificationRepository;
 
 	@Transactional
 	public Notification saveNotification(Notification notification) {
 		try {
+			log.info("Saving notification: {}", notification);
 			Notification savedNotification = notificationRepository.save(notification);
-			log.info("Notification successfully saved: {}", savedNotification);
+			notificationRepository.flush();  // 추가
+			log.info("Notification successfully saved with ID: {}", savedNotification.getNotificationId());
+			log.info("Saved notification: {}", savedNotification);
 			return savedNotification;
 		} catch (Exception e) {
-			log.error("Failed to save notification", e);
+			log.error("Failed to save notification: {}", notification, e);
 			throw new BusinessException(NOTIFICATION_CONNECTION_ERROR);
 		}
 	}
