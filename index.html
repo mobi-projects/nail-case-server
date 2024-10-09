@@ -1011,6 +1011,15 @@
     }
   }
 };
+            defs["com.nailcase.model.dto.NotificationReadDto"] = {
+  "type" : "object",
+  "properties" : {
+    "notificationId" : {
+      "type" : "integer",
+      "format" : "int64"
+    }
+  }
+};
             defs["com.nailcase.model.dto.PostCommentDto$Request"] = {
   "type" : "object",
   "properties" : {
@@ -8193,7 +8202,7 @@ public class NotificationControllerApiExample {
         oauth2-key.setAccessToken("YOUR ACCESS TOKEN");
 
         NotificationControllerApi apiInstance = new NotificationControllerApi();
-        Long body = ; // Long | 
+        Com.nailcase.model.dto.NotificationReadDto body = ; // Com.nailcase.model.dto.NotificationReadDto | 
         try {
             Object result = apiInstance.readNotification(body);
             System.out.println(result);
@@ -8212,7 +8221,7 @@ public class NotificationControllerApiExample {
 
     public static void main(String[] args) {
         NotificationControllerApi apiInstance = new NotificationControllerApi();
-        Long body = ; // Long | 
+        Com.nailcase.model.dto.NotificationReadDto body = ; // Com.nailcase.model.dto.NotificationReadDto | 
         try {
             Object result = apiInstance.readNotification(body);
             System.out.println(result);
@@ -8231,7 +8240,7 @@ public class NotificationControllerApiExample {
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 // Configure OAuth2 access token for authorization: (authentication scheme: oauth2-key)
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
-Long *body = ; // 
+Com.nailcase.model.dto.NotificationReadDto *body = ; // 
 
 NotificationControllerApi *apiInstance = [[NotificationControllerApi alloc] init];
 
@@ -8257,7 +8266,7 @@ var oauth2-key = defaultClient.authentications['oauth2-key'];
 oauth2-key.accessToken = "YOUR ACCESS TOKEN"
 
 var api = new NailCaseApi.NotificationControllerApi()
-var body = ; // {{Long}} 
+var body = ; // {{Com.nailcase.model.dto.NotificationReadDto}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -8291,7 +8300,7 @@ namespace Example
             Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new NotificationControllerApi();
-            var body = new Long(); // Long | 
+            var body = new Com.nailcase.model.dto.NotificationReadDto(); // Com.nailcase.model.dto.NotificationReadDto | 
 
             try
             {
@@ -8316,7 +8325,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 $api_instance = new Swagger\Client\ApiNotificationControllerApi();
-$body = ; // Long | 
+$body = ; // Com.nailcase.model.dto.NotificationReadDto | 
 
 try {
     $result = $api_instance->readNotification($body);
@@ -8336,7 +8345,7 @@ use WWW::SwaggerClient::NotificationControllerApi;
 $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::NotificationControllerApi->new();
-my $body = WWW::SwaggerClient::Object::Long->new(); # Long | 
+my $body = WWW::SwaggerClient::Object::Com.nailcase.model.dto.NotificationReadDto->new(); # Com.nailcase.model.dto.NotificationReadDto | 
 
 eval { 
     my $result = $api_instance->readNotification(body => $body);
@@ -8359,7 +8368,7 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = swagger_client.NotificationControllerApi()
-body =  # Long | 
+body =  # Com.nailcase.model.dto.NotificationReadDto | 
 
 try: 
     api_response = api_instance.read_notification(body)
@@ -8389,8 +8398,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "type" : "integer",
-        "format" : "int64"
+        "$ref" : "#/components/schemas/com.nailcase.model.dto.NotificationReadDto"
       }
     }
   },
