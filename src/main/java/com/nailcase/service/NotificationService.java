@@ -7,10 +7,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,18 +58,21 @@ public class NotificationService {
 	}
 
 	private void sendUnsentNotifications(Long userId, Role role, SseEmitter emitter) {
-		Notification unsentNotification = notificationRepository.findByTypeAndReceiverIdWithNotSent(userId, role);
-		if (unsentNotification != null) {
-			try {
-				NotificationDto.Response response = convertToResponse(unsentNotification);
-				emitter.send(SseEmitter.event()
-					.id(unsentNotification.getNotificationId().toString())
-					.name(NOTIFICATION_NAME)
-					.data(response));
-				unsentNotification.updateSent();
-				notificationPersistenceService.saveNotification(unsentNotification);
-			} catch (IOException e) {
-				log.error("Failed to send unsent notification: {}", unsentNotification.getNotificationId(), e);
+		List<Notification> unsentNotification = notificationRepository.findByTypeAndReceiverIdWithNotRead(userId,
+			role);
+		for (Notification notification : unsentNotification) {
+			if (notification != null) {
+				try {
+					NotificationDto.Response response = convertToResponse(notification);
+					emitter.send(SseEmitter.event()
+						.id(notification.getNotificationId().toString())
+						.name(NOTIFICATION_NAME)
+						.data(response));
+					notification.updateSent();
+					notificationPersistenceService.saveNotification(notification);
+				} catch (IOException e) {
+					log.error("Failed to send unsent notification: {}", notification.getNotificationId(), e);
+				}
 			}
 		}
 	}
@@ -138,6 +137,14 @@ public class NotificationService {
 		});
 	}
 
+	@Transactional
+	public void markAsRead(Long notificationId) {
+		Notification notification = notificationRepository.findById(notificationId)
+			.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
+		notification.markAsRead();
+		notificationPersistenceService.saveNotification(notification);
+	}
+
 	private String generateEmitterKey(Long userId, Role role) {
 		return "Emitter:UID:" + userId + ":ROLE:" + role;
 	}
@@ -154,17 +161,16 @@ public class NotificationService {
 			.build();
 	}
 
-	public List<NotificationDto.Response> getNotifications(Long userId, Role role, int page, int size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-		Page<Notification> notificationPage;
+	public List<NotificationDto.Response> getNotifications(Long userId, Role role) {
+		List<Notification> notification;
 
 		if (role == Role.MEMBER) {
-			notificationPage = notificationRepository.findByMemberReceiverId(userId, pageable);
+			notification = notificationRepository.findByMemberReceiverId(userId);
 		} else {
-			notificationPage = notificationRepository.findByNailArtistReceiverId(userId, pageable);
+			notification = notificationRepository.findByNailArtistReceiverId(userId);
 		}
 
-		return notificationPage.getContent().stream()
+		return notification.stream()
 			.map(this::convertToResponse)
 			.collect(Collectors.toList());
 	}

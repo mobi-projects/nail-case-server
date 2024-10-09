@@ -2,9 +2,6 @@ package com.nailcase.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.Notification;
@@ -24,7 +21,7 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<Notification> findByMemberReceiverId(Long memberId, Pageable pageable) {
+	public List<Notification> findByMemberReceiverId(Long memberId) {
 		QNotification notification = QNotification.notification;
 
 		// 멤버가 받는 알림 조건 설정
@@ -33,20 +30,18 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 				NotificationType.RESERVATION_REJECT));
 
 		// 쿼리 실행
-		List<Notification> results = queryFactory.selectFrom(notification)
-			.where(condition)
-			.leftJoin(notification.reservationDetail).fetchJoin()
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
 
 		// 페이징 처리
-		return PageableExecutionUtils.getPage(results, pageable,
-			() -> queryFactory.selectFrom(notification).where(condition).fetchCount());
+		return queryFactory.selectFrom(notification)
+			.where(condition)
+			.leftJoin(notification.reservationDetail).fetchJoin()
+			.limit(15)
+			.orderBy(notification.createdAt.desc())
+			.fetch();
 	}
 
 	@Override
-	public Page<Notification> findByNailArtistReceiverId(Long nailArtistId, Pageable pageable) {
+	public List<Notification> findByNailArtistReceiverId(Long nailArtistId) {
 		QNotification notification = QNotification.notification;
 
 		// 네일 아티스트가 받는 알림 조건 설정
@@ -54,21 +49,17 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 			.and(notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
 				NotificationType.RESERVATION_CANCEL));
 
-		// 쿼리 실행
-		List<Notification> results = queryFactory.selectFrom(notification)
+		// 페이징 처리
+		return queryFactory.selectFrom(notification)
 			.where(condition)
 			.leftJoin(notification.reservationDetail).fetchJoin()
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
+			.limit(15)
+			.orderBy(notification.createdAt.desc())
 			.fetch();
-
-		// 페이징 처리
-		return PageableExecutionUtils.getPage(results, pageable,
-			() -> queryFactory.selectFrom(notification).where(condition).fetchCount());
 	}
 
 	@Override
-	public Notification findByTypeAndReceiverIdWithNotSent(Long receiverId, Role role) {
+	public List<Notification> findByTypeAndReceiverIdWithNotRead(Long receiverId, Role role) {
 		QNotification notification = QNotification.notification;
 		BooleanExpression condition = role == Role.MANAGER ?
 			notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
@@ -78,12 +69,11 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 		return queryFactory.selectFrom(notification)
 			.where(notification.receiverId.eq(receiverId)
 					.and(condition),
-				notification.isSent.eq(false)
-				, notification.isRead.eq(false)
+				notification.isRead.eq(false)
 			)
 			.join(notification.reservationDetail).fetchJoin()
 			.orderBy(notification.createdAt.desc())
-			.fetchFirst();
+			.fetch();
 	}
 
 }

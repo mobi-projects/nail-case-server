@@ -185,11 +185,13 @@ public interface ReservationMapper {
 			treatment.updateImageUrl(imageUrl);
 		}
 
+		Shop shop = Shop.builder().shopId(dto.getShopId()).build();
 		return ReservationDetail.builder()
 			.startTime(DateUtils.unixTimeStampToLocalDateTime(dto.getStartTime()))
 			.status(ReservationStatus.PENDING)
 			.remove(dto.getRemove())
 			.extend(dto.getExtend())
+			.shop(shop)
 			.treatment(treatment)
 			.conditionList(dto.getConditionList().stream()
 				.map(conditionDto -> Condition.builder()

@@ -1,16 +1,15 @@
 package com.nailcase.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 import com.nailcase.model.entity.Notification;
 import com.nailcase.model.enums.Role;
 
 public interface NotificationQuerydslRepository {
 
-	Page<Notification> findByMemberReceiverId(Long memberId, Pageable pageable);
+	List<Notification> findByMemberReceiverId(Long memberId);
 
-	Page<Notification> findByNailArtistReceiverId(Long nailArtistId, Pageable pageable);
+	List<Notification> findByNailArtistReceiverId(Long nailArtistId);
 
-	Notification findByTypeAndReceiverIdWithNotSent(Long receiverId, Role role);
+	List<Notification> findByTypeAndReceiverIdWithNotRead(Long receiverId, Role role);
 }

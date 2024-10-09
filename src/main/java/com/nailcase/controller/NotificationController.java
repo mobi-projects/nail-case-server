@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.nailcase.model.dto.NotificationDto;
+import com.nailcase.model.dto.ReadResponseDto;
 import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.service.NotificationService;
 
@@ -30,12 +32,18 @@ public class NotificationController {
 
 	@GetMapping("/list")
 	public ResponseEntity<List<NotificationDto.Response>> getNotifications(
-		@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size) {
+		@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		List<NotificationDto.Response> notifications = notificationService.getNotifications(
-			userPrincipal.id(), userPrincipal.role(), page, size);
+			userPrincipal.id(), userPrincipal.role());
 		return ResponseEntity.ok(notifications);
+	}
+
+	@PostMapping("/read")
+	public ResponseEntity<?> readNotification(
+		@RequestBody Long notificationId) {
+		notificationService.markAsRead(
+			notificationId);
+		return ResponseEntity.ok(new ReadResponseDto());
 	}
 
 }

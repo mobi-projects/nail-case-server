@@ -42,7 +42,6 @@ public class Notification extends BaseEntity {
 	private Long receiverId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "notification_type")
 	private NotificationType notificationType;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -63,7 +62,7 @@ public class Notification extends BaseEntity {
 		this.isSent = true;
 	}
 
-	public void read() {
+	public void markAsRead() {
 		this.isRead = true;
 	}
 

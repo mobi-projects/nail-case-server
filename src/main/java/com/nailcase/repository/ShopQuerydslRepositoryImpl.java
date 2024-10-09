@@ -138,4 +138,18 @@ public class ShopQuerydslRepositoryImpl implements ShopQuerydslRepository {
 		return fetchOne != null;
 	}
 
+	@Override
+	public Optional<Shop> findByShopIdWithNailArtist(Long shopId) {
+		QShop shop = QShop.shop;
+		QNailArtist nailArtist = QNailArtist.nailArtist;
+
+		Shop fetch = queryFactory.selectFrom(shop)
+			.leftJoin(shop.nailArtists, nailArtist)
+			.fetchJoin()
+			.where(shop.shopId.eq(shopId))
+			.fetchOne();
+
+		return Optional.ofNullable(fetch);
+	}
+
 }
