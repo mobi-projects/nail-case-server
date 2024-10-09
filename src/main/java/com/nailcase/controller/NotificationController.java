@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.nailcase.model.dto.NotificationDto;
+import com.nailcase.model.dto.NotificationReadDto;
 import com.nailcase.model.dto.ReadResponseDto;
 import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.service.NotificationService;
@@ -40,9 +41,9 @@ public class NotificationController {
 
 	@PostMapping("/read")
 	public ResponseEntity<?> readNotification(
-		@RequestBody Long notificationId) {
+		@RequestBody NotificationReadDto notificationReadDto) {
 		notificationService.markAsRead(
-			notificationId);
+			notificationReadDto);
 		return ResponseEntity.ok(new ReadResponseDto());
 	}
 

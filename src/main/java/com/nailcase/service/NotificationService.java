@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.nailcase.exception.BusinessException;
 import com.nailcase.model.dto.NotificationDto;
+import com.nailcase.model.dto.NotificationReadDto;
 import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.model.entity.Notification;
 import com.nailcase.model.entity.ReservationDetail;
@@ -138,8 +139,8 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void markAsRead(Long notificationId) {
-		Notification notification = notificationRepository.findById(notificationId)
+	public void markAsRead(NotificationReadDto notificationReadDto) {
+		Notification notification = notificationRepository.findById(notificationReadDto.getNotificationId())
 			.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
 		notification.markAsRead();
 		notificationPersistenceService.saveNotification(notification);
