@@ -180,8 +180,9 @@ public class NotificationService {
 		response.setRead(notification.isRead());
 		response.setReservationId(notification.getReservationDetail().getReservationDetailId());
 		response.setStartTime(
-			DateUtils.localDateTimeToUnixTimeStamp(notification.getReservationDetail().getStartTime()));
-		response.setEndTime(DateUtils.localDateTimeToUnixTimeStamp(notification.getReservationDetail().getEndTime()));
+			DateUtils.localDateTimeToUnixTimeStampWithNull(notification.getReservationDetail().getStartTime()));
+		response.setEndTime(
+			DateUtils.localDateTimeToUnixTimeStampWithNull(notification.getReservationDetail().getEndTime()));
 
 		return response;
 	}
