@@ -81,7 +81,7 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 				notification.isSent.eq(false)
 				, notification.isRead.eq(false)
 			)
-			.leftJoin(notification.reservationDetail).fetchJoin()
+			.join(notification.reservationDetail).fetchJoin()
 			.orderBy(notification.createdAt.desc())
 			.fetchFirst();
 	}

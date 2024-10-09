@@ -1,5 +1,7 @@
 package com.nailcase.common;
 
+import static com.nailcase.exception.codes.ReservationErrorCode.*;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -7,10 +9,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import com.nailcase.exception.BusinessException;
 import com.nailcase.model.dto.NotificationDto;
 import com.nailcase.model.entity.NailArtist;
 import com.nailcase.model.entity.Reservation;
 import com.nailcase.model.enums.NotificationType;
+import com.nailcase.repository.ReservationRepository;
 import com.nailcase.service.NotificationService;
 import com.nailcase.util.DateUtils;
 
@@ -22,11 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReservationEventListener {
 	private final NotificationService notificationService;
+	private final ReservationRepository reservationRepository;
 
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleReservationEvent(ReservationEvent event) {
 		try {
-			Reservation reservation = event.getReservation();
+			Reservation reservation = reservationRepository.findReservationWithDetailsById(
+					event.getReservation().getReservationId())
+				.orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND));
 			NotificationType notificationType = event.getNotificationType();
 			String content = event.getContent();
 

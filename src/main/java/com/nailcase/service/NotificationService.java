@@ -62,17 +62,19 @@ public class NotificationService {
 	}
 
 	private void sendUnsentNotifications(Long userId, Role role, SseEmitter emitter) {
-		Notification unsentNotifications = notificationRepository.findByTypeAndReceiverIdWithNotSent(userId, role);
-		try {
-			NotificationDto.Response response = convertToResponse(unsentNotifications);
-			emitter.send(SseEmitter.event()
-				.id(unsentNotifications.getNotificationId().toString())
-				.name(NOTIFICATION_NAME)
-				.data(response));
-			unsentNotifications.updateSent();
-			notificationPersistenceService.saveNotification(unsentNotifications);
-		} catch (IOException e) {
-			log.error("Failed to send unsent notification: {}", unsentNotifications.getNotificationId(), e);
+		Notification unsentNotification = notificationRepository.findByTypeAndReceiverIdWithNotSent(userId, role);
+		if (unsentNotification != null) {
+			try {
+				NotificationDto.Response response = convertToResponse(unsentNotification);
+				emitter.send(SseEmitter.event()
+					.id(unsentNotification.getNotificationId().toString())
+					.name(NOTIFICATION_NAME)
+					.data(response));
+				unsentNotification.updateSent();
+				notificationPersistenceService.saveNotification(unsentNotification);
+			} catch (IOException e) {
+				log.error("Failed to send unsent notification: {}", unsentNotification.getNotificationId(), e);
+			}
 		}
 	}
 
