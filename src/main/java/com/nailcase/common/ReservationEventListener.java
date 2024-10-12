@@ -62,6 +62,7 @@ public class ReservationEventListener {
 			notificationRequest.setReservationId(reservation.getReservationId());
 			notificationRequest.setSenderId(senderId);
 			notificationRequest.setReceiverId(receiverId);
+			notificationRequest.setNickname(event.getNickname());
 			notificationRequest.setContent(content);
 			notificationRequest.setNotificationType(notificationType);
 			notificationRequest.setSendDateTime(DateUtils.localDateTimeToUnixTimeStampWithNull(LocalDateTime.now()));

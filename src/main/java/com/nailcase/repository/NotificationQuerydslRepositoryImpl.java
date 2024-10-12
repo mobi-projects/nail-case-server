@@ -76,5 +76,14 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 			.fetch();
 	}
 
+	@Override
+	public void updateReadStatusInNotReadNotification() {
+		QNotification notification = QNotification.notification;
+		queryFactory.update(notification)
+			.set(notification.isRead, true)
+			.where(notification.isRead.eq(false))
+			.execute();
+	}
+
 }
 

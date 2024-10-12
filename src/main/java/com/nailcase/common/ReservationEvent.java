@@ -14,6 +14,7 @@ public class ReservationEvent {
 
 	private final Reservation reservation;
 	private final NotificationType notificationType;
+	private String nickname;
 	private final String content;
 	private final LocalDateTime startTime;
 	private final LocalDateTime endTime;

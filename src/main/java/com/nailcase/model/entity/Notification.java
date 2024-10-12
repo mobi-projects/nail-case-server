@@ -34,6 +34,8 @@ public class Notification extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long notificationId;
 
+	private String nickname;
+
 	@Column(name = "content", length = 2048)
 	private String content;
 

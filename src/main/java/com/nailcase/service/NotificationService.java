@@ -146,6 +146,11 @@ public class NotificationService {
 		notificationPersistenceService.saveNotification(notification);
 	}
 
+	@Transactional
+	public void markAsAllRead() {
+		notificationRepository.updateReadStatusInNotReadNotification();
+	}
+
 	private String generateEmitterKey(Long userId, Role role) {
 		return "Emitter:UID:" + userId + ":ROLE:" + role;
 	}

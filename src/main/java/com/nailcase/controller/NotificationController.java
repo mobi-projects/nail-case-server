@@ -47,4 +47,10 @@ public class NotificationController {
 		return ResponseEntity.ok(new ReadResponseDto());
 	}
 
+	@PostMapping("/allRead")
+	public ResponseEntity<?> allReadNotification() {
+		notificationService.markAsAllRead();
+		return ResponseEntity.ok(new ReadResponseDto());
+	}
+
 }

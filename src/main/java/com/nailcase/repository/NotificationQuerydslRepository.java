@@ -12,4 +12,6 @@ public interface NotificationQuerydslRepository {
 	List<Notification> findByNailArtistReceiverId(Long nailArtistId);
 
 	List<Notification> findByTypeAndReceiverIdWithNotRead(Long receiverId, Role role);
+
+	void updateReadStatusInNotReadNotification();
 }

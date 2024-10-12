@@ -12,6 +12,7 @@ public class NotificationDto {
 	@NoArgsConstructor(access = AccessLevel.PUBLIC)
 	public static class Request {
 		private Long reservationId;
+		private String nickname;
 		private String content;
 		private NotificationType notificationType;
 		private Long senderId;
@@ -27,6 +28,7 @@ public class NotificationDto {
 	public static class Response {
 		private Long notificationId;
 		private Long reservationId;
+		private String nickname;
 		private String content;
 		private NotificationType notificationType;
 		private Long senderId;

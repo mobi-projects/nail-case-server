@@ -96,9 +96,11 @@ public class ReservationService {
 		reservation.updateNailArtist(nailArtist);
 		Reservation savedReservation = reservationRepository.save(reservation);
 
-		String notificationContent = String.format("%s님이 예약을 요청하였습니다.", member.getNickname());
+		String notificationContent = "님이 예약을 요청하였습니다.";
+
 		ReservationEvent reservationEvent = ReservationEvent.builder()
 			.reservation(savedReservation)
+			.nickname(member.getNickname())
 			.notificationType(NotificationType.RESERVATION_REQUEST)
 			.content(notificationContent)
 			.startTime(startTime)
@@ -421,9 +423,10 @@ public class ReservationService {
 		if (status == ReservationStatus.CANCELED) {
 			memberRepository.findById(memberId)
 				.ifPresent(member -> {
-					String notificationContent = String.format("%s님이 예약을 취소하였습니다.", member.getNickname());
+					String notificationContent = "님이 예약을 취소하였습니다.";
 					ReservationEvent reservationEvent = ReservationEvent.builder()
 						.reservation(reservation)
+						.nickname(member.getNickname())
 						.notificationType(NotificationType.RESERVATION_CANCEL)
 						.content(notificationContent)
 						.startTime(reservation.getReservationDetail().getStartTime())
@@ -461,11 +464,12 @@ public class ReservationService {
 		notificationRequest.setSenderId(memberId);
 
 		if (status.equals(ReservationStatus.REJECTED)) {
-			String notificationContent = String.format("%s에서 예약을 거절하였습니다.", shop.getShopName());
+			String notificationContent = "에서 예약을 거절하였습니다.";
 			ReservationEvent reservationEvent = ReservationEvent.builder()
 				.reservation(reservation)
 				.notificationType(NotificationType.RESERVATION_REJECT)
 				.content(notificationContent)
+				.nickname(shop.getShopName())
 				.startTime(reservation.getReservationDetail().getStartTime())
 				.endTime(null).build();
 
@@ -511,10 +515,11 @@ public class ReservationService {
 
 		reservation.confirm();
 
-		String notificationContent = String.format("%s에서 예약을 승인하였습니다.", shop.getShopName());
+		String notificationContent = "에서 예약을 승인하였습니다.";
 		ReservationEvent reservationEvent = ReservationEvent.builder()
 			.reservation(reservation)
 			.notificationType(NotificationType.RESERVATION_APPROVE)
+			.nickname(shop.getShopName())
 			.content(notificationContent)
 			.startTime(reservation.getReservationDetail().getStartTime())
 			.endTime(endTime).build();
