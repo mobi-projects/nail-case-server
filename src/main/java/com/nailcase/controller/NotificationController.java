@@ -48,8 +48,8 @@ public class NotificationController {
 	}
 
 	@PostMapping("/allRead")
-	public ResponseEntity<?> allReadNotification() {
-		notificationService.markAsAllRead();
+	public ResponseEntity<?> allReadNotification(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		notificationService.markAsAllRead(userPrincipal.id(), userPrincipal.role());
 		return ResponseEntity.ok(new ReadResponseDto());
 	}
 

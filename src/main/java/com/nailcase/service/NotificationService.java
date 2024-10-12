@@ -147,8 +147,8 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void markAsAllRead() {
-		notificationRepository.updateReadStatusInNotReadNotification();
+	public void markAsAllRead(Long userId, Role role) {
+		notificationRepository.updateReadStatusInNotReadNotification(userId, role);
 	}
 
 	private String generateEmitterKey(Long userId, Role role) {

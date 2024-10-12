@@ -77,11 +77,18 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 	}
 
 	@Override
-	public void updateReadStatusInNotReadNotification() {
+	public void updateReadStatusInNotReadNotification(Long receiverId, Role role) {
 		QNotification notification = QNotification.notification;
 		queryFactory.update(notification)
 			.set(notification.isRead, true)
-			.where(notification.isRead.eq(false))
+			.where(notification.isRead.eq(false)
+				, notification.receiverId.eq(receiverId)
+				, role == Role.MANAGER ?
+					notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
+						NotificationType.RESERVATION_CANCEL) :
+					notification.notificationType.in(NotificationType.RESERVATION_APPROVE,
+						NotificationType.RESERVATION_REJECT)
+			)
 			.execute();
 	}
 

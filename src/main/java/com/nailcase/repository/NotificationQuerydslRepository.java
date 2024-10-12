@@ -13,5 +13,5 @@ public interface NotificationQuerydslRepository {
 
 	List<Notification> findByTypeAndReceiverIdWithNotRead(Long receiverId, Role role);
 
-	void updateReadStatusInNotReadNotification();
+	void updateReadStatusInNotReadNotification(Long receiverId, Role role);
 }
