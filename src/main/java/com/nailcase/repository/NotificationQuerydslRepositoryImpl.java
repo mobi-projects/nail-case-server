@@ -1,6 +1,7 @@
 package com.nailcase.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -64,7 +65,8 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 		BooleanExpression condition = role == Role.MANAGER ?
 			notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
 				NotificationType.RESERVATION_CANCEL) :
-			notification.notificationType.in(NotificationType.RESERVATION_APPROVE, NotificationType.RESERVATION_REJECT);
+			notification.notificationType.in(NotificationType.RESERVATION_APPROVE, NotificationType.RESERVATION_REJECT
+				, NotificationType.RESERVATION_COMPLETE);
 
 		return queryFactory.selectFrom(notification)
 			.where(notification.receiverId.eq(receiverId)
@@ -87,9 +89,18 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
 					notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
 						NotificationType.RESERVATION_CANCEL) :
 					notification.notificationType.in(NotificationType.RESERVATION_APPROVE,
-						NotificationType.RESERVATION_REJECT)
+						NotificationType.RESERVATION_REJECT,
+						NotificationType.RESERVATION_COMPLETE)
 			)
 			.execute();
+	}
+
+	@Override
+	public Optional<Notification> findByReservationDetailId(Long reservationDetailId) {
+		QNotification notification = QNotification.notification;
+		return Optional.ofNullable(queryFactory.selectFrom(notification)
+			.where(notification.reservationDetail.reservationDetailId.eq(reservationDetailId))
+			.fetchOne());
 	}
 
 }

@@ -58,18 +58,17 @@ public class ReservationEventListener {
 
 			}
 
-			NotificationDto.Request notificationRequest = new NotificationDto.Request();
-			notificationRequest.setReservationId(reservation.getReservationId());
-			notificationRequest.setSenderId(senderId);
-			notificationRequest.setReceiverId(receiverId);
-			notificationRequest.setNickname(event.getNickname());
-			notificationRequest.setContent(content);
-			notificationRequest.setNotificationType(notificationType);
-			notificationRequest.setSendDateTime(DateUtils.localDateTimeToUnixTimeStampWithNull(LocalDateTime.now()));
-			notificationRequest.setStartTime(
-				DateUtils.localDateTimeToUnixTimeStampWithNull(event.getStartTime()));
-			notificationRequest.setEndTime(
-				DateUtils.localDateTimeToUnixTimeStampWithNull(event.getEndTime()));
+			NotificationDto.Request notificationRequest = NotificationDto.Request.builder()
+				.reservationId(reservation.getReservationId())
+				.senderId(senderId)
+				.receiverId(receiverId)
+				.nickname(event.getNickname())
+				.content(content)
+				.notificationType(notificationType)
+				.sendDateTime(DateUtils.localDateTimeToUnixTimeStampWithNull(LocalDateTime.now()))
+				.startTime(DateUtils.localDateTimeToUnixTimeStampWithNull(event.getStartTime()))
+				.endTime(DateUtils.localDateTimeToUnixTimeStampWithNull(event.getEndTime()))
+				.build();
 
 			log.info("Sending notification: sender={}, receiver={}, type={}", senderId, receiverId, notificationType);
 			notificationService.sendNotificationToClient(notificationRequest);

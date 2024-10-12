@@ -3,13 +3,14 @@ package com.nailcase.model.dto;
 import com.nailcase.model.enums.NotificationType;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class NotificationDto {
 
 	@Data
-	@NoArgsConstructor(access = AccessLevel.PUBLIC)
+	@Builder
 	public static class Request {
 		private Long reservationId;
 		private String nickname;

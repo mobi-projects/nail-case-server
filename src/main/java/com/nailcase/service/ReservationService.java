@@ -28,7 +28,6 @@ import com.nailcase.exception.codes.CommonErrorCode;
 import com.nailcase.exception.codes.ReservationErrorCode;
 import com.nailcase.mapper.ReservationMapper;
 import com.nailcase.model.dto.NailArtistDto;
-import com.nailcase.model.dto.NotificationDto;
 import com.nailcase.model.dto.ReservationDto;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.MonthlyArtImage;
@@ -459,9 +458,6 @@ public class ReservationService {
 			reservation.updateStatus(status);
 		}
 		reservation.updateRejectReason(rejectReason);
-
-		NotificationDto.Request notificationRequest = new NotificationDto.Request();
-		notificationRequest.setSenderId(memberId);
 
 		if (status.equals(ReservationStatus.REJECTED)) {
 			String notificationContent = "에서 예약을 거절하였습니다.";

@@ -72,4 +72,11 @@ public class ReservationDetailQuerydslRepositoryImpl implements ReservationDetai
 			.fetch().size());
 	}
 
+	@Override
+	public void updateReservationDetailStatus(Long reservationDetailId, ReservationStatus status) {
+		queryFactory.update(QReservationDetail.reservationDetail)
+			.set(QReservationDetail.reservationDetail.status, status)
+			.where(QReservationDetail.reservationDetail.reservationDetailId.eq(reservationDetailId))
+			.execute();
+	}
 }
