@@ -159,6 +159,7 @@ public class NotificationService {
 		ReservationDetail reservationDetail = reservationDetailRepository.findById(request.getReservationId())
 			.orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND));
 		return Notification.builder()
+			.nickname(request.getNickname())
 			.content(request.getContent())
 			.senderId(request.getSenderId())
 			.receiverId(request.getReceiverId())
