@@ -186,6 +186,7 @@ public class NotificationService {
 		NotificationDto.Response response = new NotificationDto.Response();
 		response.setNotificationId(notification.getNotificationId());
 		response.setContent(notification.getContent());
+		response.setNickname(notification.getNickname());
 		response.setNotificationType(notification.getNotificationType());
 		response.setSendDateTime(DateUtils.localDateTimeToUnixTimeStamp(notification.getCreatedAt()));
 		response.setSenderId(notification.getSenderId());
