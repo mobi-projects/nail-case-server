@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -18,18 +17,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.nailcase.model.dto.ReservationDetailProjection;
-import com.nailcase.repository.ReservationDetailRepository;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableBatchProcessing
 @RequiredArgsConstructor
 public class ReservationHourlyConfirmCheckBatchConfig {
 
 	private final EntityManagerFactory entityManagerFactory;
-	private final ReservationDetailRepository reservationDetailRepository;
+	private final ReservationCompleteItemProcessor reservationCompleteItemProcessor;
+	private final ReservationCompleteItemWriter reservationCompleteItemWriter;
+	private final JpaPagingItemReader<ReservationDetailProjection> reservationReader;
 
 	@Bean(name = "confirmReservationJob")
 	public Job reservationCompleteJob(JobRepository jobRepository,
@@ -44,9 +43,9 @@ public class ReservationHourlyConfirmCheckBatchConfig {
 		PlatformTransactionManager transactionManager) {
 		return new StepBuilder("reservationCompleteHourlyStep", jobRepository)
 			.<ReservationDetailProjection, ReservationDetailProjection>chunk(10, transactionManager)
-			.reader(reservationReader())
-			.processor(reservationCompleteItemProcessor())
-			.writer(reservationCompleteItemWriter())
+			.reader(reservationReader)
+			.processor(reservationCompleteItemProcessor)
+			.writer(reservationCompleteItemWriter)
 			.build();
 	}
 
@@ -72,13 +71,4 @@ public class ReservationHourlyConfirmCheckBatchConfig {
 			.build();
 	}
 
-	@Bean(name = "confirmReservationProcessor")
-	public ReservationCompleteItemProcessor reservationCompleteItemProcessor() {
-		return new ReservationCompleteItemProcessor(reservationDetailRepository);
-	}
-
-	@Bean(name = "confirmReservationWriter")
-	public ReservationCompleteItemWriter reservationCompleteItemWriter() {
-		return new ReservationCompleteItemWriter();
-	}
 }

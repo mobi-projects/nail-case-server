@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -18,20 +17,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.nailcase.model.dto.ReservationDetailProjection;
-import com.nailcase.repository.NotificationRepository;
-import com.nailcase.service.NotificationService;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableBatchProcessing
 @RequiredArgsConstructor
 public class ReservationHourlyPendingCheckBatchConfig {
 
-	private final NotificationService notificationService;
-	private final NotificationRepository notificationRepository;
 	private final EntityManagerFactory entityManagerFactory;
+	private final ReservationItemProcessor reservationProcessor;
+	private final ReservationItemWriter reservationWriter;
 
 	@Bean(name = "pendingReservationJob")
 	public Job notificationJob(JobRepository jobRepository,
@@ -47,8 +43,8 @@ public class ReservationHourlyPendingCheckBatchConfig {
 		return new StepBuilder("notificationHourlyStep", jobRepository)
 			.<ReservationDetailProjection, ReservationDetailProjection>chunk(10, transactionManager)
 			.reader(reservationReader())
-			.processor(reservationProcessor())
-			.writer(reservationWriter())
+			.processor(reservationProcessor)
+			.writer(reservationWriter)
 			.build();
 	}
 
@@ -73,13 +69,4 @@ public class ReservationHourlyPendingCheckBatchConfig {
 			.build();
 	}
 
-	@Bean(name = "pendingReservationProcessor")
-	public ReservationItemProcessor reservationProcessor() {
-		return new ReservationItemProcessor(notificationService);
-	}
-
-	@Bean(name = "pendingReservationWriter")
-	public ReservationItemWriter reservationWriter() {
-		return new ReservationItemWriter(notificationRepository);
-	}
 }
