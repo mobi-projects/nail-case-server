@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #msgArea {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .my-message {
+            background-color: #d4edda;
+            text-align: right;
+        }
+
+        .other-message {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 th:text="${room.name}" class="mb-4"></h1>
+            <div id="msgArea" class="mb-3">
+
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" id="msg" class="form-control" placeholder="메시지를 입력하세요">
+                <button class="btn btn-primary" type="button" id="button-send">전송</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var roomName = [[${room.name}]];
+        var chatRoomId = [[${room.chatRoomId}]];
+        var username = [[${memberId}]];
+        var messages = [[${messages}]]; // 서버에서 전달받은 메시지 목록
+
+        console.log("Room Name:", roomName, "chatRoomId ID:", chatRoomId, "Username:", username);
+
+
+        var sockJs = new SockJS('/api/v1/stomp/chat');
+        var stomp = Stomp.over(sockJs);
+        stomp.debug = function (str) {
+            console.log('STOMP122: ' + str);
+        };
+        stomp.connect({}, function (frame) {
+            console.log("STOMP Connection established", frame);
+
+            stomp.subscribe("/sub/chat/room/" + chatRoomId, function (message) {
+                console.log("Raw message received:", message);
+                console.log("Message received on: /sub/chat/room/" + chatRoomId);
+                try {
+                    var content = JSON.parse(message.body);
+                    console.log("Parsed message:", content);
+                    if (typeof content !== 'object' || !content.writer || !content.message) {
+                        throw new Error("Invalid message format");
+                    }
+                    displayMessage(content);
+                } catch (e) {
+                    console.error("Error parsing message:", e);
+                    console.log("Raw message body:", message.body);
+                }
+            });
+
+          
+        }, function (error) {
+            console.error("STOMP error:", error);
+        });
+
+        function displayMessage(message) {
+            console.log("Displaying message:", message);
+            if (!message.writer || !message.message) {
+                console.error("Invalid message format:", message);
+                return;
+            }
+            var messageElement = $("<div>").addClass("message");
+            if (message.writer === username) {
+                messageElement.addClass("my-message");
+            } else {
+                messageElement.addClass("other-message");
+            }
+            messageElement.html("<strong>" + message.writer + ":</strong> " + message.message);
+
+            // 항상 메시지를 아래에 추가
+            $("#msgArea").append(messageElement);
+
+            // 스크롤을 항상 최신 메시지로 이동
+            $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
+
+            console.log("Message displayed");
+        }
+
+// 기존 메시지 표시
+        messages.forEach(function (message) {
+            displayMessage(message);
+        });
+
+// 초기 로드 후 스크롤을 맨 아래로 이동
+        $("#msgArea").scrollTop($("#msgArea")[0].scrollHeight);
+
+
+        function sendMessage() {
+            var msg = $("#msg").val().trim();
+            if (msg) {
+                console.log("Sending message:", username + ":" + msg);
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    chatRoomId: chatRoomId,
+                    message: msg,
+                    writer: username
+                }));
+                $("#msg").val('');
+            }
+        }
+
+        $("#button-send").on("click", sendMessage);
+        $("#msg").on("keypress", function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 테스트용 메시지 표시
+    });
+</script>
+</body>
+</html>
