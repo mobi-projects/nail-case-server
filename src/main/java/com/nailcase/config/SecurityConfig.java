@@ -42,7 +42,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(csrf -> csrf
-				.ignoringRequestMatchers("**")
+				.ignoringRequestMatchers("/chat", "/ws/**", "/ws/chat/**", "/stomp/**", "/stomp/chat/**",
+					"/stomp/chat/info")
 				.disable())
 			.cors(Customizer.withDefaults())
 			// enable h2-console
