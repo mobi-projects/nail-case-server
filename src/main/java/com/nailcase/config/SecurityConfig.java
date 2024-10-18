@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +41,9 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(AbstractHttpConfigurer::disable)
+			.csrf(csrf -> csrf
+				.ignoringRequestMatchers("**")
+				.disable())
 			.cors(Customizer.withDefaults())
 			// enable h2-console
 			.headers(headers -> headers
@@ -50,7 +51,7 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
-					"/static/**", "/auth/**", "/main/**")
+					"/static/**", "/auth/**", "/main/**", "**")
 				.permitAll()  // Swagger와 정적 리소스 접근 허용
 				.requestMatchers(PathRequest.toH2Console())
 				.permitAll() // h2-console 접근 허용
@@ -58,7 +59,8 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
-				.requestMatchers("/demo-login/**") // 데모 테스트용
+				.requestMatchers("/demo-login/**", "/chat", "/ws/**", "/ws/chat/**", "/stomp/**", "/stomp/chat/**",
+					"/stomp/chat/info") // 데모 테스트용
 				.permitAll()
 				.requestMatchers(HttpMethod.GET, "/shops/*/reservations")
 				.permitAll()
@@ -111,7 +113,8 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList(
 			"http://localhost:3000",
-			"https://nail-case-client.vercel.app"
+			"https://nail-case-client.vercel.app",
+			"http://localhost:8081"
 		));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");

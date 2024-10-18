@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Rooms</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Chat Rooms</h2>
+    <div class="mb-3">
+        <ul class="list-group" th:if="${list != null and !list.isEmpty()}">
+            <li class="list-group-item" th:each="room : ${list}">
+                <a th:href="@{/chat/room(chatRoomId=${room.chatRoomId})}" th:text="${room.name}"></a>
+                <!-- 여기서 roomId를 id로 변경 -->
+            </li>
+        </ul>
+        <p th:unless="${list != null and !list.isEmpty()}" class="text-muted">No chat rooms available.</p>
+    </div>
+    <form th:action="@{/chat/room}" method="post" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="name" class="form-control" placeholder="Enter room name">
+            <button class="btn btn-primary btn-create" type="submit">개설하기</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var roomName = [[${roomName}]]; // Thymeleaf에서 제공하는 변수가 있다면 이를 활용
+
+        if (roomName != null && roomName.length > 0) {
+            alert(roomName + " 방이 개설되었습니다.");
+        }
+
+        $(".btn-create").on("click", function (e) {
+            e.preventDefault();
+            var name = $("input[name='name']").val();
+
+            if (name === "") {
+                alert("Please write the name.");
+            } else {
+                $("form").submit();
+            }
+        });
+    });
+</script>
+</body>
+</html>

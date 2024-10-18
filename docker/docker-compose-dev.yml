@@ -62,7 +62,7 @@ services:
       - "6379:6379"
 
   postgresql:
-    image: postgres
+    image: postgres:16
     restart: always
     volumes:
       - ./volume/db:/var/lib/postgresql/data
@@ -74,7 +74,23 @@ services:
       POSTGRES_DB: newtips-postgresql
       TZ: Asia/Seoul
       PGTZ: Asia/Seoul
-      
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI
+      - "61613:61613"  # STOMP 포트
+    command: >
+      bash -c "rabbitmq-plugins enable rabbitmq_stomp &&
+               rabbitmq-server"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   data1-1:
   data1-2:
@@ -84,3 +100,4 @@ volumes:
   data3-2:
   data4-1:
   data4-2:
+  rabbitmq-data:

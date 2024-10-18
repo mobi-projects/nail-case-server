@@ -114,6 +114,10 @@ public class Shop extends BaseEntity {
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ShopLikedMember> likedMembers = new HashSet<>();
 
+	@Builder.Default
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ChatRoom> chatRooms = new ArrayList<>();
+
 	public void addLikedMember(Member member) {
 		ShopLikedMember shopLikedMember = new ShopLikedMember(this, member);
 		this.likedMembers.add(shopLikedMember);
