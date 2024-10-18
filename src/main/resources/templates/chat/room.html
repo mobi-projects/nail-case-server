@@ -65,27 +65,13 @@
             console.log('STOMP122: ' + str);
         };
         stomp.connect({}, function (frame) {
-            console.log("STOMP Connection established", frame);
+            console.log("STOMP Connection established");
 
-            stomp.subscribe("/sub/chat/room/" + chatRoomId, function (message) {
-                console.log("Raw message received:", message);
-                console.log("Message received on: /sub/chat/room/" + chatRoomId);
-                try {
-                    var content = JSON.parse(message.body);
-                    console.log("Parsed message:", content);
-                    if (typeof content !== 'object' || !content.writer || !content.message) {
-                        throw new Error("Invalid message format");
-                    }
-                    displayMessage(content);
-                } catch (e) {
-                    console.error("Error parsing message:", e);
-                    console.log("Raw message body:", message.body);
-                }
+            stomp.subscribe("/exchange/chat.exchange/room." + chatRoomId, function (message) {
+                var content = JSON.parse(message.body);
+                displayMessage(content);
             });
-
-          
-        }, function (error) {
-            console.error("STOMP error:", error);
+            
         });
 
         function displayMessage(message) {
@@ -123,8 +109,7 @@
         function sendMessage() {
             var msg = $("#msg").val().trim();
             if (msg) {
-                console.log("Sending message:", username + ":" + msg);
-                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                stomp.send('/pub/chat/message/' + chatRoomId, {}, JSON.stringify({
                     chatRoomId: chatRoomId,
                     message: msg,
                     writer: username

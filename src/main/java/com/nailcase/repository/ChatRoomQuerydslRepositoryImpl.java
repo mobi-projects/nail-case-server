@@ -2,12 +2,13 @@ package com.nailcase.repository;
 
 import static com.nailcase.model.entity.QChatRoom.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
 import com.nailcase.model.entity.ChatRoom;
+import com.nailcase.model.entity.QChatRoom;
+import com.nailcase.model.entity.QShop;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -18,28 +19,42 @@ public class ChatRoomQuerydslRepositoryImpl implements ChatRoomQuerydslRepositor
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<ChatRoom> findAllByChatRoomId(Long chatRoomId) {
-		return queryFactory
-			.selectFrom(chatRoom)
-			.where(chatRoom.chatRoomId.eq(chatRoomId))
-			.fetch();
-	}
-
-	@Override
-	public Optional<ChatRoom> findByChatRoomId(Long chatRoomId) {
-		return Optional.ofNullable(queryFactory
-			.selectFrom(chatRoom)
-			.where(chatRoom.chatRoomId.eq(chatRoomId))
-			.fetchOne());
-	}
-
-	@Override
-	public boolean existsByChatRoomId(Long chatRoomId) {
+	public boolean existsByShopIdAndChatRoomId(Long shopId, Long chatRoomId) {
 		return queryFactory
 			.selectOne()
 			.from(chatRoom)
-			.where(chatRoom.chatRoomId.eq(chatRoomId))
+			.where(
+				chatRoom.shop.shopId.eq(shopId),
+				chatRoom.chatRoomId.eq(chatRoomId))
 			.fetchFirst() != null;
 	}
 
+	@Override
+	public Optional<ChatRoom> findChatRoomByShopIdAndMemberId(Long shopId, Long memberId) {
+		ChatRoom result = queryFactory
+			.selectFrom(chatRoom)
+			.where(
+				chatRoom.shop.shopId.eq(shopId),
+				chatRoom.member.memberId.eq(memberId)
+			)
+			.fetchFirst();
+		return Optional.ofNullable(result);
+	}
+
+	@Override
+	public Optional<ChatRoom> findChatRoomByShopIdAndChatRoomId(Long shopId, Long chatRoomId) {
+		QChatRoom chatRoom = QChatRoom.chatRoom;
+		QShop shop = QShop.shop;
+
+		ChatRoom result = queryFactory
+			.selectFrom(chatRoom)
+			.leftJoin(chatRoom.shop, shop).fetchJoin()
+			.where(
+				shop.shopId.eq(shopId),
+				chatRoom.chatRoomId.eq(chatRoomId)
+			)
+			.fetchFirst();
+
+		return Optional.ofNullable(result);
+	}
 }

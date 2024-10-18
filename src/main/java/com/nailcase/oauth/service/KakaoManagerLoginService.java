@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.nailcase.jwt.JwtService;
@@ -13,8 +14,6 @@ import com.nailcase.model.enums.SocialType;
 import com.nailcase.oauth.dto.LoginResponseDto;
 import com.nailcase.oauth.dto.OAuthAttributes;
 import com.nailcase.repository.NailArtistRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service("kakaoManagerLoginService")
 public class KakaoManagerLoginService extends AbstractKakaoLoginService {

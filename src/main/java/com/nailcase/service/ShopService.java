@@ -94,7 +94,7 @@ public class ShopService {
 			saveImagesInNewTransaction(savedShop, profileImages, priceImages);
 
 			// NailArtist에 Shop 추가
-			nailArtist.addShop(savedShop);
+			nailArtist.updateShop(savedShop);
 
 			List<Long> shopIds = nailArtist.getShops().stream()
 				.map(Shop::getShopId)

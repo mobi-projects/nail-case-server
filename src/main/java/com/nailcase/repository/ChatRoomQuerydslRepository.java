@@ -1,15 +1,14 @@
 package com.nailcase.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.nailcase.model.entity.ChatRoom;
 
 public interface ChatRoomQuerydslRepository {
-	List<ChatRoom> findAllByChatRoomId(Long chatRoomId);
 
-	Optional<ChatRoom> findByChatRoomId(Long chatRoomId);
+	boolean existsByShopIdAndChatRoomId(Long shopId, Long chatRoomId);
 
-	boolean existsByChatRoomId(Long chatRoomId);
+	Optional<ChatRoom> findChatRoomByShopIdAndMemberId(Long shopId, Long memberId);
 
+	Optional<ChatRoom> findChatRoomByShopIdAndChatRoomId(Long shopId, Long chatRoomId);
 }

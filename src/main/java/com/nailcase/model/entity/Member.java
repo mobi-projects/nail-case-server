@@ -65,6 +65,10 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reservation> reservations = new ArrayList<>();
 
+	@Builder.Default
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ChatRoom> chatRooms = new ArrayList<>();
+
 	public Member update(String name) {
 		// this.name = name;
 		return this;

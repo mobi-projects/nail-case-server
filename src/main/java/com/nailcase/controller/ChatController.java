@@ -1,57 +1,62 @@
 package com.nailcase.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nailcase.model.dto.ChatMessageDto;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.service.ChatRoomService;
-import com.nailcase.service.ChattingService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/shops/{shopId}")
 @RequiredArgsConstructor
 public class ChatController {
 
-	private final SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
-	private final ChattingService chattingService;
 	private final ChatRoomService chatRoomService;
-	//Client가 SEND할 수 있는 경로
-	//stompConfig에서 설정한 applicationDestinationPrefixes와 @MessageMapping 경로가 병합됨
-	//"/pub/chat/enter"
 
-	@MessageMapping("/chat/enter")
-	public void enter(ChatMessageDto message) {
-		log.info("@ChatController, enter()");
-		if (!chatRoomService.existsByChatRoomId(message.getChatRoomId())) {
-			log.error("Chat room not found for id: {}", message.getChatRoomId());
-			return; // 채팅방이 없으면 처리 중단
-		}
-		template.convertAndSend("/sub/chat/room/" + message.getChatRoomId(), message);
+	@MessageMapping("/chat/message/{chatRoomId}")
+	public void message(
+		@PathVariable Long shopId,
+		ChatMessageDto message, @DestinationVariable String chatRoomId,
+		@AuthenticationPrincipal UserPrincipal userPrincipal
+	) {
+		chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
 	}
 
-	@MessageMapping("/chat/message")
-	public void message(ChatMessageDto message) {
-		log.info("@ChatController, message()");
-		if (!chatRoomService.existsByChatRoomId(message.getChatRoomId())) {
-			log.error("Chat room not found for id: {}", message.getChatRoomId());
-			return; // 채팅방이 없으면 처리 중단
-		}
-
-		chattingService.saveMessage(message);
-		template.convertAndSend("/sub/chat/room/" + message.getChatRoomId(), message);
+	@GetMapping("/chat/room")
+	public ResponseEntity<ChatMessageDto.PageableResponse> memberEnterRoom(
+		@PathVariable Long shopId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@AuthenticationPrincipal UserPrincipal userPrincipal
+	) {
+		ChatMessageDto.PageableResponse response = chatRoomService.enterShopChatRoom(userPrincipal, shopId, page,
+			size);
+		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/chat")
-	public String chatGET() {
-
-		log.info("@ChatController, chat GET()");
-
-		return "chat";
+	@GetMapping("/chat/room/{chatRoomId}")
+	public ResponseEntity<ChatMessageDto.PageableResponse> managerEnterRoom(
+		@PathVariable Long shopId,
+		@PathVariable String chatRoomId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@AuthenticationPrincipal UserPrincipal userPrincipal
+	) {
+		ChatMessageDto.PageableResponse response = chatRoomService.managerEnterRoom(userPrincipal, shopId, chatRoomId,
+			page,
+			size);
+		return ResponseEntity.ok(response);
 	}
-
 }

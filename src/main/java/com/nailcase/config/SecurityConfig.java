@@ -59,7 +59,8 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/oauth2/sign-up", "/login/oauth2/**")
 				.permitAll()    // 권한 관련 접근 허용
-				.requestMatchers("/demo-login/**", "/chat", "/ws/**", "/ws/chat/**") // 데모 테스트용
+				.requestMatchers("/demo-login/**", "/chat", "/ws/**", "/ws/chat/**", "/stomp/**", "/stomp/chat/**",
+					"/stomp/chat/info") // 데모 테스트용
 				.permitAll()
 				.requestMatchers(HttpMethod.GET, "/shops/*/reservations")
 				.permitAll()

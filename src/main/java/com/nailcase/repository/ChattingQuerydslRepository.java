@@ -1,11 +1,11 @@
 package com.nailcase.repository;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.nailcase.model.entity.ChatMessage;
 
 public interface ChattingQuerydslRepository {
 
-	List<ChatMessage> findMessagesByChatRoomId(Long chatRoomId);
-
+	Page<ChatMessage> findByChatRoomIdWithPagination(Long chatRoomId, Pageable pageable);
 }
