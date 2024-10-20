@@ -60,4 +60,6 @@ jobs:
             ${{ secrets.JWT_SECRET_KEY }} \
             ${{ secrets.RABBITMQ_PORT }} \
             ${{ secrets.RABBITMQ_USERNAME }} \
-            ${{ secrets.RABBITMQ_PASSWORD }}
+            ${{ secrets.RABBITMQ_PASSWORD }} \
+            ${{ secrets.RABBITMQ_STOMP_PORT }}  # STOMP 포트 추가
+

@@ -35,6 +35,9 @@ public class RabbitMQConfig {
 	@Value("${spring.rabbitmq.password}")
 	private String rabbitPassword;
 
+	@Value("${spring.rabbitmq.stomp.port}")
+	private int rabbitStompPort;
+
 	@Bean
 	public Queue queue() {
 		return new Queue(CHAT_QUEUE_NAME, true);
