@@ -37,7 +37,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			.setRelayHost(rabbitHost)
 			.setRelayPort(rabbitStompPort)
 			.setClientLogin(rabbitUsername)
-			.setClientPasscode(rabbitPassword);
+			.setClientPasscode(rabbitPassword)
+			.setSystemLogin(rabbitUsername)
+			.setSystemPasscode(rabbitPassword);
 	}
 
 	@Override
