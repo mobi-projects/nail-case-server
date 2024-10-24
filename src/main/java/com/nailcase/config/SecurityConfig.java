@@ -42,8 +42,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(csrf -> csrf
-				.ignoringRequestMatchers("/chat", "/ws/**", "/ws/chat/**", "/stomp/**", "/stomp/chat/**",
-					"/stomp/chat/info")
+				.ignoringRequestMatchers("/api/v1/stomp/**", "/api/v1/stomp/chat/**", "/api/v1/stomp/chat/info")
 				.disable())
 			.cors(Customizer.withDefaults())
 			// enable h2-console
@@ -62,6 +61,8 @@ public class SecurityConfig {
 				.permitAll()    // 권한 관련 접근 허용
 				.requestMatchers("/demo-login/**", "/chat", "/ws/**", "/ws/chat/**", "/stomp/**", "/stomp/chat/**",
 					"/stomp/chat/info") // 데모 테스트용
+				.permitAll()
+				.requestMatchers("/api/v1/stomp/**", "/api/v1/stomp/chat/**", "/api/v1/stomp/chat/info")
 				.permitAll()
 				.requestMatchers(HttpMethod.GET, "/shops/*/reservations")
 				.permitAll()
