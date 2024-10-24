@@ -37,7 +37,6 @@ public class ChatRoomService {
 	private final RabbitTemplate rabbitTemplate;
 
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
-	private final static String CHAT_ROUTING_KEY = "room.";
 
 	@Transactional
 	public void saveAndSendMessage(Long shopId, ChatMessageDto message, Long chatRoomId) {
