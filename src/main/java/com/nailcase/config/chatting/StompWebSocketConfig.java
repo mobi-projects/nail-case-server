@@ -31,7 +31,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 				"https://nail-case-client.vercel.app",
 				"http://localhost:8081"
 			)
-			.withSockJS();
+			.withSockJS()
+			.setHeartbeatTime(25000) // 클라이언트->서버 heartbeat 주기
+			.setDisconnectDelay(5000); // 연결 종료 대기 시간
 	}
 
 	@Override
@@ -43,7 +45,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			.setClientLogin(rabbitUsername)
 			.setClientPasscode(rabbitPassword)
 			.setSystemLogin(rabbitUsername)
-			.setSystemPasscode(rabbitPassword);
+			.setSystemPasscode(rabbitPassword)
+			.setSystemHeartbeatSendInterval(5000)    // 시스템 heartbeat 전송 주기
+			.setSystemHeartbeatReceiveInterval(4000);  // 시스템 heartbeat 수신 주기
 	}
 
 	@Override
