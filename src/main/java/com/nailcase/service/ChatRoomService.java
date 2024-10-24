@@ -43,52 +43,54 @@ public class ChatRoomService {
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 
 	@Transactional
-	public void saveAndSendMessage(ChatMessageDto message) {
+	public void saveAndSendMessage(ChatMessageDto messageDto) {
 		try {
-			Long shopId = message.getShopId();
-			Long chatRoomId = message.getChatRoomId();
+			Long shopId = messageDto.getShopId();
+			Long chatRoomId = messageDto.getChatRoomId();
 			log.info("Starting saveAndSendMessage. shopId: {}, chatRoomId: {}", shopId, chatRoomId);
 
-			checkByShopIdAndRoomId(shopId, chatRoomId);
+			// 1. 채팅방 존재 확인 및 가져오기
+			ChatRoom chatRoom = chatRoomRepository.findChatRoomByShopIdAndChatRoomId(shopId, chatRoomId)
+				.orElseThrow(() -> new BusinessException(CHAT_ROOM_NOT_FOUND));
 
-			// 1. 메시지 저장
-			ChatMessage savedMessage = chatMessageRepository.save(message.toEntity(message));
+			// 2. 메시지 생성 및 저장
+			ChatMessage chatMessage = messageDto.toEntityWithRoom(chatRoom);
+			ChatMessage savedMessage = chatMessageRepository.save(chatMessage);
 			log.info("Message saved successfully with id: {}", savedMessage.getChatMessageId());
 
-			// 2. RabbitMQ로 메시지 전송
+			// 3. RabbitMQ로 메시지 전송
 			String routingKey = String.format("shop.%d.room.%d", shopId, chatRoomId);
 			log.info("Preparing to send message to RabbitMQ. Exchange: {}, RoutingKey: {}",
 				CHAT_EXCHANGE_NAME, routingKey);
 
 			ChatMessageDto messageToSend = ChatMessageDto.of(savedMessage);
-			log.info("Message to send: {}", messageToSend);  // toString() 구현 필요
+			log.info("Message to send: {}", messageToSend);
 
 			try {
 				rabbitTemplate.convertAndSend(
 					RabbitMQConfig.CHAT_EXCHANGE_NAME,
 					routingKey,
-					savedMessage,
+					messageToSend,
 					msg -> {
 						MessageProperties props = msg.getMessageProperties();
 						props.setContentType(MessageProperties.CONTENT_TYPE_JSON);
 						props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
 						props.setHeader("contentType", "application/json");
 						// STOMP 관련 헤더 추가
-						props.setHeader("destination", "/exchange/" +
-							RabbitMQConfig.CHAT_EXCHANGE_NAME + "/" + routingKey);
+						props.setHeader("destination", "/topic/shop." + shopId + ".room." + chatRoomId);
 						return msg;
 					}
 				);
-				log.info("Message sent to RabbitMQ. RoutingKey: {}", routingKey);
+				log.info("Message sent to RabbitMQ successfully");
 
 			} catch (AmqpException e) {
 				log.error("Failed to send message to RabbitMQ. RoutingKey: {}, Error: {}",
-					routingKey, e.getMessage());
+					routingKey, e.getMessage(), e);
 				log.info(e.getMessage());
 			}
 		} catch (Exception e) {
 			log.error("Error in saveAndSendMessage: {}", e.getMessage(), e);
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 		}
 	}
 
