@@ -22,15 +22,15 @@ public class ChatMessageDto {
 
 	private Long shopId;
 	private Long chatRoomId;
-	private String writer;
-	private String message;
+	private String sender;        // writer를 sender로 변경
+	private String content;
 	private LocalDateTime createdAt;
 
 	public static ChatMessageDto of(ChatMessage chatMessage) {
 		return ChatMessageDto.builder()
 			.chatRoomId(chatMessage.getChatRoom().getChatRoomId())
-			.writer(chatMessage.getWriter())
-			.message(chatMessage.getMessage())
+			.sender(chatMessage.getWriter())
+			.content(chatMessage.getMessage())
 			.createdAt(chatMessage.getCreatedAt())
 			.build();
 	}
@@ -38,8 +38,8 @@ public class ChatMessageDto {
 	public ChatMessage toEntity(ChatMessageDto messageDto) {
 		return ChatMessage.builder()
 			.chatRoom(ChatRoom.builder().chatRoomId(messageDto.getChatRoomId()).build())
-			.writer(messageDto.getWriter())
-			.message(messageDto.getMessage())
+			.writer(messageDto.getSender())
+			.message(messageDto.getContent())
 			.build();
 	}
 
