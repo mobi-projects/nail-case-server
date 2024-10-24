@@ -40,7 +40,7 @@ public class ChatRoomService {
 	private final static String CHAT_ROUTING_KEY = "room.";
 
 	@Transactional
-	public void saveAndSendMessage(Long shopId, ChatMessageDto message, String chatRoomId) {
+	public void saveAndSendMessage(Long shopId, ChatMessageDto message, Long chatRoomId) {
 		try {
 			checkByShopIdAndRoomId(shopId, message.getChatRoomId());
 
@@ -48,7 +48,7 @@ public class ChatRoomService {
 			ChatMessage savedMessage = chatMessageRepository.save(message.toEntity(message));
 
 			// 2. RabbitMQ로 메시지 전송
-			String routingKey = String.format("shop.%d.room.%s", shopId, chatRoomId);
+			String routingKey = String.format("shop.%d.room.%d", shopId, chatRoomId);
 			rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, routingKey, ChatMessageDto.of(savedMessage));
 
 			log.info("Message saved and sent successfully. ChatRoomId: {}, MessageId: {}",
@@ -116,7 +116,7 @@ public class ChatRoomService {
 		return chatRoomRepository.save(newChatRoom);
 	}
 
-	public ChatMessageDto.PageableResponse managerEnterRoom(UserPrincipal userPrincipal, Long shopId, String chatRoomId,
+	public ChatMessageDto.PageableResponse managerEnterRoom(UserPrincipal userPrincipal, Long shopId, Long chatRoomId,
 		int page, int size) {
 
 		ChatRoom chatRoom = chatRoomRepository.findChatRoomByShopIdAndChatRoomId(shopId, Long.valueOf(chatRoomId))
@@ -136,7 +136,7 @@ public class ChatRoomService {
 			.collect(Collectors.toList());
 
 		return new ChatMessageDto.PageableResponse(
-			Long.valueOf(chatRoomId),
+			chatRoomId,
 			chatMessageDtos,
 			messagePage.getNumber(),
 			messagePage.getSize(),
