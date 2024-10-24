@@ -118,7 +118,7 @@ public class ChatRoomService {
 	public ChatMessageDto.PageableResponse managerEnterRoom(UserPrincipal userPrincipal, Long shopId, Long chatRoomId,
 		int page, int size) {
 
-		ChatRoom chatRoom = chatRoomRepository.findChatRoomByShopIdAndChatRoomId(shopId, Long.valueOf(chatRoomId))
+		ChatRoom chatRoom = chatRoomRepository.findChatRoomByShopIdAndChatRoomId(shopId, chatRoomId)
 			.orElseThrow(() -> new BusinessException(CHAT_ROOM_NOT_FOUND));
 
 		// 매니저가 아닌 경우
@@ -135,7 +135,7 @@ public class ChatRoomService {
 			.collect(Collectors.toList());
 
 		return new ChatMessageDto.PageableResponse(
-			chatRoomId,
+			String.valueOf(chatRoomId),
 			chatMessageDtos,
 			messagePage.getNumber(),
 			messagePage.getSize(),
