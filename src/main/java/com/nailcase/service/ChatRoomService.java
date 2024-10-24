@@ -62,7 +62,10 @@ public class ChatRoomService {
 	}
 
 	private void checkByShopIdAndRoomId(Long shopId, Long roomId) {
-		if (!chatRoomRepository.existsByShopIdAndChatRoomId(shopId, roomId)) {
+		log.info("Checking chat room existence. shopId: {}, roomId: {}", shopId, roomId);
+		boolean exists = chatRoomRepository.existsByShopIdAndChatRoomId(shopId, roomId);
+		log.info("Chat room exists: {}", exists);
+		if (!exists) {
 			throw new BusinessException(CHAT_ROOM_NOT_FOUND);
 		}
 	}
