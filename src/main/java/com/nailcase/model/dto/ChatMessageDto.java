@@ -19,29 +19,59 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
-	private Long shopId;
+	private Long messageId;
 	private Long chatRoomId;
-	private String sender;        // writer를 sender로 변경
-	private String content;
+	private Long shopId;
+	private String message;
+	private String writer;
 	private LocalDateTime createdAt;
 
 	public static ChatMessageDto of(ChatMessage chatMessage) {
-		return ChatMessageDto.builder()
-			.shopId(chatMessage.getChatRoom().getShop().getShopId())
-			.chatRoomId(chatMessage.getChatRoom().getChatRoomId())
-			.sender(chatMessage.getWriter())
-			.content(chatMessage.getMessage())
-			.createdAt(chatMessage.getCreatedAt())
+		if (chatMessage == null) {
+			return null;
+		}
+
+		ChatMessageDtoBuilder builder = ChatMessageDto.builder()
+			.messageId(chatMessage.getChatMessageId())
+			.message(chatMessage.getMessage())
+			.writer(chatMessage.getWriter())
+			.createdAt(chatMessage.getCreatedAt());
+
+		if (chatMessage.getChatRoom() != null) {
+			builder.chatRoomId(chatMessage.getChatRoom().getChatRoomId());
+
+			if (chatMessage.getChatRoom().getShop() != null) {
+				builder.shopId(chatMessage.getChatRoom().getShop().getShopId());
+			}
+		}
+
+		return builder.build();
+	}
+
+	public ChatMessage toEntity() {
+		return ChatMessage.builder()
+			.message(this.getMessage())
+			.writer(this.getWriter())
 			.build();
 	}
 
-	public ChatMessage toEntity(ChatMessageDto messageDto) {
+	// ChatRoom 정보를 포함하여 엔티티 생성
+	public ChatMessage toEntityWithRoom(ChatRoom chatRoom) {
 		return ChatMessage.builder()
-			.chatRoom(ChatRoom.builder().chatRoomId(messageDto.getChatRoomId()).build())
-			.writer(messageDto.getSender())
-			.message(messageDto.getContent())
-			.createdAt(LocalDateTime.now())
+			.chatRoom(chatRoom)
+			.message(this.getMessage())
+			.writer(this.getWriter())
 			.build();
+	}
+
+	@Override
+	public String toString() {
+		return String.format("ChatMessageDto(messageId=%s, chatRoomId=%s, shopId=%s, writer=%s, message=%s)",
+			messageId != null ? messageId.toString() : "null",
+			chatRoomId != null ? chatRoomId.toString() : "null",
+			shopId != null ? shopId.toString() : "null",
+			writer,
+			message);
 	}
 
 	@Data
