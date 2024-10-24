@@ -3,6 +3,7 @@ package com.nailcase.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ public class ChatController {
 	@MessageMapping("/chat/message/{chatRoomId}")
 	public void message(
 		@PathVariable Long shopId,
-		ChatMessageDto message,  // payload는 첫 번째 파라미터로
+		@Payload ChatMessageDto message,
 		@DestinationVariable Long chatRoomId  // URL 변수는 @DestinationVariable 사용
 	) {
 		chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
