@@ -20,6 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessageDto {
 
+	private Long shopId;
 	private Long chatRoomId;
 	private String writer;
 	private String message;
@@ -45,6 +46,7 @@ public class ChatMessageDto {
 	@Data
 	@AllArgsConstructor
 	public static class PageableResponse {
+		private Long shopId;
 		private Long chatRoomId;
 		private List<ChatMessageDto> chatMessageList;
 		private int pageNumber;
