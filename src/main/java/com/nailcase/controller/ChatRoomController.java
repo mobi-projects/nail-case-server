@@ -1,9 +1,6 @@
 package com.nailcase.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,22 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatRoomController {
 
 	private final ChatRoomService chatRoomService;
-
-	@MessageMapping("/chat/message/{chatRoomId}")
-	public void message(
-		@PathVariable Long shopId,
-		@Payload ChatMessageDto message,
-		@DestinationVariable Long chatRoomId  // URL 변수는 @DestinationVariable 사용
-	) {
-		log.info("Received message for shopId: {}, chatRoomId: {}, from sender: {}", shopId, chatRoomId,
-			message.getSender());
-		try {
-			chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
-		} catch (Exception e) {
-			log.error("Error processing message: ", e);
-			throw e; // Or handle more gracefully depending on your application's needs
-		}
-	}
 
 	@GetMapping("/chat/room")
 	public ResponseEntity<ChatMessageDto.PageableResponse> memberEnterRoom(
