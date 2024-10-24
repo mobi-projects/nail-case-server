@@ -23,7 +23,7 @@ public class ChatMessageDto {
 	private Long chatRoomId;
 	private Long shopId;
 	private String message;
-	private String writer;
+	private String sender;
 	private LocalDateTime createdAt;
 
 	public static ChatMessageDto of(ChatMessage chatMessage) {
@@ -34,7 +34,7 @@ public class ChatMessageDto {
 		ChatMessageDtoBuilder builder = ChatMessageDto.builder()
 			.messageId(chatMessage.getChatMessageId())
 			.message(chatMessage.getMessage())
-			.writer(chatMessage.getWriter())
+			.sender(chatMessage.getWriter())
 			.createdAt(chatMessage.getCreatedAt());
 
 		if (chatMessage.getChatRoom() != null) {
@@ -51,7 +51,7 @@ public class ChatMessageDto {
 	public ChatMessage toEntity() {
 		return ChatMessage.builder()
 			.message(this.getMessage())
-			.writer(this.getWriter())
+			.writer(this.getSender())
 			.build();
 	}
 
@@ -60,7 +60,7 @@ public class ChatMessageDto {
 		return ChatMessage.builder()
 			.chatRoom(chatRoom)
 			.message(this.getMessage())
-			.writer(this.getWriter())
+			.writer(this.getSender())
 			.build();
 	}
 
@@ -70,7 +70,7 @@ public class ChatMessageDto {
 			messageId != null ? messageId.toString() : "null",
 			chatRoomId != null ? chatRoomId.toString() : "null",
 			shopId != null ? shopId.toString() : "null",
-			writer,
+			sender,
 			message);
 	}
 
