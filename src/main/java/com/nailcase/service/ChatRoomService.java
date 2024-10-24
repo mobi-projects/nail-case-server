@@ -5,6 +5,9 @@ import static com.nailcase.exception.codes.ShopErrorCode.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nailcase.config.rabbitMq.RabbitMQConfig;
 import com.nailcase.exception.BusinessException;
 import com.nailcase.model.dto.ChatMessageDto;
 import com.nailcase.model.dto.UserPrincipal;
@@ -61,18 +65,30 @@ public class ChatRoomService {
 
 			try {
 				rabbitTemplate.convertAndSend(
-					CHAT_EXCHANGE_NAME,
+					RabbitMQConfig.CHAT_EXCHANGE_NAME,
 					routingKey,
-					savedMessage);
-				log.info("Message sent to RabbitMQ successfully");
-			} catch (Exception e) {
-				log.error("Failed to send message to RabbitMQ. Exchange: {}, RoutingKey: {}, Error: {}",
-					CHAT_EXCHANGE_NAME, routingKey, e.getMessage(), e);
-				throw e;
+					savedMessage,
+					msg -> {
+						MessageProperties props = msg.getMessageProperties();
+						props.setContentType(MessageProperties.CONTENT_TYPE_JSON);
+						props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+						props.setHeader("contentType", "application/json");
+						// STOMP 관련 헤더 추가
+						props.setHeader("destination", "/exchange/" +
+							RabbitMQConfig.CHAT_EXCHANGE_NAME + "/" + routingKey);
+						return msg;
+					}
+				);
+				log.info("Message sent to RabbitMQ. RoutingKey: {}", routingKey);
+
+			} catch (AmqpException e) {
+				log.error("Failed to send message to RabbitMQ. RoutingKey: {}, Error: {}",
+					routingKey, e.getMessage());
+				log.info(e.getMessage());
 			}
 		} catch (Exception e) {
 			log.error("Error in saveAndSendMessage: {}", e.getMessage(), e);
-			throw new BusinessException(CHAT_PROCESS_FAILED);
+			log.error(e.getMessage());
 		}
 	}
 
