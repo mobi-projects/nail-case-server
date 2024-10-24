@@ -28,7 +28,7 @@ public class ChatController {
 	@MessageMapping("/chat/message/{chatRoomId}")
 	public void message(
 		@PathVariable Long shopId,
-		ChatMessageDto message, @DestinationVariable String chatRoomId,
+		ChatMessageDto message, @DestinationVariable Long chatRoomId,
 		@AuthenticationPrincipal UserPrincipal userPrincipal
 	) {
 		chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
@@ -49,7 +49,7 @@ public class ChatController {
 	@GetMapping("/chat/room/{chatRoomId}")
 	public ResponseEntity<ChatMessageDto.PageableResponse> managerEnterRoom(
 		@PathVariable Long shopId,
-		@PathVariable String chatRoomId,
+		@PathVariable Long chatRoomId,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
 		@AuthenticationPrincipal UserPrincipal userPrincipal
