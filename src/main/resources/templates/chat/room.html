@@ -62,7 +62,7 @@
         var sockJs = new SockJS('/api/v1/stomp/chat');
         var stomp = Stomp.over(sockJs);
         stomp.debug = function (str) {
-            console.log('STOMP122: ' + str);
+            console.log('STOMP: ' + str);
         };
         stomp.connect({}, function (frame) {
             console.log("STOMP Connection established");
@@ -71,7 +71,7 @@
                 var content = JSON.parse(message.body);
                 displayMessage(content);
             });
-            
+
         });
 
         function displayMessage(message) {
