@@ -25,7 +25,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/api/v1/stomp/chat")  // context-path를 포함한 전체 경로
+		registry.addEndpoint("/stomp/chat")
 			.setAllowedOrigins(
 				"http://localhost:3000",
 				"https://nail-case-client.vercel.app",
