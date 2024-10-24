@@ -20,22 +20,29 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/shops/{shopId}")
+@RequestMapping("/shops")
 @RequiredArgsConstructor
 public class ChatController {
 
 	private final ChatRoomService chatRoomService;
 
-	@MessageMapping("/chat/message/{chatRoomId}")
+	@MessageMapping("/{shopId}/chat/message/{chatRoomId}")
 	public void message(
-		@PathVariable Long shopId,
+		@DestinationVariable Long shopId,
 		@Payload ChatMessageDto message,
 		@DestinationVariable Long chatRoomId  // URL 변수는 @DestinationVariable 사용
 	) {
-		chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
+		log.info("Received message for shopId: {}, chatRoomId: {}, from sender: {}", shopId, chatRoomId,
+			message.getSender());
+		try {
+			chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
+		} catch (Exception e) {
+			log.error("Error processing message: ", e);
+			throw e; // Or handle more gracefully depending on your application's needs
+		}
 	}
 
-	@GetMapping("/chat/room")
+	@GetMapping("/{shopId}/chat/room")
 	public ResponseEntity<ChatMessageDto.PageableResponse> memberEnterRoom(
 		@PathVariable Long shopId,
 		@RequestParam(defaultValue = "0") int page,
@@ -47,7 +54,7 @@ public class ChatController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/chat/room/{chatRoomId}")
+	@GetMapping("/{shopId}/chat/room/{chatRoomId}")
 	public ResponseEntity<ChatMessageDto.PageableResponse> managerEnterRoom(
 		@PathVariable Long shopId,
 		@PathVariable Long chatRoomId,

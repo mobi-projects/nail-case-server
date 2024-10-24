@@ -74,7 +74,7 @@ public class ChatRoomService {
 		int page, int size) {
 		ChatRoom chatRoom = findOrCreateChatRoom(shopId, userPrincipal.id(), userPrincipal.role());
 
-		return getChatMessages(shopId, chatRoom.getChatRoomId(), page, size);
+		return getChatMessages(chatRoom.getChatRoomId(), page, size);
 	}
 
 	private ChatRoom findOrCreateChatRoom(Long shopId, Long memberId, Role role) {
@@ -88,7 +88,7 @@ public class ChatRoomService {
 			});
 	}
 
-	private ChatMessageDto.PageableResponse getChatMessages(Long shopId, Long chatRoomId, int page, int size) {
+	private ChatMessageDto.PageableResponse getChatMessages(Long chatRoomId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		Page<ChatMessage> messagePage = chatMessageRepository.findByChatRoomIdWithPagination(
 			chatRoomId, pageable);
