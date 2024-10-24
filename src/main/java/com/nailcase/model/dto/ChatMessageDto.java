@@ -19,8 +19,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
-
-	private Long shopId;
 	private Long chatRoomId;
 	private String sender;        // writer를 sender로 변경
 	private String content;
@@ -46,7 +44,6 @@ public class ChatMessageDto {
 	@Data
 	@AllArgsConstructor
 	public static class PageableResponse {
-		private Long shopId;
 		private Long chatRoomId;
 		private List<ChatMessageDto> chatMessageList;
 		private int pageNumber;
