@@ -31,7 +31,7 @@ public class JwtTokenProcessor {
 	private final CustomJwtAuthenticationManager customJwtAuthenticationManager;
 	private static final String LOGOUT_URL = "/api/v1/auth/logout";
 	private static final String REFRESH_TOKEN_URL = "/api/v1/auth/refresh";
-	private static final String CHATTING_URL = "/api/v1/stomp/chat";
+	private static final String CHATTING_URL = "/stomp/chat";
 
 	public boolean isLogoutRequest(String path) {
 		return path.equals(LOGOUT_URL);
