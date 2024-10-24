@@ -43,20 +43,35 @@ public class ChatRoomService {
 		try {
 			Long shopId = message.getShopId();
 			Long chatRoomId = message.getChatRoomId();
+			log.info("Starting saveAndSendMessage. shopId: {}, chatRoomId: {}", shopId, chatRoomId);
+
 			checkByShopIdAndRoomId(shopId, chatRoomId);
 
 			// 1. 메시지 저장
 			ChatMessage savedMessage = chatMessageRepository.save(message.toEntity(message));
+			log.info("Message saved successfully with id: {}", savedMessage.getChatMessageId());
 
 			// 2. RabbitMQ로 메시지 전송
-			String routingKey = String.format("shop.%d.room.%s", shopId, chatRoomId);
-			rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, routingKey, ChatMessageDto.of(savedMessage));
+			String routingKey = String.format("shop.%d.room.%d", shopId, chatRoomId);
+			log.info("Preparing to send message to RabbitMQ. Exchange: {}, RoutingKey: {}",
+				CHAT_EXCHANGE_NAME, routingKey);
 
-			log.info("Message saved and sent successfully. ChatRoomId: {}, MessageId: {}",
-				chatRoomId, savedMessage.getChatMessageId());
-		} catch (BusinessException e) {
-			throw e;
+			ChatMessageDto messageToSend = ChatMessageDto.of(savedMessage);
+			log.info("Message to send: {}", messageToSend);  // toString() 구현 필요
+
+			try {
+				rabbitTemplate.convertAndSend(
+					CHAT_EXCHANGE_NAME,
+					routingKey,
+					savedMessage);
+				log.info("Message sent to RabbitMQ successfully");
+			} catch (Exception e) {
+				log.error("Failed to send message to RabbitMQ. Exchange: {}, RoutingKey: {}, Error: {}",
+					CHAT_EXCHANGE_NAME, routingKey, e.getMessage(), e);
+				throw e;
+			}
 		} catch (Exception e) {
+			log.error("Error in saveAndSendMessage: {}", e.getMessage(), e);
 			throw new BusinessException(CHAT_PROCESS_FAILED);
 		}
 	}

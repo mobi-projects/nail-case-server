@@ -17,6 +17,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class RabbitMQConfig {
 	public static final String CHAT_EXCHANGE_NAME = "chat.exchange";
@@ -40,7 +43,7 @@ public class RabbitMQConfig {
 
 	@Bean
 	public Queue queue() {
-		return new Queue(CHAT_QUEUE_NAME, true);
+		return new Queue(CHAT_QUEUE_NAME, true, false, false);
 	}
 
 	@Bean
@@ -57,6 +60,23 @@ public class RabbitMQConfig {
 	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
 		rabbitTemplate.setMessageConverter(jsonMessageConverter());
+
+		// Publisher Confirms 활성화
+		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+			if (!ack) {
+				log.error("Failed to send message to RabbitMQ. Cause: " + cause);
+			}
+		});
+
+		// Mandatory 설정 및 Returns Callback 설정
+		rabbitTemplate.setMandatory(true);
+		rabbitTemplate.setReturnsCallback(returned -> {
+			log.error("Message returned from RabbitMQ. Reply: {} Exchange: {} RoutingKey: {}",
+				returned.getReplyText(),
+				returned.getExchange(),
+				returned.getRoutingKey());
+		});
+
 		return rabbitTemplate;
 	}
 
@@ -75,6 +95,9 @@ public class RabbitMQConfig {
 		factory.setPort(rabbitPort);
 		factory.setUsername(rabbitUsername);
 		factory.setPassword(rabbitPassword);
+
+		factory.setPublisherReturns(true);
+
 		return factory;
 	}
 
