@@ -98,6 +98,7 @@ public class ChatRoomService {
 			.collect(Collectors.toList());
 
 		return new ChatMessageDto.PageableResponse(
+			chatRoomId,
 			chatMessageDtos,
 			messagePage.getNumber(),
 			messagePage.getSize(),
@@ -135,6 +136,7 @@ public class ChatRoomService {
 			.collect(Collectors.toList());
 
 		return new ChatMessageDto.PageableResponse(
+			Long.valueOf(chatRoomId),
 			chatMessageDtos,
 			messagePage.getNumber(),
 			messagePage.getSize(),
