@@ -45,6 +45,7 @@ public class ChatMessageDto {
 	@Data
 	@AllArgsConstructor
 	public static class PageableResponse {
+		private Long chatRoomId;
 		private List<ChatMessageDto> chatMessageList;
 		private int pageNumber;
 		private int pageSize;
