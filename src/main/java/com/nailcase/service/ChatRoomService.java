@@ -69,14 +69,29 @@ public class ChatRoomService {
 		}
 	}
 
+	@Transactional
 	public ChatMessageDto.PageableResponse enterShopChatRoom(UserPrincipal userPrincipal, Long shopId,
 		int page, int size) {
-		ChatRoom andCheckBeforeEnterRoom = findAndCheckBeforeEnterRoom(shopId, userPrincipal.id(),
-			userPrincipal.role());
+		ChatRoom chatRoom = findOrCreateChatRoom(shopId, userPrincipal.id(), userPrincipal.role());
 
+		return getChatMessages(chatRoom.getChatRoomId(), page, size);
+	}
+
+	private ChatRoom findOrCreateChatRoom(Long shopId, Long memberId, Role role) {
+		return chatRoomRepository.findChatRoomByShopIdAndMemberId(shopId, memberId)
+			.orElseGet(() -> {
+				if (Role.MEMBER.equals(role)) {
+					return createAndSaveChatRoom(shopId, memberId);
+				} else {
+					throw new BusinessException(CHAT_ROOM_NOT_FOUND);
+				}
+			});
+	}
+
+	private ChatMessageDto.PageableResponse getChatMessages(Long chatRoomId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		Page<ChatMessage> messagePage = chatMessageRepository.findByChatRoomIdWithPagination(
-			andCheckBeforeEnterRoom.getChatRoomId(), pageable);
+			chatRoomId, pageable);
 
 		List<ChatMessageDto> chatMessageDtos = messagePage.getContent().stream()
 			.map(ChatMessageDto::of)
@@ -90,18 +105,6 @@ public class ChatRoomService {
 			messagePage.getTotalPages(),
 			messagePage.isLast()
 		);
-	}
-
-	@Transactional
-	public ChatRoom findAndCheckBeforeEnterRoom(Long shopId, Long memberId, Role role) {
-		return chatRoomRepository.findChatRoomByShopIdAndMemberId(shopId, memberId)
-			.orElseGet(() -> {
-				if (Role.MEMBER.equals(role)) {
-					return createAndSaveChatRoom(shopId, memberId);
-				} else {
-					throw new BusinessException(CHAT_ROOM_NOT_FOUND);
-				}
-			});
 	}
 
 	private ChatRoom createAndSaveChatRoom(Long shopId, Long memberId) {
