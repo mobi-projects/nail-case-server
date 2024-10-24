@@ -19,14 +19,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
-	private Long chatRoomId;
+	private String chatRoomId;
 	private String sender;        // writer를 sender로 변경
 	private String content;
 	private LocalDateTime createdAt;
 
 	public static ChatMessageDto of(ChatMessage chatMessage) {
 		return ChatMessageDto.builder()
-			.chatRoomId(chatMessage.getChatRoom().getChatRoomId())
+			.chatRoomId(String.valueOf(chatMessage.getChatRoom().getChatRoomId()))
 			.sender(chatMessage.getWriter())
 			.content(chatMessage.getMessage())
 			.createdAt(chatMessage.getCreatedAt())
@@ -35,16 +35,17 @@ public class ChatMessageDto {
 
 	public ChatMessage toEntity(ChatMessageDto messageDto) {
 		return ChatMessage.builder()
-			.chatRoom(ChatRoom.builder().chatRoomId(messageDto.getChatRoomId()).build())
+			.chatRoom(ChatRoom.builder().chatRoomId(Long.valueOf(messageDto.getChatRoomId())).build())
 			.writer(messageDto.getSender())
 			.message(messageDto.getContent())
+			.createdAt(LocalDateTime.now())
 			.build();
 	}
 
 	@Data
 	@AllArgsConstructor
 	public static class PageableResponse {
-		private Long chatRoomId;
+		private String chatRoomId;
 		private List<ChatMessageDto> chatMessageList;
 		private int pageNumber;
 		private int pageSize;
