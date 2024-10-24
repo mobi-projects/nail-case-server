@@ -42,7 +42,7 @@ public class ChatRoomService {
 	@Transactional
 	public void saveAndSendMessage(Long shopId, ChatMessageDto message, Long chatRoomId) {
 		try {
-			checkByShopIdAndRoomId(shopId, message.getChatRoomId());
+			checkByShopIdAndRoomId(shopId, chatRoomId);
 
 			// 1. 메시지 저장
 			ChatMessage savedMessage = chatMessageRepository.save(message.toEntity(message));
