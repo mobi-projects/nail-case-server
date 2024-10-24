@@ -20,15 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/shops")
+@RequestMapping("/shops/{shopId}")
 @RequiredArgsConstructor
 public class ChatController {
 
 	private final ChatRoomService chatRoomService;
 
-	@MessageMapping("/{shopId}/chat/message/{chatRoomId}")
+	@MessageMapping("/chat/message/{chatRoomId}")
 	public void message(
-		@DestinationVariable Long shopId,
+		@PathVariable Long shopId,
 		@Payload ChatMessageDto message,
 		@DestinationVariable Long chatRoomId  // URL 변수는 @DestinationVariable 사용
 	) {
@@ -42,7 +42,7 @@ public class ChatController {
 		}
 	}
 
-	@GetMapping("/{shopId}/chat/room")
+	@GetMapping("/chat/room")
 	public ResponseEntity<ChatMessageDto.PageableResponse> memberEnterRoom(
 		@PathVariable Long shopId,
 		@RequestParam(defaultValue = "0") int page,
@@ -54,7 +54,7 @@ public class ChatController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/{shopId}/chat/room/{chatRoomId}")
+	@GetMapping("/chat/room/{chatRoomId}")
 	public ResponseEntity<ChatMessageDto.PageableResponse> managerEnterRoom(
 		@PathVariable Long shopId,
 		@PathVariable Long chatRoomId,
