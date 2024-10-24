@@ -31,9 +31,14 @@ public class JwtTokenProcessor {
 	private final CustomJwtAuthenticationManager customJwtAuthenticationManager;
 	private static final String LOGOUT_URL = "/api/v1/auth/logout";
 	private static final String REFRESH_TOKEN_URL = "/api/v1/auth/refresh";
+	private static final String CHATTING_URL = "/api/v1/stomp/chat";
 
 	public boolean isLogoutRequest(String path) {
 		return path.equals(LOGOUT_URL);
+	}
+
+	public boolean isChatRequest(String path) {
+		return path.equals(CHATTING_URL);
 	}
 
 	public boolean isRefreshTokenRequest(String path) {
