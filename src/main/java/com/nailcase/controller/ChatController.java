@@ -27,11 +27,10 @@ public class ChatController {
 
 	@MessageMapping("/chat/message/{chatRoomId}")
 	public void message(
-		@PathVariable Long shopId,
-		ChatMessageDto message, @DestinationVariable Long chatRoomId,
-		@AuthenticationPrincipal UserPrincipal userPrincipal
+		ChatMessageDto message,  // payload는 첫 번째 파라미터로
+		@DestinationVariable Long chatRoomId  // URL 변수는 @DestinationVariable 사용
 	) {
-		chatRoomService.saveAndSendMessage(shopId, message, chatRoomId);
+		chatRoomService.saveAndSendMessage(message.getShopId(), message, chatRoomId);
 	}
 
 	@GetMapping("/chat/room")
