@@ -44,3 +44,4 @@ out/
 
 # Ignore Docker Volume folder
 docker/volume
+docker/rabbitmq-data
