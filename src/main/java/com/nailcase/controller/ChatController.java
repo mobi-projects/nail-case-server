@@ -25,7 +25,7 @@ public class ChatController {
 	public void message(
 		@PathVariable Long shopId,
 		@Payload ChatMessageDto message,
-		@DestinationVariable Long chatRoomId  // URL 변수는 @DestinationVariable 사용
+		@DestinationVariable String chatRoomId  // URL 변수는 @DestinationVariable 사용
 	) {
 		log.info("Received message for shopId: {}, chatRoomId: {}, from sender: {}", shopId, chatRoomId,
 			message.getSender());

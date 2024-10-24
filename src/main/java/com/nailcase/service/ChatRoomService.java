@@ -39,7 +39,7 @@ public class ChatRoomService {
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 
 	@Transactional
-	public void saveAndSendMessage(Long shopId, ChatMessageDto message, Long chatRoomId) {
+	public void saveAndSendMessage(Long shopId, ChatMessageDto message, String chatRoomId) {
 		try {
 			checkByShopIdAndRoomId(shopId, chatRoomId);
 
@@ -47,7 +47,7 @@ public class ChatRoomService {
 			ChatMessage savedMessage = chatMessageRepository.save(message.toEntity(message));
 
 			// 2. RabbitMQ로 메시지 전송
-			String routingKey = String.format("shop.%d.room.%d", shopId, chatRoomId);
+			String routingKey = String.format("shop.%d.room.%s", shopId, chatRoomId);
 			rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, routingKey, ChatMessageDto.of(savedMessage));
 
 			log.info("Message saved and sent successfully. ChatRoomId: {}, MessageId: {}",
@@ -62,8 +62,8 @@ public class ChatRoomService {
 		}
 	}
 
-	private void checkByShopIdAndRoomId(Long shopId, Long roomId) {
-		if (!chatRoomRepository.existsByShopIdAndChatRoomId(shopId, roomId)) {
+	private void checkByShopIdAndRoomId(Long shopId, String roomId) {
+		if (!chatRoomRepository.existsByShopIdAndChatRoomId(shopId, Long.valueOf(roomId))) {
 			throw new BusinessException(CHAT_ROOM_NOT_FOUND);
 		}
 	}
@@ -73,7 +73,7 @@ public class ChatRoomService {
 		int page, int size) {
 		ChatRoom chatRoom = findOrCreateChatRoom(shopId, userPrincipal.id(), userPrincipal.role());
 
-		return getChatMessages(chatRoom.getChatRoomId(), page, size);
+		return getChatMessages(String.valueOf(chatRoom.getChatRoomId()), page, size);
 	}
 
 	private ChatRoom findOrCreateChatRoom(Long shopId, Long memberId, Role role) {
@@ -87,10 +87,10 @@ public class ChatRoomService {
 			});
 	}
 
-	private ChatMessageDto.PageableResponse getChatMessages(Long chatRoomId, int page, int size) {
+	private ChatMessageDto.PageableResponse getChatMessages(String chatRoomId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		Page<ChatMessage> messagePage = chatMessageRepository.findByChatRoomIdWithPagination(
-			chatRoomId, pageable);
+			Long.valueOf(chatRoomId), pageable);
 
 		List<ChatMessageDto> chatMessageDtos = messagePage.getContent().stream()
 			.map(ChatMessageDto::of)
