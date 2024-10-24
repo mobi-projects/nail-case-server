@@ -692,8 +692,13 @@
             defs["com.nailcase.model.dto.ChatMessageDto"] = {
   "type" : "object",
   "properties" : {
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
     "chatRoomId" : {
-      "type" : "string"
+      "type" : "integer",
+      "format" : "int64"
     },
     "sender" : {
       "type" : "string"
@@ -710,8 +715,13 @@
             defs["com.nailcase.model.dto.ChatMessageDto$PageableResponse"] = {
   "type" : "object",
   "properties" : {
+    "shopId" : {
+      "type" : "integer",
+      "format" : "int64"
+    },
     "chatRoomId" : {
-      "type" : "string"
+      "type" : "integer",
+      "format" : "int64"
     },
     "chatMessageList" : {
       "type" : "array",
