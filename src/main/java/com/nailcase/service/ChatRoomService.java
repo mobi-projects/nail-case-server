@@ -39,8 +39,10 @@ public class ChatRoomService {
 	private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 
 	@Transactional
-	public void saveAndSendMessage(Long shopId, ChatMessageDto message, String chatRoomId) {
+	public void saveAndSendMessage(ChatMessageDto message) {
 		try {
+			Long shopId = message.getShopId();
+			Long chatRoomId = message.getChatRoomId();
 			checkByShopIdAndRoomId(shopId, chatRoomId);
 
 			// 1. 메시지 저장
@@ -53,17 +55,14 @@ public class ChatRoomService {
 			log.info("Message saved and sent successfully. ChatRoomId: {}, MessageId: {}",
 				chatRoomId, savedMessage.getChatMessageId());
 		} catch (BusinessException e) {
-			log.error("Error in saveAndSendMessage. ShopId: {}, ChatRoomId: {}", shopId, chatRoomId, e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Unexpected error in saveAndSendMessage. ShopId: {}, ChatRoomId: {}",
-				shopId, chatRoomId, e);
 			throw new BusinessException(CHAT_PROCESS_FAILED);
 		}
 	}
 
-	private void checkByShopIdAndRoomId(Long shopId, String roomId) {
-		if (!chatRoomRepository.existsByShopIdAndChatRoomId(shopId, Long.valueOf(roomId))) {
+	private void checkByShopIdAndRoomId(Long shopId, Long roomId) {
+		if (!chatRoomRepository.existsByShopIdAndChatRoomId(shopId, roomId)) {
 			throw new BusinessException(CHAT_ROOM_NOT_FOUND);
 		}
 	}
@@ -73,7 +72,7 @@ public class ChatRoomService {
 		int page, int size) {
 		ChatRoom chatRoom = findOrCreateChatRoom(shopId, userPrincipal.id(), userPrincipal.role());
 
-		return getChatMessages(String.valueOf(chatRoom.getChatRoomId()), page, size);
+		return getChatMessages(shopId, chatRoom.getChatRoomId(), page, size);
 	}
 
 	private ChatRoom findOrCreateChatRoom(Long shopId, Long memberId, Role role) {
@@ -87,16 +86,17 @@ public class ChatRoomService {
 			});
 	}
 
-	private ChatMessageDto.PageableResponse getChatMessages(String chatRoomId, int page, int size) {
+	private ChatMessageDto.PageableResponse getChatMessages(Long shopId, Long chatRoomId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		Page<ChatMessage> messagePage = chatMessageRepository.findByChatRoomIdWithPagination(
-			Long.valueOf(chatRoomId), pageable);
+			chatRoomId, pageable);
 
 		List<ChatMessageDto> chatMessageDtos = messagePage.getContent().stream()
 			.map(ChatMessageDto::of)
 			.collect(Collectors.toList());
 
 		return new ChatMessageDto.PageableResponse(
+			shopId,
 			chatRoomId,
 			chatMessageDtos,
 			messagePage.getNumber(),
@@ -135,7 +135,8 @@ public class ChatRoomService {
 			.collect(Collectors.toList());
 
 		return new ChatMessageDto.PageableResponse(
-			String.valueOf(chatRoomId),
+			shopId,
+			chatRoomId,
 			chatMessageDtos,
 			messagePage.getNumber(),
 			messagePage.getSize(),
