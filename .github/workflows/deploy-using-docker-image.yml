@@ -39,7 +39,7 @@ jobs:
         id: deploy-dev
         with:
           host: ${{ secrets.HOST_EC2 }} # EC2 퍼블릭 IPv4 DNS
-          username: ${{ secrets.USERNAME }} # ubuntu.
+          username: ${{ secrets.USERNAME }} # ubuntu
           port: 22
           key: ${{ secrets.SSH_KEY }}
           script: |
