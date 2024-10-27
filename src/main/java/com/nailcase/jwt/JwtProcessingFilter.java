@@ -27,10 +27,6 @@ public class JwtProcessingFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 		log.info("JWT 인증 처리 필터: URI {} 처리 중", request.getRequestURI());
 
-		if (jwtTokenProcessor.isChatRequest(request.getRequestURI())) {
-			return;
-		}
-
 		if (jwtTokenProcessor.isLogoutRequest(request.getRequestURI())) {
 			log.info("로그아웃 URL 감지, 로그아웃 처리");
 			jwtTokenProcessor.processLogout(request, response, filterChain);
