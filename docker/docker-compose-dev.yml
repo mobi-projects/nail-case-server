@@ -75,6 +75,25 @@ services:
       TZ: Asia/Seoul
       PGTZ: Asia/Seoul
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI port
+      - "61613:61613" # STOMP port
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=admin
+      - RABBITMQ_PASSWORD=admin
+    volumes:
+      - ./volume/rabbitmq_data:/var/lib/rabbitmq
+    command: >
+      bash -c "rabbitmq-plugins enable rabbitmq_management rabbitmq_stomp &&
+              rabbitmq-server"
+
 volumes:
   data1-1:
   data1-2:
@@ -84,3 +103,4 @@ volumes:
   data3-2:
   data4-1:
   data4-2:
+  rabbitmq_data:
