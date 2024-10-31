@@ -97,6 +97,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     testImplementation 'org.springframework.batch:spring-batch-test'
 
+    // 채팅
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework:spring-messaging'
+
+    //rabbitmq
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.integration:spring-integration-stomp'
+    implementation 'io.projectreactor.netty:reactor-netty'
 }
 
 // querydsl
