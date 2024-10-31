@@ -78,21 +78,16 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq
-    container_name: rabbitmq
     ports:
-      - "5672:5672"   # AMQP port
-      - "15672:15672" # Management UI port
-      - "61613:61613" # STOMP port
-    environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USERNAME=admin
-      - RABBITMQ_PASSWORD=admin
-    volumes:
-      - ./volume/rabbitmq_data:/var/lib/rabbitmq
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI
+      - "61613:61613"  # STOMP 포트
     command: >
-      bash -c "rabbitmq-plugins enable rabbitmq_management rabbitmq_stomp &&
-              rabbitmq-server"
+      bash -c "rabbitmq-plugins enable rabbitmq_stomp &&
+               rabbitmq-server"
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+
 
 volumes:
   data1-1:
