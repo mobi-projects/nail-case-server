@@ -59,6 +59,6 @@ jobs:
             ${{ secrets.KAKAO_CLIENT_SECRET }} \
             ${{ secrets.JWT_SECRET_KEY }} \
             ${{ secrets.RABBITMQ_HOST }} \
-            ${{ secrets.RABBIMQ_PORT }} \
+            ${{ secrets.RABBITMQ_PORT }} \
             ${{ secrets.RABBITMQ_USERNAME }} \
             ${{ secrets.RABBITMQ_PASSWORD }} \
