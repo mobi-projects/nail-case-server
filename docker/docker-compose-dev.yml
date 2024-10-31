@@ -77,14 +77,23 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    hostname: rabbitmq
+    hostname: localhost
     ports:
-      - "5672:5672"  # AMQP protocol port
-      - "15672:15672"  # Management UI
-      - "61613:61613"  # STOMP 포트
+      - "5672:5672"      # AMQP protocol port
+      - "15672:15672"    # Management UI
+      - "61613:61613"    # STOMP port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
     command: >
-      bash -c "rabbitmq-plugins enable rabbitmq_stomp &&
-               rabbitmq-server"
+      bash -c "rabbitmq-server &
+               sleep 20 &&
+               rabbitmq-plugins enable rabbitmq_stomp &&
+               rabbitmqctl wait --timeout 60 rabbitmq.pid &&
+               rabbitmqctl add_user admin admin || true &&
+               rabbitmqctl set_permissions -p / admin '.*' '.*' '.*' &&
+               rabbitmqctl set_user_tags admin administrator &&
+               tail -f /dev/null"
     volumes:
       - ./rabbitmq-data:/var/lib/rabbitmq
 
