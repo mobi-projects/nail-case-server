@@ -17,7 +17,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Value("${spring.rabbitmq.host}")
     private String rabbitmqHost;
 
-    @Value("${spring.rabbitmq.port}")
+    @Value("${spring.rabbitmq.stomp.port}")  // STOMP 포트 기본값 설정
+    private int stompPort;
+
+    @Value("${spring.rabbitmq.port}")         // AMQP 포트 기본값 설정
     private int rabbitmqPort;
 
     @Value("${spring.rabbitmq.username}")
@@ -37,20 +40,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // RabbitMQ 브로커 릴레이 설정
         registry.enableStompBrokerRelay("/topic", "/queue", "/exchange", "/amq/queue")
                 .setRelayHost(rabbitmqHost)
-                .setRelayPort(61613)  // STOMP port
+                .setRelayPort(stompPort)
                 .setClientLogin(rabbitmqUsername)
                 .setClientPasscode(rabbitmqPassword)
                 .setSystemLogin(rabbitmqUsername)
-                .setSystemPasscode(rabbitmqPassword)
-                .setSystemHeartbeatSendInterval(5000)
-                .setSystemHeartbeatReceiveInterval(4000);
+                .setSystemPasscode(rabbitmqPassword);
 
         registry.setApplicationDestinationPrefixes("/pub");
         registry.setUserDestinationPrefix("/user");
     }
+
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registry) {

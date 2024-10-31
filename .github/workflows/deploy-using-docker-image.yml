@@ -62,3 +62,4 @@ jobs:
             ${{ secrets.RABBITMQ_PORT }} \
             ${{ secrets.RABBITMQ_USERNAME }} \
             ${{ secrets.RABBITMQ_PASSWORD }} \
+            ${{ secrets.RABBITMQ_STOMP_PORT }} \
