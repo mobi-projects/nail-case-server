@@ -63,7 +63,7 @@ public class ChatService {
         ChatMessageDto messageDto = ChatMessageDto.of(savedMessage);
 
         // 발신자에 따라 다른 destination으로 메시지 전송
-        messagingTemplate.convertAndSend("/sub/chat/room/" + chatRoom.getChatRoomId(), messageDto);
+        messagingTemplate.convertAndSend("/queue/chat/room/" + chatRoom.getChatRoomId(), messageDto);
 
         if (!request.isShopMessage()) {
             NotificationDto.Request notificationRequest = NotificationDto.Request.builder()
