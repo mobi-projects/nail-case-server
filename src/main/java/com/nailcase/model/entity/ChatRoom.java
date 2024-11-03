@@ -26,6 +26,7 @@ public class ChatRoom extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom")
+    @OrderBy("createdAt DESC")  // 생성 시간 기준 내림차순 정렬
     private List<ChatMessage> messages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,7 +46,7 @@ public class ChatRoom extends BaseEntity {
 
     public ChatMessage getLastMessage() {
         if (messages.isEmpty()) return null;
-        return messages.get(messages.size() - 1);
+        return messages.getLast();
     }
 
 
