@@ -203,12 +203,14 @@ public class NotificationService {
         response.setSenderId(notification.getSenderId());
         response.setReceiverId(notification.getReceiverId());
         response.setRead(notification.isRead());
-        response.setReservationId(notification.getReservationDetail().getReservationDetailId());
-        response.setStartTime(
-                DateUtils.localDateTimeToUnixTimeStampWithNull(notification.getReservationDetail().getStartTime()));
-        response.setEndTime(
-                DateUtils.localDateTimeToUnixTimeStampWithNull(notification.getReservationDetail().getEndTime()));
-
+        // ReservationDetail이 있는 경우에만 관련 정보 설정
+        if (notification.getReservationDetail() != null) {
+            response.setReservationId(notification.getReservationDetail().getReservationDetailId());
+            response.setStartTime(
+                    DateUtils.localDateTimeToUnixTimeStampWithNull(notification.getReservationDetail().getStartTime()));
+            response.setEndTime(
+                    DateUtils.localDateTimeToUnixTimeStampWithNull(notification.getReservationDetail().getEndTime()));
+        }
         return response;
     }
 
