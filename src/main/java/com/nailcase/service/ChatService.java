@@ -1,15 +1,15 @@
 package com.nailcase.service;
 
-import com.nailcase.model.dto.ChatMessageDto;
-import com.nailcase.model.dto.ChatRequestDto;
-import com.nailcase.model.dto.ChatRoomDto;
-import com.nailcase.model.dto.NotificationDto;
+import com.nailcase.exception.BusinessException;
+import com.nailcase.exception.codes.AuthErrorCode;
+import com.nailcase.model.dto.*;
 import com.nailcase.model.entity.ChatMessage;
 import com.nailcase.model.entity.ChatRoom;
 import com.nailcase.model.entity.Member;
 import com.nailcase.model.entity.Shop;
 import com.nailcase.model.enums.ChatRoomStatus;
 import com.nailcase.model.enums.NotificationType;
+import com.nailcase.model.enums.Role;
 import com.nailcase.repository.ChatMessageRepository;
 import com.nailcase.repository.ChatRoomRepository;
 import com.nailcase.repository.MemberRepository;
@@ -91,7 +91,12 @@ public class ChatService {
     }
 
 
-    public ChatRoomDto createChatRoom(Long shopId, Long memberId) {
+    public ChatRoomDto createChatRoom(Long shopId, UserPrincipal userPrincipal) {
+
+        if (userPrincipal.role() != Role.MEMBER) {
+            throw new BusinessException(AuthErrorCode.INVALID_USER_TYPE);
+        }
+        Long memberId = userPrincipal.id();
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new EntityNotFoundException("Shop not found"));
 

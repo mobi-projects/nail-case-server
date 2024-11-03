@@ -3,6 +3,7 @@ package com.nailcase.controller;
 import com.nailcase.model.dto.ChatMessageDto;
 import com.nailcase.model.dto.ChatRequestDto;
 import com.nailcase.model.dto.ChatRoomDto;
+import com.nailcase.model.dto.UserPrincipal;
 import com.nailcase.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +32,7 @@ public class ChatController {
 
     @GetMapping("/chat/rooms")
     @ResponseBody
-    public ResponseEntity<List<ChatRoomDto>> getMemberChatRooms(@RequestParam Long memberId) {
+    public ResponseEntity<List<ChatRoomDto>> getMemberChatRooms(@AuthenticationPrincipal Long memberId) {
         List<ChatRoomDto> chatRooms = chatService.getMemberChatRooms(memberId);
         return ResponseEntity.ok(chatRooms);
     }
@@ -39,8 +41,8 @@ public class ChatController {
     @ResponseBody
     public ResponseEntity<ChatRoomDto> createChatRoom(
             @RequestParam Long shopId,
-            @RequestParam Long memberId) {
-        ChatRoomDto chatRoom = chatService.createChatRoom(shopId, memberId);
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        ChatRoomDto chatRoom = chatService.createChatRoom(shopId, userPrincipal);
         return ResponseEntity.ok(chatRoom);
     }
 
