@@ -22,12 +22,13 @@ public class JwtProcessingFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/api/v1/chat/") ||
-                path.contains("/ws") ||            // WebSocket 엔드포인트
-                path.contains("/pub/") ||          // STOMP publish 엔드포인트
-                path.contains("/sub/") ||          // STOMP subscribe 엔드포인트
-                path.contains("/queue/") ||        // STOMP queue 엔드포인트
-                path.contains("/user/");           // STOMP user 엔드포인트
+        return path.startsWith("/api/v1/chat/") &&    // 먼저 chat 경로인지 체크하고
+                !path.equals("/api/v1/chat/rooms") ||  // rooms는 제외
+                path.contains("/ws") ||
+                path.contains("/pub/") ||
+                path.contains("/sub/") ||
+                path.contains("/queue/") ||
+                path.contains("/user/");
     }
 
     @Override

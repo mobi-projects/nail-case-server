@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/swagger-ui/index.html", "/api-docs/**", "/webjars/**",
                                 "/static/**", "/auth/**", "/main/**")
                         .permitAll()  // Swagger와 정적 리소스 접근 허용
+                        .requestMatchers("/chat/rooms")
+                        .authenticated()
                         .requestMatchers("/chat/**", "/chat/inbox/**", "/pub/**", "/sub/**", "/queue/**", "/user/**", "/ws/**").permitAll()
                         .requestMatchers(PathRequest.toH2Console())
                         .permitAll() // h2-console 접근 허용
