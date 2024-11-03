@@ -1,16 +1,19 @@
 package com.nailcase.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 public class RabbitMQConfig {
     @Value("${spring.rabbitmq.host}")
@@ -55,5 +58,17 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(queue)
                 .to(exchange)
                 .with("chat.#");
+    }
+
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+        RabbitAdmin admin = new RabbitAdmin(connectionFactory);
+        admin.setAutoStartup(true);
+        admin.afterPropertiesSet();
+        log.info("RabbitMQ Admin initialized");
+        log.info("Creating exchange: chat.exchange");
+        log.info("Creating queue: chat.queue");
+        log.info("Creating binding with routing key: chat.#");
+        return admin;
     }
 }
