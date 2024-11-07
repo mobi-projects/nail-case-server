@@ -29,7 +29,9 @@ public class ChatRoomQuerydslRepositoryImpl implements ChatRoomQuerydslRepositor
                 .where(chatRoom.shop.eq(shop)
                         .and(chatRoom.member.eq(member))
                         .and(chatRoom.chatRoomStatus.eq(ChatRoomStatus.ACTIVE)))
-                .orderBy(chatRoom.createdAt.desc()) // 생성일시 기준 정렬
+                .orderBy(chatRoom.createdAt.desc()
+                        , message.createdAt.desc()  // 메시지도 생성일시 내림차순 정렬 추가
+                ) // 생성일시 기준 정렬
                 .fetchFirst()); // fetchOne() 대신 fetchFirst() 사용
     }
 

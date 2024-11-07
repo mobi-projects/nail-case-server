@@ -16,6 +16,7 @@ import com.nailcase.repository.MemberRepository;
 import com.nailcase.repository.ShopRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,10 +92,10 @@ public class ChatService {
 
 
     public ChatRoomDto createChatRoom(Long shopId, UserPrincipal userPrincipal) {
-
         if (userPrincipal.role() != Role.MEMBER) {
             throw new BusinessException(AuthErrorCode.INVALID_USER_TYPE);
         }
+
         Long memberId = userPrincipal.id();
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new EntityNotFoundException("Shop not found"));
@@ -103,21 +103,22 @@ public class ChatService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
-        Optional<ChatRoom> existingRoom = chatRoomRepository.findByShopAndMember(shop, member);
+        try {
+            ChatRoom chatRoom = ChatRoom.builder()
+                    .shop(shop)
+                    .member(member)
+                    .name(shop.getShopName() + "-" + member.getNickname())
+                    .chatRoomStatus(ChatRoomStatus.ACTIVE)
+                    .build();
 
-        if (existingRoom.isPresent()) {
-            return ChatRoomDto.of(existingRoom.get());
+            return ChatRoomDto.of(chatRoomRepository.save(chatRoom));
+
+        } catch (DataIntegrityViolationException e) {
+            // 이미 채팅방이 존재하는 경우 기존 채팅방을 반환
+            return chatRoomRepository.findByShopAndMember(shop, member)
+                    .map(ChatRoomDto::of)
+                    .orElseThrow(() -> e); // 예상치 못한 경우 원래 예외를 던짐
         }
-
-        ChatRoom chatRoom = ChatRoom.builder()
-                .shop(shop)
-                .member(member)
-                .name(shop.getShopName() + "-" + member.getNickname())
-                .chatRoomStatus(ChatRoomStatus.ACTIVE)
-                .build();
-
-        ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
-        return ChatRoomDto.of(savedRoom);
     }
 
 
