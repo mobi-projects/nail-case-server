@@ -11,7 +11,14 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "chat_rooms")
+@Table(name = "chat_rooms",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"shop_id", "member_id"},
+                        name = "uk_chat_room_shop_member"
+                )
+        }
+)
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
