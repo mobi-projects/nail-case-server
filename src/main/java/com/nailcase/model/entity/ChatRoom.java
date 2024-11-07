@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Getter
@@ -53,7 +54,9 @@ public class ChatRoom extends BaseEntity {
 
     public ChatMessage getLastMessage() {
         if (messages.isEmpty()) return null;
-        return messages.getLast();
+        return messages.stream()
+                .max(Comparator.comparing(ChatMessage::getCreatedAt))
+                .orElse(null);
     }
 
 

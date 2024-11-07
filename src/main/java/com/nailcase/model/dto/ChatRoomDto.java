@@ -18,6 +18,8 @@ public class ChatRoomDto {
     private Long lastMessageTime; // 마지막 메시지 시간
     private String lastMessage; // 마지막 메시지 내용
     private Long unreadCount; // 안 읽은 메시지 수
+    private Boolean isLastMessageFromShop;  // 마지막 메시지 발신자 타입 추가
+
 
     public static ChatRoomDto of(ChatRoom chatRoom, boolean isShopView) {
         ChatMessage lastMessage = chatRoom.getLastMessage();
@@ -30,6 +32,7 @@ public class ChatRoomDto {
                 .createdAt(DateUtils.localDateTimeToUnixTimeStampWithNull(chatRoom.getCreatedAt()))
                 .lastMessageTime(DateUtils.localDateTimeToUnixTimeStampWithNull(lastMessage != null ? lastMessage.getCreatedAt() : null))
                 .lastMessage(lastMessage != null ? lastMessage.getMessage() : null)
+                .isLastMessageFromShop(lastMessage != null ? lastMessage.isSentByShop() : null)  // 마지막 메시지 발신자 정보 추가
                 .unreadCount(isShopView ?
                         chatRoom.getUnreadMessageCountForShop() :
                         chatRoom.getUnreadMessageCountForMember(chatRoom.getMember().getMemberId()))
