@@ -85,10 +85,10 @@ public class NotificationQuerydslRepositoryImpl implements NotificationQuerydslR
                         , notification.receiverId.eq(receiverId)
                         , role == Role.MANAGER ?
                                 notification.notificationType.in(NotificationType.RESERVATION_REQUEST,
-                                        NotificationType.RESERVATION_CANCEL) :
+                                        NotificationType.RESERVATION_CANCEL, NotificationType.NEW_CHAT_MESSAGE_TO_MEMBER) :
                                 notification.notificationType.in(NotificationType.RESERVATION_APPROVE,
                                         NotificationType.RESERVATION_REJECT,
-                                        NotificationType.RESERVATION_COMPLETE)
+                                        NotificationType.RESERVATION_COMPLETE, NotificationType.NEW_CHAT_MESSAGE_TO_SHOP)
                 )
                 .execute();
     }
