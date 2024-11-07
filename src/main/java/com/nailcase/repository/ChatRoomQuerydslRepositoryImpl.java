@@ -27,9 +27,10 @@ public class ChatRoomQuerydslRepositoryImpl implements ChatRoomQuerydslRepositor
                 .leftJoin(chatRoom.shop, qShop).fetchJoin()
                 .leftJoin(chatRoom.member, qMember).fetchJoin()
                 .where(chatRoom.shop.eq(shop)
-                        .and(chatRoom.member.eq(member)))
-                .orderBy(message.createdAt.desc())
-                .fetchOne());
+                        .and(chatRoom.member.eq(member))
+                        .and(chatRoom.chatRoomStatus.eq(ChatRoomStatus.ACTIVE)))
+                .orderBy(chatRoom.createdAt.desc()) // 생성일시 기준 정렬
+                .fetchFirst()); // fetchOne() 대신 fetchFirst() 사용
     }
 
     @Override
