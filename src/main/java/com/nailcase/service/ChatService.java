@@ -104,20 +104,28 @@ public class ChatService {
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
 
         try {
-            ChatRoom chatRoom = ChatRoom.builder()
-                    .shop(shop)
-                    .member(member)
-                    .name(shop.getShopName() + "-" + member.getNickname())
-                    .chatRoomStatus(ChatRoomStatus.ACTIVE)
-                    .build();
-
-            return ChatRoomDto.of(chatRoomRepository.save(chatRoom));
-
-        } catch (DataIntegrityViolationException e) {
-            // 이미 채팅방이 존재하는 경우 기존 채팅방을 반환
+            // 먼저 조회를 시도
             return chatRoomRepository.findByShopAndMember(shop, member)
                     .map(ChatRoomDto::of)
-                    .orElseThrow(() -> e); // 예상치 못한 경우 원래 예외를 던짐
+                    .orElseGet(() -> {
+                        try {
+                            ChatRoom chatRoom = ChatRoom.builder()
+                                    .shop(shop)
+                                    .member(member)
+                                    .name(shop.getShopName() + "-" + member.getNickname())
+                                    .chatRoomStatus(ChatRoomStatus.ACTIVE)
+                                    .build();
+                            return ChatRoomDto.of(chatRoomRepository.save(chatRoom));
+                        } catch (DataIntegrityViolationException e) {
+                            // 동시에 생성 시도가 있었다면, 다시 한번 조회
+                            return chatRoomRepository.findByShopAndMember(shop, member)
+                                    .map(ChatRoomDto::of)
+                                    .orElseThrow(() -> new RuntimeException("Failed to create or find chat room"));
+                        }
+                    });
+        } catch (Exception e) {
+            // 트랜잭션 롤백을 확실히 하기 위해 예외를 다시 던짐
+            throw new RuntimeException("Error processing chat room request", e);
         }
     }
 
