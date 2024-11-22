@@ -113,7 +113,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "https://nail-case-client.vercel.app",
-                "https://jiangxy.github.io"
+                "https://jiangxy.github.io",
+                "https://newtips.netlify.app/"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.addAllowedHeader("*");
