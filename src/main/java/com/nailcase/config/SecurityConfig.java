@@ -68,20 +68,7 @@ public class SecurityConfig {
                         .hasRole("MANAGER")
                         .anyRequest()
                         .authenticated())    // 그 외 인증 없이 접근X
-                // .oauth2Login(oauth2 -> oauth2
-                // 		// TODO: OAuth2 로그인을 하면 session을 사용하게 되어 이 부분을 수정해야함.
-                // 		.loginPage("/oauth2/authorization/kakao")
-                // 		.userInfoEndpoint(userInfo -> userInfo
-                // 			.userService(customOAuth2UserService))
-                // 		.successHandler(oAuth2LoginSuccessHandler)
-                // 		.failureHandler(oAuth2LoginFailureHandler)
-                // 	// .defaultSuccessUrl("/swagger-ui/index.html", false)
-                // )
-                // .logout(logout -> logout
-                // 	.logoutSuccessUrl("/"))
-                // .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-                // .addFilterBefore(exceptionTranslationFilter(), JwtAuthenticationProcessingFilter.class);
-
+                
                 .addFilterBefore(jwtProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
